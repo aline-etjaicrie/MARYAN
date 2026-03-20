@@ -437,6 +437,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       urbanisme: {tech:90,conflict:85,expo:80}, culture: {tech:45,conflict:40,expo:55}, education: {tech:55,conflict:45,expo:60}, solidarites: {tech:50,conflict:50,expo:55}, securite: {tech:65,conflict:80,expo:85}, participation: {tech:35,conflict:35,expo:50}, ecologie: {tech:50,conflict:55,expo:75}, finances: {tech:90,conflict:70,expo:70}, rh: {tech:65,conflict:75,expo:30}, communication: {tech:40,conflict:40,expo:80}, generaliste: {tech:40,conflict:40,expo:50}
     };
 
+    const THEME_LABELS = {
+      urbanisme: 'Urbanisme, aménagement, logement',
+      culture: 'Culture, patrimoine et projets culturels',
+      education: 'Éducation, enfance et jeunesse',
+      solidarites: 'Insertion, solidarité et action sociale',
+      securite: 'Sécurité, prévention et tranquillité publique',
+      participation: 'Participation, vie citoyenne et démocratie locale',
+      ecologie: 'Transition écologique, cadre de vie et propreté',
+      finances: 'Finances locales et administration générale',
+      rh: 'Ressources humaines, management et organisation interne',
+      communication: 'Communication publique et numérique',
+      generaliste: 'Mandat généraliste'
+    };
+
     const PROFILES = {
       prise_de_fonction: {
         title:'Élu en prise de fonction',
@@ -547,6 +561,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('offerPrice').textContent = o.price;
       document.getElementById('offerIncludes').innerHTML = o.includes.map(i => '<li>'+i+'</li>').join('');
       document.getElementById('rWhy').textContent = computeWhy(pk, ol, theme);
+      try {
+        const savedProfile = {
+          key: pk,
+          title: p.title,
+          summary: p.summary,
+          theme,
+          themeLabel: THEME_LABELS[theme] || THEME_LABELS.generaliste,
+          offerLevel: ol,
+          offerName: o.name,
+          tags: [
+            THEME_LABELS[theme] || THEME_LABELS.generaliste,
+            ol >= 3 ? 'Appui ciblé' : ol === 2 ? 'Appui continu' : 'Repères et ressources'
+          ]
+        };
+        localStorage.setItem('maryan_profile', JSON.stringify(savedProfile));
+      } catch(e) {}
       const techPct = Math.min(100, td.tech + S.thematic_tech * 5);
       const conflPct = Math.min(100, td.conflict + S.thematic_conflict * 5);
       const expoPct = Math.min(100, td.expo + S.thematic_expo * 5 + S.exposure * 5);
