@@ -3,7 +3,6 @@ import {
   PAYWALL_HTML,
   PROFILE_REQUIRED_HTML,
   PROFILE_STORAGE_KEY,
-  buildSystemPrompt,
   type MaryanMode,
   type MaryanProfile
 } from './config';
@@ -26,7 +25,6 @@ if (root) {
 }
 
 function initCopilot(rootElement: HTMLElement) {
-  const diagnosticUrl = rootElement.dataset.diagnosticUrl || '/diagnostic';
   const upgradeUrl = rootElement.dataset.upgradeUrl || '/offres';
   const endpoint = rootElement.dataset.endpoint?.trim() || '';
 
@@ -224,11 +222,14 @@ function initCopilot(rootElement: HTMLElement) {
       if (state.mode === 'libre' && state.msgCount >= FREE_LIMIT) {
         showPaywall();
       }
-    } catch {
+    } catch (error) {
       removeTyping(typing);
+      const fallbackMessage =
+        'Je rencontre un souci technique. Vous pouvez réessayer dans quelques instants.';
+      const errorMessage = error instanceof Error && error.message ? error.message : fallbackMessage;
       addMessage(
         'assistant',
-        'Je rencontre un souci technique. Vous pouvez réessayer, ou basculer sur une question plus courte pour repartir proprement.',
+        escapeHtml(errorMessage),
         false
       );
     } finally {
@@ -327,17 +328,17 @@ async function getAssistantReply({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: buildSystemPrompt(profile),
         profile,
         messages: history
       })
     });
 
+    const data = (await response.json().catch(() => ({}))) as { reply?: string; error?: string };
+
     if (!response.ok) {
-      throw new Error('endpoint_error');
+      throw new Error(data.error || 'Le copilote n’a pas pu répondre pour le moment.');
     }
 
-    const data = (await response.json()) as { reply?: string };
     const reply = data.reply || 'Je n’ai pas pu générer de réponse.';
     return {
       html: formatAssistantReply(reply),

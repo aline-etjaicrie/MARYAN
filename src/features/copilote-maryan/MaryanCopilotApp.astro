@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import clientScriptUrl from './client.ts?url';
 import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
 ---
 <BaseLayout
@@ -10,9 +9,8 @@ import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
   <div
     class="copilot-shell"
     data-maryan-copilot-root
-    data-diagnostic-url="/diagnostic"
     data-upgrade-url="/offres"
-    data-endpoint=""
+    data-endpoint="/api/chat"
   >
     <header class="site-header copilot-header">
       <div class="container">
@@ -112,7 +110,9 @@ import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
     </main>
   </div>
 
-  <script type="module" src={clientScriptUrl}></script>
+  <script>
+    import './client.ts';
+  </script>
 </BaseLayout>
 
 <style>

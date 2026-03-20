@@ -5,7 +5,7 @@ Socle de lancement pour un premier site sobre numériquement autour de **MARYAN*
 ## Direction retenue
 
 - **Framework** : Astro
-- **Hébergement MVP** : Scaleway
+- **Hébergement MVP** : Vercel
 - **Cap sobriété** : Green IT natif + objectif **EcoIndex A**
 - **Design** : bleu clair, beige, rose revisité, pointe de vert néon
 
@@ -48,6 +48,25 @@ Socle de lancement pour un premier site sobre numériquement autour de **MARYAN*
 npm install
 npm run dev
 ```
+
+## Copilote réel
+
+Le copilote MARYAN appelle Anthropic via une route serveur Astro : `src/pages/api/chat.ts`.
+
+Configuration locale :
+
+```bash
+cp .env.example .env
+```
+
+Puis renseigner :
+
+```bash
+ANTHROPIC_API_KEY=...
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+```
+
+En production, les mêmes variables doivent aussi être configurées dans Vercel.
 
 ## Intention
 
