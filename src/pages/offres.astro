@@ -1,7 +1,112 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const repereWho = [
+  'de clarifier leur situation',
+  'de comprendre leurs points de vigilance',
+  "d'identifier les premières ressources utiles",
+  'de ne pas partir dans tous les sens'
+];
+
+const repereWhat = [
+  'un diagnostic structuré',
+  'un profil de situation',
+  'des recommandations ciblées',
+  'une première orientation'
+];
+
+const repereFit = [
+  'vous débutez',
+  'vous manquez de repères',
+  "vous voulez d'abord comprendre avant d'investir plus loin",
+  'vous cherchez un point de départ simple et sérieux'
+];
+
+const outillerWhat = [
+  'une bibliothèque de ressources plus complète',
+  'des fiches par situation',
+  'des trames utiles',
+  'une veille ciblée',
+  'un copilote conversationnel spécialisé',
+  'un appui continu pour mieux formuler, préparer et prioriser'
+];
+
+const outillerFit = [
+  'vous manquez de méthode',
+  'vous voulez gagner du temps',
+  "vous avez besoin d'un cadre plus stable",
+  'vous cherchez un outil utile dans la durée'
+];
+
+const epaulerExamples = [
+  'sujet sensible localement',
+  'forte exposition publique',
+  'technicité élevée',
+  'difficulté de communication',
+  "besoin de cadrage ou d'arbitrage",
+  'besoin de recul humain'
+];
+
+const epaulerWhat = [
+  'une visio de cadrage',
+  'un échange ponctuel',
+  'une orientation vers un expert',
+  'un accompagnement ciblé sur une situation précise'
+];
+
+const epaulerFit = [
+  'vous sentez que vous tournez en rond',
+  "vous avez besoin d'un regard compétent",
+  'la situation devient trop sensible pour rester seul·e',
+  "vous avez besoin d'une aide très ajustée"
+];
+
+const diagnosticRole = [
+  "la forme d'appui la plus cohérente",
+  "le bon niveau d'entrée",
+  'et les ressources qui vous seront réellement utiles'
+];
+
+const evolvingNeeds = [
+  "d'un point de départ très simple aujourd'hui",
+  "puis d'un appui plus continu plus tard",
+  "ou, à l'inverse, d'un cadrage humain rapide dès maintenant"
+];
+
+const progression = [
+  {
+    step: '1. Clarifier',
+    text: 'Faire le point, comprendre, repérer ses besoins.'
+  },
+  {
+    step: '2. Outiller',
+    text: 'Accéder à des ressources, des méthodes, une veille, un copilote.'
+  },
+  {
+    step: '3. Renforcer',
+    text: "Monter en appui quand la situation le demande."
+  },
+  {
+    step: '4. Relayer',
+    text: "Orienter vers un vrai accompagnement humain quand c'est nécessaire."
+  }
+];
+
+const doubleRisk = [
+  'soit proposer trop peu',
+  'soit proposer trop lourd, trop tôt'
+];
+
+const maryanLine = [
+  'ne pas surcharger',
+  'ne pas sous-calibrer',
+  "proposer quelque chose d'utile, de proportionné, de lisible"
+];
 ---
-<BaseLayout title="Niveaux d'appui — MARYAN" description="Les niveaux d'appui MARYAN pour élus municipaux.">
+<BaseLayout
+  title="Le bon niveau d'appui, au bon moment — MARYAN"
+  description="MARYAN oriente chaque élu vers la forme d'appui la plus utile selon sa situation réelle."
+>
   <header class="site-header">
     <div class="container header-inner">
       <div>
@@ -11,19 +116,181 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <a href="/" class="back-link">← Accueil</a>
     </div>
   </header>
+
   <main class="page-main">
     <section class="page-hero">
       <div class="container narrow">
         <p class="section-kicker">Niveaux d'appui</p>
-        <h1>Un accompagnement progressif, selon votre situation.</h1>
-        <p class="lead">MARYAN n'a pas vocation à vendre la même chose à tout le monde. L'idée est d'orienter chaque élu vers le niveau d'appui le plus utile, au bon moment.</p>
+        <h1>Le bon niveau d'appui, au bon moment</h1>
+        <p class="lead">
+          MARYAN n'a pas vocation à vendre la même chose à tout le monde. L'idée est d'orienter chaque élu
+          vers la forme d'appui la plus utile selon sa situation réelle : se repérer, s'outiller, ou se faire
+          épauler sur un sujet plus sensible ou plus complexe.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
+          <a class="btn btn-secondary" href="/methode">Voir comment fonctionne MARYAN</a>
+        </div>
       </div>
     </section>
+
     <section class="section">
-      <div class="container grid three">
-        <article class="card"><h3>Gratuit</h3><p>Diagnostic, restitution synthétique, premières ressources et découverte du dispositif.</p></article>
-        <article class="card"><h3>Appui continu</h3><p>Ressources étendues, veille ciblée, parcours thématiques et accompagnement léger.</p></article>
-        <article class="card"><h3>Appui ciblé</h3><p>Visio de cadrage, orientation experte ou intervention humaine pour les cas sensibles ou complexes.</p></article>
+      <div class="container">
+        <p class="section-kicker">Bloc 1</p>
+        <h2>Se repérer</h2>
+        <div class="grid two">
+          <article class="card content-card">
+            <p class="card-subtitle">Pour qui ?</p>
+            <p>Pour les élus qui ont surtout besoin :</p>
+            <ul class="feature-list">
+              {repereWho.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card soft-card">
+            <p class="card-subtitle">Ce que cela apporte</p>
+            <ul class="feature-list">
+              {repereWhat.map((item) => <li>{item}</li>)}
+            </ul>
+            <p class="card-subtitle section-gap-top">Ce niveau d'appui convient bien si...</p>
+            <ul class="feature-list">
+              {repereFit.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <p class="section-kicker">Bloc 2</p>
+        <h2>S'outiller</h2>
+        <div class="grid two">
+          <article class="card content-card">
+            <p class="card-subtitle">Pour qui ?</p>
+            <p>
+              Pour les élus qui ont besoin d'un appui plus régulier, mais sans basculer immédiatement vers
+              un accompagnement humain lourd.
+            </p>
+          </article>
+          <article class="card content-card accent-card">
+            <p class="card-subtitle">Ce que cela peut inclure</p>
+            <ul class="feature-list">
+              {outillerWhat.map((item) => <li>{item}</li>)}
+            </ul>
+            <p class="card-subtitle section-gap-top">Ce niveau d'appui convient bien si...</p>
+            <ul class="feature-list">
+              {outillerFit.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-kicker">Bloc 3</p>
+        <h2>Se faire épauler</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p class="card-subtitle">Pour qui ?</p>
+            <p>Pour les situations où un outil seul ne suffit pas.</p>
+            <p class="card-subtitle">Par exemple :</p>
+            <ul class="feature-list">
+              {epaulerExamples.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card soft-card">
+            <p class="card-subtitle">Ce que cela peut inclure</p>
+            <ul class="feature-list">
+              {epaulerWhat.map((item) => <li>{item}</li>)}
+            </ul>
+            <p class="card-subtitle section-gap-top">Ce niveau d'appui convient bien si...</p>
+            <ul class="feature-list">
+              {epaulerFit.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <p class="section-kicker">Bloc 4</p>
+        <h2>Le diagnostic sert à orienter, pas à enfermer</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p>Le diagnostic MARYAN n'a pas pour but de vous classer une fois pour toutes. Il sert à repérer :</p>
+            <ul class="feature-list">
+              {diagnosticRole.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card">
+            <p>Vous pouvez avoir besoin :</p>
+            <ul class="feature-list">
+              {evolvingNeeds.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+        <div class="card statement-card">
+          <p>
+            L'important n'est pas d'entrer dans une case. L'important est de trouver ce qui vous aidera
+            vraiment à avancer.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-kicker">Bloc 5</p>
+        <h2>Une logique progressive</h2>
+        <p class="section-intro">MARYAN repose sur une progression simple :</p>
+        <div class="step-grid">
+          {progression.map((item) => (
+            <article class="card step-card">
+              <p class="step-index">{item.step}</p>
+              <p>{item.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <p class="section-kicker">Bloc 6</p>
+        <h2>Pourquoi cette logique compte</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p>Le risque, avec les dispositifs classiques, est souvent double :</p>
+            <ul class="feature-list">
+              {doubleRisk.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card accent-card">
+            <p class="card-subtitle">MARYAN essaie de tenir une autre ligne :</p>
+            <ul class="feature-list">
+              {maryanLine.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+        <div class="card statement-card">
+          <p>Autrement dit : pas plus d'outils que nécessaire, mais pas moins d'appui qu'il n'en faut.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container narrow">
+        <div class="cta-panel">
+          <p class="section-kicker">Conclusion</p>
+          <h2>Vous ne savez pas encore de quoi vous avez vraiment besoin ?</h2>
+          <p>Commencez par le diagnostic.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
+            <a class="btn btn-secondary" href="/methode">Voir comment fonctionne MARYAN</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>

@@ -35,7 +35,7 @@ Le site prêt à mettre en ligne est dans :
 - /offres
 - /methode
 - /contact
-- /equipe
+- /expertises
 
 ## Recommandation pratique
 Pour un premier partage :

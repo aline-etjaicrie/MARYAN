@@ -1,7 +1,106 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const historicalSupports = [
+  'des partis plus structurés',
+  'des réseaux militants plus denses',
+  'des collectifs locaux plus formés',
+  'des relais plus stables'
+];
+
+const missingSupports = [
+  'de repères',
+  "d'orientation",
+  'de continuité',
+  "d'un point d'appui fiable entre deux temps de formation",
+  "d'une aide pour relier compréhension, action et parole publique"
+];
+
+const mandateDemands = [
+  'comprendre des sujets très techniques',
+  "travailler avec l'administration",
+  'répondre à des attentes de proximité très fortes',
+  'prendre la parole de manière lisible',
+  'éviter les maladresses de communication',
+  'naviguer dans une pression permanente de visibilité'
+];
+
+const especiallyTrueFor = [
+  'les nouveaux élus',
+  'les adjoints découvrant une délégation',
+  'les élus de petites et moyennes communes',
+  'les élus qui gardent une activité professionnelle en parallèle',
+  'les élus peu accompagnés ou insuffisamment outillés'
+];
+
+const maryanDoes = [
+  'faire le point sur sa situation',
+  'identifier ses difficultés prioritaires',
+  'clarifier son niveau de besoin',
+  'accéder aux bonnes ressources',
+  "être orienté vers la forme d'appui la plus utile"
+];
+
+const maryanBricks = [
+  "un diagnostic d'entrée",
+  'une bibliothèque de ressources ciblées',
+  'un copilote conversationnel spécialisé',
+  "une logique de veille et d'appui continu",
+  'un relais humain quand une situation le nécessite'
+];
+
+const notReplacing = [
+  'un organisme de formation',
+  'un consultant',
+  'un expert métier',
+  'un accompagnement stratégique approfondi'
+];
+
+const maryanHelps = [
+  'mieux comprendre leur situation',
+  "mieux s'orienter",
+  'mieux se repérer dans la complexité',
+  'et, si besoin, remonter vers un appui humain qualifié'
+];
+
+const lightNeeds = [
+  'de repères simples',
+  'de ressources fiables',
+  "d'une première clarification"
+];
+
+const steadyNeeds = [
+  "d'un appui léger mais continu",
+  "d'une veille ciblée",
+  "d'un outil pour mieux formuler, mieux préparer, mieux prioriser"
+];
+
+const complexNeeds = [
+  'un sujet très technique',
+  'une tension locale forte',
+  'une situation sensible',
+  "un besoin d'arbitrage ou de cadrage plus exigeant"
+];
+
+const specializedTool = [
+  'un corpus métier spécialisé',
+  'des parcours pensés pour les élus municipaux',
+  "une logique d'orientation",
+  'une attention aux situations sensibles',
+  'une articulation avec de vrais humains'
+];
+
+const givesBack = [
+  'de la lisibilité',
+  'de la méthode',
+  'de la continuité',
+  "et un peu d'air"
+];
 ---
-<BaseLayout title="Méthode — MARYAN" description="La méthode de MARYAN pour accompagner les élus municipaux.">
+<BaseLayout
+  title="Pourquoi MARYAN, pourquoi maintenant ? — MARYAN"
+  description="MARYAN cherche à combler le vide entre les formations ponctuelles et la réalité quotidienne du mandat local."
+>
   <header class="site-header">
     <div class="container header-inner">
       <div>
@@ -11,20 +110,217 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <a href="/" class="back-link">← Accueil</a>
     </div>
   </header>
+
   <main class="page-main">
     <section class="page-hero">
       <div class="container narrow">
         <p class="section-kicker">Méthode</p>
-        <h1>Un outil spécialisé, plus fin qu'une IA généraliste.</h1>
-        <p class="lead">MARYAN repose sur une logique simple : diagnostiquer d'abord, orienter ensuite, puis proposer le bon niveau de ressources, d'appui ou d'accompagnement selon la situation réelle de l'élu.</p>
+        <h1>Pourquoi MARYAN, pourquoi maintenant ?</h1>
+        <p class="lead">
+          Les élus municipaux exercent de plus en plus souvent leur mandat dans des conditions difficiles :
+          institutions complexes, pression de visibilité, temps contraint, faibles appuis, attentes fortes des
+          habitants. Beaucoup apprennent en marchant, avec peu de ressources, peu de recul, et parfois le
+          sentiment d'avoir à tout comprendre très vite.
+        </p>
+        <p class="lead lead-secondary">
+          MARYAN part de ce constat simple : entre les formations ponctuelles et la réalité quotidienne du
+          mandat, il existe un vide. C'est ce vide que le projet cherche à combler.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
+          <a class="btn btn-secondary" href="/offres">Voir les niveaux d'appui</a>
+        </div>
       </div>
     </section>
+
     <section class="section">
-      <div class="container grid two">
-        <article class="card"><h3>Diagnostic</h3><p>Comprendre la situation avant de recommander quoi que ce soit.</p></article>
-        <article class="card"><h3>Orientation</h3><p>Donner accès au bon niveau d'appui, sans surcharger ni sous-calibrer.</p></article>
-        <article class="card"><h3>Ressources</h3><p>Des contenus ciblés, lisibles et reliés aux situations concrètes du mandat.</p></article>
-        <article class="card"><h3>Relais humain</h3><p>Quand la situation le demande, l'outil doit orienter vers un appui humain qualifié.</p></article>
+      <div class="container">
+        <p class="section-kicker">Bloc 1</p>
+        <h2>Le vide que MARYAN veut combler</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p class="section-intro">Pendant longtemps, les élus pouvaient davantage s'appuyer sur :</p>
+            <ul class="feature-list">
+              {historicalSupports.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card soft-card">
+            <p>
+              Aujourd'hui, ce n'est plus toujours le cas. Beaucoup d'élus, en particulier ceux issus de la
+              société civile, découvrent des règles, des postures, des rapports de force et des outils qu'ils
+              n'ont jamais appris à manier.
+            </p>
+          </article>
+        </div>
+        <div class="card statement-card">
+          <p>Ils ne manquent pas seulement d'information.</p>
+        </div>
+        <article class="card content-card section-gap-top">
+          <p class="section-intro">Ils manquent souvent :</p>
+          <ul class="feature-list">
+            {missingSupports.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <p class="section-kicker">Bloc 2</p>
+        <h2>Ce qui a changé dans l'exercice du mandat local</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p>
+              Le mandat local ne consiste plus seulement à assister à des réunions et arbitrer quelques
+              dossiers.
+            </p>
+            <p class="card-subtitle">Il faut aussi :</p>
+            <ul class="feature-list">
+              {mandateDemands.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card">
+            <p>Le soir de l'élection, tout va très vite. Après, aussi.</p>
+            <p class="card-subtitle">C'est particulièrement vrai pour :</p>
+            <ul class="feature-list">
+              {especiallyTrueFor.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-kicker">Bloc 3</p>
+        <h2>Ce que MARYAN fait</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p>MARYAN est un dispositif d'appui pensé pour les réalités concrètes du mandat local.</p>
+            <p class="card-subtitle">Il permet d'abord de :</p>
+            <ul class="feature-list">
+              {maryanDoes.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card accent-card">
+            <p class="card-subtitle">Concrètement, MARYAN articule plusieurs briques :</p>
+            <ul class="feature-list">
+              {maryanBricks.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <p class="section-kicker">Bloc 4</p>
+        <h2>Ce que MARYAN ne fait pas</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p>MARYAN n'a pas vocation à remplacer :</p>
+            <ul class="feature-list">
+              {notReplacing.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card soft-card">
+            <p>Ce n'est pas non plus un simple chatbot.</p>
+            <p>
+              L'idée n'est pas de produire des réponses génériques à la chaîne, mais d'aider les élus à :
+            </p>
+            <ul class="feature-list">
+              {maryanHelps.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+        <div class="card statement-card">
+          <p>
+            Autrement dit, MARYAN ne remplace pas l'humain : il aide à mieux y accéder quand c'est
+            nécessaire, et à éviter d'y recourir trop tôt ou trop mal.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-kicker">Bloc 5</p>
+        <h2>Une logique d'appui progressif</h2>
+        <p class="section-intro">Tous les élus n'ont pas besoin de la même chose au même moment.</p>
+        <div class="grid three">
+          <article class="card content-card">
+            <h3>Premier niveau</h3>
+            <p>Certains ont surtout besoin :</p>
+            <ul class="feature-list">
+              {lightNeeds.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card">
+            <h3>Appui dans la durée</h3>
+            <p>D'autres ont besoin :</p>
+            <ul class="feature-list">
+              {steadyNeeds.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="card content-card">
+            <h3>Situation exigeante</h3>
+            <p>D'autres encore font face à :</p>
+            <ul class="feature-list">
+              {complexNeeds.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+        <div class="card statement-card">
+          <p>
+            MARYAN repose donc sur une idée simple : proposer le bon niveau d'appui, au bon moment,
+            selon la situation réelle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <p class="section-kicker">Bloc 6</p>
+        <h2>Pourquoi un outil spécialisé peut être utile</h2>
+        <div class="editorial-grid">
+          <article class="card content-card">
+            <p>
+              Une IA généraliste peut parfois aider à reformuler, résumer ou expliquer. Mais elle ne
+              suffit pas à tenir la complexité concrète du mandat local.
+            </p>
+          </article>
+          <article class="card content-card accent-card">
+            <p class="card-subtitle">MARYAN cherche à aller plus loin en s'appuyant sur :</p>
+            <ul class="feature-list">
+              {specializedTool.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        </div>
+        <article class="card content-card section-gap-top">
+          <p>Le projet n'est pas de techniciser davantage le mandat.</p>
+          <p class="card-subtitle">Le projet est plutôt de redonner :</p>
+          <ul class="feature-list">
+            {givesBack.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container narrow">
+        <div class="cta-panel">
+          <p class="section-kicker">Conclusion</p>
+          <h2>Un MVP avec une ambition déjà claire</h2>
+          <p>
+            MARYAN est encore au stade de MVP, mais son ambition est déjà claire : aider les élus
+            municipaux à ne plus exercer leur mandat seuls face à la complexité.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
+            <a class="btn btn-secondary" href="/offres">Voir les niveaux d'appui</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>
