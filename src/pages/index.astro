@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout>
+  <header class="site-header">
+    <div class="container row between center">
+      <div>
+        <p class="brand">MARYAN</p>
+        <p class="brand-sub">appui intelligent pour élus municipaux</p>
+      </div>
+      <nav class="nav">
+        <a href="/diagnostic">Diagnostic</a>
+        <a href="/ressources">Ressources</a>
+        <a href="/copilote">Copilote</a>
+        <a href="/offres">Appui</a>
+        <a href="/equipe">L'équipe</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">MVP sobre · mandat local · usage concret</p>
+          <h1>Vous avez gagné les municipales. Bravo. Et maintenant ?</h1>
+          <p class="lead">
+            Il faut comprendre la machine, trouver votre place, gérer des dossiers parfois très techniques,
+            parler aux habitants, éviter les faux pas sur les réseaux, répondre à l'administration — et avoir
+            l'air de savoir où vous allez alors que, parfois, pas complètement.
+          </p>
+          <p class="lead lead-secondary">
+            <strong>MARYAN est là pour ça :</strong> un copilote de mandat pour vous aider à comprendre,
+            agir et prendre la parole sans vous noyer dans la complexité.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
+            <a class="btn btn-secondary" href="/ressources">Explorer les ressources</a>
+          </div>
+        </div>
+        <aside class="card soft-card">
+          <p class="card-label">Promesse d'entrée</p>
+          <ul class="checklist">
+            <li>Diagnostic en 5 minutes</li>
+            <li>Profil de situation clair</li>
+            <li>Recommandations ciblées</li>
+            <li>Orientation vers le bon niveau d'appui</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="diagnostic">
+      <div class="container">
+        <p class="section-kicker">1. Diagnostic gratuit</p>
+        <h2>Un diagnostic d'entrée pour clarifier vos besoins réels.</h2>
+        <div class="grid three">
+          <article class="card">
+            <h3>Profil</h3>
+            <p>Mandat, expérience, conditions d'exercice, niveau d'isolement, type de délégation.</p>
+          </article>
+          <article class="card">
+            <h3>Points de vigilance</h3>
+            <p>Communication, compréhension institutionnelle, pression publique, organisation, technicité.</p>
+          </article>
+          <article class="card accent-card">
+            <h3>Orientation</h3>
+            <p>Ressources, outils, appui continu ou accompagnement ciblé selon la situation réelle.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="ressources">
+      <div class="container">
+        <p class="section-kicker">2. Bibliothèque</p>
+        <h2>Des ressources utiles, classées par situation.</h2>
+        <div class="grid two">
+          <article class="card">
+            <h3>FAQ métier</h3>
+            <p>Comprendre rapidement les bases du mandat local, les marges de manœuvre et les situations fréquentes.</p>
+          </article>
+          <article class="card">
+            <h3>Fiches et trames</h3>
+            <p>Documents courts, modèles, checklists et contenus d'aide à l'action pour gagner en clarté.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="copilote">
+      <div class="container">
+        <p class="section-kicker">3. Copilote conversationnel</p>
+        <h2>Un assistant spécialisé, sans posture techno inutile.</h2>
+        <div class="card">
+          <p>
+            Le copilote MARYAN n'est pas un chatbot générique. Il vient en appui, après le diagnostic,
+            pour aider à reformuler, préparer une prise de parole, comprendre une situation ou retrouver
+            la bonne ressource.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="offres">
+      <div class="container">
+        <p class="section-kicker">4. Niveaux d'appui</p>
+        <h2>Un accompagnement progressif, selon votre situation.</h2>
+        <div class="grid three">
+          <article class="card">
+            <h3>Se repérer</h3>
+            <p>Diagnostic, profil de situation et premières ressources pour clarifier ce qui compte vraiment.</p>
+          </article>
+          <article class="card">
+            <h3>S'outiller</h3>
+            <p>Bibliothèque, veille, copilote et appui continu pour gagner du temps et mieux agir.</p>
+          </article>
+          <article class="card">
+            <h3>Se faire épauler</h3>
+            <p>Quand la situation est sensible, technique ou exposée, un appui humain plus ciblé peut prendre le relais.</p>
+          </article>
+        </div>
+        <p class="section-linkout"><a class="btn btn-secondary" href="/offres">Voir les niveaux d'appui</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="brand">MARYAN</p>
+        <p class="brand-sub">MVP de cadrage · appui intelligent pour élus municipaux</p>
+      </div>
+      <div>
+        <p class="footer-kicker">Green IT & EcoIndex</p>
+        <div class="footer-note">
+          <strong>MARYAN est conçu dès le départ pour une sobriété numérique forte :</strong>
+          hébergement Scaleway, architecture Astro statique, pages légères, JavaScript limité
+          et objectif <strong>EcoIndex A</strong>.
+        </div>
+      </div>
+    </div>
+  </footer>
+</BaseLayout>

@@ -1,0 +1,560 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Diagnostic gratuit — MARYAN" description="En 5 minutes, identifiez votre profil de situation et les appuis les plus utiles pour la suite de votre mandat.">
+  <header class="site-header">
+    <div class="container header-inner">
+      <div>
+        <a href="/" class="brand">MARYAN</a>
+        <p class="brand-sub">appui intelligent pour élus municipaux</p>
+      </div>
+      <a href="/" class="back-link">← Accueil</a>
+    </div>
+  </header>
+
+  <div class="progress-wrap hidden" id="progressWrap">
+    <div class="container">
+      <div class="progress-inner">
+        <span class="progress-label">Progression</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <span class="progress-count" id="progressCount">0 / 15</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="diag-main">
+    <div id="introSection" class="intro">
+      <span class="kicker">Diagnostic gratuit · 5 minutes</span>
+      <h1>Votre situation,<br /><em>vos vrais besoins</em></h1>
+      <p class="intro-lead">Le soir de l'élection, tout va très vite. Après, aussi. Ce diagnostic vous aide à faire le point sur votre situation, vos difficultés prioritaires et la forme d'appui la plus utile pour la suite de votre mandat.</p>
+      <p class="intro-lead intro-meta">Durée estimée : 5 minutes</p>
+      <div class="chips">
+        <span class="chip"><span class="chip-dot"></span>15 questions</span>
+        <span class="chip"><span class="chip-dot"></span>Résultat immédiat</span>
+        <span class="chip"><span class="chip-dot"></span>Restitution claire</span>
+        <span class="chip"><span class="chip-dot"></span>100 % confidentiel</span>
+      </div>
+      <button class="btn-start" onclick="startDiag()">Commencer →</button>
+    </div>
+
+    <div id="diagSection" class="hidden">
+      <div id="bloc1">
+        <div class="bloc-header">
+          <p class="bloc-num">Bloc 1 sur 5 · Votre situation</p>
+          <h2 class="bloc-title">Votre mandat et votre contexte</h2>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">1. Quel est votre mandat ?</p>
+          <div class="options" id="q1">
+            <label class="opt" onclick="pick(this,'q1','maire',{institutional:1,exposure:2})"><input type="radio" name="q1" /><span class="dot"></span>Maire</label>
+            <label class="opt" onclick="pick(this,'q1','adjoint',{institutional:1,pressure:2,exposure:1})"><input type="radio" name="q1" /><span class="dot"></span>Adjoint·e au maire</label>
+            <label class="opt" onclick="pick(this,'q1','conseiller_maj',{isolation:1})"><input type="radio" name="q1" /><span class="dot"></span>Conseiller·e municipal·e (majorité)</label>
+            <label class="opt" onclick="pick(this,'q1','conseiller_opp',{isolation:2,pressure:1})"><input type="radio" name="q1" /><span class="dot"></span>Conseiller·e municipal·e (opposition)</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">2. Depuis combien de temps exercez-vous ?</p>
+          <div class="options" id="q2">
+            <label class="opt" onclick="pick(this,'q2','debut',{experience:0,isolation:2,institutional:2})"><input type="radio" name="q2" /><span class="dot"></span>Je débute (moins de 6 mois)</label>
+            <label class="opt" onclick="pick(this,'q2','moins2',{experience:1,isolation:1})"><input type="radio" name="q2" /><span class="dot"></span>Moins de 2 ans</label>
+            <label class="opt" onclick="pick(this,'q2','entre26',{experience:2})"><input type="radio" name="q2" /><span class="dot"></span>Entre 2 et 6 ans</label>
+            <label class="opt" onclick="pick(this,'q2','plus6',{experience:3})"><input type="radio" name="q2" /><span class="dot"></span>Plus de 6 ans</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">3. Quelle est la taille de votre commune ?</p>
+          <div class="options" id="q3">
+            <label class="opt" onclick="pick(this,'q3','tres_petite',{isolation:2})"><input type="radio" name="q3" /><span class="dot"></span>Moins de 1 000 habitants</label>
+            <label class="opt" onclick="pick(this,'q3','petite',{isolation:1})"><input type="radio" name="q3" /><span class="dot"></span>1 000 à 5 000 habitants</label>
+            <label class="opt" onclick="pick(this,'q3','moyenne',{})"><input type="radio" name="q3" /><span class="dot"></span>5 000 à 20 000 habitants</label>
+            <label class="opt" onclick="pick(this,'q3','grande',{pressure:1,exposure:1})"><input type="radio" name="q3" /><span class="dot"></span>Plus de 20 000 habitants</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">4. Avez-vous une activité professionnelle en parallèle ?</p>
+          <div class="options" id="q4">
+            <label class="opt" onclick="pick(this,'q4','oui_plein',{pressure:2,isolation:1})"><input type="radio" name="q4" /><span class="dot"></span>Oui, à temps plein</label>
+            <label class="opt" onclick="pick(this,'q4','oui_partiel',{pressure:1})"><input type="radio" name="q4" /><span class="dot"></span>Oui, à temps partiel</label>
+            <label class="opt" onclick="pick(this,'q4','non',{})"><input type="radio" name="q4" /><span class="dot"></span>Non</label>
+          </div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn-next" id="next1" onclick="goBloc(2)" disabled>Continuer →</button>
+        </div>
+      </div>
+
+      <div id="bloc2" class="hidden">
+        <div class="bloc-header">
+          <p class="bloc-num">Bloc 2 sur 5 · Votre environnement</p>
+          <h2 class="bloc-title">L'appui que vous anticipez</h2>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">5. Pensez-vous que vous serez suffisamment accompagné·e dans votre mandat ?</p>
+          <div class="options" id="q5">
+            <label class="opt" onclick="pick(this,'q5','oui',{})"><input type="radio" name="q5" /><span class="dot"></span>Oui, j'ai déjà de bons appuis autour de moi</label>
+            <label class="opt" onclick="pick(this,'q5','incertain',{isolation:1,human:1})"><input type="radio" name="q5" /><span class="dot"></span>Je ne sais pas encore, c'est incertain</label>
+            <label class="opt" onclick="pick(this,'q5','peuprobable',{isolation:2,human:1})"><input type="radio" name="q5" /><span class="dot"></span>Probablement peu — je m'attends à manquer de soutien</label>
+            <label class="opt" onclick="pick(this,'q5','non',{isolation:3,human:2})"><input type="radio" name="q5" /><span class="dot"></span>Non, je pense que je serai plutôt seul·e</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">6. Sur quels types de soutien pouvez-vous compter (ou espérez-vous pouvoir compter) ?</p>
+          <p class="q-hint">Plusieurs réponses possibles.</p>
+          <div class="options" id="q6">
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','parti',{})"><input type="checkbox" /><span class="dot"></span>Un parti ou un groupe politique structuré</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','cabinet',{})"><input type="checkbox" /><span class="dot"></span>Un cabinet ou des collaborateurs</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','collegues',{})"><input type="checkbox" /><span class="dot"></span>Des collègues élus de confiance</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','formations',{})"><input type="checkbox" /><span class="dot"></span>Des formations ou organismes d'accompagnement</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','aucun',{isolation:3,human:2})"><input type="checkbox" /><span class="dot"></span>Aucun de ces appuis — je pars plutôt seul·e</label>
+          </div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="goBloc(1)">← Retour</button>
+          <button class="btn-next" id="next2" onclick="goBloc(3)" disabled>Continuer →</button>
+        </div>
+      </div>
+
+      <div id="bloc3" class="hidden">
+        <div class="bloc-header">
+          <p class="bloc-num">Bloc 3 sur 5 · Vos difficultés</p>
+          <h2 class="bloc-title">Ce qui vous pèse le plus</h2>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">7. Parmi ces sujets, lesquels vous posent le plus de difficultés ?</p>
+          <p class="q-hint">Choisissez jusqu'à 3 réponses.</p>
+          <div class="options" id="q7">
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','instit',{institutional:3})"><input type="checkbox" /><span class="dot"></span>Comprendre le fonctionnement institutionnel</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','role',{posture:3})"><input type="checkbox" /><span class="dot"></span>Trouver ma place et tenir mon rôle</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','admin',{institutional:2,posture:1})"><input type="checkbox" /><span class="dot"></span>Travailler avec l'administration</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','parole',{comm_public:3})"><input type="checkbox" /><span class="dot"></span>Prendre la parole en public</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','expliquer',{comm_public:2})"><input type="checkbox" /><span class="dot"></span>Expliquer mon action à mes administrés</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','reseaux',{comm_digital:3})"><input type="checkbox" /><span class="dot"></span>Gérer les réseaux sociaux</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','critiques',{pressure:2,comm_public:1})"><input type="checkbox" /><span class="dot"></span>Répondre aux critiques ou tensions</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','prioriser',{method:3})"><input type="checkbox" /><span class="dot"></span>Prioriser et m'organiser</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">8. Quel est votre rapport à la communication publique ?</p>
+          <div class="options" id="q8">
+            <label class="opt" onclick="pick(this,'q8','alaise',{})"><input type="radio" name="q8" /><span class="dot"></span>Je suis à l'aise, j'ai ma méthode</label>
+            <label class="opt" onclick="pick(this,'q8','debrouille',{comm_public:1})"><input type="radio" name="q8" /><span class="dot"></span>Je me débrouille, mais sans vraie méthode</label>
+            <label class="opt" onclick="pick(this,'q8','hesitant',{comm_public:2,pressure:1})"><input type="radio" name="q8" /><span class="dot"></span>Je suis souvent hésitant·e</label>
+            <label class="opt" onclick="pick(this,'q8','difficulte',{comm_public:3,pressure:2})"><input type="radio" name="q8" /><span class="dot"></span>C'est une vraie difficulté pour moi</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">9. Quel est votre rapport aux réseaux sociaux ?</p>
+          <div class="options" id="q9">
+            <label class="opt" onclick="pick(this,'q9','facile',{})"><input type="radio" name="q9" /><span class="dot"></span>Je les utilise facilement et avec discernement</label>
+            <label class="opt" onclick="pick(this,'q9','prudence',{comm_digital:1})"><input type="radio" name="q9" /><span class="dot"></span>Je les utilise avec prudence</label>
+            <label class="opt" onclick="pick(this,'q9','evite',{comm_digital:2})"><input type="radio" name="q9" /><span class="dot"></span>Je les évite autant que possible</label>
+            <label class="opt" onclick="pick(this,'q9','expose',{comm_digital:3,pressure:2})"><input type="radio" name="q9" /><span class="dot"></span>Je m'y sens exposé·e ou en difficulté</label>
+          </div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="goBloc(2)">← Retour</button>
+          <button class="btn-next" id="next3" onclick="goBloc(4)" disabled>Continuer →</button>
+        </div>
+      </div>
+
+      <div id="bloc4" class="hidden">
+        <div class="bloc-header">
+          <p class="bloc-num">Bloc 4 sur 5 · Votre champ thématique</p>
+          <h2 class="bloc-title">Votre délégation ou sujet principal</h2>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">10. Quelle est votre délégation ou votre sujet principal ?</p>
+          <div class="options" id="q10">
+            <label class="opt" onclick="pick(this,'q10','urbanisme',{theme:'urbanisme'})"><input type="radio" name="q10" /><span class="dot"></span>Urbanisme / aménagement / logement</label>
+            <label class="opt" onclick="pick(this,'q10','culture',{theme:'culture'})"><input type="radio" name="q10" /><span class="dot"></span>Culture / mémoire / patrimoine</label>
+            <label class="opt" onclick="pick(this,'q10','education',{theme:'education'})"><input type="radio" name="q10" /><span class="dot"></span>Éducation / enfance / jeunesse</label>
+            <label class="opt" onclick="pick(this,'q10','solidarites',{theme:'solidarites'})"><input type="radio" name="q10" /><span class="dot"></span>Alimentation / solidarités / social</label>
+            <label class="opt" onclick="pick(this,'q10','securite',{theme:'securite'})"><input type="radio" name="q10" /><span class="dot"></span>Sécurité / tranquillité publique / prévention</label>
+            <label class="opt" onclick="pick(this,'q10','participation',{theme:'participation'})"><input type="radio" name="q10" /><span class="dot"></span>Vie associative / citoyenneté / participation</label>
+            <label class="opt" onclick="pick(this,'q10','ecologie',{theme:'ecologie'})"><input type="radio" name="q10" /><span class="dot"></span>Écologie / propreté / cadre de vie</label>
+            <label class="opt" onclick="pick(this,'q10','finances',{theme:'finances'})"><input type="radio" name="q10" /><span class="dot"></span>Finances / budget / administration générale</label>
+            <label class="opt" onclick="pick(this,'q10','rh',{theme:'rh'})"><input type="radio" name="q10" /><span class="dot"></span>RH / management / organisation interne</label>
+            <label class="opt" onclick="pick(this,'q10','communication',{theme:'communication'})"><input type="radio" name="q10" /><span class="dot"></span>Communication / démocratie locale / événementiel</label>
+            <label class="opt" onclick="pick(this,'q10','generaliste',{theme:'generaliste'})"><input type="radio" name="q10" /><span class="dot"></span>Pas de délégation spécifique / rôle généraliste</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">11. Comment décririez-vous votre sujet principal ?</p>
+          <p class="q-hint">Plusieurs réponses possibles.</p>
+          <div class="options" id="q11">
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','technique',{thematic_tech:2})"><input type="checkbox" /><span class="dot"></span>Très technique, demande de l'expertise</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','sensible',{thematic_conflict:2,pressure:1})"><input type="checkbox" /><span class="dot"></span>Politiquement sensible localement</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','expose',{thematic_expo:2,exposure:2})"><input type="checkbox" /><span class="dot"></span>Très exposé médiatiquement ou sur les réseaux</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','conflictuel',{thematic_conflict:3,pressure:2})"><input type="checkbox" /><span class="dot"></span>Conflictuel, source de tensions régulières</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','simple',{})"><input type="checkbox" /><span class="dot"></span>Plutôt simple à expliquer, peu conflictuel</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">12. Qu'est-ce que vous craignez le plus sur ce sujet dans les mois à venir ?</p>
+          <p class="q-hint">Plusieurs réponses possibles.</p>
+          <div class="options" id="q12">
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','polemique',{pressure:3,comm_public:1,thematic_conflict:1})"><input type="checkbox" /><span class="dot"></span>Devoir gérer une polémique ou une mise en cause publique</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','incompris',{comm_public:2,thematic_expo:1})"><input type="checkbox" /><span class="dot"></span>Ne pas être compris·e sur mes décisions</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','technique',{thematic_tech:2})"><input type="checkbox" /><span class="dot"></span>Me retrouver dépassé·e techniquement sur un dossier</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','reseaux',{comm_digital:2,pressure:1})"><input type="checkbox" /><span class="dot"></span>Faire un faux pas sur les réseaux sociaux</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','rien',{})"><input type="checkbox" /><span class="dot"></span>Je n'anticipe pas de difficulté particulière</label>
+          </div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="goBloc(3)">← Retour</button>
+          <button class="btn-next" id="next4" onclick="goBloc(5)" disabled>Continuer →</button>
+        </div>
+      </div>
+
+      <div id="bloc5" class="hidden">
+        <div class="bloc-header">
+          <p class="bloc-num">Bloc 5 sur 5 · Votre besoin</p>
+          <h2 class="bloc-title">Ce qui vous aiderait vraiment</h2>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">13. De quoi auriez-vous le plus besoin dans les 3 prochains mois ?</p>
+          <p class="q-hint">Plusieurs réponses possibles.</p>
+          <div class="options" id="q13">
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','reperes',{offer_level:1})"><input type="checkbox" /><span class="dot"></span>Des repères simples et des ressources fiables</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','veille',{offer_level:2})"><input type="checkbox" /><span class="dot"></span>Une veille régulière pour gagner du temps</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','copilote',{offer_level:2,comm_public:1})"><input type="checkbox" /><span class="dot"></span>Un outil pour préparer mes prises de parole</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','cadrage',{offer_level:3,human:2})"><input type="checkbox" /><span class="dot"></span>Un cadrage ponctuel avec quelqu'un de compétent</label>
+            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','expert',{offer_level:4,human:3})"><input type="checkbox" /><span class="dot"></span>Un accompagnement ciblé sur mon sujet</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">14. Comment préférez-vous travailler ?</p>
+          <div class="options" id="q14">
+            <label class="opt" onclick="pick(this,'q14','autonome',{offer_level:0})"><input type="radio" name="q14" /><span class="dot"></span>En totale autonomie, à mon rythme</label>
+            <label class="opt" onclick="pick(this,'q14','leger',{offer_level:1})"><input type="radio" name="q14" /><span class="dot"></span>Avec un appui léger et régulier</label>
+            <label class="opt" onclick="pick(this,'q14','encadre',{offer_level:2,human:1})"><input type="radio" name="q14" /><span class="dot"></span>Avec un cadre et un suivi plus structuré</label>
+            <label class="opt" onclick="pick(this,'q14','humain',{offer_level:3,human:2})"><input type="radio" name="q14" /><span class="dot"></span>Avec un vrai interlocuteur humain disponible</label>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p class="q-label">15. Si un outil vous faisait vraiment gagner du temps et de la clarté, seriez-vous prêt·e à y investir ?</p>
+          <div class="options" id="q15">
+            <label class="opt" onclick="pick(this,'q15','oui',{premium:3})"><input type="radio" name="q15" /><span class="dot"></span>Oui, si la valeur est là</label>
+            <label class="opt" onclick="pick(this,'q15','peutetre',{premium:2})"><input type="radio" name="q15" /><span class="dot"></span>Peut-être, j'ai besoin d'en voir l'utilité d'abord</label>
+            <label class="opt" onclick="pick(this,'q15','gratuit',{premium:1})"><input type="radio" name="q15" /><span class="dot"></span>Seulement si c'est gratuit ou très abordable</label>
+            <label class="opt" onclick="pick(this,'q15','non',{premium:0})"><input type="radio" name="q15" /><span class="dot"></span>Pas pour le moment</label>
+          </div>
+        </div>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="goBloc(4)">← Retour</button>
+          <button class="btn-next" id="next5" onclick="showEmail()" disabled>Voir mon résultat →</button>
+        </div>
+      </div>
+
+      <div id="emailSection" class="hidden">
+        <div class="email-wrap">
+          <span class="kicker">Dernière étape</span>
+          <h2>Recevez votre résultat détaillé</h2>
+          <p>Laissez votre email pour recevoir votre résultat complet et les premières ressources adaptées à votre situation. Vous pouvez aussi continuer sans laisser votre email.</p>
+          <div class="email-row">
+            <input type="email" id="emailInput" placeholder="votre@email.fr" />
+            <button class="btn-email" onclick="submitEmail()">Recevoir →</button>
+          </div>
+          <div><button class="btn-skip" onclick="showResult()">Continuer sans email</button></div>
+          <p class="rgpd">Données utilisées uniquement pour vous envoyer votre résultat. Aucun démarchage. Désinscription en 1 clic.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultSection">
+      <div class="result-top">
+        <div class="result-badge">Votre profil MARYAN</div>
+        <h2 id="rTitle"></h2>
+        <p class="result-summary" id="rSummary"></p>
+        <p class="result-bridge">Ce résultat ne vous réduit pas à une catégorie. Il aide simplement à repérer la forme d'appui la plus utile dans votre situation actuelle.</p>
+      </div>
+
+      <div class="result-grid">
+        <div class="r-card">
+          <p class="r-card-title">Vos 3 besoins prioritaires</p>
+          <ul id="rNeeds"></ul>
+        </div>
+        <div class="r-card">
+          <p class="r-card-title">Ce qui vous aiderait le plus maintenant</p>
+          <ul id="rHelps"></ul>
+        </div>
+      </div>
+
+      <div class="thematic-card">
+        <p class="r-card-title">Votre délégation — niveau d'exposition</p>
+        <div class="thematic-bars">
+          <div class="bar-row"><span class="bar-label">Technicité</span><div class="bar-track"><div class="bar-fill" id="barTech" style="width:0%"></div></div></div>
+          <div class="bar-row"><span class="bar-label">Conflictualité</span><div class="bar-track"><div class="bar-fill" id="barConflict" style="width:0%"></div></div></div>
+          <div class="bar-row"><span class="bar-label">Exposition publique</span><div class="bar-track"><div class="bar-fill" id="barExpo" style="width:0%"></div></div></div>
+        </div>
+      </div>
+
+      <div class="offer-intro">
+        <p>À ce stade, l'enjeu n'est pas d'ajouter des outils de plus, mais d'identifier le niveau d'appui le plus juste pour avancer avec plus de clarté.</p>
+      </div>
+
+      <div class="offer-card">
+        <p class="offer-tag">Le type d'appui le plus utile maintenant</p>
+        <h3 id="offerName"></h3>
+        <p id="offerDesc"></p>
+        <span class="offer-price" id="offerPrice"></span>
+        <ul class="offer-includes" id="offerIncludes"></ul>
+      </div>
+
+      <div class="why-card">
+        <p class="r-card-title">Pourquoi cette recommandation</p>
+        <p id="rWhy"></p>
+      </div>
+
+      <div class="result-cta">
+        <a class="cta-primary" href="/#offres">Découvrir l'appui proposé →</a>
+        <a class="cta-secondary" href="/#ressources">Explorer les ressources</a>
+      </div>
+
+      <p class="result-note">Ce diagnostic ne dit pas tout de votre mandat. Il vous aide à repérer la forme d'appui la plus utile pour votre situation actuelle. L'objectif n'est pas de vous ajouter des outils de plus, mais de vous donner un point d'appui plus juste pour la suite.</p>
+    </div>
+  </main>
+
+  <script is:inline>
+    const S = { institutional:0, posture:0, comm_public:0, comm_digital:0, pressure:0, method:0, isolation:0, human:0, experience:0, exposure:0, premium:0, offer_level:0, thematic_tech:0, thematic_conflict:0, thematic_expo:0, theme:'generaliste' };
+    const answered = {};
+    const multiState = {};
+    const REQUIRED = { 1:['q1','q2','q3','q4'], 2:['q5'], 3:['q8','q9'], 4:['q10'], 5:['q14','q15'] };
+    const TOTAL = 15;
+    let currentBloc = 0;
+
+    function startDiag() {
+      document.getElementById('introSection').classList.add('hidden');
+      document.getElementById('diagSection').classList.remove('hidden');
+      document.getElementById('progressWrap').classList.remove('hidden');
+      goBloc(1);
+    }
+    window.startDiag = startDiag;
+
+    function applyDeltas(deltas, sign) {
+      for (const [k,v] of Object.entries(deltas)) {
+        if (k === 'theme') { if (sign > 0) S.theme = v; else S.theme = 'generaliste'; }
+        else S[k] = Math.max(0, (S[k] || 0) + sign * v);
+      }
+    }
+
+    function pick(label, qKey, value, deltas) {
+      if (answered[qKey]) applyDeltas(answered[qKey].deltas, -1);
+      applyDeltas(deltas, 1);
+      answered[qKey] = { value, deltas };
+      document.getElementById(qKey).querySelectorAll('.opt').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      updateProgress(); checkBloc(currentBloc);
+    }
+    window.pick = pick;
+
+    function toggleOpt(label, qKey, value, deltas) {
+      if (!multiState[qKey]) multiState[qKey] = {};
+      const MAX = 3;
+      if (multiState[qKey][value]) {
+        applyDeltas(deltas, -1);
+        delete multiState[qKey][value];
+        label.classList.remove('selected');
+      } else {
+        if (Object.keys(multiState[qKey]).length >= MAX) return;
+        applyDeltas(deltas, 1);
+        multiState[qKey][value] = deltas;
+        label.classList.add('selected');
+      }
+      answered[qKey] = { value: Object.keys(multiState[qKey]), deltas: {} };
+      updateProgress(); checkBloc(currentBloc);
+    }
+
+    function handleMultiClick(event, label, qKey, value, deltas) {
+      event.preventDefault();
+      toggleOpt(label, qKey, value, deltas);
+    }
+    window.handleMultiClick = handleMultiClick;
+
+    function updateProgress() {
+      const count = Object.keys(answered).length;
+      document.getElementById('progressFill').style.width = Math.round(count / TOTAL * 100) + '%';
+      document.getElementById('progressCount').textContent = count + ' / ' + TOTAL;
+    }
+
+    function checkBloc(bloc) {
+      const req = REQUIRED[bloc] || [];
+      const ok = req.every(q => answered[q]);
+      const btn = document.getElementById('next' + bloc);
+      if (btn) btn.disabled = !ok;
+    }
+
+    function goBloc(num) {
+      for (let i = 1; i <= 5; i++) {
+        const e = document.getElementById('bloc' + i);
+        if (e) e.classList.add('hidden');
+      }
+      document.getElementById('emailSection').classList.add('hidden');
+      const t = document.getElementById('bloc' + num);
+      if (t) {
+        t.classList.remove('hidden');
+        currentBloc = num;
+        checkBloc(num);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+    window.goBloc = goBloc;
+
+    function showEmail() {
+      for (let i = 1; i <= 5; i++) {
+        const e = document.getElementById('bloc' + i);
+        if (e) e.classList.add('hidden');
+      }
+      document.getElementById('emailSection').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    window.showEmail = showEmail;
+
+    function submitEmail() { showResult(); }
+    window.submitEmail = submitEmail;
+
+    const THEMES = {
+      urbanisme: {tech:90,conflict:85,expo:80}, culture: {tech:45,conflict:40,expo:55}, education: {tech:55,conflict:45,expo:60}, solidarites: {tech:50,conflict:50,expo:55}, securite: {tech:65,conflict:80,expo:85}, participation: {tech:35,conflict:35,expo:50}, ecologie: {tech:50,conflict:55,expo:75}, finances: {tech:90,conflict:70,expo:70}, rh: {tech:65,conflict:75,expo:30}, communication: {tech:40,conflict:40,expo:80}, generaliste: {tech:40,conflict:40,expo:50}
+    };
+
+    const PROFILES = {
+      prise_de_fonction: {
+        title:'Élu en prise de fonction',
+        summary:'Vous entrez dans le mandat avec peu de repères stabilisés. Votre priorité n\'est pas de tout savoir, mais de trouver les bons points d\'appui pour avancer avec clarté et sans vous perdre dans les urgences.',
+        needs:['Comprendre le fonctionnement de votre collectivité','Clarifier votre rôle et vos marges de manœuvre','Trouver des repères fiables rapidement'],
+        helps:['Une bibliothèque de ressources pratiques','Des fiches méthodo par situation','Un espace pour poser vos questions sans jugement']
+      },
+      elu_isole: {
+        title:'Élu engagé mais peu entouré',
+        summary:'Vous avancez souvent seul·e, sans filet. Vous avez la volonté d\'agir mais vous manquez d\'interlocuteurs de confiance pour vous orienter, vous challenger ou simplement vous rassurer sur les bons sujets.',
+        needs:['Sortir de l\'isolement dans l\'exercice du mandat','Accéder à un appui continu sans lourdeur','Trouver des ressources fiables en autonomie'],
+        helps:['Un accès à des ressources ciblées','Une veille qui filtre l\'essentiel pour vous','La possibilité d\'un échange humain ponctuel']
+      },
+      elu_expose: {
+        title:'Élu exposé sur un sujet sensible',
+        summary:'Votre délégation ou votre position vous expose à une conflictualité ou une visibilité élevée. La question n\'est pas seulement de bien faire, mais de bien le dire — et de ne pas vous laisser déborder par les polémiques.',
+        needs:['Sécuriser votre communication sur des dossiers sensibles','Anticiper les points de tension et de maladresse','Disposer d\'un cadre stratégique sur votre sujet'],
+        helps:['Le copilote conversationnel spécialisé','Un cadrage distanciel avec un consultant','Des ressources sur la gestion de crise locale']
+      },
+      elu_comm: {
+        title:'Élu fragile en communication',
+        summary:'Vous avez des convictions et de l\'action, mais vous peinez à les rendre lisibles et à prendre la parole sans vous exposer inutilement. La communication n\'est pas votre point fort — et vous le savez.',
+        needs:['Trouver votre registre de parole publique','Éviter les maladresses et les faux pas numériques','Améliorer la lisibilité de votre action'],
+        helps:['Le copilote pour préparer vos prises de parole','Des trames et modèles de communication','Un parcours dédié à la parole publique d\'élu']
+      },
+      elu_technique: {
+        title:'Élu isolé dans un mandat technique',
+        summary:'Votre délégation est exigeante techniquement et vous vous retrouvez parfois seul·e face à des dossiers complexes, sans les ressources pour les traiter sereinement.',
+        needs:['Mieux comprendre les dimensions techniques de votre sujet','Savoir quand et comment s\'appuyer sur des experts','Traduire la complexité en langage accessible'],
+        helps:['Des ressources spécialisées sur votre délégation','Un accompagnement distanciel ciblé','La mise en relation avec un consultant thématique']
+      },
+      elu_surcharge: {
+        title:'Élu en surcharge, besoin de cadrage',
+        summary:'Vous gérez beaucoup, souvent dans l\'urgence, avec peu de recul. Le mandat vous prend énormément de temps et vous avez du mal à distinguer ce qui est vraiment prioritaire de ce qui est juste pressant.',
+        needs:['Reprendre le contrôle de votre agenda et de vos priorités','Distinguer l\'urgent de l\'important','Trouver des méthodes de travail adaptées au mandat'],
+        helps:['Des outils de priorisation et des trames de travail','Un cadrage humain pour remettre les choses à plat','Un appui léger et continu pour ne pas repartir seul·e']
+      }
+    };
+
+    const OFFERS = [
+      {name:'Diagnostic seul — gratuit',desc:'Vous avez accès à votre résultat, une fiche ressource offerte et la newsletter de base.',price:'Gratuit',includes:['Résultat de diagnostic détaillé','1 fiche ressource offerte','Newsletter mensuelle']},
+      {name:'Bibliothèque essentielle',desc:'Pour les élus qui ont besoin de repères, d\'outils et de ressources pratiques, sans accompagnement humain immédiat.',price:'19 € / mois · ou 180 € / an',includes:['Accès à toute la bibliothèque de ressources','Fiches méthodo et guides par situation','Trames et modèles pratiques','Newsletter mensuelle ciblée']},
+      {name:'MARYAN Veille & Appui',desc:'Pour les élus qui ont besoin d\'un soutien régulier, notamment sur la communication, les sujets chauds et les cas d\'usage.',price:'49 € / mois · ou 490 € / an',includes:['Bibliothèque complète','Veille thématique et notes de décryptage','Accès au copilote conversationnel MARYAN','Alertes sur sujets sensibles','Newsletter premium']},
+      {name:'Cadrage distanciel',desc:'Un appui ponctuel mais sérieux, avec un interlocuteur humain compétent pour cadrer votre situation.',price:'290 € HT · ou 790 € HT le pack 3 séances',includes:['Diagnostic approfondi en amont','1 rendez-vous visio de 45 min','Note de recommandations personnalisée','Orientation vers ressources et suite possible']},
+      {name:'Consultant ciblé',desc:'Pour les situations sensibles, les sujets très techniques ou les besoins de stratégie qui dépassent l\'outil digital.',price:'À partir de 950 € HT',includes:['Entretien de cadrage et matching expert','Accompagnement ad hoc sur votre sujet','Stratégie de communication ou posture','Préparation de prise de parole sensible']}
+    ];
+
+    function computeProfile() {
+      const n = (v,m) => Math.min(100, Math.round((v/m)*100));
+      const exp = n(S.experience,3);
+      const isol = n(S.isolation,8);
+      const comm = n(S.comm_public,8);
+      const digi = n(S.comm_digital,6);
+      const pres = n(S.pressure,10);
+      const meth = n(S.method,3);
+      if (exp <= 25 && isol <= 25) return 'prise_de_fonction';
+      if (isol >= 50) return 'elu_isole';
+      if (pres >= 50 && (S.thematic_conflict >= 3 || S.thematic_expo >= 3)) return 'elu_expose';
+      if (comm >= 50 || digi >= 55) return 'elu_comm';
+      if (S.thematic_tech >= 4) return 'elu_technique';
+      if (pres >= 50 && meth >= 2) return 'elu_surcharge';
+      return 'elu_isole';
+    }
+
+    function computeOfferLevel() {
+      let lv = S.offer_level || 0;
+      if (S.human >= 4) lv = Math.max(lv, 3);
+      if (S.thematic_conflict >= 4 || S.thematic_tech >= 4) lv = Math.max(lv, 2);
+      if (S.premium <= 1) lv = Math.min(lv, 1);
+      return Math.min(4, lv);
+    }
+
+    function computeWhy(profileKey, offerLevel, theme) {
+      const t = THEMES[theme] || THEMES.generaliste;
+      const parts = [];
+      if (t.tech >= 70) parts.push('une technicité élevée sur votre délégation');
+      if (t.conflict >= 70) parts.push('une conflictualité forte localement');
+      if (t.expo >= 70) parts.push('une exposition publique importante');
+      if (S.isolation >= 4) parts.push('un niveau d\'isolement élevé dans le mandat');
+      if (S.comm_public >= 4) parts.push('des difficultés réelles de parole publique');
+      if (S.pressure >= 5) parts.push('une pression de mandat soutenue');
+      if (!parts.length) return 'Votre profil indique un besoin d\'appui modéré et bien ciblé. Le niveau recommandé correspond au meilleur rapport valeur / investissement pour votre situation.';
+      const list = parts.length === 1 ? parts[0] : parts.slice(0,-1).join(', ') + ' et ' + parts[parts.length-1];
+      return 'Votre mandat combine ' + list + '. ' + (offerLevel >= 3 ? 'Un appui plus structuré semble justifié à ce stade.' : 'Un appui léger mais bien ciblé vous ferait déjà gagner beaucoup de temps et de clarté.');
+    }
+
+    function setBar(id, pct) {
+      const el = document.getElementById(id);
+      el.style.width = pct + '%';
+      el.className = 'bar-fill ' + (pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low');
+    }
+
+    function showResult() {
+      document.getElementById('diagSection').classList.add('hidden');
+      document.getElementById('progressWrap').classList.add('hidden');
+      const pk = computeProfile();
+      const ol = computeOfferLevel();
+      const theme = S.theme || 'generaliste';
+      const td = THEMES[theme] || THEMES.generaliste;
+      const p = PROFILES[pk];
+      const o = OFFERS[ol];
+      document.getElementById('rTitle').textContent = p.title;
+      document.getElementById('rSummary').textContent = p.summary;
+      document.getElementById('rNeeds').innerHTML = p.needs.map(n => '<li>'+n+'</li>').join('');
+      document.getElementById('rHelps').innerHTML = p.helps.map(h => '<li>'+h+'</li>').join('');
+      document.getElementById('offerName').textContent = o.name;
+      document.getElementById('offerDesc').textContent = o.desc;
+      document.getElementById('offerPrice').textContent = o.price;
+      document.getElementById('offerIncludes').innerHTML = o.includes.map(i => '<li>'+i+'</li>').join('');
+      document.getElementById('rWhy').textContent = computeWhy(pk, ol, theme);
+      const techPct = Math.min(100, td.tech + S.thematic_tech * 5);
+      const conflPct = Math.min(100, td.conflict + S.thematic_conflict * 5);
+      const expoPct = Math.min(100, td.expo + S.thematic_expo * 5 + S.exposure * 5);
+      setTimeout(() => { setBar('barTech',techPct); setBar('barConflict',conflPct); setBar('barExpo',expoPct); }, 120);
+      const rs = document.getElementById('resultSection');
+      rs.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    window.showResult = showResult;
+  </script>
+</BaseLayout>
