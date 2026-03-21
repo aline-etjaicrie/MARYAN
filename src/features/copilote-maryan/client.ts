@@ -243,6 +243,13 @@ function initCopilot(rootElement: HTMLElement) {
     const wrapper = document.createElement('div');
     wrapper.className = `msg ${role}`;
 
+    if (role === 'assistant') {
+      const sender = document.createElement('span');
+      sender.className = 'msg-sender';
+      sender.textContent = 'MARYAN';
+      wrapper.appendChild(sender);
+    }
+
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
     if (isHtml) {
@@ -329,7 +336,9 @@ async function getAssistantReply({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         profile,
-        messages: history
+        messages: history,
+        message, // Ajout du message actuel
+        mode: profile ? (profile as any).situation || (profile as any).key : null // On tente de récupérer le mode
       })
     });
 

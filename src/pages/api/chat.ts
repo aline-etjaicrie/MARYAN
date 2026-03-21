@@ -9,6 +9,7 @@ interface CopilotMessage {
 interface CopilotRequestBody {
   profile?: MaryanProfile | null;
   messages?: CopilotMessage[];
+  mode?: string;
 }
 
 // MISTRAL API ENDPOINTS
@@ -58,7 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
       : {
           model: DEFAULT_MODEL,
           messages: [
-            { role: 'system', content: buildSystemPrompt(profile) },
+            { role: 'system', content: buildSystemPrompt(profile, body?.mode) },
             ...messages
           ]
         };
