@@ -8,11 +8,11 @@ const sortedRessources = allRessources.sort((a, b) => b.data.publishDate - a.dat
 
 // Categories for filtering
 const categories = [
-  { id: 'all', label: 'Tout explorer', icon: '🔍' },
-  { id: 'tension', label: 'Tensions & Conflits', icon: '🔥' },
-  { id: 'parole', label: 'Prise de Parole', icon: '🎙️' },
-  { id: 'recul', label: 'Recul & Stratégie', icon: '🧭' },
-  { id: 'juridique', label: 'Juridique simple', icon: '⚖️' },
+  { id: 'all', label: 'Tout explorer' },
+  { id: 'tension', label: 'Tensions' },
+  { id: 'parole', label: 'Prise de parole' },
+  { id: 'recul', label: 'Recul & Stratégie' },
+  { id: 'juridique', label: 'Juridique' },
 ];
 ---
 
@@ -76,8 +76,7 @@ const categories = [
         {sortedRessources.length === 0 && (
           <div class="empty-state">
             <div class="empty-box card-v3">
-              <span class="icon">📚</span>
-              <p>MARYAN prépare ses prochaines fiches pratiques...</p>
+              <p>MARYAN prépare ses prochaines fiches pratiques pour enrichir la bibliothèque.</p>
             </div>
           </div>
         )}
@@ -127,8 +126,7 @@ const categories = [
     cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
   }
-  .pill-icon { font-size: 1.1rem; }
-  .pill-label { font-weight: 700; color: var(--deep); font-size: 0.9rem; }
+  .pill-label { font-weight: 700; color: var(--deep); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
   
   .pill:hover { transform: translateY(-3px); border-color: var(--accent-red); box-shadow: 0 10px 25px rgba(230, 57, 70, 0.08); }
   .pill.active { background: var(--deep); border-color: var(--deep); box-shadow: 0 10px 30px rgba(10, 25, 47, 0.2); }

@@ -34,22 +34,19 @@ import InternalHeader from '../components/InternalHeader.astro';
       <div class="container container-medium">
         <div class="eco-stats-grid">
           <div class="eco-stat card-v3">
-            <span class="stat-icon">☁️</span>
-            <h4>Si légère</h4>
+            <h4 class="stat-kicker">Poids de la page</h4>
             <div class="stat-val">0.1 <span>Mo</span></div>
-            <p>Poids total de la page. C'est 20 fois moins que la moyenne du web.</p>
+            <p>Un site ultra-léger pour économiser l'énergie de votre terminal.</p>
           </div>
           <div class="eco-stat card-v3">
-            <span class="stat-icon">🏗️</span>
-            <h4>Simple</h4>
-            <div class="stat-val">153 <span>éléments</span></div>
-            <p>Complexité du DOM. Une structure épurée pour économiser l'énergie de votre terminal.</p>
+            <h4 class="stat-kicker">Complexité</h4>
+            <div class="stat-val">153 <span>élém.</span></div>
+            <p>Une structure épurée (DOM) pour un rendu instantané et sobre.</p>
           </div>
           <div class="eco-stat card-v3">
-            <span class="stat-icon">📡</span>
-            <h4>Peu de requêtes</h4>
-            <div class="stat-val">7 <span>requêtes</span></div>
-            <p>Appels serveur. Moins de trafic, c'est moins de charge sur les infrastructures réseau.</p>
+            <h4 class="stat-kicker">Requêtes</h4>
+            <div class="stat-val">7 <span>appels</span></div>
+            <p>Moins de trafic réseau, c'est moins de charge sur les infrastructures.</p>
           </div>
         </div>
       </div>
@@ -140,7 +137,7 @@ import InternalHeader from '../components/InternalHeader.astro';
   .stat-icon { font-size: 2.5rem; display: block; margin-bottom: 1.5rem; }
   .stat-val { font-size: 2.5rem; font-weight: 900; color: var(--deep); margin-bottom: 0.5rem; }
   .stat-val span { font-size: 1rem; opacity: 0.5; font-weight: 700; }
-  .eco-stat h4 { margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; }
+  .eco-stat h4.stat-kicker { margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; font-weight: 800; color: var(--accent-red); }
   .eco-stat p { font-size: 0.95rem; line-height: 1.5; color: #54636C; }
 
   .impact-comparison { display: flex; justify-content: center; gap: 6rem; margin: 4rem 0; }
