@@ -141,15 +141,20 @@ span.emphasis, em {
 .site-footer {
   padding: 8rem 0; background: var(--deep); color: white; border-top: 1px solid rgba(255,255,255,0.05);
 }
-.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 4rem; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 4rem; align-items: start; }
 .brand { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
 .brand-sub { font-size: 0.9rem; opacity: 0.6; margin-bottom: 2rem; }
 .footer-credit { font-size: 0.85rem; opacity: 0.5; }
 .footer-credit a { color: white; text-decoration: underline; }
+
+.footer-nav { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.footer-nav a { color: white; text-decoration: none; font-size: 0.95rem; font-weight: 600; opacity: 0.7; transition: all 0.2s; }
+.footer-nav a:hover { opacity: 1; color: var(--neon); padding-left: 4px; }
+
 .footer-kicker { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); margin-bottom: 1.5rem; }
 .footer-note { font-size: 1rem; line-height: 1.6; opacity: 0.8; }
 
-@media (max-width: 768px) {
-  .footer-grid { grid-template-columns: 1fr; }
+@media (max-width: 992px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
   .section-v3 { padding: 5rem 0; }
 }
