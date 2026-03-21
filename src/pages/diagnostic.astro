@@ -28,7 +28,7 @@ import InternalHeader from '../components/InternalHeader.astro';
             <span class="lock-icon">🔒</span>
             <span>Réponses traitées de façon <strong>confidentielle</strong>.</span>
           </div>
-          <button class="btn-primary-v3 big" onclick="startDiag()" id="startBtn">
+          <button class="btn-primary-v3 big" id="startBtn">
             Démarrer le diagnostic →
           </button>
           <p class="diag-hint">Gratuit · Résultat immédiat, confidentiel et utile tout de suite</p>
@@ -358,6 +358,14 @@ import InternalHeader from '../components/InternalHeader.astro';
       }
     }
     window.startDiag = startDiag;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('startBtn');
+      if (btn) btn.addEventListener('click', startDiag);
+    });
+    // Fallback immédiat si DOM content loaded est déjà passé
+    const b = document.getElementById('startBtn');
+    if (b) b.onclick = startDiag;
 
     function applyDeltas(deltas, sign) {
       if (!deltas) return;
