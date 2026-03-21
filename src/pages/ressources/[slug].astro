@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import InternalHeader from '../components/InternalHeader.astro';
+import InternalHeader from '../../components/InternalHeader.astro';
 
 export async function getStaticPaths() {
   const allRessources = await getCollection('ressources');
