@@ -1,0 +1,195 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ExpertiseCard from './ExpertiseCard.astro';
+import { thematicExpertises, transversalExpertises } from '../data/expertises';
+---
+<BaseLayout
+  title="Le Hub d'Experts — MARYAN"
+  description="L'appui humain au cœur du dispositif. MARYAN vous oriente vers les experts les plus pertinents lorsque votre situation le nécessite."
+>
+  <!-- Background Ambiance -->
+  <div class="page-ambient-bg">
+    <img src="/hero-bg.png" alt="" />
+    <div class="ambient-overlay"></div>
+  </div>
+
+  <header class="site-header v3-header">
+    <div class="container header-inner">
+      <div class="brand-group">
+        <a href="/" class="brand">MARYAN</a>
+        <p class="brand-sub">hub d'experts</p>
+      </div>
+      <a href="/" class="back-link-v3">← Accueil</a>
+    </div>
+  </header>
+
+  <main class="hub-main-v3">
+    <!-- Hero Hub -->
+    <section class="hub-hero">
+      <div class="container narrow-v3 text-center">
+        <span class="label-v3">L'appui humain & stratégique</span>
+        <h1>Le <span class="text-terracotta">Hub d'Experts</span> MARYAN</h1>
+        <p class="intro-lead-v3">
+          Parce qu’un mandat local ne se résume ni à une seule question, ni à une seule réponse. 
+          Lorsqu'une situation devient critique ou mérite un regard extérieur, le Hub prend le relais.
+        </p>
+      </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="section-v3 no-top">
+      <div class="container-v3">
+        <div class="vision-box">
+          <div class="vision-content">
+            <p><strong>L'intelligence artificielle pour la méthode, l'intelligence humaine pour l'arbitrage.</strong></p>
+            <p>
+              Prendre ses fonctions, porter une délégation technique, gérer une séquence sensible... 
+              Notre réseau d'experts intervient en complémentarité de MARYAN pour proposer l’appui juste : 
+              autonome, ciblé, progressif et surtout utile.
+            </p>
+          </div>
+          <div class="vision-cta">
+            <a href="/diagnostic" class="btn-primary-v3">Démarrer par un diagnostic</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transversal Experts -->
+    <section class="section-v3 section-warm">
+      <div class="container-v3">
+        <div class="section-header-v3">
+          <p class="label-v3">Accompagnement de mandat</p>
+          <h2>Expertises transversales</h2>
+          <p class="intro-v3">Pour les enjeux communs à tous les élu·es : posture, organisation, communication de crise.</p>
+        </div>
+        <div class="expertise-grid-v3">
+          {transversalExpertises.map((expertise) => <ExpertiseCard expertise={expertise} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Thematic Experts -->
+    <section class="section-v3">
+      <div class="container-v3">
+        <div class="section-header-v3">
+          <p class="label-v3">Expertises métiers</p>
+          <h2>Expertises thématiques</h2>
+          <p class="intro-v3">Selon les dossiers du moment, certaines situations demandent un regard métier spécialisé.</p>
+        </div>
+        <div class="expertise-grid-v3">
+          {thematicExpertises.map((expertise) => <ExpertiseCard expertise={expertise} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section-v3 section-cta-v3">
+      <div class="container-v3 cta-box-v3">
+        <div class="section-header">
+          <p class="label-v3">Travailler ensemble</p>
+          <h2>Besoin d'un éclairage humain ?</h2>
+          <p class="intro-v3">MARYAN vous aide d'abord à qualifier votre besoin pour vous orienter vers l'expert le plus adapté.</p>
+        </div>
+        <div class="cta-actions-v3">
+          <a href="/diagnostic" class="btn-primary-v3 big">👉 Faire mon diagnostic</a>
+          <a href="/contact" class="btn-link-v3">Contacter directement l'équipe</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  /* ─── VARIABLES & DESIGN ─── */
+  .hub-main-v3 {
+    --lin: #FAF7F2;
+    --encre: #1E2A32;
+    --terracotta: #D97757;
+    --sauge: #8DA08E;
+    --border: rgba(30, 42, 50, 0.1);
+    --serif: "Iowan Old Style", serif;
+  }
+
+  .page-ambient-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+  }
+  .page-ambient-bg img {
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: 0.3; filter: blur(20px);
+  }
+  .ambient-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, #FCFAF6 90%);
+  }
+
+  .v3-header {
+    background: rgba(252, 250, 246, 0.8) !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hub-hero {
+    padding: 8rem 0 4rem;
+  }
+  .hub-hero h1 {
+    font-size: clamp(2.5rem, 8vw, 4.2rem);
+    margin: 1.5rem 0 2rem;
+  }
+  .text-terracotta { color: var(--terracotta); }
+  .text-center { text-align: center; }
+
+  .intro-lead-v3 {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 780px;
+    margin: 0 auto;
+    font-family: var(--serif);
+  }
+
+  .vision-box {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    background: white;
+    padding: 3.5rem;
+    border-radius: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.03);
+  }
+  @media (max-width: 768px) { .vision-box { flex-direction: column; text-align: center; padding: 2.5rem; } }
+
+  .vision-content p {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .vision-content strong { color: var(--encre); font-size: 1.4rem; font-family: var(--serif); display: block; margin-bottom: 1rem; }
+
+  .expertise-grid-v3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .section-warm { background: var(--lin); }
+  .no-top { padding-top: 0; }
+  .label-v3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--sauge); font-weight: 700; margin-bottom: 1rem; display: block; }
+
+  .section-header-v3 { text-align: center; max-width: 700px; margin: 0 auto 4rem; }
+  .intro-v3 { font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; }
+
+  .cta-box-v3 {
+    background: #FDFBFA;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 6rem 2rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.03);
+    text-align: center;
+  }
+</style>

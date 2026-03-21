@@ -7,75 +7,94 @@ interface Props {
 
 const { expertise } = Astro.props;
 ---
-<article class="card expertise-card">
+<article class="expertise-card-v3">
   <h3>{expertise.title}</h3>
 
-  <div class="expertise-block">
-    <p class="expertise-label">À quoi sert cette expertise ?</p>
+  <div class="expertise-block-v3">
+    <span class="block-label-v3">Mission</span>
     <p>{expertise.purpose}</p>
   </div>
 
-  <div class="expertise-block">
-    <p class="expertise-label">Quand la mobiliser ?</p>
+  <div class="expertise-block-v3">
+    <span class="block-label-v3">Situation type</span>
     <p>{expertise.when}</p>
   </div>
 
-  <div class="expertise-block">
-    <p class="expertise-label">Appui possible</p>
+  <div class="expertise-footer-v3">
+    <span class="support-label-v3">Intervention probable</span>
     <p>{expertise.support}</p>
   </div>
 </article>
 
 <style>
-  .expertise-card {
-    position: relative;
+  .expertise-card-v3 {
+    background: white;
+    border: 1px solid rgba(30, 42, 50, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
     height: 100%;
-    padding-top: 1.35rem;
-    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
   }
 
-  .expertise-card::before {
-    content: '';
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--blue), rgba(57, 255, 110, 0.65));
+  .expertise-card-v3:hover {
+    transform: translateY(-5px);
+    border-color: #D97757;
+    box-shadow: 0 15px 35px rgba(217, 119, 87, 0.05);
   }
 
-  .expertise-card h3 {
-    margin-bottom: 0;
-    line-height: 1.2;
+  .expertise-card-v3 h3 {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    color: #1E2A32;
+    margin: 0;
+    line-height: 1.25;
   }
 
-  .expertise-block {
+  .expertise-block-v3 {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    padding-top: 0.95rem;
-    border-top: 1px solid rgba(216, 211, 202, 0.85);
+    gap: 0.5rem;
   }
 
-  .expertise-block:first-of-type {
-    padding-top: 0.2rem;
-    border-top: none;
-  }
-
-  .expertise-label {
-    margin: 0;
-    font-size: 0.76rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+  .block-label-v3 {
+    font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--pink);
+    letter-spacing: 0.1em;
+    color: #8DA08E;
+    font-weight: 700;
   }
 
-  .expertise-block p:last-child {
-    margin: 0;
-    color: var(--muted);
+  .expertise-block-v3 p {
+    font-size: 0.95rem;
     line-height: 1.55;
+    color: #54636C;
+    margin: 0;
+  }
+
+  .expertise-footer-v3 {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+  }
+
+  .support-label-v3 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #D97757;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .expertise-footer-v3 p {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #1E2A32;
+    margin: 0;
   }
 </style>

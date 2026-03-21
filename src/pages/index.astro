@@ -177,6 +177,41 @@ import Layout from '../layouts/BaseLayout.astro';
   </section>
 
   <!-- ═══════════════════════════════════════
+       LE HUB D'EXPERTS (HYBRIDATION)
+  ═══════════════════════════════════════ -->
+  <section class="section-v3 section-alt-v3">
+    <div class="container-v3">
+      <div class="section-header">
+        <p class="label-v3">L'appui humain au cœur</p>
+        <h2 style="color:white">Le Hub d'Experts MARYAN</h2>
+        <p class="intro-v3" style="color:rgba(255,255,255,0.7)">
+          L'intelligence artificielle pour la méthode, l'intelligence humaine pour l'arbitrage. 
+          Lorsque la situation le justifie, MARYAN passe le relais à notre réseau d'experts.
+        </p>
+      </div>
+
+      <div class="hub-preview">
+        <div class="hub-item">
+          <span>Stratégie & Posture</span>
+        </div>
+        <div class="hub-item">
+          <span>Droit & Institutionnel</span>
+        </div>
+        <div class="hub-item">
+          <span>Communication de crise</span>
+        </div>
+        <div class="hub-item">
+          <span>Management & RH</span>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:3rem;">
+        <a href="/hub-experts" class="btn-link-v3" style="color:white; border-color:white;">Découvrir le réseau d'experts</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
        CTA FINAL (CONVERSION)
   ═══════════════════════════════════════ -->
   <section class="section-v3 section-cta-v3">
@@ -475,6 +510,23 @@ import Layout from '../layouts/BaseLayout.astro';
   @media (max-width: 768px) {
     .steps-path { flex-direction: column; align-items: center; }
     .step-arrow { transform: rotate(90deg); padding: 0; }
+  }
+
+  /* ─── HUB PREVIEW ─── */
+  .hub-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .hub-item {
+    background: rgba(255,255,255,0.05);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
   }
 
   /* ─── AUDIENCE (Pour qui) ─── */
