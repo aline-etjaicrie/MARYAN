@@ -15,6 +15,11 @@ import Layout from '../layouts/BaseLayout.astro';
     
     <div class="container hero-container text-center">
       <div class="hero-header">
+        <div class="top-nav-v3">
+          <a href="/a-propos">À propos</a>
+          <a href="/offres">Offres</a>
+          <a href="/diagnostic">Diagnostic</a>
+        </div>
         <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
         <div class="hero-brand-wrap">
           <span class="brand-logo-full">MARYAN</span>
@@ -175,6 +180,17 @@ import Layout from '../layouts/BaseLayout.astro';
   </section>
 
   <style>
+    /* ─── NAVIGATION ─── */
+    .top-nav-v3 {
+      display: flex; gap: clamp(1rem, 3vw, 2.5rem); justify-content: center; 
+      margin-bottom: 3.5rem; opacity: 0.6; padding-top: 1rem;
+    }
+    .top-nav-v3 a { 
+      color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; 
+      text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; 
+    }
+    .top-nav-v3 a:hover { color: var(--neon); opacity: 1; }
+
     /* ─── HERO V3 ─── */
     .hero-v3-signature {
       position: relative;
@@ -187,7 +203,8 @@ import Layout from '../layouts/BaseLayout.astro';
     .hero-glow-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
     .glow-red { position: absolute; top: 10%; left: 0%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(230, 57, 70, 0.08) 0%, transparent 70%); }
     .glow-green { position: absolute; bottom: 10%; right: 0%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(173, 255, 47, 0.05) 0%, transparent 70%); }
-    .hero-container { position: relative; z-index: 2; }
+    .hero-container { position: relative; z-index: 2; margin-top: -1rem; }
+    .hero-header { margin-bottom: 4rem; position: relative; z-index: 10; }
 
     .hero-badge { display: inline-block; padding: 0.65rem 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 99px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); margin-bottom: 2.5rem; }
 
