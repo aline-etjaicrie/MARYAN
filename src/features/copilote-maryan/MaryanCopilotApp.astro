@@ -32,6 +32,13 @@ import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
     .msg-bubble p:last-child { margin-bottom: 0 !important; }
     .msg-bubble ul { margin: 0.5rem 0 0.8rem !important; padding-left: 1.25rem !important; }
     .msg-bubble li { margin-bottom: 0.4rem !important; }
+
+    /* PWA Optimized Shell */
+    .site-footer { display: none !important; }
+    .copilot-shell { min-height: 100vh !important; display: flex; flex-direction: column; background: #fff; }
+    .chat-area { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 80px); }
+    .messages { flex: 1; overflow-y: auto; padding-bottom: 120px; }
+    .input-area { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--copilot-border); padding: 1rem; z-index: 100; }
   </style>
 
   <div
