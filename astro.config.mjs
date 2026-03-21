@@ -5,9 +5,9 @@ export default defineConfig({
   site: 'https://maryan.vercel.app',
   output: 'static',
   adapter: vercel({
-    edge: true,
     webAnalytics: {
       enabled: true,
-    }
+    },
+    edge: true
   })
 });
