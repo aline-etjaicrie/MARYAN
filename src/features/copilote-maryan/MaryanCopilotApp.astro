@@ -6,6 +6,34 @@ import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
   title="Copilote — MARYAN"
   description="Votre copilote de mandat. Posez vos questions, préparez vos prises de parole et gérez les situations sensibles."
 >
+  <style is:global>
+    /* CSS global pour les éléments injectés dynamiquement (JS) */
+    .msg { display: flex !important; flex-direction: column !important; margin-bottom: 2rem !important; }
+    .msg.user { align-self: flex-end !important; align-items: flex-end !important; max-width: 85% !important; }
+    .msg.assistant { align-self: flex-start !important; align-items: flex-start !important; max-width: 85% !important; }
+    
+    .msg-sender { 
+      font-size: 0.65rem !important; font-weight: 800 !important; color: var(--accent-red) !important;
+      text-transform: uppercase !important; letter-spacing: 0.08em !important; margin-bottom: 0.4rem !important;
+    }
+    
+    .msg-bubble { padding: 1.25rem 1.5rem !important; border-radius: 18px !important; font-size: 1rem !important; line-height: 1.65 !important; }
+    
+    .msg.user .msg-bubble { 
+      background: #f1f3f4 !important; color: #1E2A32 !important; border: 1px solid #e1e4e8 !important; border-bottom-right-radius: 4px !important; 
+    }
+    
+    .msg.assistant .msg-bubble { 
+      background: #FEFCF8 !important; color: #1E2A32 !important; border: 1px solid #E5E7EB !important; border-bottom-left-radius: 4px !important;
+      box-shadow: 0 4px 15px rgba(30,42,50,0.04) !important;
+    }
+    
+    .msg-bubble p { margin-bottom: 0.65rem !important; }
+    .msg-bubble p:last-child { margin-bottom: 0 !important; }
+    .msg-bubble ul { margin: 0.5rem 0 0.8rem !important; padding-left: 1.25rem !important; }
+    .msg-bubble li { margin-bottom: 0.4rem !important; }
+  </style>
+
   <div
     class="copilot-shell"
     data-maryan-copilot-root
