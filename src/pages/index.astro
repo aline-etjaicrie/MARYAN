@@ -1,5 +1,5 @@
 ---
-// src/pages/index.astro — Homepage MARYAN V2
+// src/pages/index.astro — Homepage MARYAN V2.1 (Refonte Visuelle)
 import Layout from '../layouts/BaseLayout.astro';
 ---
 
@@ -11,354 +11,525 @@ import Layout from '../layouts/BaseLayout.astro';
   <!-- ═══════════════════════════════════════
        HERO
   ═══════════════════════════════════════ -->
-  <section class="hero">
-    <div class="hero-ambiance"></div>
-    <img src="/logo.png" alt="MARYAN Logo" class="hero-logo" />
-    <p class="hero-surtitre">Mandat local · comprendre · décider · agir</p>
-    <h1>Votre copilote de mandat</h1>
-    <p class="hero-accroche">
-      Un agent conversationnel conçu pour les élu·es municipaux.<br>
-      Pour comprendre, décider et prendre la parole sans naviguer à l'aveugle.
-    </p>
-    <a href="/diagnostic" class="btn-primary">👉 Faire mon diagnostic</a>
+  <section class="hero-v3">
+    <div class="hero-bg-v3">
+      <img src="/hero-bg.png" alt="" />
+      <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+      <img src="/logo.png" alt="MARYAN" class="hero-logo-v3" />
+      <p class="hero-label">Intelligence calme & appui opérationnel</p>
+      <h1>Votre copilote de mandat</h1>
+      <p class="hero-lead">
+        Un agent conversationnel conçu spécifiquement pour les élu·es municipaux.
+        Pour clarifier vos situations, décider avec sérénité et agir avec justesse.
+      </p>
+      <div class="hero-cta">
+        <a href="/diagnostic" class="btn-primary-v3">👉 Faire mon diagnostic</a>
+        <p class="hero-cta-hint">Prend moins de 5 minutes</p>
+      </div>
+    </div>
   </section>
 
   <!-- ═══════════════════════════════════════
-       POURQUOI MARYAN
+       POURQUOI MARYAN (COMPARAISON)
   ═══════════════════════════════════════ -->
-  <section class="section">
-    <p class="section-label">Pourquoi MARYAN</p>
-    <h2>🔥 Pourquoi MARYAN plutôt qu'une IA généraliste ?</h2>
-    <p class="intro-block">Parce que tout n'est pas une question de prompt.</p>
+  <section class="section-v3">
+    <div class="container-v3">
+      <div class="section-header">
+        <p class="label-v3">La différence MARYAN</p>
+        <h2>Pourquoi MARYAN plutôt qu'une IA généraliste ?</h2>
+        <p class="intro-v3">Parce que tout n'est pas une question de prompt, mais de compréhension du mandat.</p>
+      </div>
 
-    <ul class="liste-points">
-      <li>part de votre situation réelle, pas d'une question isolée</li>
-      <li>vous pose les bonnes questions avant de répondre</li>
-      <li>structure vos sujets (et pas seulement vos phrases)</li>
-      <li>vous alerte sur les points de vigilance</li>
-      <li>vous oriente vers des ressources utiles</li>
-      <li>et, si nécessaire, vous dirige vers un appui humain adapté</li>
-    </ul>
-
-    <p class="double-cta-text">
-      👉 Pas une IA qui répond.<br>
-      👉 Un outil qui vous aide à exercer votre mandat.
-    </p>
-  </section>
-
-  <!-- ═══════════════════════════════════════
-       CE QUE VOUS TROUVEZ ICI
-  ═══════════════════════════════════════ -->
-  <section class="section section-alt">
-    <p class="section-label">Ce que vous trouvez ici</p>
-    <h2>🧠 Ce que vous trouvez ici</h2>
-
-    <ul class="liste-points">
-      <li>un diagnostic rapide pour mieux comprendre votre situation dans votre mandat</li>
-      <li>un agent conversationnel spécialisé pour les élu·es</li>
-      <li>des repères clairs pour vous aider à comprendre et décider</li>
-      <li>des outils pour préparer vos prises de parole</li>
-      <li>et, si besoin, un appui ciblé</li>
-    </ul>
-  </section>
-
-  <!-- ═══════════════════════════════════════
-       COMMENT ÇA FONCTIONNE
-  ═══════════════════════════════════════ -->
-  <section class="section">
-    <p class="section-label">Comment ça fonctionne</p>
-    <h2>⚙️ Comment ça fonctionne</h2>
-
-    <ol class="liste-etapes">
-      <li>
-        <span class="etape-num">1</span>
-        <div>
-          <strong>Faire le point</strong>
-          <p>Vous clarifiez votre situation, vos priorités et vos zones de vigilance.</p>
+      <div class="diff-grid">
+        <div class="diff-card">
+          <div class="diff-icon">🎯</div>
+          <h3>Situation réelle</h3>
+          <p>Il part de votre situation vécue, pas d'une question isolée ou générique.</p>
         </div>
-      </li>
-      <li>
-        <span class="etape-num">2</span>
-        <div>
-          <strong>Échanger avec MARYAN</strong>
-          <p>Vous utilisez un agent conçu pour les réalités du mandat local.</p>
+        <div class="diff-card">
+          <div class="diff-icon">❓</div>
+          <h3>Questionnement</h3>
+          <p>Il vous pose les bonnes questions de clarification avant de conclure ou de conseiller.</p>
         </div>
-      </li>
-      <li>
-        <span class="etape-num">3</span>
-        <div>
-          <strong>Être orienté·e</strong>
-          <p>Vous accédez aux bons contenus, aux bons outils et, si nécessaire, au bon niveau d'appui.</p>
+        <div class="diff-card">
+          <div class="diff-icon">📐</div>
+          <h3>Structuration</h3>
+          <p>Il aide à structurer vos sujets de fond et vos arbitrages, pas seulement vos phrases.</p>
         </div>
-      </li>
-    </ol>
+        <div class="diff-card">
+          <div class="diff-icon">⚠️</div>
+          <h3>Vigilances</h3>
+          <p>Il vous alerte sur les points de risques politiques, humains ou institutionnels.</p>
+        </div>
+      </div>
+
+      <div class="feature-footer">
+        <p>👉 Un outil qui vous aide à <strong>exercer votre mandat</strong>, pas seulement à écrire.</p>
+      </div>
+    </div>
   </section>
 
   <!-- ═══════════════════════════════════════
-       POUR QUI
+       CE QUE VOUS TROUVEZ ICI (CARTES)
   ═══════════════════════════════════════ -->
-  <section class="section section-alt">
-    <p class="section-label">Pour qui</p>
-    <h2>👥 Pour qui</h2>
+  <section class="section-v3 section-warm">
+    <div class="container-v3">
+      <div class="section-header">
+        <p class="label-v3">Contenu & Outils</p>
+        <h2>Ce que vous trouvez ici</h2>
+      </div>
 
-    <ul class="liste-points">
-      <li>élu·es municipaux</li>
-      <li>adjoint·es avec délégation</li>
-      <li>élu·es de petites et moyennes communes</li>
-      <li>élu·es avec peu de temps ou peu d'appui</li>
-    </ul>
+      <div class="cards-grid">
+        <div class="feature-card">
+          <span class="card-num">01</span>
+          <h3>Le Diagnostic</h3>
+          <p>Un parcours rapide pour situer vos besoins et vos priorités actuelles dans votre mandat.</p>
+        </div>
+        <div class="feature-card">
+          <span class="card-num">02</span>
+          <h3>Le Copilote</h3>
+          <p>L'agent conversationnel spécialisé pour échanger sur vos dossiers et vos situations.</p>
+        </div>
+        <div class="feature-card">
+          <span class="card-num">03</span>
+          <h3>Les Repères</h3>
+          <p>Des ressources claires pour clarifier les enjeux techniques et la posture d'élu.</p>
+        </div>
+        <div class="feature-card">
+          <span class="card-num">04</span>
+          <h3>L'Appui Humain</h3>
+          <p>Une orientation vers un accompagnement ciblé si la situation demande une expertise directe.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ═══════════════════════════════════════
-       CTA FINAL
+       COMMENT ÇA FONCTIONNE (PARCOURS)
   ═══════════════════════════════════════ -->
-  <section class="section section-cta">
-    <p class="section-label">Commencer</p>
-    <h2>🎯 Commencer par le bon diagnostic</h2>
-    <p class="intro-block">
-      Avant les outils, avant les ressources, commencez par faire le point.
-    </p>
-    <div class="cta-groupe">
-      <a href="/diagnostic" class="btn-primary">👉 Faire mon diagnostic</a>
-      <a href="/offres" class="btn-secondary">👉 Découvrir les offres MARYAN</a>
+  <section class="section-v3">
+    <div class="container-v3">
+      <div class="section-header">
+        <p class="label-v3">Méthode</p>
+        <h2>Comment ça fonctionne</h2>
+      </div>
+
+      <div class="steps-path">
+        <div class="step-item">
+          <div class="step-blob">1</div>
+          <div class="step-text">
+            <h3>Faire le point</h3>
+            <p>Clarifiez votre situation, vos priorités et vos zones de vigilance.</p>
+          </div>
+        </div>
+        <div class="step-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="step-item">
+          <div class="step-blob">2</div>
+          <div class="step-text">
+            <h3>Échanger</h3>
+            <p>Utilisez un agent conçu pour les réalités du mandat local.</p>
+          </div>
+        </div>
+        <div class="step-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="step-item">
+          <div class="step-blob">3</div>
+          <div class="step-text">
+            <h3>Agir</h3>
+            <p>Accédez aux outils, ressources et au bon niveau d'appui.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       POUR QUI (STATUTAIRE)
+  ═══════════════════════════════════════ -->
+  <section class="section-v3 section-alt-v3">
+    <div class="container-v3">
+      <div class="section-header">
+        <p class="label-v3">Public concerné</p>
+        <h2>Pour qui est conçu MARYAN</h2>
+      </div>
+
+      <div class="audience-grid">
+        <div class="audience-item">
+          <p>Élu·es municipaux de proximité</p>
+        </div>
+        <div class="audience-item">
+          <p>Adjoint·es avec délégation thématique</p>
+        </div>
+        <div class="audience-item">
+          <p>Élu·es de petites et moyennes communes</p>
+        </div>
+        <div class="audience-item">
+          <p>Nouveaux élu·es cherchant des repères</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       CTA FINAL (CONVERSION)
+  ═══════════════════════════════════════ -->
+  <section class="section-v3 section-cta-v3">
+    <div class="container-v3 cta-box-v3">
+      <div class="section-header">
+        <p class="label-v3">Commencer</p>
+        <h2>Prendre un temps pour soi</h2>
+        <p class="intro-v3">Avant les outils, avant les ressources, commencez par faire le point.</p>
+      </div>
+
+      <div class="cta-actions-v3">
+        <a href="/diagnostic" class="btn-primary-v3 big">👉 Faire mon diagnostic</a>
+        <a href="/offres" class="btn-link-v3">Découvrir les offres MARYAN</a>
+      </div>
     </div>
   </section>
 
 </Layout>
 
 <style>
-  :root {
-    --space-xs: 0.5rem;
-    --space-s: 1rem;
-    --space-m: 2rem;
-    --space-l: 3rem;
-    --space-xl: 5rem;
-    --color-muted: var(--muted, #54636c);
-    --color-text-soft: #475569;
-    --color-surface-alt: var(--surface-2, #fffdf8);
-    --color-border: var(--border, #d8d3ca);
-    --color-bg: var(--bg, #fcfaf6);
-    --color-text: var(--text, #1e2a32);
-    --color-accent: var(--blue, #7fa7c9);
+  /* ─── VARIABLES LOCALES ─── */
+  .hero-v3, .section-v3 {
+    --lin: #FAF7F2;
+    --encre: #1E2A32;
+    --terracotta: #D97757;
+    --sauge: #8DA08E;
+    --cuivre: #B87333;
+    --border: rgba(30, 42, 50, 0.1);
   }
 
-  /* ─── HERO ─── */
-  .hero {
-    position: relative;
-    padding: var(--space-xl) var(--space-m);
-    max-width: 720px;
+  /* ─── LAYOUT ─── */
+  .container-v3 {
+    max-width: 1000px;
     margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ─── HERO V3 ─── */
+  .hero-v3 {
+    position: relative;
+    padding: 8rem 0 7rem;
+    overflow: hidden;
+    color: var(--encre);
+    background: #FCFAF6;
     text-align: center;
   }
 
-  .hero-ambiance {
+  .hero-bg-v3 {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 250%;
-    height: 150%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-    background: 
-      radial-gradient(ellipse at 40% 30%, rgba(217, 59, 59, 0.14) 0%, transparent 45%),
-      radial-gradient(ellipse at 65% 65%, rgba(57, 255, 110, 0.16) 0%, transparent 50%),
-      radial-gradient(ellipse at 35% 70%, rgba(127, 167, 201, 0.22) 0%, transparent 50%);
-    filter: blur(80px);
-    pointer-events: none;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
   }
 
-  .hero-logo {
-    max-width: 260px;
-    width: 100%;
+  .hero-bg-v3 img {
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: 0.6;
+    filter: blur(10px);
+    transform: scale(1.05);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, #FCFAF6 80%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .hero-logo-v3 {
+    max-width: 420px; /* Augmenté significativement */
+    width: 90%;
     height: auto;
-    margin: 0 auto 1.5rem auto;
+    margin: 0 auto 3rem;
     display: block;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.05));
   }
 
-  .hero-surtitre {
+  .hero-label {
     font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    color: var(--color-muted);
-    margin-bottom: var(--space-s);
     text-transform: uppercase;
-  }
-
-  .hero h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.15em;
+    color: var(--terracotta);
     font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: var(--space-m);
+    margin-bottom: 1.5rem;
   }
 
-  .hero-accroche {
-    font-size: 1.15rem;
+  .hero-v3 h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    margin-bottom: 2rem;
+    color: var(--encre);
+  }
+
+  .hero-lead {
+    font-size: 1.35rem;
     line-height: 1.6;
-    color: var(--color-text-soft);
-    margin-bottom: var(--space-l);
+    color: var(--encre);
+    opacity: 0.9;
+    max-width: 680px;
+    margin: 0 auto 3.5rem;
+    font-family: var(--serif);
   }
 
-  /* ─── SECTIONS ─── */
-  .section {
-    position: relative;
-    padding: var(--space-xl) var(--space-m);
-    max-width: 720px;
+  .btn-primary-v3 {
+    display: inline-block;
+    padding: 1.1rem 2.2rem;
+    background: var(--encre);
+    color: white;
+    border-radius: 99px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(30, 42, 50, 0.2);
+  }
+
+  .btn-primary-v3:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30, 42, 50, 0.3);
+    background: #2A3A45;
+  }
+
+  .hero-cta-hint {
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ─── SECTIONS V3 ─── */
+  .section-v3 {
+    padding: 7rem 0;
+    background: #FCFAF6;
+  }
+
+  .section-warm {
+    background: var(--lin);
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 4rem;
+  }
+
+  .label-v3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--sauge);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .intro-v3 {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── DIFF GRID (Pourquoi) ─── */
+  .diff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .diff-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.25s ease;
+  }
+
+  .diff-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--terracotta);
+    box-shadow: 0 10px 30px rgba(217, 119, 87, 0.05);
+  }
+
+  .diff-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .diff-card h3 {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+    color: var(--encre);
+  }
+
+  .diff-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .feature-footer {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    max-width: 600px;
     margin: 0 auto;
   }
 
-  .section-alt {
-    background-color: var(--color-surface-alt);
-    max-width: 100%;
-    padding-left: calc(50% - 360px);
-    padding-right: calc(50% - 360px);
+  /* ─── CARDS GRID (Ce que vous trouvez) ─── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
   }
 
-  @media (max-width: 760px) {
-    .section-alt {
-      padding-left: var(--space-m);
-      padding-right: var(--space-m);
-    }
+  @media (max-width: 600px) {
+    .cards-grid { grid-template-columns: 1fr; }
   }
 
-  .section-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin-bottom: var(--space-xs);
-    font-weight: 700;
-  }
-
-  .section h2 {
-    font-size: clamp(1.3rem, 3vw, 1.75rem);
-    font-weight: 700;
-    margin-bottom: var(--space-m);
-    line-height: 1.25;
-  }
-
-  .intro-block {
-    font-size: 1.05rem;
-    font-weight: 500;
-    margin-bottom: var(--space-m);
-    color: var(--color-text-soft);
-  }
-
-  /* ─── LISTES ─── */
-  .liste-points {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-m) 0;
+  .feature-card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
-  }
-
-  .liste-points li {
-    padding-left: 1.25rem;
-    position: relative;
-    line-height: 1.55;
-    font-size: 1.05rem;
-  }
-
-  .liste-points li::before {
-    content: "·";
-    position: absolute;
-    left: 0;
-    color: var(--pink, #d93b3b);
-    font-weight: 800;
-    font-size: 1.3em;
-    top: -0.05em;
-  }
-
-  /* ─── ÉTAPES ─── */
-  .liste-etapes {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-  }
-
-  .liste-etapes li {
-    display: flex;
-    gap: var(--space-m);
-    align-items: flex-start;
-  }
-
-  .etape-num {
-    flex-shrink: 0;
-    width: 2.2rem;
-    height: 2.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--color-accent);
-    border-radius: 50%;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--color-accent);
-    margin-top: 0.1rem;
+    padding: 3rem;
     background: white;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
   }
 
-  .liste-etapes strong {
-    display: block;
+  .card-num {
+    font-family: var(--serif);
+    font-size: 4rem;
+    position: absolute;
+    top: -0.5rem; right: 1rem;
+    opacity: 0.04;
+    font-weight: 800;
+  }
+
+  .feature-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 1.25rem;
+    color: var(--encre);
+  }
+
+  .feature-card p {
     font-size: 1.05rem;
-    margin-bottom: 0.35rem;
-    font-weight: 700;
+    color: var(--text-muted);
+    line-height: 1.6;
   }
 
-  .liste-etapes p {
-    font-size: 0.95rem;
-    color: var(--color-text-soft);
-    margin: 0;
-    line-height: 1.55;
-  }
-
-  /* ─── CTA ─── */
-  .double-cta-text {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.8;
-    margin-top: var(--space-m);
-  }
-
-  .section-cta {
-    text-align: center;
-  }
-
-  .cta-groupe {
+  /* ─── STEPS (Fonctionnement) ─── */
+  .steps-path {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-s);
+    align-items: flex-start;
     justify-content: center;
-    margin-top: var(--space-l);
+    gap: 3rem;
+    margin: 2rem auto;
   }
 
-  .btn-primary,
-  .btn-secondary {
-    display: inline-block;
-    padding: 0.85rem 1.6rem;
-    border-radius: 999px;
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+  .step-item {
+    flex: 1;
+    text-align: center;
+    max-width: 250px;
   }
 
-  .btn-primary {
-    background-color: var(--color-accent);
+  .step-blob {
+    width: 60px; height: 60px;
+    margin: 0 auto 1.5rem;
+    background: var(--encre);
+    color: white;
+    border-radius: 20px;
+    display: flex;
+    align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    transform: rotate(-3deg);
+  }
+
+  .step-text h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .step-arrow {
+    padding-top: 1.5rem;
+    color: var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .steps-path { flex-direction: column; align-items: center; }
+    .step-arrow { transform: rotate(90deg); padding: 0; }
+  }
+
+  /* ─── AUDIENCE (Pour qui) ─── */
+  .section-alt-v3 {
+    background: #1E2A32;
     color: white;
   }
 
-  .btn-secondary {
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
+  .section-alt-v3 .label-v3 { color: var(--accent-terracotta); }
+  .section-alt-v3 .intro-v3 { color: rgba(255,255,255,0.7); }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
   }
 
-  .btn-primary:hover,
-  .btn-secondary:hover {
-    opacity: 0.85;
-    transform: translateY(-1px);
+  .audience-item {
+    background: rgba(255,255,255,0.05);
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
   }
+
+  .audience-item p {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  /* ─── CTA BOX ─── */
+  .cta-box-v3 {
+    background: #FDFBFA;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 6rem 2rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.03);
+    text-align: center;
+  }
+
+  .cta-actions-v3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .btn-link-v3 {
+    color: var(--encre);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-size: 1rem;
+  }
+
+  /* ─── TYPO ─── */
+  strong { color: var(--encre); }
 </style>
