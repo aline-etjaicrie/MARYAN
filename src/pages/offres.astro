@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import InternalHeader from '../components/InternalHeader.astro';
 
 const repereWho = [
   'de clarifier leur situation',
@@ -23,12 +24,11 @@ const repereFit = [
 ];
 
 const outillerWhat = [
-  'une bibliothèque de ressources plus complète',
+  'une bibliothèque de ressources complète',
   'des fiches par situation',
   'des trames utiles',
-  'une veille ciblée',
   'un copilote conversationnel spécialisé',
-  'un appui continu pour mieux formuler, préparer et prioriser'
+  'un appui continu pour mieux formuler et prioriser'
 ];
 
 const outillerFit = [
@@ -43,8 +43,7 @@ const epaulerExamples = [
   'forte exposition publique',
   'technicité élevée',
   'difficulté de communication',
-  "besoin de cadrage ou d'arbitrage",
-  'besoin de recul humain'
+  "besoin de cadrage ou d'arbitrage"
 ];
 
 const epaulerWhat = [
@@ -61,237 +60,221 @@ const epaulerFit = [
   "vous avez besoin d'une aide très ajustée"
 ];
 
-const diagnosticRole = [
-  "la forme d'appui la plus cohérente",
-  "le bon niveau d'entrée",
-  'et les ressources qui vous seront réellement utiles'
-];
-
-const evolvingNeeds = [
-  "d'un point de départ très simple aujourd'hui",
-  "puis d'un appui plus continu plus tard",
-  "ou, à l'inverse, d'un cadrage humain rapide dès maintenant"
-];
-
 const progression = [
-  {
-    step: '1. Clarifier',
-    text: 'Faire le point, comprendre, repérer ses besoins.'
-  },
-  {
-    step: '2. Outiller',
-    text: 'Accéder à des ressources, des méthodes, une veille, un copilote.'
-  },
-  {
-    step: '3. Renforcer',
-    text: "Monter en appui quand la situation le demande."
-  },
-  {
-    step: '4. Relayer',
-    text: "Orienter vers un vrai accompagnement humain quand c'est nécessaire."
-  }
-];
-
-const doubleRisk = [
-  'soit proposer trop peu',
-  'soit proposer trop lourd, trop tôt'
-];
-
-const maryanLine = [
-  'ne pas surcharger',
-  'ne pas sous-calibrer',
-  "proposer quelque chose d'utile, de proportionné, de lisible"
+  { step: '01. Clarifier', title: 'Faire le point', text: 'Comprendre, repérer ses besoins réels.' },
+  { step: '02. Outiller', title: 'Accéder aux outils', text: 'Ressources, méthodes, copilote IA.' },
+  { step: '03. Renforcer', title: 'Cadrage stratégique', text: 'Monter en appui quand la situation l\'exige.' },
+  { step: '04. Relayer', title: 'Experts Humains', text: 'Orienter vers un accompagnement humain.' }
 ];
 ---
 <BaseLayout
-  title="Le bon niveau d'appui, au bon moment — MARYAN"
-  description="MARYAN oriente chaque élu vers la forme d'appui la plus utile selon sa situation réelle."
+  title="Les Niveaux d'Appui — MARYAN"
+  description="Trouvez le bon niveau d'accompagnement selon votre situation : se repérer, s'outiller ou se faire épauler."
 >
-  <header class="site-header">
-    <div class="container header-inner">
-      <div>
-        <a href="/" class="brand">MARYAN</a>
-        <p class="brand-sub">appui intelligent pour élus municipaux</p>
-      </div>
-      <a href="/" class="back-link">← Accueil</a>
-    </div>
-  </header>
+  
+  <InternalHeader 
+    label="Système d'appui"
+    title="Le bon niveau d'appui, au <em class='emphasis'>bon moment</em>"
+    subtitle="MARYAN n'a pas vocation à vendre la même chose à tout le monde. Nous vous orientons vers la forme d'appui la plus utile selon votre situation réelle."
+  />
 
-  <main class="page-main">
-    <section class="page-hero">
-      <div class="container narrow">
-        <p class="section-kicker">Niveaux d'appui</p>
-        <h1>Le bon niveau d'appui, au bon moment</h1>
-        <p class="lead">
-          MARYAN n'a pas vocation à vendre la même chose à tout le monde. L'idée est d'orienter chaque élu
-          vers la forme d'appui la plus utile selon sa situation réelle : se repérer, s'outiller, ou se faire
-          épauler sur un sujet plus sensible ou plus complexe.
-        </p>
-        <div class="actions">
-          <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
-          <a class="btn btn-secondary" href="/methode">Voir comment fonctionne MARYAN</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
+  <main class="offres-main-v3">
+    
+    <!-- 1. SE REPERER -->
+    <section class="section-v3 bg-grid-reveal">
+      <div class="bg-grid-v3"></div>
       <div class="container">
-        <p class="section-kicker">Bloc 1</p>
-        <h2>Se repérer</h2>
-        <div class="grid two">
-          <article class="card content-card">
-            <p class="card-subtitle">Pour qui ?</p>
-            <p>Pour les élus qui ont surtout besoin :</p>
-            <ul class="feature-list">
-              {repereWho.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-          <article class="card content-card soft-card">
-            <p class="card-subtitle">Ce que cela apporte</p>
-            <ul class="feature-list">
-              {repereWhat.map((item) => <li>{item}</li>)}
-            </ul>
-            <p class="card-subtitle section-gap-top">Ce niveau d'appui convient bien si...</p>
-            <ul class="feature-list">
-              {repereFit.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
+        <div class="offer-level-box">
+           <div class="level-indicator">
+              <span class="level-num">Niveau 01</span>
+              <div class="level-line"></div>
+           </div>
+           <div class="level-content">
+              <h2>Se <span class="emphasis">repérer</span></h2>
+              <p class="level-intro">L'entrée dans le mandat nécessite d'abord de la clarté.</p>
+              
+              <div class="level-grid">
+                <div class="card-v3">
+                   <span class="card-kicker">Pour qui ?</span>
+                   <ul class="v3-list">
+                      {repereWho.map(item => <li>{item}</li>)}
+                   </ul>
+                </div>
+                <div class="card-v3 highlight-neon">
+                   <span class="card-kicker text-red">Apport MARYAN</span>
+                   <ul class="v3-list-check">
+                      {repereWhat.map(item => <li>{item}</li>)}
+                   </ul>
+                   <div class="card-footer-v3">
+                      <p><strong>Idéal si :</strong> {repereFit.slice(0,2).join(', ')}...</p>
+                   </div>
+                </div>
+              </div>
+           </div>
         </div>
       </div>
     </section>
 
-    <section class="section alt">
+    <!-- 2. S'OUTILLER -->
+    <section class="section-v3 bg-deep text-white">
+      <div class="glow-v3 glow-red"></div>
       <div class="container">
-        <p class="section-kicker">Bloc 2</p>
-        <h2>S'outiller</h2>
-        <div class="grid two">
-          <article class="card content-card">
-            <p class="card-subtitle">Pour qui ?</p>
-            <p>
-              Pour les élus qui ont besoin d'un appui plus régulier, mais sans basculer immédiatement vers
-              un accompagnement humain lourd.
-            </p>
-          </article>
-          <article class="card content-card accent-card">
-            <p class="card-subtitle">Ce que cela peut inclure</p>
-            <ul class="feature-list">
-              {outillerWhat.map((item) => <li>{item}</li>)}
-            </ul>
-            <p class="card-subtitle section-gap-top">Ce niveau d'appui convient bien si...</p>
-            <ul class="feature-list">
-              {outillerFit.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
+        <div class="offer-level-box reverse">
+           <div class="level-indicator">
+              <span class="level-num text-neon">Niveau 02</span>
+              <div class="level-line bg-neon"></div>
+           </div>
+           <div class="level-content">
+              <h2 class="text-white">S'<span class="emphasis text-neon">outiller</span></h2>
+              <p class="level-intro opacity-70">Un appui régulier et digital pour sécuriser le quotidien.</p>
+              
+              <div class="level-grid">
+                <div class="card-v3 dark-card">
+                   <span class="card-kicker opacity-50">L'appui Copilote</span>
+                   <p>Pour les élu·es qui ont besoin d'une méthode stable sans basculer vers l'humain lourd.</p>
+                   <ul class="v3-list-white">
+                      {outillerWhat.map(item => <li>{item}</li>)}
+                   </ul>
+                </div>
+                <div class="card-v3 dark-card border-red">
+                   <span class="card-kicker text-red">Pertinence</span>
+                   <p>Ce niveau convient si vous voulez gagner du temps et structurer vos dossiers stratégiques.</p>
+                   <ul class="v3-list-check-neon">
+                      {outillerFit.map(item => <li>{item}</li>)}
+                   </ul>
+                </div>
+              </div>
+           </div>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <!-- 3. SE FAIRE EPAULER -->
+    <section class="section-v3">
       <div class="container">
-        <p class="section-kicker">Bloc 3</p>
-        <h2>Se faire épauler</h2>
-        <div class="editorial-grid">
-          <article class="card content-card">
-            <p class="card-subtitle">Pour qui ?</p>
-            <p>Pour les situations où un outil seul ne suffit pas.</p>
-            <p class="card-subtitle">Par exemple :</p>
-            <ul class="feature-list">
-              {epaulerExamples.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-          <article class="card content-card soft-card">
-            <p class="card-subtitle">Ce que cela peut inclure</p>
-            <ul class="feature-list">
-              {epaulerWhat.map((item) => <li>{item}</li>)}
-            </ul>
-            <p class="card-subtitle section-gap-top">Ce niveau d'appui convient bien si...</p>
-            <ul class="feature-list">
-              {epaulerFit.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
+        <div class="offer-level-box">
+           <div class="level-indicator">
+              <span class="level-num">Niveau 03</span>
+              <div class="level-line"></div>
+           </div>
+           <div class="level-content">
+              <h2>Se faire <span class="emphasis">épauler</span></h2>
+              <p class="level-intro">L'expertise humaine prend le relais sur les sujets complexes.</p>
+              
+              <div class="level-grid">
+                <div class="card-v3">
+                   <span class="card-kicker">Situations cibles</span>
+                   <p>Quand l'outil seul ne suffit plus à l'arbitrage :</p>
+                   <ul class="v3-list-dots">
+                      {epaulerExamples.map(item => <li>{item}</li>)}
+                   </ul>
+                </div>
+                <div class="card-v3 border-neon">
+                   <span class="card-kicker text-sauge">Le Hub d'Experts</span>
+                   <p>Accès direct à notre réseau de consultants stratégiques, juridiques et RH.</p>
+                   <ul class="v3-list-check">
+                      {epaulerWhat.map(item => <li>{item}</li>)}
+                   </ul>
+                </div>
+              </div>
+           </div>
         </div>
       </div>
     </section>
 
-    <section class="section alt">
+    <!-- PROGRESSION LOGIC -->
+    <section class="section-v3 bg-ivory">
       <div class="container">
-        <p class="section-kicker">Bloc 4</p>
-        <h2>Le diagnostic sert à orienter, pas à enfermer</h2>
-        <div class="editorial-grid">
-          <article class="card content-card">
-            <p>Le diagnostic MARYAN n'a pas pour but de vous classer une fois pour toutes. Il sert à repérer :</p>
-            <ul class="feature-list">
-              {diagnosticRole.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-          <article class="card content-card">
-            <p>Vous pouvez avoir besoin :</p>
-            <ul class="feature-list">
-              {evolvingNeeds.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
+        <div class="section-header text-center">
+           <span class="label-v3">Philosophie</span>
+           <h2>Une logique <span class="emphasis">progressive</span></h2>
+           <p class="intro-v3">Pas plus d'outils que nécessaire, mais pas moins d'appui qu'il n'en faut.</p>
         </div>
-        <div class="card statement-card">
-          <p>
-            L'important n'est pas d'entrer dans une case. L'important est de trouver ce qui vous aidera
-            vraiment à avancer.
-          </p>
+
+        <div class="progression-steps-v3">
+           {progression.map(item => (
+             <div class="p-step-v3">
+                <span class="p-step-num">{item.step}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+             </div>
+           ))}
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <p class="section-kicker">Bloc 5</p>
-        <h2>Une logique progressive</h2>
-        <p class="section-intro">MARYAN repose sur une progression simple :</p>
-        <div class="step-grid">
-          {progression.map((item) => (
-            <article class="card step-card">
-              <p class="step-index">{item.step}</p>
-              <p>{item.text}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="section alt">
-      <div class="container">
-        <p class="section-kicker">Bloc 6</p>
-        <h2>Pourquoi cette logique compte</h2>
-        <div class="editorial-grid">
-          <article class="card content-card">
-            <p>Le risque, avec les dispositifs classiques, est souvent double :</p>
-            <ul class="feature-list">
-              {doubleRisk.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-          <article class="card content-card accent-card">
-            <p class="card-subtitle">MARYAN essaie de tenir une autre ligne :</p>
-            <ul class="feature-list">
-              {maryanLine.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-        </div>
-        <div class="card statement-card">
-          <p>Autrement dit : pas plus d'outils que nécessaire, mais pas moins d'appui qu'il n'en faut.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container narrow">
-        <div class="cta-panel">
-          <p class="section-kicker">Conclusion</p>
-          <h2>Vous ne savez pas encore de quoi vous avez vraiment besoin ?</h2>
-          <p>Commencez par le diagnostic.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="/diagnostic">Je fais le point sur mon mandat</a>
-            <a class="btn btn-secondary" href="/methode">Voir comment fonctionne MARYAN</a>
+    <!-- FINAL CTA -->
+    <section class="section-v3 bg-deep text-white text-center">
+       <div class="container-narrow">
+          <h2>Vous ne savez pas par où <span class="emphasis text-neon">commencer</span> ?</h2>
+          <p class="intro-v3 text-white opacity-70">Laissez-vous guider par le diagnostic. C'est lui qui définit votre trajectoire d'appui.</p>
+          <div class="offres-cta-v3">
+             <a href="/diagnostic" class="btn-primary-v3 big">Faire mon diagnostic</a>
+             <a href="/contact" class="btn-secondary-v3 dark">Contacter l'équipe</a>
           </div>
-        </div>
-      </div>
+       </div>
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .offres-main-v3 {
+    --border-soft: rgba(30, 42, 50, 0.08);
+  }
+
+  .bg-grid-reveal { position: relative; overflow: hidden; }
+
+  /* ─── LEVEL LAYOUT ─── */
+  .offer-level-box { display: flex; gap: 4rem; }
+  .offer-level-box.reverse { flex-direction: row-reverse; }
+  
+  .level-indicator { flex-shrink: 0; width: 100px; padding-top: 1rem; }
+  .level-num { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 1.5rem; }
+  .level-line { width: 40px; height: 3px; background: var(--deep); }
+  .level-line.bg-neon { background: var(--neon); }
+
+  .level-content { flex: 1; }
+  .level-content h2 { font-size: 3.5rem; margin-bottom: 1rem; }
+  .level-intro { font-size: 1.4rem; font-family: var(--font-accent); font-style: italic; margin-bottom: 3.5rem; color: #54636C; }
+  .level-intro.opacity-70 { opacity: 0.7; color: white; }
+
+  .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+  /* ─── CARDS SPECIFIC ─── */
+  .card-kicker { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; display: block; }
+  .v3-list, .v3-list-white, .v3-list-check, .v3-list-check-neon, .v3-list-dots { 
+    list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.95rem;
+  }
+  .v3-list li, .v3-list-white li { position: relative; padding-left: 1.5rem; }
+  .v3-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent-red); font-weight: 900; }
+  .v3-list-white li::before { content: '→'; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
+  
+  .v3-list-check li, .v3-list-check-neon li { position: relative; padding-left: 2rem; }
+  .v3-list-check li::before { content: '✓'; position: absolute; left: 0; color: #8DA08E; font-weight: 900; }
+  .v3-list-check-neon li::before { content: '✓'; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
+
+  .dark-card { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: white; }
+  .card-footer-v3 { margin-top: auto; padding-top: 1.5rem; border-top: 1px dashed var(--border-soft); font-size: 0.85rem; color: #54636C; }
+  
+  .border-red { border-color: var(--accent-red); border-width: 1.5px; }
+  .border-neon { border-color: var(--neon); border-width: 1.5px; }
+
+  /* ─── PROGRESSION ─── */
+  .progression-steps-v3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 4rem; }
+  .p-step-v3 { position: relative; }
+  .p-step-num { font-size: 0.8rem; font-weight: 800; color: var(--accent-red); display: block; margin-bottom: 1rem; }
+  .p-step-v3 h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+  .p-step-v3 p { font-size: 0.9rem; opacity: 0.7; line-height: 1.5; }
+
+  .offres-cta-v3 { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-top: 4rem; }
+  .btn-secondary-v3.dark { background: transparent; color: white; border-color: rgba(255,255,255,0.2); }
+  .btn-secondary-v3.dark:hover { border-color: white; background: rgba(255,255,255,0.05); }
+
+  @media (max-width: 900px) {
+    .offer-level-box, .offer-level-box.reverse { flex-direction: column; gap: 2rem; }
+    .level-indicator { width: 100%; display: flex; align-items: center; gap: 1.5rem; }
+    .level-line { flex: 1; height: 2px; }
+    .level-grid { grid-template-columns: 1fr; }
+    .progression-steps-v3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
