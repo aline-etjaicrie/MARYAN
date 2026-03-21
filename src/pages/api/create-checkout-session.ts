@@ -1,11 +1,18 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
-});
-
 export const POST: APIRoute = async ({ request }) => {
+  const stripeKey = import.meta.env.STRIPE_SECRET_KEY;
+  
+  if (!stripeKey) {
+    console.error('STRIPE_SECRET_KEY is missing');
+    return new Response(JSON.stringify({ error: 'Stripe is not configured' }), { status: 503 });
+  }
+
+  const stripe = new Stripe(stripeKey, {
+    apiVersion: '2023-10-16',
+  });
+
   try {
     const data = await request.json();
     const { priceId, customerEmail } = data;
