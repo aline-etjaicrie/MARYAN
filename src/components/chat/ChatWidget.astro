@@ -408,10 +408,11 @@
         if (data.reply) {
           this.addMessage(data.reply, 'bot');
         } else {
-          this.addMessage("Désolé, j'ai rencontré une difficulté matérielle. Reprenons.", 'bot');
+          const errorMsg = data.error || "Une difficulté technique est survenue.";
+          this.addMessage(`⚠️ **Erreur** : ${errorMsg}`, 'bot');
         }
 
-        if (this.msgCount >= this.limit) {
+        if (this.msgCount >= this.limit && !this.profile) {
           this.addMessage(`Vous avez atteint la limite de ${this.limit} messages en mode gratuit. <br><br> <a href="/diagnostic" style="color:var(--chat-terracotta);font-weight:700;">Faites votre diagnostic</a> pour débloquer plus de messages et personnaliser l'agent.`, 'bot');
         }
 
