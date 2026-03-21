@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InternalHeader from '../components/InternalHeader.astro';
+
+export async function getStaticPaths() {
+  const allRessources = await getCollection('ressources');
+  return allRessources.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${entry.data.title} — MARYAN`} description={entry.data.description}>
+  
+  <InternalHeader 
+    label={entry.data.kicker}
+    title={entry.data.title}
+    subtitle={entry.data.description}
+  />
+
+  <main class="res-article-page bg-light">
+    <div class="container container-medium">
+      <div class="article-shell card-v3">
+        {entry.data.isPremium && (
+          <div class="premium-alert">
+             <span class="icon">✨</span>
+             <p>Cette fiche fait partie de l’appui <strong>Copilote MARYAN Plus</strong>.</p>
+             <a href="/offres" class="btn-link">En savoir plus</a>
+          </div>
+        )}
+
+        <div class="article-content prose">
+          <Content />
+        </div>
+
+        <hr class="v3-separator" />
+        
+        <div class="article-footer">
+          <p>Cette fiche vous a aidé·e ? <br /><span>Partagez une situation concrète avec le Copilote pour aller plus loin.</span></p>
+          <div class="article-actions">
+            <a href="/copilote" class="btn-primary-v3">Poser une question à MARYAN</a>
+            <a href="/ressources" class="btn-secondary-v3">Retour à la bibliothèque</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</BaseLayout>
+
+<style is:global>
+  /* Pros Styling for Markdown Content */
+  .prose h3 { font-size: 1.75rem; margin-top: 2.5rem; margin-bottom: 1.25rem; color: var(--deep); }
+  .prose p { font-size: 1.15rem; line-height: 1.7; color: #54636C; margin-bottom: 1.5rem; }
+  .prose ul, .prose ol { margin: 1.5rem 0; padding-left: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .prose li { font-size: 1.15rem; line-height: 1.6; color: #54636C; }
+  .prose blockquote { border-left: 4px solid var(--accent-red); padding: 1.5rem; background: var(--bg); margin: 2rem 0; font-style: italic; font-size: 1.2rem; color: var(--deep); border-radius: 0 16px 16px 0; }
+  .prose strong { color: var(--deep); font-weight: 700; }
+</style>
+
+<style>
+  .res-article-page { padding-bottom: 8rem; }
+  .article-shell { padding: 5rem; background: white; margin-top: -4rem; position: relative; z-index: 10; border-radius: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
+  
+  .premium-alert { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; background: #fffcf0; border: 1px solid #fee1ab; border-radius: 12px; margin-bottom: 3rem; }
+  .premium-alert .icon { font-size: 1.25rem; }
+  .premium-alert p { font-size: 0.95rem; margin: 0; color: #856404; }
+  .premium-alert a { font-weight: 800; color: #856404; font-size: 0.95rem; }
+
+  .v3-separator { border: none; border-top: 1px solid var(--border); margin: 4rem 0; }
+  
+  .article-footer { text-align: center; }
+  .article-footer p { font-size: 1rem; color: #54636C; margin-bottom: 2.5rem; }
+  .article-footer p span { font-weight: 700; color: var(--deep); display: block; margin-top: 0.5rem; }
+  
+  .article-actions { display: flex; gap: 1.5rem; justify-content: center; }
+
+  @media (max-width: 768px) {
+    .article-shell { padding: 2.5rem; }
+    .article-actions { flex-direction: column; }
+  }
+</style>
