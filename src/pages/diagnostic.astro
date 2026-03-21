@@ -17,28 +17,24 @@ import InternalHeader from '../components/InternalHeader.astro';
     <!-- INTRO -->
     <div id="introSection" class="container container-narrow">
       <div class="diag-intro-card card-v3">
-        <div class="diag-intro-split">
-          <div class="diag-intro-left">
-            <p class="diag-kicker">Ce que vous trouverez ici</p>
-            <ul class="diag-intro-list">
-              <li><span class="icon-v3">🧭</span> <strong>Y voir plus clair</strong> : comprendre ce qui se joue vraiment dans votre mandat.</li>
-              <li><span class="icon-v3">⚠️</span> <strong>Éviter les faux pas</strong> : repérer les points de vigilance avant qu'ils ne coûtent cher.</li>
-              <li><span class="icon-v3">🤝</span> <strong>Trouver le bon appui</strong> : outils, ressources ou accompagnement selon votre situation.</li>
-            </ul>
+        <p class="diag-kicker">Ce que vous trouverez ici</p>
+        <ul class="diag-intro-list">
+          <li><span class="icon-v3">🧭</span> <span><strong>Y voir plus clair</strong> — comprendre ce qui se joue vraiment dans votre mandat.</span></li>
+          <li><span class="icon-v3">⚠️</span> <span><strong>Éviter les faux pas</strong> — repérer les points de vigilance avant qu'ils ne coûtent cher.</span></li>
+          <li><span class="icon-v3">🤝</span> <span><strong>Trouver le bon appui</strong> — outils, ressources ou accompagnement selon votre situation.</span></li>
+        </ul>
+        <div class="diag-intro-cta">
+          <div class="confidence-badge">
+            <span class="lock-icon">🔒</span>
+            <span>Réponses traitées de façon <strong>confidentielle</strong>.</span>
           </div>
-          <div class="diag-intro-right">
-            <div class="confidence-badge">
-              <span class="lock-icon">🔒</span>
-              <span>Réponses traitées de façon <strong>confidentielle</strong>.</span>
-            </div>
-            <button class="btn-primary-v3 big" onclick="startDiag()" id="startBtn">
-              Démarrer le diagnostic →
-            </button>
-            <p class="diag-hint">Gratuit · Résultat immédiat, confidentiel et utile tout de suite</p>
-            <p class="diag-consent-v3">
-              Vos réponses peuvent être utilisées de manière confidentielle et anonymisée pour améliorer MARYAN et ses parcours d'accompagnement.
-            </p>
-          </div>
+          <button class="btn-primary-v3 big" onclick="startDiag()" id="startBtn">
+            Démarrer le diagnostic →
+          </button>
+          <p class="diag-hint">Gratuit · Résultat immédiat, confidentiel et utile tout de suite</p>
+          <p class="diag-consent-v3">
+            Vos réponses peuvent être utilisées de manière confidentielle et anonymisée pour améliorer MARYAN et ses parcours d'accompagnement.
+          </p>
         </div>
       </div>
     </div>
@@ -257,18 +253,16 @@ import InternalHeader from '../components/InternalHeader.astro';
     .diag-main-v3 { padding-bottom: 10rem; }
     .container-narrow { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
 
-    .diag-intro-card { padding: 4rem; margin-bottom: 4rem; }
-    .diag-intro-split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: start; }
+    .diag-intro-card { padding: 3.5rem; margin-bottom: 4rem; }
     .diag-kicker { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; color: var(--accent-red); letter-spacing: 0.08em; margin-bottom: 2rem; }
-    .diag-intro-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem; }
-    .diag-intro-list li { font-size: 1.1rem; color: var(--ink); font-weight: 500; display: flex; align-items: flex-start; gap: 1rem; line-height: 1.5; }
-    .icon-v3 { font-size: 1.2rem; flex-shrink: 0; }
+    .diag-intro-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 3rem; }
+    .diag-intro-list li { font-size: 1.1rem; color: var(--ink); display: flex; align-items: flex-start; gap: 1rem; line-height: 1.5; }
+    .icon-v3 { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
 
-    .diag-intro-right { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; }
-    .confidence-badge { background: #F2F8F2; border-radius: 14px; padding: 1.25rem 1.5rem; font-size: 0.875rem; color: #3D5A40; line-height: 1.6; display: flex; align-items: flex-start; gap: 0.75rem; }
-    .lock-icon { flex-shrink: 0; }
+    .diag-intro-cta { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .confidence-badge { background: #F2F8F2; border-radius: 14px; padding: 1rem 1.5rem; font-size: 0.875rem; color: #3D5A40; line-height: 1.6; display: flex; align-items: center; gap: 0.75rem; }
     .diag-hint { font-size: 0.85rem; opacity: 0.5; font-weight: 600; }
-    .diag-consent-v3 { font-size: 0.8rem; line-height: 1.45; max-width: 280px; text-align: center; opacity: 0.55; }
+    .diag-consent-v3 { font-size: 0.8rem; line-height: 1.45; max-width: 380px; text-align: center; opacity: 0.55; }
 
     .progress-wrap-v3 { padding: 1.25rem 0; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
     .progress-inner-v3 { display: flex; align-items: center; gap: 1.5rem; max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }

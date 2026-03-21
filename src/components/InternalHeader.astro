@@ -11,8 +11,8 @@ const { title, subtitle, label, isDark = false } = Astro.props;
 <header class={`internal-header-v3 ${isDark ? 'dark' : ''}`}>
   <div class="container-narrow text-center">
     {label && <span class="label-v3">{label}</span>}
-    <h1>{title}</h1>
-    {subtitle && <p class="intro-v3">{subtitle}</p>}
+    <h1 set:html={title} />
+    {subtitle && <p class="intro-v3" set:html={subtitle} />}
   </div>
 </header>
 
