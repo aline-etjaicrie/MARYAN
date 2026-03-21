@@ -271,7 +271,18 @@ import InternalHeader from '../components/InternalHeader.astro';
     .progress-count-v3 { font-size: 0.8rem; font-weight: 700; color: #54636C; white-space: nowrap; }
 
     .questions-v3 { margin-top: 4rem; }
-    .bloc-v3 { padding: 4rem 0; }
+    .bloc-v3 { 
+      display: none; 
+      padding: 4rem 0; 
+      opacity: 0; 
+      transform: translateY(15px); 
+      transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .bloc-v3.active { 
+      display: block; 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
     .bloc-header-v3 { text-align: center; margin-bottom: 4rem; }
     .bloc-num-v3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-red); margin-bottom: 1rem; display: block; }
     .bloc-header-v3 h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
@@ -395,13 +406,24 @@ import InternalHeader from '../components/InternalHeader.astro';
     }
 
     function goBloc(num) {
+      // Hide everything first
       for (let i = 1; i <= 5; i++) {
         const e = document.getElementById('bloc' + i);
-        if (e) e.classList.add('hidden');
+        if (e) {
+          e.classList.remove('active');
+          e.classList.add('hidden');
+        }
       }
-      document.getElementById('emailSection').classList.add('hidden');
-      const t = document.getElementById('bloc' + num);
-      if (t) t.classList.remove('hidden');
+      const emailSection = document.getElementById('emailSection');
+      if (emailSection) emailSection.classList.add('hidden');
+
+      // Show current block with a tiny delay for transitions
+      const target = document.getElementById('bloc' + num);
+      if (target) {
+        target.classList.remove('hidden');
+        setTimeout(() => target.classList.add('active'), 50);
+      }
+      
       currentBloc = num;
       checkBloc(num);
     }
