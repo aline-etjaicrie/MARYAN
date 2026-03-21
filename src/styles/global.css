@@ -121,7 +121,12 @@ span.emphasis, em {
   border-radius: 99px; text-decoration: none; font-weight: 700;
   border: 1.5px solid var(--border); transition: all 0.2s;
 }
-.btn-secondary-v3:hover { border-color: var(--deep); background: var(--bg); }
+.btn-secondary-v3:hover { 
+  border-color: var(--accent-red); 
+  background: var(--accent-red); 
+  color: white; 
+  transform: translateY(-2px);
+}
 
 /* Card Premium V3 */
 .card-v3 {
