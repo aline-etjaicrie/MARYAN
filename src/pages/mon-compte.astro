@@ -49,6 +49,13 @@ const modules = [
 
   <main class="dashboard-v3">
     <div class="container">
+      
+      <!-- SUCCESS BANNER (Hidden by default) -->
+      <div id="successBanner" class="card-v3 highlight-neon" style="display:none; margin-bottom: 3rem; border-color: var(--neon); padding: 2rem;">
+         <h3 style="color:var(--deep);">Bienvenue dans MARYAN Plus !</h3>
+         <p>Votre abonnement a été activé. Vous avez désormais un accès illimité au Copilote et à la Bibliothèque.</p>
+      </div>
+
       <div class="dashboard-grid">
         
         <!-- SIDEBAR INFO -->
@@ -57,8 +64,8 @@ const modules = [
             <div class="profile-header">
               <div class="avatar-circle">AW</div>
               <div class="profile-text">
-                <h3>{userProfile.name}</h3>
-                <p>{userProfile.role} — {userProfile.municipality}</p>
+                <h3 id="profileName">{userProfile.name}</h3>
+                <p id="profileRole">{userProfile.role} — {userProfile.municipality}</p>
               </div>
             </div>
             
@@ -66,18 +73,16 @@ const modules = [
             
             <div class="profile-stat">
               <span class="label">Votre forfait</span>
-              <p class="val">{userProfile.plan}</p>
-              {userProfile.plan === 'Découverte (Gratuit)' && (
-                <a href="/offres" class="upgrade-btn">Passer à MARYAN Plus →</a>
-              )}
+              <p class="val" id="planVal">{userProfile.plan}</p>
+              <a href="/offres" id="upgradeBtn" class="upgrade-btn">Passer à MARYAN Plus →</a>
             </div>
 
             <div class="profile-stat">
               <span class="label">Crédit Copilote</span>
               <div class="progress-bar">
-                <div class="progress-fill" style="width: 60%;"></div>
+                <div id="progressFill" class="progress-fill" style="width: 60%;"></div>
               </div>
-              <p class="val-sub">{userProfile.messagesRemaining} sur 5 messages restants</p>
+              <p class="val-sub" id="counterText">{userProfile.messagesRemaining} sur 5 messages restants</p>
             </div>
           </div>
         </aside>
@@ -131,6 +136,46 @@ const modules = [
   </main>
 
 </BaseLayout>
+
+<script>
+  // ACTIVATION LOGIC
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  
+  if (sessionId) {
+    const banner = document.getElementById('successBanner');
+    if (banner) banner.style.display = 'block';
+    
+    // Simulate back-end activation by updating localStorage
+    const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+    if (profile) {
+      profile.plan = "MARYAN Plus";
+      profile.offerLevel = 2;
+      localStorage.setItem('maryan_profile', JSON.stringify(profile));
+      
+      // Update UI
+      const planVal = document.getElementById('planVal');
+      if (planVal) planVal.innerText = "MARYAN Plus";
+      
+      const upgradeBtn = document.getElementById('upgradeBtn');
+      if (upgradeBtn) upgradeBtn.style.display = 'none';
+      
+      const progressFill = document.getElementById('progressFill') as HTMLElement;
+      if (progressFill) progressFill.style.width = '100%';
+      
+      const counterText = document.getElementById('counterText');
+      if (counterText) counterText.innerText = "Accès Illimité";
+    }
+  }
+
+  // Dynamic Profile Rendering (Simple)
+  const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+  if (profile.title) {
+     document.getElementById('profileName')!.innerText = profile.firstName || "Aline";
+     document.getElementById('profileRole')!.innerText = `${profile.title} — ${profile.commune || 'Votre Commune'}`;
+     document.getElementById('planVal')!.innerText = profile.plan || "Découverte (Gratuit)";
+  }
+</script>
 
 <style>
   .dashboard-v3 { padding-bottom: 8rem; background: var(--bg); min-height: 80vh; }

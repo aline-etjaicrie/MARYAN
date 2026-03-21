@@ -105,8 +105,8 @@ const progression = [
                    <ul class="v3-list-check">
                       {repereWhat.map(item => <li>{item}</li>)}
                    </ul>
-                   <div class="card-footer-v3">
-                      <p><strong>Idéal si :</strong> {repereFit.slice(0,2).join(', ')}...</p>
+                   <div class="card-footer-v3" style="margin-top:2rem;">
+                      <button class="btn-primary-v3 checkout-btn" data-price-id="price_MARYAN_LIBRE" style="width:100%;">Commencer gratuitement</button>
                    </div>
                 </div>
               </div>
@@ -136,15 +136,16 @@ const progression = [
                       {outillerWhat.map(item => <li style="opacity:0.8;">{item}</li>)}
                    </ul>
                 </div>
-                <div class="card-v3 dark-card border-red">
+                 <div class="card-v3 dark-card border-red">
                    <span class="card-kicker text-red" style="opacity:1;">Pertinence</span>
-                   <p style="color:white;opacity:0.9;">Ce niveau convient si vous voulez gagner du temps et structurer vos dossiers stratégiques.</p>
-                   <ul class="v3-list-check-neon" style="color:white;">
+                   <p style="color:white;opacity:0.9; margin-bottom:1rem;">Gagnez du temps et structurez vos dossiers stratégiques.</p>
+                   <ul class="v3-list-check-neon" style="color:white; margin-bottom: 2rem;">
                       {outillerFit.map(item => <li style="opacity:0.8;">{item}</li>)}
                    </ul>
+                   <button class="btn-primary-v3 checkout-btn" data-price-id="price_MARYAN_PLUS" style="width:100%; border:none;">Choisir MARYAN Plus</button>
                 </div>
               </div>
-           </div>
+            </div>
         </div>
       </div>
     </section>
@@ -216,6 +217,49 @@ const progression = [
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  // STRIPE CLIENT INTEGRATION
+  const checkoutButtons = document.querySelectorAll('.checkout-btn');
+  
+  checkoutButtons.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const target = e.currentTarget as HTMLButtonElement;
+      const priceId = target.dataset.priceId;
+      
+      if (!priceId) return;
+
+      target.innerText = "Chargement...";
+      target.disabled = true;
+
+      try {
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            priceId: priceId,
+            customerEmail: localStorage.getItem('user_email') || null 
+          }),
+        });
+        
+        const session = await response.json();
+        
+        if (session.url) {
+          window.location.href = session.url;
+        } else {
+          alert("Erreur de session. Veuillez vérifier vos clés Stripe.");
+          target.innerText = "Choisir ce forfait";
+          target.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        alert("La connexion à Stripe a échoué.");
+        target.innerText = "Choisir ce forfait";
+        target.disabled = false;
+      }
+    });
+  });
+</script>
 
 <style>
   .offres-main-v3 {
