@@ -21,7 +21,7 @@ const categories = [
   description="Accédez au savoir-faire MARYAN : fiches pratiques, trames et repères pour tenir votre mandat avec clarté.">
   
   <div class="res-hero-bg">
-    <div class="container relative-z">
+    <div class="container relative-z header-white-force">
       <InternalHeader 
         label="La Bibliothèque"
         title="Des ressources utiles,<br/><span class='emphasis text-neon'>classées par situation</span>"
@@ -111,6 +111,12 @@ const categories = [
 <style>
   /* ─── HERO ─── */
   .res-hero-bg { background: var(--deep); color: white; padding-bottom: 6rem; position: relative; overflow: hidden; }
+  .header-white-force :global(h1), 
+  .header-white-force :global(p), 
+  .header-white-force :global(.internal-label),
+  .header-white-force :global(.back-link) { color: white !important; }
+  .header-white-force :global(.emphasis) { color: var(--neon) !important; }
+  
   .hero-glow { position: absolute; width: 40vw; height: 40vw; filter: blur(100px); opacity: 0.1; z-index: 1; pointer-events: none; }
   .glow-red { top: -10%; left: -10%; background: var(--accent-red); }
   .glow-green { bottom: -10%; right: -10%; background: var(--neon); }
