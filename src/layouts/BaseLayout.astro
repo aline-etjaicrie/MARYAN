@@ -19,25 +19,28 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Inter for reliability, Playfair Display for editorial italics -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
   </head>
   <body>
     <slot />
     <ChatWidget />
     <footer class="site-footer">
       <div class="container footer-grid">
-        <div>
+        <div class="footer-brand">
           <p class="brand">MARYAN</p>
-          <p class="brand-sub">MVP de cadrage · appui intelligent pour élus municipaux</p>
+          <p class="brand-sub">République Design · Mandat local 2024-2026</p>
           <p class="footer-credit">
             MARYAN est une offre de <a href="https://www.etjaicrie.com/index.html">Et j'ai crié</a>.
           </p>
         </div>
-        <div>
-          <p class="footer-kicker">Green IT & EcoIndex</p>
+        <div class="footer-eco">
+          <p class="footer-kicker">Innovation Sobriété</p>
           <div class="footer-note">
-            <strong>MARYAN est conçu dès le départ pour une sobriété numérique forte :</strong>
-            hébergement Scaleway, architecture Astro statique, pages légères, JavaScript limité
-            et objectif <strong>EcoIndex A</strong>.
+            <strong>MARYAN est conçu pour une sobriété numérique forte :</strong>
+            Architecture Astro statique, EcoIndex A et hébergement éco-responsable.
           </div>
         </div>
       </div>
