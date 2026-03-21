@@ -3,78 +3,96 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
 ---
 <BaseLayout 
-  title="Diagnostic de situation — MARYAN" 
-  description="En 5 minutes, identifiez votre profil de situation et les appuis les plus utiles pour la suite de votre mandat. 100% confidentiel.">
+  title="Diagnostic de mandat — MARYAN" 
+  description="En quelques minutes, MARYAN repère ce qui vous pèse, ce qui vous expose, et la meilleure manière de vous aider concrètement.">
   
-  <!-- ═══════════════════════════════════════
-       INTERNAL HEADER V3
-  ═══════════════════════════════════════ -->
   <InternalHeader 
     label="Diagnostic de situation"
-    title="Comprendre votre situation pour mieux décider."
-    subtitle="Un parcours de 5 minutes, 100% confidentiel, pour identifier vos priorités réelles et le bon niveau d'appui."
+    title="Faire le point avant de continuer <span class='emphasis'>seul·e</span>."
+    subtitle="En quelques minutes, MARYAN repère ce qui vous pèse, ce qui vous expose, et la meilleure manière de vous aider concrètement."
   />
 
-  <main class="diag-main-v3 no-top">
-    <!-- INTRO SECTION (PREMIUM) -->
-    <div id="introSection" class="diag-card-hero-v3">
-      <div class="diag-hero-split">
-        <div class="diag-hero-content">
-          <p class="diag-kicker">Pourquoi ce diagnostic ?</p>
-          <ul class="diag-intro-list">
-             <li><span class="icon-v3">🏛️</span> <strong>Cadrage</strong> : Clarifier votre rôle et votre délégation.</li>
-             <li><span class="icon-v3">⚖️</span> <strong>Sûreté</strong> : Anticiper les premiers risques (juridiques, politiques).</li>
-             <li><span class="icon-v3">🤝</span> <strong>Appui</strong> : Identifier le bon niveau d'accompagnement.</li>
-          </ul>
-        </div>
-        <div class="diag-hero-action">
-           <div class="confidence-badge">
-              <span class="lock-icon">🔒</span> Données protégées & anonymes
-           </div>
-           <button class="btn-primary-v3 big" onclick="startDiag()">Démarrer le diagnostic →</button>
-           <p class="diag-hint">Résultat immédiat & personnalisé</p>
+  <main class="diag-main-v3">
+
+    <!-- INTRO -->
+    <div id="introSection" class="container container-narrow">
+      <div class="diag-intro-card card-v3">
+        <div class="diag-intro-split">
+          <div class="diag-intro-left">
+            <p class="diag-kicker">Ce que vous trouverez ici</p>
+            <ul class="diag-intro-list">
+              <li><span class="icon-v3">🧭</span> <strong>Y voir plus clair</strong> : comprendre ce qui se joue vraiment dans votre mandat.</li>
+              <li><span class="icon-v3">⚠️</span> <strong>Éviter les faux pas</strong> : repérer les points de vigilance avant qu'ils ne coûtent cher.</li>
+              <li><span class="icon-v3">🤝</span> <strong>Trouver le bon appui</strong> : outils, ressources ou accompagnement selon votre situation.</li>
+            </ul>
+          </div>
+          <div class="diag-intro-right">
+            <div class="confidence-badge">
+              <span class="lock-icon">🔒</span>
+              <span>Réponses traitées de façon <strong>confidentielle</strong>.</span>
+            </div>
+            <button class="btn-primary-v3 big" onclick="startDiag()" id="startBtn">
+              Démarrer le diagnostic →
+            </button>
+            <p class="diag-hint">Gratuit · Résultat immédiat, confidentiel et utile tout de suite</p>
+            <p class="diag-consent-v3">
+              Vos réponses peuvent être utilisées de manière confidentielle et anonymisée pour améliorer MARYAN et ses parcours d'accompagnement.
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- PROGRESS WRAP V3 -->
+    <!-- PROGRESS BAR -->
     <div class="progress-wrap-v3 hidden" id="progressWrap">
       <div class="container-narrow">
         <div class="progress-inner-v3">
-          <div class="progress-track-v3">
-            <div class="progress-fill-v3" id="progressFill"></div>
-          </div>
+          <div class="progress-track-v3"><div class="progress-fill-v3" id="progressFill"></div></div>
           <span class="progress-count-v3" id="progressCount">0 / 15</span>
         </div>
       </div>
     </div>
 
-    <!-- QUESTIONS CONTAINER -->
-    <div id="diagSection" class="hidden questions-v3">
-      <!-- LE BLOCS INJECTÉS PAR JS (Même logique qu'avant mais avec HTML V3) -->
+    <!-- QUESTIONS -->
+    <div id="diagSection" class="hidden questions-v3 container-narrow">
+
+      <!-- BLOC 1 : SITUATION & MANDAT -->
       <div id="bloc1" class="bloc-v3">
         <div class="bloc-header-v3">
-          <p class="bloc-num-v3">Phase 01 · <em class="emphasis">Votre contexte</em></p>
-          <h2 class="bloc-title-v3">Mandat & Environnement</h2>
+          <p class="bloc-num-v3">Étape 1 · <em class="emphasis">Votre situation</em></p>
+          <h2>Votre mandat, votre contexte</h2>
         </div>
 
         <div class="q-card-v3">
-          <p class="q-label-v3">1. Quel est votre mandat actuel ?</p>
+          <p class="q-label-v3">Quel est votre mandat actuel ?</p>
           <div class="options-v3" id="q1">
-            <label class="opt-v3" onclick="pick(this,'q1','maire',{institutional:1,exposure:2})"><input type="radio" name="q1" /><span class="dot-v3"></span>Maire</label>
-            <label class="opt-v3" onclick="pick(this,'q1','adjoint',{institutional:1,pressure:2,exposure:1})"><input type="radio" name="q1" /><span class="dot-v3"></span>Adjoint·e au maire</label>
-            <label class="opt-v3" onclick="pick(this,'q1','conseiller_maj',{isolation:1})"><input type="radio" name="q1" /><span class="dot-v3"></span>Conseiller·e (majorité)</label>
-            <label class="opt-v3" onclick="pick(this,'q1','conseiller_opp',{isolation:2,pressure:1})"><input type="radio" name="q1" /><span class="dot-v3"></span>Conseiller·e (opposition)</label>
+            <label class="opt-v3" onclick="pick(this,'q1','maire',{institutional:1,exposure:2})"><input type="radio" name="q1"/><span class="dot-v3"></span>Maire</label>
+            <label class="opt-v3" onclick="pick(this,'q1','adjoint',{institutional:1,pressure:2,exposure:1})"><input type="radio" name="q1"/><span class="dot-v3"></span>Adjoint·e au maire</label>
+            <label class="opt-v3" onclick="pick(this,'q1','conseiller_maj',{isolation:1})"><input type="radio" name="q1"/><span class="dot-v3"></span>Conseiller·e (majorité)</label>
+            <label class="opt-v3" onclick="pick(this,'q1','conseiller_opp',{isolation:2,pressure:1})"><input type="radio" name="q1"/><span class="dot-v3"></span>Conseiller·e (opposition)</label>
+            <label class="opt-v3" onclick="pick(this,'q1','interco_vp',{institutional:2,exposure:2})"><input type="radio" name="q1"/><span class="dot-v3"></span>Vice-président·e intercommunal (EPCI)</label>
+            <label class="opt-v3" onclick="pick(this,'q1','interco_cons',{institutional:1,isolation:1})"><input type="radio" name="q1"/><span class="dot-v3"></span>Conseiller·e communautaire</label>
           </div>
         </div>
 
         <div class="q-card-v3">
-          <p class="q-label-v3">2. Depuis combien de temps exercez-vous ?</p>
+          <p class="q-label-v3">Depuis combien de temps exercez-vous ce mandat ?</p>
           <div class="options-v3" id="q2">
-            <label class="opt-v3" onclick="pick(this,'q2','debut',{experience:0,isolation:2,institutional:2})"><input type="radio" name="q2" /><span class="dot-v3"></span>Je débute (moins de 6 mois)</label>
-            <label class="opt-v3" onclick="pick(this,'q2','moins2',{experience:1,isolation:1})"><input type="radio" name="q2" /><span class="dot-v3"></span>Moins de 2 ans</label>
-            <label class="opt-v3" onclick="pick(this,'q2','entre26',{experience:2})"><input type="radio" name="q2" /><span class="dot-v3"></span>Entre 2 et 6 ans</label>
-            <label class="opt-v3" onclick="pick(this,'q2','plus6',{experience:3})"><input type="radio" name="q2" /><span class="dot-v3"></span>Plus de 6 ans</label>
+            <label class="opt-v3" onclick="pick(this,'q2','debut',{experience:0,isolation:2,institutional:2})"><input type="radio" name="q2"/><span class="dot-v3"></span>Je débute (moins de 6 mois)</label>
+            <label class="opt-v3" onclick="pick(this,'q2','moins2',{experience:1,isolation:1})"><input type="radio" name="q2"/><span class="dot-v3"></span>Moins de 2 ans</label>
+            <label class="opt-v3" onclick="pick(this,'q2','entre26',{experience:2})"><input type="radio" name="q2"/><span class="dot-v3"></span>Entre 2 et 6 ans</label>
+            <label class="opt-v3" onclick="pick(this,'q2','plus6',{experience:3})"><input type="radio" name="q2"/><span class="dot-v3"></span>Plus de 6 ans</label>
+          </div>
+        </div>
+
+        <div class="q-card-v3">
+          <p class="q-label-v3">Aujourd'hui, vous venez surtout avec :</p>
+          <div class="options-v3" id="q3">
+            <label class="opt-v3" onclick="pick(this,'q3','decision',{pressure:1})"><input type="radio" name="q3"/><span class="dot-v3"></span>Une décision à prendre</label>
+            <label class="opt-v3" onclick="pick(this,'q3','tension',{pressure:2,exposure:1})"><input type="radio" name="q3"/><span class="dot-v3"></span>Une situation tendue</label>
+            <label class="opt-v3" onclick="pick(this,'q3','prise_parole',{comm_public:2,pressure:1})"><input type="radio" name="q3"/><span class="dot-v3"></span>Une prise de parole à préparer</label>
+            <label class="opt-v3" onclick="pick(this,'q3','technique',{institutional:1})"><input type="radio" name="q3"/><span class="dot-v3"></span>Un sujet que je ne maîtrise pas encore</label>
+            <label class="opt-v3" onclick="pick(this,'q3','recul',{human:1})"><input type="radio" name="q3"/><span class="dot-v3"></span>Un besoin de recul</label>
           </div>
         </div>
 
@@ -83,217 +101,247 @@ import InternalHeader from '../components/InternalHeader.astro';
         </div>
       </div>
 
-      <!-- ... JS se charge du reste des blocs ... -->
-      <!-- Je simplifie les autres blocs ici mais garde la structure complète dans le JS -->
+      <!-- BLOC 2 : APPUI -->
       <div id="bloc2" class="hidden bloc-v3">
-         <div class="bloc-header-v3"><p class="bloc-num-v3">Phase 02 · <em class="emphasis">Votre appui</em></p><h2>Votre environnement</h2></div>
-         <div class="q-card-v3">
-            <p class="q-label-v3">5. Pensez-vous être suffisamment accompagné·e ?</p>
-            <div class="options-v3" id="q5">
-               <label class="opt-v3" onclick="pick(this,'q5','oui',{})"><input type="radio" name="q5" /><span class="dot-v3"></span>Oui, j'ai de bons appuis</label>
-               <label class="opt-v3" onclick="pick(this,'q5','incertain',{isolation:1,human:1})"><input type="radio" name="q5" /><span class="dot-v3"></span>Incertain / Pas encore</label>
-               <label class="opt-v3" onclick="pick(this,'q5','non',{isolation:3,human:2})"><input type="radio" name="q5" /><span class="dot-v3"></span>Non, sentiment de solitude</label>
-            </div>
-         </div>
-         <div class="nav-btns-v3">
-            <button class="btn-secondary-v3" onclick="goBloc(1)">← Précédent</button>
-            <button class="btn-primary-v3" id="next2" onclick="goBloc(3)" disabled>Continuer →</button>
-         </div>
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 2 · <em class="emphasis">Vos appuis</em></p>
+          <h2>Votre environnement de travail</h2>
+        </div>
+
+        <div class="q-card-v3">
+          <p class="q-label-v3">Vous sentez-vous suffisamment accompagné·e dans votre mandat ?</p>
+          <div class="options-v3" id="q5">
+            <label class="opt-v3" onclick="pick(this,'q5','oui',{})"><input type="radio" name="q5"/><span class="dot-v3"></span>Oui, j'ai de bons appuis autour de moi</label>
+            <label class="opt-v3" onclick="pick(this,'q5','incertain',{isolation:1,human:1})"><input type="radio" name="q5"/><span class="dot-v3"></span>Pas toujours, c'est variable</label>
+            <label class="opt-v3" onclick="pick(this,'q5','non',{isolation:3,human:2})"><input type="radio" name="q5"/><span class="dot-v3"></span>Non, je me sens souvent seul·e face aux décisions</label>
+          </div>
+        </div>
+
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(1)">← Précédent</button>
+          <button class="btn-primary-v3" id="next2" onclick="goBloc(3)" disabled>Continuer →</button>
+        </div>
       </div>
 
+      <!-- BLOC 3 : TENSIONS -->
       <div id="bloc3" class="hidden bloc-v3">
-         <div class="bloc-header-v3"><p class="bloc-num-v3">Phase 03 · <em class="emphasis">Vos priorités</em></p><h2>Enjeux & Vigilances</h2></div>
-         <div class="q-card-v3">
-            <p class="q-label-v3">7. Vos rapports à la communication publique ?</p>
-            <div class="options-v3" id="q8">
-               <label class="opt-v3" onclick="pick(this,'q8','alaise',{})"><input type="radio" name="q8" /><span class="dot-v3"></span>À l'aise</label>
-               <label class="opt-v3" onclick="pick(this,'q8','hesitant',{comm_public:2,pressure:1})"><input type="radio" name="q8" /><span class="dot-v3"></span>Hésitant·e</label>
-               <label class="opt-v3" onclick="pick(this,'q8','difficulte',{comm_public:3,pressure:2})"><input type="radio" name="q8" /><span class="dot-v3"></span>C'est une réelle difficulté</label>
-            </div>
-         </div>
-         <div class="nav-btns-v3">
-            <button class="btn-secondary-v3" onclick="goBloc(2)">← Précédent</button>
-            <button class="btn-primary-v3" id="next3" onclick="goBloc(4)" disabled>Continuer →</button>
-         </div>
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 3 · <em class="emphasis">Vos points de vigilance</em></p>
+          <h2>Ce qui vous met le plus en tension</h2>
+        </div>
+
+        <div class="q-card-v3">
+          <p class="q-label-v3">Comment vous sentez-vous face à la prise de parole publique ?</p>
+          <div class="options-v3" id="q8">
+            <label class="opt-v3" onclick="pick(this,'q8','alaise',{})"><input type="radio" name="q8"/><span class="dot-v3"></span>À l'aise, c'est un terrain que je maîtrise</label>
+            <label class="opt-v3" onclick="pick(this,'q8','hesitant',{comm_public:2,pressure:1})"><input type="radio" name="q8"/><span class="dot-v3"></span>Hésitant·e, j'évite parfois certains sujets</label>
+            <label class="opt-v3" onclick="pick(this,'q8','difficulte',{comm_public:3,pressure:2})"><input type="radio" name="q8"/><span class="dot-v3"></span>C'est un vrai point de fragilité pour moi</label>
+          </div>
+        </div>
+
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(2)">← Précédent</button>
+          <button class="btn-primary-v3" id="next3" onclick="goBloc(4)" disabled>Continuer →</button>
+        </div>
       </div>
 
+      <!-- BLOC 4 : SUJETS -->
       <div id="bloc4" class="hidden bloc-v3">
-         <div class="bloc-header-v3"><p class="bloc-num-v3">Phase 04 · <em class="emphasis">Thématiques</em></p><h2>Votre dossier principal</h2></div>
-         <div class="q-card-v3">
-            <p class="q-label-v3">10. Quel est votre sujet principal pour ce semestre ?</p>
-            <div class="options-v3" id="q10">
-               <label class="opt-v3" onclick="pick(this,'q10','urbanisme',{theme:'urbanisme'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Urbanisme / Aménagement</label>
-               <label class="opt-v3" onclick="pick(this,'q10','culture',{theme:'culture'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Culture / Patrimoine</label>
-               <label class="opt-v3" onclick="pick(this,'q10','securite',{theme:'securite'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Sécurité / Tranquillité</label>
-               <label class="opt-v3" onclick="pick(this,'q10','generaliste',{theme:'generaliste'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Généraliste / Aucun en particulier</label>
-            </div>
-         </div>
-         <div class="nav-btns-v3">
-            <button class="btn-secondary-v3" onclick="goBloc(3)">← Précédent</button>
-            <button class="btn-primary-v3" id="next4" onclick="goBloc(5)" disabled>Continuer →</button>
-         </div>
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 4 · <em class="emphasis">Vos sujets</em></p>
+          <h2>Le dossier qui vous occupe le plus</h2>
+        </div>
+
+        <div class="q-card-v3">
+          <p class="q-label-v3">Votre sujet principal ce semestre :</p>
+          <div class="options-v3" id="q10">
+            <label class="opt-v3" onclick="pick(this,'q10','urbanisme',{theme:'urbanisme'})"><input type="radio" name="q10"/><span class="dot-v3"></span>Urbanisme, aménagement, territoire</label>
+            <label class="opt-v3" onclick="pick(this,'q10','culture',{theme:'culture'})"><input type="radio" name="q10"/><span class="dot-v3"></span>Culture, patrimoine, vie locale</label>
+            <label class="opt-v3" onclick="pick(this,'q10','securite',{theme:'securite'})"><input type="radio" name="q10"/><span class="dot-v3"></span>Sécurité, tranquillité publique</label>
+            <label class="opt-v3" onclick="pick(this,'q10','budget',{theme:'budget'})"><input type="radio" name="q10"/><span class="dot-v3"></span>Budget, finances, fiscalité</label>
+            <label class="opt-v3" onclick="pick(this,'q10','interco',{theme:'interco'})"><input type="radio" name="q10"/><span class="dot-v3"></span>Intercommunalité, compétences partagées</label>
+            <label class="opt-v3" onclick="pick(this,'q10','generaliste',{theme:'generaliste'})"><input type="radio" name="q10"/><span class="dot-v3"></span>Rien de particulier, je gère le quotidien</label>
+          </div>
+        </div>
+
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(3)">← Précédent</button>
+          <button class="btn-primary-v3" id="next4" onclick="goBloc(5)" disabled>Continuer →</button>
+        </div>
       </div>
 
+      <!-- BLOC 5 : TYPE D'APPUI -->
       <div id="bloc5" class="hidden bloc-v3">
-         <div class="bloc-header-v3"><p class="bloc-num-v3">Phase 05 · <em class="emphasis">Action</em></p><h2>Dernière étape</h2></div>
-         <div class="q-card-v3">
-            <p class="q-label-v3">14. Votre préférence de travail ?</p>
-            <div class="options-v3" id="q14">
-               <label class="opt-v3" onclick="pick(this,'q14','autonome',{offer_level:0})"><input type="radio" name="q14" /><span class="dot-v3"></span>En totale autonomie (outils digitaux)</label>
-               <label class="opt-v3" onclick="pick(this,'q14','humain',{offer_level:3,human:2})"><input type="radio" name="q14" /><span class="dot-v3"></span>Avec appui humain et stratégique</label>
-            </div>
-         </div>
-         <div class="nav-btns-v3">
-            <button class="btn-secondary-v3" onclick="goBloc(4)">← Précédent</button>
-            <button class="btn-primary-v3" id="next5" onclick="showEmail()" disabled>Voir mon résultat →</button>
-         </div>
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 5 · <em class="emphasis">Votre façon d'avancer</em></p>
+          <h2>Le type d'appui qui vous convient</h2>
+        </div>
+
+        <div class="q-card-v3">
+          <p class="q-label-v3">Vous préférez avancer :</p>
+          <div class="options-v3" id="q14">
+            <label class="opt-v3" onclick="pick(this,'q14','autonome',{offer_level:0})"><input type="radio" name="q14"/><span class="dot-v3"></span>En autonomie, avec de bons outils à portée de main</label>
+            <label class="opt-v3" onclick="pick(this,'q14','mixte',{offer_level:1})"><input type="radio" name="q14"/><span class="dot-v3"></span>Avec un appui régulier mais léger</label>
+            <label class="opt-v3" onclick="pick(this,'q14','humain',{offer_level:3,human:2})"><input type="radio" name="q14"/><span class="dot-v3"></span>Avec un vrai regard humain et stratégique</label>
+          </div>
+        </div>
+
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(4)">← Précédent</button>
+          <button class="btn-primary-v3" id="next5" onclick="showEmail()" disabled>Voir ma synthèse →</button>
+        </div>
       </div>
 
+      <!-- EMAIL -->
       <div id="emailSection" class="hidden email-reveal-v3">
-        <div class="card-v3 card-highlight text-center">
-          <span class="label-v3">Dernier pas</span>
-          <h2>Afin de préparer <span class="emphasis">votre synthèse</span>...</h2>
-          <p>Laissez-nous votre email pour recevoir l'analyse complète de votre situation.</p>
+        <div class="card-v3 text-center" style="max-width:600px;margin:0 auto;padding:4rem 3rem;">
+          <span class="label-v3">Presque terminé</span>
+          <h2 style="font-size:2rem;margin:1.5rem 0;">Recevoir ou consulter <span class="emphasis">votre synthèse</span></h2>
+          <p style="opacity:0.6;margin-bottom:2rem;">
+            Vous pouvez laisser votre email pour garder une trace de votre résultat. Sinon, vous pouvez continuer tout de suite.
+          </p>
           <div class="email-input-v3">
             <input type="email" id="emailInput" placeholder="votre@email.fr" />
-            <button class="btn-primary-v3" onclick="submitEmail()">Consulter le résultat →</button>
+            <button class="btn-primary-v3" onclick="submitEmail()">Envoyer →</button>
           </div>
-          <button class="btn-skip-v3" onclick="showResult()">Passer cette étape</button>
+          <button class="btn-skip-v3" onclick="showResult()">Continuer sans email →</button>
         </div>
       </div>
     </div>
 
-    <!-- RESULT SECTION (PREMIUM) -->
-    <div id="resultSection" class="result-v3 hidden">
-      <div class="result-top-v3 text-center">
-        <span class="badge-v3">Bilan de situation</span>
-        <h2 id="rTitle" class="emphasis">Profil détecté...</h2>
-        <p class="intro-v3" id="rSummary"></p>
+    <!-- RÉSULTAT -->
+    <div id="resultSection" class="result-v3 hidden container-narrow">
+
+      <div class="result-top-v3">
+        <span class="badge-v3">Votre synthèse</span>
+        <h2 id="rTitle" class="emphasis result-title-v3">Ce que MARYAN voit de votre situation</h2>
+        <p class="intro-v3" id="rSummary" style="max-width:620px;"></p>
       </div>
 
       <div class="result-cards-v3">
         <div class="card-v3">
-          <h3>Priorités <span class="emphasis">immédiates</span></h3>
+          <h3>Vos points de <span class="emphasis">vigilance</span></h3>
           <ul id="rNeeds" class="result-list-v3"></ul>
         </div>
         <div class="card-v3">
-          <h3>Appuis <span class="emphasis">conseillés</span></h3>
+          <h3>Ce qui peut vous <span class="emphasis">aider maintenant</span></h3>
           <ul id="rHelps" class="result-list-v3"></ul>
         </div>
       </div>
 
       <div class="exposure-box-v3 card-v3 dark">
-        <h3>Indices de <span class="emphasis text-neon">Complexité</span></h3>
+        <h3>Niveau d'<span class="emphasis text-neon">attention</span></h3>
         <div class="diag-bars-v3">
-          <div class="diag-bar-row">
-            <span>Technicité du sujet</span>
-            <div class="diag-track"><div class="diag-fill" id="barTech" style="background:var(--neon)"></div></div>
-          </div>
-          <div class="diag-bar-row">
-            <span>Conflictualité</span>
-            <div class="diag-track"><div class="diag-fill" id="barConflict" style="background:var(--accent-red)"></div></div>
-          </div>
-          <div class="diag-bar-row">
-            <span>Exposition publique</span>
-            <div class="diag-track"><div class="diag-fill" id="barExpo" style="background:var(--bg)"></div></div>
-          </div>
+          <div class="diag-bar-row"><span>Charge de décision</span><div class="diag-track"><div class="diag-fill" id="barTech" style="background:var(--neon)"></div></div></div>
+          <div class="diag-bar-row"><span>Sensibilité politique</span><div class="diag-track"><div class="diag-fill" id="barConflict" style="background:var(--accent-red)"></div></div></div>
+          <div class="diag-bar-row"><span>Exposition publique</span><div class="diag-track"><div class="diag-fill" id="barExpo" style="background:rgba(255,255,255,0.6)"></div></div></div>
         </div>
       </div>
 
-      <div class="reco-box-v3">
-        <div class="card-v3 reco-inner">
-           <span class="label-v3">Recommandation MARYAN</span>
-           <h3 id="offerName">MARYAN Essentiel</h3>
-           <p id="offerDesc">Découvrez l'offre qui correspond à votre profil de situation.</p>
-           <a href="/offres" class="btn-primary-v3">Explorer les offres de mandat</a>
-        </div>
+      <div class="card-v3 reco-inner">
+        <span class="label-v3">Suite conseillée</span>
+        <h3 id="offerName" style="font-size:1.75rem;margin:1rem 0;"></h3>
+        <p id="offerDesc" style="opacity:0.7;margin-bottom:2rem;"></p>
+        <a href="/offres" class="btn-primary-v3">Voir la suite proposée par MARYAN</a>
       </div>
 
-      <div class="result-actions-v3">
-         <a href="/" class="btn-secondary-v3">Retour à l'accueil</a>
+      <div class="result-actions-v3 text-center">
+        <a href="/" class="btn-secondary-v3">Retour à l'accueil</a>
+        <a href="/contact" class="btn-link-simple">Parler à l'équipe</a>
       </div>
     </div>
+
   </main>
 
   <style>
-    .no-top { padding-top: 0 !important; }
+    .diag-main-v3 { padding-bottom: 10rem; }
+    .container-narrow { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
 
-    /* ─── DIAG HERO (PREMIUM) ─── */
-    .diag-card-hero-v3 {
-      background: white; border-radius: 40px; border: 1.5px solid var(--border);
-      padding: 4rem; box-shadow: 0 30px 60px rgba(0,0,0,0.03); margin-bottom: 4rem;
-    }
-    .diag-hero-split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center; }
-    .diag-kicker { font-weight: 800; font-size: 0.9rem; text-transform: uppercase; color: var(--accent-red); margin-bottom: 2rem; }
-    .diag-intro-list { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
-    .diag-intro-list li { font-size: 1.15rem; color: #54636C; display: flex; align-items: flex-start; gap: 1rem; }
-    .icon-v3 { font-size: 1.5rem; filter: saturate(0); }
-    .diag-intro-list strong { color: var(--deep); }
-    
-    .diag-hero-action { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-    .confidence-badge { font-size: 0.8rem; font-weight: 700; color: #8DA08E; background: #F2F8F2; padding: 0.5rem 1rem; border-radius: 99px; }
-    .diag-hint { font-size: 0.85rem; opacity: 0.6; font-weight: 600; }
+    .diag-intro-card { padding: 4rem; margin-bottom: 4rem; }
+    .diag-intro-split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: start; }
+    .diag-kicker { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; color: var(--accent-red); letter-spacing: 0.08em; margin-bottom: 2rem; }
+    .diag-intro-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem; }
+    .diag-intro-list li { font-size: 1.1rem; color: var(--ink); font-weight: 500; display: flex; align-items: flex-start; gap: 1rem; line-height: 1.5; }
+    .icon-v3 { font-size: 1.2rem; flex-shrink: 0; }
 
-    /* ─── QUESTIONS (V3 UI) ─── */
-    .bloc-header-v3 { text-align: center; margin-bottom: 3.5rem; }
-    .bloc-num-v3 { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-red); margin-bottom: 1rem; }
-    .bloc-header-v3 h2 { font-size: 2.25rem; font-family: var(--font-accent); font-style: italic; font-weight: 500; }
+    .diag-intro-right { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+    .confidence-badge { background: #F2F8F2; border-radius: 14px; padding: 1.25rem 1.5rem; font-size: 0.875rem; color: #3D5A40; line-height: 1.6; display: flex; align-items: flex-start; gap: 0.75rem; }
+    .lock-icon { flex-shrink: 0; }
+    .diag-hint { font-size: 0.85rem; opacity: 0.5; font-weight: 600; }
+    .diag-consent-v3 { font-size: 0.8rem; line-height: 1.45; max-width: 280px; text-align: center; opacity: 0.55; }
 
-    .q-card-v3 { max-width: 650px; margin: 0 auto 1.5rem; }
-    .q-label-v3 { font-size: 1.35rem; color: var(--deep); font-weight: 800; margin-bottom: 2.5rem; text-align: center; }
+    .progress-wrap-v3 { padding: 1.25rem 0; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .progress-inner-v3 { display: flex; align-items: center; gap: 1.5rem; max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+    .progress-track-v3 { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill-v3 { height: 100%; background: var(--accent-red); border-radius: 99px; width: 0; transition: width 0.4s ease; }
+    .progress-count-v3 { font-size: 0.8rem; font-weight: 700; color: #54636C; white-space: nowrap; }
 
-    .options-v3 { display: flex; flex-direction: column; gap: 1rem; }
-    .opt-v3 {
-      display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem 1.75rem;
-      background: #FDFBF8; border: 1.5px solid var(--border); border-radius: 20px;
-      cursor: pointer; font-size: 1.1rem; font-weight: 600; color: #54636C;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .opt-v3:hover { transform: translateX(8px); border-color: var(--deep); background: white; }
-    .opt-v3.selected { background: white; border-color: var(--deep); border-width: 2.5px; color: var(--deep); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .questions-v3 { margin-top: 4rem; }
+    .bloc-v3 { padding: 4rem 0; }
+    .bloc-header-v3 { text-align: center; margin-bottom: 4rem; }
+    .bloc-num-v3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-red); margin-bottom: 1rem; display: block; }
+    .bloc-header-v3 h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+
+    .q-card-v3 { margin-bottom: 3rem; }
+    .q-label-v3 { font-size: 1.15rem; font-weight: 700; color: var(--deep); margin-bottom: 1.75rem; }
+
+    .options-v3 { display: flex; flex-direction: column; gap: 0.85rem; }
+    .opt-v3 { display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem 1.5rem; background: #FDFBF8; border: 1.5px solid var(--border); border-radius: 18px; cursor: pointer; font-size: 1rem; font-weight: 600; color: #54636C; transition: all 0.2s ease; }
+    .opt-v3:hover { border-color: var(--deep); background: white; transform: translateX(4px); }
+    .opt-v3.selected { background: white; border-color: var(--deep); border-width: 2px; color: var(--deep); }
     .opt-v3 input { display: none; }
-    .dot-v3 { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 50%; position: relative; }
+    .dot-v3 { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 50%; flex-shrink: 0; position: relative; transition: all 0.2s; }
     .opt-v3.selected .dot-v3 { border-color: var(--accent-red); background: var(--accent-red); }
-    .opt-v3.selected .dot-v3::after { content: ''; position: absolute; inset: 6px; background: white; border-radius: 50%; }
+    .opt-v3.selected .dot-v3::after { content: ''; position: absolute; inset: 5px; background: white; border-radius: 50%; }
 
-    .nav-btns-v3 { justify-content: center; margin-top: 4rem; }
+    .nav-btns-v3 { display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem; }
 
-    /* ─── EMAIL V3 ─── */
-    .card-highlight { border-color: var(--accent-red); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-    .email-input-v3 { display: flex; gap: 1rem; width: 100%; max-width: 500px; margin-top: 1.5rem; }
-    .email-input-v3 input { flex: 1; padding: 1.25rem 1.5rem; border: 1.5px solid var(--border); border-radius: 99px; outline: none; font-size: 1rem; }
-    .btn-skip-v3 { background: none; border: none; text-decoration: underline; opacity: 0.5; cursor: pointer; }
+    .email-reveal-v3 { margin: 4rem 0; }
+    .email-input-v3 { display: flex; gap: 1rem; width: 100%; margin-bottom: 1.5rem; }
+    .email-input-v3 input { flex: 1; padding: 1rem 1.5rem; border: 1.5px solid var(--border); border-radius: 99px; outline: none; font-size: 1rem; font-family: var(--font-main); }
+    .email-input-v3 input:focus { border-color: var(--deep); }
+    .btn-skip-v3 { background: none; border: none; text-decoration: underline; opacity: 0.5; cursor: pointer; font-size: 0.9rem; }
 
-    /* ─── BARS V3 (DARK) ─── */
-    .diag-bars-v3 { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 2rem; }
-    .diag-bar-row { display: flex; align-items: center; gap: 2rem; }
-    .diag-bar-row span { width: 180px; font-weight: 700; font-size: 0.85rem; opacity: 0.7; }
-    .diag-track { flex: 1; height: 10px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
-    .diag-fill { height: 100%; width: 0; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
-
-    .result-cards-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 3rem 0; }
+    .result-v3 { padding-top: 4rem; }
+    .result-top-v3 { margin-bottom: 4rem; }
+    .badge-v3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-red); }
+    .result-title-v3 { font-size: clamp(1.75rem, 4vw, 2.75rem); margin: 1.5rem 0; }
+    .result-cards-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
     .result-list-v3 { list-style: none; display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
-    .reco-box-v3 { margin: 4rem 0; }
-    .reco-inner { border: 2.5px solid var(--neon); text-align: center; padding: 4rem; }
-    .result-actions-v3 { text-align: center; margin-bottom: 10rem; }
+    .result-list-v3 li { position: relative; padding-left: 1.5rem; font-size: 0.95rem; line-height: 1.5; }
+    .result-list-v3 li::before { content: '→'; position: absolute; left: 0; color: var(--accent-red); font-weight: 900; }
 
-    @media (max-width: 800px) {
-      .diag-hero-split { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
-      .diag-intro-list { align-items: center; }
+    .exposure-box-v3 { margin-bottom: 2rem; }
+    .diag-bars-v3 { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .diag-bar-row { display: flex; align-items: center; gap: 1.5rem; }
+    .diag-bar-row span { width: 160px; font-size: 0.8rem; font-weight: 700; opacity: 0.7; flex-shrink: 0; }
+    .diag-track { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+    .diag-fill { height: 100%; width: 0; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 99px; }
+
+    .reco-inner { border: 2px solid var(--neon); margin-bottom: 4rem; }
+    .result-actions-v3 { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding-bottom: 4rem; }
+    .btn-link-simple { font-weight: 700; color: #54636C; text-decoration: underline; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .diag-intro-split { grid-template-columns: 1fr; gap: 2.5rem; }
+      .diag-intro-card { padding: 2rem 1.5rem; }
       .result-cards-v3 { grid-template-columns: 1fr; }
       .email-input-v3 { flex-direction: column; }
+      .nav-btns-v3 { flex-direction: column; align-items: center; }
+      .diag-bar-row span { width: 120px; }
     }
   </style>
 
-  <!-- JS LOGIC IS PRESERVED BUT HTML SELECTORS ARE UPDATED IN CODE IF NEEDED -->
   <script is:inline>
     const S = { institutional:0, posture:0, comm_public:0, pressure:0, isolation:0, human:0, experience:0, exposure:0, offer_level:0, theme:'generaliste' };
     const answered = {};
-    const REQUIRED = { 1:['q1','q2'], 2:['q5'], 3:['q8'], 4:['q10'], 5:['q14'] };
+    const REQUIRED = { 1:['q1','q2','q3'], 2:['q5'], 3:['q8'], 4:['q10'], 5:['q14'] };
     let currentBloc = 0;
 
     function updateProgress() {
-      const totalSteps = 15; const count = Object.keys(answered).length; const pct = Math.round((count / totalSteps) * 100);
+      const totalSteps = 15;
+      const count = Object.keys(answered).length;
+      const pct = Math.round((count / totalSteps) * 100);
       document.getElementById('progressFill').style.width = pct + '%';
       document.getElementById('progressCount').textContent = count + ' / ' + totalSteps;
     }
@@ -306,56 +354,153 @@ import InternalHeader from '../components/InternalHeader.astro';
     }
     window.startDiag = startDiag;
 
-    function applyDeltas(deltas, sign) { if (!deltas) return; for (const [k, v] of Object.entries(deltas)) { if (k === 'theme') { if (sign > 0) S.theme = v; } else S[k] = Math.max(0, (S[k] || 0) + sign * v); } }
+    function applyDeltas(deltas, sign) {
+      if (!deltas) return;
+      for (const [k, v] of Object.entries(deltas)) {
+        if (k === 'theme') { if (sign > 0) S.theme = v; }
+        else S[k] = Math.max(0, (S[k] || 0) + sign * v);
+      }
+    }
 
     function pick(label, qKey, value, deltas) {
       if (answered[qKey]) applyDeltas(answered[qKey].deltas, -1);
-      applyDeltas(deltas, 1); answered[qKey] = { value, deltas };
+      applyDeltas(deltas, 1);
+      answered[qKey] = { value, deltas };
       const opts = document.getElementById(qKey).querySelectorAll('.opt-v3');
-      opts.forEach(o => o.classList.remove('selected')); label.classList.add('selected');
-      updateProgress(); checkBloc(currentBloc);
+      opts.forEach(o => o.classList.remove('selected'));
+      label.classList.add('selected');
+      updateProgress();
+      checkBloc(currentBloc);
     }
     window.pick = pick;
 
-    function checkBloc(num) { const req = REQUIRED[num] || []; const ok = req.every(q => answered[q]); const btn = document.getElementById('next' + num); if (btn) btn.disabled = !ok; }
+    function checkBloc(num) {
+      const req = REQUIRED[num] || [];
+      const ok = req.every(q => answered[q]);
+      const btn = document.getElementById('next' + num);
+      if (btn) btn.disabled = !ok;
+    }
 
     function goBloc(num) {
-      for (let i = 1; i <= 5; i++) { const e = document.getElementById('bloc' + i); if (e) e.classList.add('hidden'); }
-      document.getElementById('emailSection').classList.add('hidden'); document.getElementById('bloc' + num).classList.remove('hidden');
-      currentBloc = num; checkBloc(num); window.scrollTo({ top: 0, behavior: 'smooth' });
+      for (let i = 1; i <= 5; i++) {
+        const e = document.getElementById('bloc' + i);
+        if (e) e.classList.add('hidden');
+      }
+      document.getElementById('emailSection').classList.add('hidden');
+      const t = document.getElementById('bloc' + num);
+      if (t) t.classList.remove('hidden');
+      currentBloc = num;
+      checkBloc(num);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     window.goBloc = goBloc;
 
-    function showEmail() { document.getElementById('bloc5').classList.add('hidden'); document.getElementById('emailSection').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function showEmail() {
+      document.getElementById('bloc5').classList.add('hidden');
+      document.getElementById('emailSection').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     window.showEmail = showEmail;
 
-    function showResult() {
-      document.getElementById('diagSection').classList.add('hidden'); document.getElementById('emailSection').classList.add('hidden');
-      document.getElementById('progressWrap').classList.add('hidden');
-      
-      let pk = 'prise_de_fonction'; if (S.isolation >= 2) pk = 'elu_isole'; if (S.pressure >= 2) pk = 'elu_surcharge';
-      const PROFILES = {
-        prise_de_fonction: { title: 'Élu·e en prise de fonction', summary:'Phase de découverte de vos responsabilités réelles.', needs:['Clarifier le rôle','Circuits de décision'], helps:['Bibliothèque MARYAN','Cadrage méthodo'] },
-        elu_isole: { title: 'Élu·e en solitude stratégique', summary:'Charge de décision lourde sans appui stable.', needs:['Sortir de l\'isolement','Sécuriser les arbitrages'], helps:['Copilote MARYAN Plus','Cadrage expert'] },
-        elu_surcharge: { title: 'Élu·e en surcharge mentale', summary:'Gestion de crise permanente ou multi-dossiers.', needs:['Priorisation','Organisation du mandat'], helps:['Méthodes MARYAN','Appui 3.5 Sonnet'] }
+    function getSituationLabel(value) {
+      const map = {
+        decision: "une décision à prendre",
+        tension: "une situation tendue",
+        prise_parole: "une prise de parole à préparer",
+        technique: "un sujet encore mal maîtrisé",
+        recul: "un besoin de recul"
       };
-      const p = PROFILES[pk];
-      const OFFERS = [{name:'MARYAN Essentiel', desc:'Libre accès aux ressources.'}, {name:'MARYAN Veille & Appui', desc:'Suivi personnalisé.'}, {name:'MARYAN Cadrage Stratégique', desc:'Un rendez-vous mensuel.'}, {name:'MARYAN Hub Expert', desc:'Accès direct aux spécialistes.'}];
-      const o = OFFERS[Math.min(3, S.offer_level || 1)];
+      return map[value] || "une situation à clarifier";
+    }
 
-      document.getElementById('rTitle').textContent = p.title; document.getElementById('rSummary').textContent = p.summary;
+    function buildProfile() {
+      const q3 = answered.q3?.value;
+      const q5 = answered.q5?.value;
+
+      if (S.isolation >= 2) {
+        return {
+          title: "Vous avez surtout besoin d'un appui stable",
+          summary: "Vous êtes aujourd'hui confronté·e à " + getSituationLabel(q3) + ", avec un besoin visible de soutien, de méthode et de recul pour ne pas tout porter seul·e.",
+          needs: ["Sortir de l'isolement dans vos arbitrages", "Clarifier ce qui relève du fond, du timing et de la posture", "Sécuriser vos décisions dans les moments sensibles"],
+          helps: ["Un copilote MARYAN pour cadrer vos situations au fil de l'eau", "Des repères concrets pour éviter les erreurs inutiles", "Un relais humain si le sujet devient trop sensible"],
+          offer: { name: "MARYAN Veille & Appui", desc: "Un cadre plus régulier pour vous aider à tenir le cap sans rester seul·e." }
+        };
+      }
+
+      if (S.pressure >= 2 || q3 === 'tension') {
+        return {
+          title: "Votre point sensible aujourd'hui, c'est la pression",
+          summary: "Vous arrivez avec " + getSituationLabel(q3) + " et un niveau de tension qui demande surtout du cadrage, de la priorisation et des points de vigilance clairs.",
+          needs: ["Éviter les réactions trop rapides", "Remettre de l'ordre dans ce qui vous expose vraiment", "Préparer une réponse ou une posture plus solide"],
+          helps: ["Des questions de cadrage pour y voir clair vite", "Des trames utiles sans vous enfermer dans des formules toutes faites", "Des méthodes simples pour reprendre la main"],
+          offer: { name: "MARYAN Essentiel", desc: "L'accès aux ressources et au copilote pour clarifier rapidement vos situations." }
+        };
+      }
+
+      if (answered.q2?.value === 'debut') {
+        return {
+          title: "Vous êtes encore en phase d'appropriation du mandat",
+          summary: "Vous n'êtes pas nécessairement en difficulté, mais vous avez besoin de repères solides pour gagner en assurance, en lisibilité et en autonomie.",
+          needs: ["Clarifier votre rôle et vos marges de manœuvre", "Comprendre les bons réflexes du mandat", "Trouver le bon niveau d'appui sans dépendre de tout le monde"],
+          helps: ["Une bibliothèque de ressources ciblées", "Des réponses adaptées à votre réalité de terrain", "Un appui progressif pour monter en confiance"],
+          offer: { name: "MARYAN Essentiel", desc: "Une base solide pour prendre vos marques et avancer plus sereinement." }
+        };
+      }
+
+      return {
+        title: "Vous avez surtout besoin d'un appui de clarification",
+        summary: "Votre situation actuelle appelle moins une réponse toute faite qu'un bon cadrage. MARYAN peut vous aider à distinguer ce qui est prioritaire, ce qui vous expose, et ce qui peut réellement vous faire avancer.",
+        needs: ["Prendre du recul avant de réagir", "Identifier les bons points de vigilance", "Mieux structurer votre manière d'avancer"],
+        helps: ["Un appui conversationnel pour clarifier vos situations", "Des ressources ciblées selon vos sujets", "Un accompagnement plus humain si nécessaire"],
+        offer: {
+          name: q5 === 'oui' ? "MARYAN Essentiel" : "MARYAN Cadrage Stratégique",
+          desc: q5 === 'oui' ? "Un appui souple pour garder de la clarté dans votre mandat." : "Un niveau d'appui plus structuré pour vos séquences les plus sensibles."
+        }
+      };
+    }
+
+    async function persistDiagnostic(email) {
+      const payload = {
+        answers: Object.fromEntries(Object.entries(answered).map(([k, v]) => [k, v.value])),
+        scores: { institutional: S.institutional, pressure: S.pressure, isolation: S.isolation, comm_public: S.comm_public, exposure: S.exposure, human: S.human, theme: S.theme },
+        email: email || null,
+        has_email: !!email,
+        submitted_at: new Date().toISOString()
+      };
+      try {
+        fetch('/api/diagnostic-capture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => {});
+      } catch(e) {}
+      try { localStorage.setItem('maryan_diag_last', JSON.stringify(payload)); } catch(e) {}
+    }
+
+    async function showResult() {
+      const email = document.getElementById('emailInput')?.value?.trim() || null;
+      await persistDiagnostic(email);
+
+      document.getElementById('diagSection').classList.add('hidden');
+      document.getElementById('emailSection').classList.add('hidden');
+      document.getElementById('progressWrap').classList.add('hidden');
+
+      const p = buildProfile();
+      document.getElementById('rTitle').textContent = p.title;
+      document.getElementById('rSummary').textContent = p.summary;
       document.getElementById('rNeeds').innerHTML = p.needs.map(n => '<li>' + n + '</li>').join('');
       document.getElementById('rHelps').innerHTML = p.helps.map(h => '<li>' + h + '</li>').join('');
-      document.getElementById('offerName').textContent = o.name; document.getElementById('offerDesc').textContent = o.desc;
+      document.getElementById('offerName').textContent = p.offer.name;
+      document.getElementById('offerDesc').textContent = p.offer.desc;
 
-      document.getElementById('resultSection').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => { 
-        document.getElementById('barTech').style.width = '70%';
-        document.getElementById('barConflict').style.width = '55%';
-        document.getElementById('barExpo').style.width = '85%';
+      try { localStorage.setItem('maryan_profile', JSON.stringify({ key: 'diag', title: p.title, summary: p.summary, theme: S.theme, themeLabel: S.theme, offerLevel: S.offer_level, offerName: p.offer.name, tags: [] })); } catch(e) {}
+
+      document.getElementById('resultSection').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      setTimeout(() => {
+        document.getElementById('barTech').style.width = Math.min(90, 35 + S.institutional * 12) + '%';
+        document.getElementById('barConflict').style.width = Math.min(90, 30 + S.pressure * 15 + S.isolation * 6) + '%';
+        document.getElementById('barExpo').style.width = Math.min(90, 30 + S.exposure * 15 + S.comm_public * 8) + '%';
       }, 400);
     }
     window.showResult = showResult;
-    window.submitEmail = showResult; // Simplified for MVP
+    window.submitEmail = showResult;
   </script>
 </BaseLayout>
