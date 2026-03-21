@@ -150,9 +150,11 @@ import InternalHeader from '../components/InternalHeader.astro';
   .align-center { align-items: center; }
   
   .about-card { padding: 3rem; }
+  .about-card.highlight-neon { border: 2px solid var(--neon); background: rgba(57, 255, 20, 0.02); }
+  
   .highlight-text { margin-top: 2rem; padding: 1.5rem; background: var(--bg); border-left: 4px solid var(--accent-red); font-weight: 700; color: var(--deep); }
   
-  .about-text-side h3 { font-size: 2rem; margin: 1.5rem 0; line-height: 1.2; }
+  .about-text-side h3 { font-size: clamp(1.5rem, 4vw, 2.25rem); margin: 1.5rem 0; line-height: 1.2; }
   .about-text-side p { font-size: 1.1rem; line-height: 1.6; color: #54636C; margin-bottom: 1.5rem; }
 
   .about-features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
@@ -162,15 +164,24 @@ import InternalHeader from '../components/InternalHeader.astro';
   .compare-row { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--border); }
   .compare-col h4 { font-size: 1.25rem; margin-bottom: 1rem; }
 
-  .v3-separator { border: none; border-top: 1px solid var(--border); margin-bottom: 4rem; }
+  .v3-separator { border: none; border-top: 1px solid var(--border); margin: 6rem 0 4rem; }
   .about-footer-logo { display: flex; align-items: center; gap: 3rem; }
   .signature-box { flex: 1; }
   .signature-box p { font-size: 1.1rem; color: var(--deep); font-weight: 600; margin-bottom: 0.5rem; }
   .signature-sub { font-size: 0.9rem !important; opacity: 0.6; font-weight: 400 !important; }
   .link-red { color: var(--accent-red); text-decoration: underline; }
 
+  @media (max-width: 992px) {
+    .grid-2 { grid-template-columns: 1fr; gap: 3rem; }
+    .about-card { padding: 2rem; }
+  }
+
   @media (max-width: 768px) {
-    .grid-2 { grid-template-columns: 1fr; gap: 2rem; }
+    .section-v3 { padding: 4rem 0; }
+    .about-main { padding-bottom: 4rem; }
+    .large-p { font-size: 1.25rem; }
+    .about-intro-text p { font-size: 1.1rem; }
     .about-footer-logo { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .about-features-grid { grid-template-columns: 1fr; }
   }
 </style>
