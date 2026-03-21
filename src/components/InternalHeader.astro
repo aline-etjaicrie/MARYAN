@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  label?: string;
+  isDark?: boolean;
+}
+
+const { title, subtitle, label, isDark = false } = Astro.props;
+---
+<header class={`internal-header-v3 ${isDark ? 'dark' : ''}`}>
+  <div class="container-narrow text-center">
+    {label && <span class="label-v3">{label}</span>}
+    <h1>{title}</h1>
+    {subtitle && <p class="intro-v3">{subtitle}</p>}
+  </div>
+</header>
+
+<style>
+  .internal-header-v3 {
+    padding: 8rem 0 4rem;
+    background: transparent;
+  }
+  .internal-header-v3.dark {
+    background: var(--deep);
+    color: white;
+  }
+  .internal-header-v3.dark h1 { color: white; }
+  .internal-header-v3.dark .label-v3 { color: var(--neon); }
+  .internal-header-v3.dark .label-v3::before { background: var(--accent-red); }
+  
+  h1 { 
+    font-size: clamp(2.5rem, 6vw, 4rem); 
+    margin: 1.5rem 0 2.5rem;
+    line-height: 1.1;
+  }
+  .intro-v3 {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #54636C;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .internal-header-v3.dark .intro-v3 { color: rgba(255,255,255,0.7); }
+</style>

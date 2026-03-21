@@ -15,6 +15,27 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
+   MATIERE & SIGNAL: THE MARYAN TEXTURE SYSTEM
+   ────────────────────────────────────────────────────────────────────────── */
+.grain-overlay {
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.bg-grid-v3 {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px; mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+.glow-v3 {
+  position: absolute; width: 40vw; height: 40vw; border-radius: 50%;
+  filter: blur(100px); opacity: 0.12; pointer-events: none; z-index: 0;
+}
+.glow-red { background: var(--accent-red); top: -10%; left: -10%; }
+.glow-blue { background: #3B82F6; bottom: -10%; right: -10%; }
+
+/* ──────────────────────────────────────────────────────────────────────────
    BASE RESET & TYPOGRAPHY
    ────────────────────────────────────────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
