@@ -1,0 +1,429 @@
+---
+// src/components/chat/ChatWidget.astro
+---
+<div id="maryan-chat-root" class="maryan-chat-v3">
+  <!-- Trigger Button -->
+  <button id="chat-trigger" class="chat-trigger-v3">
+    <div class="trigger-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <span class="trigger-label">Échanger avec MARYAN</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div id="chat-window" class="chat-window-v3 hidden">
+    <div class="chat-header-v3">
+      <div class="header-info">
+        <span class="header-title">MARYAN Copilote</span>
+        <span id="chat-mode-badge" class="mode-badge">Mode Découverte</span>
+      </div>
+      <button id="chat-close" class="chat-close-v3">×</button>
+    </div>
+
+    <div id="chat-messages" class="chat-messages-v3">
+      <div class="msg bot-msg">
+        <p>Bonjour ! Je suis <strong>MARYAN</strong>, votre copilote de mandat local.</p>
+        <p>Comment puis-je vous aider aujourd'hui ? Vous pouvez me décrire une situation, préparer une prise de parole ou clarifier un sujet technique.</p>
+      </div>
+    </div>
+
+    <div id="chat-suggestions" class="chat-suggestions-v3">
+      <button class="suggestion-btn">Comment préparer une réunion publique ?</button>
+      <button class="suggestion-btn">Gérer une critique sur les réseaux sociaux</button>
+      <button class="suggestion-btn">Expliquer une décision difficile</button>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea id="chat-input" placeholder="Écrivez votre message..." rows="1"></textarea>
+      <button id="chat-send" class="chat-send-v3">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
+    
+    <div class="chat-footer-v3">
+      <p id="chat-limit-msg">Mode gratuit : <span id="msg-count">0</span>/3 messages</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .maryan-chat-v3 {
+    --chat-accent: #1E2A32;
+    --chat-terracotta: #D97757;
+    --chat-bg: #FCFAF6;
+    --chat-text: #1E2A32;
+    --chat-muted: #64748B;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  .chat-trigger-v3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--chat-accent);
+    color: white;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(30, 42, 50, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .chat-trigger-v3:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(30, 42, 50, 0.3);
+  }
+
+  .trigger-icon {
+    display: flex;
+    align-items: center; justify-content: center;
+  }
+
+  .trigger-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .chat-window-v3 {
+    position: absolute;
+    bottom: calc(100% + 1rem);
+    right: 0;
+    width: 380px;
+    height: 550px;
+    background: white;
+    border-radius: 24px;
+    border: 1px solid rgba(30, 42, 50, 0.1);
+    box-shadow: 0 20px 50px rgba(30, 42, 50, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chat-header-v3 {
+    padding: 1.25rem 1.5rem;
+    background: var(--chat-accent);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .header-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .mode-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255,255,255,0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .chat-close-v3 {
+    background: none; border: none;
+    color: white; font-size: 1.5rem;
+    cursor: pointer; opacity: 0.7;
+  }
+
+  .chat-messages-v3 {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: var(--chat-bg);
+  }
+
+  .msg {
+    max-width: 85%;
+    padding: 0.85rem 1.1rem;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .bot-msg {
+    background: white;
+    color: var(--chat-text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(30, 42, 50, 0.05);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  }
+
+  .user-msg {
+    background: var(--chat-terracotta);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 8px rgba(217, 119, 87, 0.2);
+  }
+
+  .chat-suggestions-v3 {
+    padding: 0.5rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    background: var(--chat-bg);
+    border-top: 1px solid rgba(0,0,0,0.03);
+  }
+
+  .suggestion-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 0.85rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--chat-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .suggestion-btn:hover {
+    border-color: var(--chat-terracotta);
+    color: var(--chat-terracotta);
+  }
+
+  .chat-input-area {
+    padding: 1rem 1.5rem 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    background: white;
+  }
+
+  textarea {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: none;
+    max-height: 120px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus {
+    border-color: var(--chat-terracotta);
+  }
+
+  .chat-send-v3 {
+    width: 44px; height: 44px;
+    background: var(--chat-terracotta);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .chat-send-v3:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+
+  .chat-footer-v3 {
+    padding: 0.5rem 1.5rem;
+    background: white;
+    border-top: 1px solid rgba(0,0,0,0.03);
+    text-align: center;
+  }
+
+  #chat-limit-msg {
+    font-size: 0.75rem;
+    color: var(--chat-muted);
+    margin: 0;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    .chat-window-v3 {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      border-radius: 0;
+    }
+    .maryan-chat-v3 {
+      bottom: 1rem; right: 1rem;
+    }
+  }
+
+  /* Chat loading state */
+  .bot-msg.loading::after {
+    content: " . . .";
+    display: inline-block;
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { content: " ."; }
+    40% { content: " .."; }
+    60% { content: " ..."; }
+  }
+</style>
+
+<script is:inline>
+  class MaryanChat {
+    constructor() {
+      this.isOpen = false;
+      this.msgCount = 0;
+      this.limit = 3;
+      this.messages = [];
+      this.profile = null;
+
+      this.elements = {
+        root: document.getElementById('maryan-chat-root'),
+        trigger: document.getElementById('chat-trigger'),
+        window: document.getElementById('chat-window'),
+        close: document.getElementById('chat-close'),
+        messages: document.getElementById('chat-messages'),
+        input: document.getElementById('chat-input'),
+        send: document.getElementById('chat-send'),
+        count: document.getElementById('msg-count'),
+        badge: document.getElementById('chat-mode-badge'),
+        suggestions: document.getElementById('chat-suggestions')
+      };
+
+      this.init();
+    }
+
+    init() {
+      this.elements.trigger.addEventListener('click', () => this.toggle());
+      this.elements.close.addEventListener('click', () => this.toggle());
+      this.elements.send.addEventListener('click', () => this.handleSend());
+      this.elements.input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          this.handleSend();
+        }
+      });
+
+      // Suggestions
+      document.querySelectorAll('.suggestion-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.elements.input.value = btn.textContent;
+          this.handleSend();
+        });
+      });
+
+      this.checkProfile();
+    }
+
+    checkProfile() {
+      try {
+        const stored = localStorage.getItem('maryan_profile');
+        if (stored) {
+          this.profile = JSON.parse(stored);
+          this.elements.badge.textContent = "Mode Personnalisé";
+          this.elements.badge.style.background = "#D97757";
+          this.limit = 5;
+          document.getElementById('msg-count').parentNode.innerHTML = `Profil détecté : <strong>${this.profile.title}</strong>`;
+        }
+      } catch(e) {}
+    }
+
+    toggle() {
+      this.isOpen = !this.isOpen;
+      this.elements.window.classList.toggle('hidden', !this.isOpen);
+      if (this.isOpen) {
+        this.elements.input.focus();
+        // Hide trigger label on open
+        this.elements.trigger.querySelector('.trigger-label').classList.add('hidden');
+      } else {
+        this.elements.trigger.querySelector('.trigger-label').classList.remove('hidden');
+      }
+    }
+
+    addMessage(text, role) {
+      const div = document.createElement('div');
+      div.className = `msg ${role === 'user' ? 'user-msg' : 'bot-msg'}`;
+      div.innerHTML = text.replace(/\n/g, '<br>');
+      this.elements.messages.appendChild(div);
+      this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
+      
+      if (role === 'user') {
+        this.messages.push({ role: 'user', content: text });
+      } else {
+        this.messages.push({ role: 'assistant', content: text });
+      }
+    }
+
+    async handleSend() {
+      const text = this.elements.input.value.trim();
+      if (!text || (this.msgCount >= this.limit && !this.profile)) return;
+
+      this.elements.input.value = '';
+      this.elements.suggestions.classList.add('hidden');
+      this.addMessage(text, 'user');
+      this.msgCount++;
+      if (this.elements.count) this.elements.count.textContent = this.msgCount;
+
+      // Bot loading
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'msg bot-msg loading';
+      loadingDiv.textContent = 'MARYAN réfléchit';
+      this.elements.messages.appendChild(loadingDiv);
+      this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: this.messages,
+            profile: this.profile
+          })
+        });
+
+        const data = await res.json();
+        loadingDiv.remove();
+
+        if (data.reply) {
+          this.addMessage(data.reply, 'bot');
+        } else {
+          this.addMessage("Désolé, j'ai rencontré une difficulté matérielle. Reprenons.", 'bot');
+        }
+
+        if (this.msgCount >= this.limit) {
+          this.addMessage(`Vous avez atteint la limite de ${this.limit} messages en mode gratuit. <br><br> <a href="/diagnostic" style="color:var(--chat-terracotta);font-weight:700;">Faites votre diagnostic</a> pour débloquer plus de messages et personnaliser l'agent.`, 'bot');
+        }
+
+      } catch (e) {
+        loadingDiv.remove();
+        this.addMessage("Une erreur de communication est survenue.", 'bot');
+      }
+    }
+  }
+
+  // Auto-init
+  document.addEventListener('DOMContentLoaded', () => {
+    window.maryanChat = new MaryanChat();
+  });
+</script>
