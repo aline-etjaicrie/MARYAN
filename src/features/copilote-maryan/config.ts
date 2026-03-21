@@ -217,13 +217,13 @@ const MODE_PROMPTS: Record<string, string> = {
 // ─── BUILDER PRINCIPAL ──────────────────────────────────────────────────────
 export function buildSystemPrompt(profile: MaryanProfile | null, mode?: string): string {
   const profileContext = profile
-    ? `Contexte utilisateur :
-- Profil : ${profile.title}
-- Délégation : ${profile.themeLabel}
-- Situation : ${profile.summary}
-- Niveau d'appui préconisé : ${profile.offerName}
+    ? `C'est une version PERSONNALISÉE de MARYAN. Tu parles à :
+- Nom/Rôle : ${profile.title}
+- Thématique/Délégation : ${profile.themeLabel}
+- Synthèse de sa situation : ${profile.summary}
+- Niveau d'appui MARYAN préconisé : ${profile.offerName}
 
-Adapte ton ton et tes propositions à ce profil. Ne standardise pas les réponses.`
+RÈGLE D'OR : Ton ton et tes conseils DOIVENT impérativement tenir compte de ces données. Si l'utilisateur est un maire, ta posture est différente de s'il est un adjoint ou un conseiller d'opposition. Chaque mot doit sonner juste par rapport à son mandat réel. Ne mentionne pas explicitement que tu lis ces infos, agis juste en conséquence.`
     : `Contexte utilisateur : Mode découverte (pas de données sur l'élu). Reste généraliste mais structurant.`;
 
   const modePrompt = mode && MODE_PROMPTS[mode]

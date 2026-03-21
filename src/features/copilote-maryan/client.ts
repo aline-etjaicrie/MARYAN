@@ -210,7 +210,7 @@ function initCopilot(rootElement: HTMLElement) {
     try {
       const reply = await getAssistantReply({
         endpoint,
-        profile: state.mode === 'profil' ? state.userProfile : null,
+        profile: state.userProfile, // Toujours envoyer si dispo pour démontrer la force de Maryan
         history: state.history,
         message: text
       });
