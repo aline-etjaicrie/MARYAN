@@ -3,6 +3,6 @@ import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://maryan.vercel.app',
-  output: 'hybrid',
+  output: 'static',
   adapter: vercel()
 });
