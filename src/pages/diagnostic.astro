@@ -2,340 +2,649 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Diagnostic gratuit — MARYAN" description="En 5 minutes, identifiez votre profil de situation et les appuis les plus utiles pour la suite de votre mandat.">
-  <header class="site-header">
+  
+  <!-- BACKGROUND AMBIANCE (Sync with Home) -->
+  <div class="page-ambient-bg">
+    <img src="/hero-bg.png" alt="" />
+    <div class="ambient-overlay"></div>
+  </div>
+
+  <header class="site-header diag-header">
     <div class="container header-inner">
-      <div>
+      <div class="brand-group">
         <a href="/" class="brand">MARYAN</a>
-        <p class="brand-sub">appui intelligent pour élus municipaux</p>
+        <p class="brand-sub">copilote de mandat</p>
       </div>
-      <a href="/" class="back-link">← Accueil</a>
+      <a href="/" class="back-link-v3">← Retour à l'accueil</a>
     </div>
   </header>
 
-  <div class="progress-wrap hidden" id="progressWrap">
+  <div class="progress-wrap-v3 hidden" id="progressWrap">
     <div class="container">
-      <div class="progress-inner">
-        <span class="progress-label">Progression</span>
-        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <span class="progress-count" id="progressCount">0 / 15</span>
+      <div class="progress-inner-v3">
+        <div class="progress-track-v3">
+          <div class="progress-fill-v3" id="progressFill" style="width:0%"></div>
+        </div>
+        <span class="progress-count-v3" id="progressCount">0 / 15</span>
       </div>
     </div>
   </div>
 
-  <main class="diag-main">
-    <div id="introSection" class="intro">
-      <span class="kicker">Diagnostic gratuit · 5 minutes</span>
-      <h1>Votre situation,<br /><em>vos vrais besoins</em></h1>
-      <p class="intro-lead">Le soir de l'élection, tout va très vite. Après, aussi. Ce diagnostic vous aide à faire le point sur votre situation, vos difficultés prioritaires et la forme d'appui la plus utile pour la suite de votre mandat.</p>
-      <p class="intro-lead intro-meta">Durée estimée : 5 minutes</p>
-      <div class="chips">
-        <span class="chip"><span class="chip-dot"></span>15 questions</span>
-        <span class="chip"><span class="chip-dot"></span>Résultat immédiat</span>
-        <span class="chip"><span class="chip-dot"></span>Restitution claire</span>
-        <span class="chip"><span class="chip-dot"></span>100 % confidentiel</span>
+  <main class="diag-main-v3">
+    <!-- INTRO SECTION -->
+    <div id="introSection" class="diag-card intro-v3">
+      <div class="diag-card-inner">
+        <span class="label-v3">Diagnostic de situation · 5 minutes</span>
+        <h1>Votre situation,<br /><span class="text-terracotta">vos vrais besoins</span></h1>
+        <p class="intro-lead-v3">Le soir de l'élection, tout va très vite. Ce diagnostic vous aide à faire le point sur votre situation réelle, vos priorités et la forme d'appui la plus utile pour votre mandat.</p>
+        
+        <div class="chips-v3">
+          <span class="chip-v3">15 questions</span>
+          <span class="chip-v3">Résultat immédiat</span>
+          <span class="chip-v3">100 % confidentiel</span>
+        </div>
+
+        <div class="diag-actions">
+          <button class="btn-primary-v3" onclick="startDiag()">Commencer le diagnostic →</button>
+          <p class="btn-hint-v3">Gratuit et sans engagement</p>
+        </div>
       </div>
-      <button class="btn-start" onclick="startDiag()">Commencer →</button>
     </div>
 
+    <!-- QUESTIONS SECTION -->
     <div id="diagSection" class="hidden">
-      <div id="bloc1">
-        <div class="bloc-header">
-          <p class="bloc-num">Bloc 1 sur 5 · Votre situation</p>
-          <h2 class="bloc-title">Votre mandat et votre contexte</h2>
+      <!-- Les blocs seront affichés ici via JS -->
+      <div id="bloc1" class="bloc-v3">
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 1 sur 5 · Votre situation</p>
+          <h2 class="bloc-title-v3">Votre mandat et votre contexte</h2>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">1. Quel est votre mandat ?</p>
-          <div class="options" id="q1">
-            <label class="opt" onclick="pick(this,'q1','maire',{institutional:1,exposure:2})"><input type="radio" name="q1" /><span class="dot"></span>Maire</label>
-            <label class="opt" onclick="pick(this,'q1','adjoint',{institutional:1,pressure:2,exposure:1})"><input type="radio" name="q1" /><span class="dot"></span>Adjoint·e au maire</label>
-            <label class="opt" onclick="pick(this,'q1','conseiller_maj',{isolation:1})"><input type="radio" name="q1" /><span class="dot"></span>Conseiller·e municipal·e (majorité)</label>
-            <label class="opt" onclick="pick(this,'q1','conseiller_opp',{isolation:2,pressure:1})"><input type="radio" name="q1" /><span class="dot"></span>Conseiller·e municipal·e (opposition)</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">1. Quel est votre mandat ?</p>
+          <div class="options-v3" id="q1">
+            <label class="opt-v3" onclick="pick(this,'q1','maire',{institutional:1,exposure:2})"><input type="radio" name="q1" /><span class="dot-v3"></span>Maire</label>
+            <label class="opt-v3" onclick="pick(this,'q1','adjoint',{institutional:1,pressure:2,exposure:1})"><input type="radio" name="q1" /><span class="dot-v3"></span>Adjoint·e au maire</label>
+            <label class="opt-v3" onclick="pick(this,'q1','conseiller_maj',{isolation:1})"><input type="radio" name="q1" /><span class="dot-v3"></span>Conseiller·e municipal·e (majorité)</label>
+            <label class="opt-v3" onclick="pick(this,'q1','conseiller_opp',{isolation:2,pressure:1})"><input type="radio" name="q1" /><span class="dot-v3"></span>Conseiller·e municipal·e (opposition)</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">2. Depuis combien de temps exercez-vous ?</p>
-          <div class="options" id="q2">
-            <label class="opt" onclick="pick(this,'q2','debut',{experience:0,isolation:2,institutional:2})"><input type="radio" name="q2" /><span class="dot"></span>Je débute (moins de 6 mois)</label>
-            <label class="opt" onclick="pick(this,'q2','moins2',{experience:1,isolation:1})"><input type="radio" name="q2" /><span class="dot"></span>Moins de 2 ans</label>
-            <label class="opt" onclick="pick(this,'q2','entre26',{experience:2})"><input type="radio" name="q2" /><span class="dot"></span>Entre 2 et 6 ans</label>
-            <label class="opt" onclick="pick(this,'q2','plus6',{experience:3})"><input type="radio" name="q2" /><span class="dot"></span>Plus de 6 ans</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">2. Depuis combien de temps exercez-vous ?</p>
+          <div class="options-v3" id="q2">
+            <label class="opt-v3" onclick="pick(this,'q2','debut',{experience:0,isolation:2,institutional:2})"><input type="radio" name="q2" /><span class="dot-v3"></span>Je débute (moins de 6 mois)</label>
+            <label class="opt-v3" onclick="pick(this,'q2','moins2',{experience:1,isolation:1})"><input type="radio" name="q2" /><span class="dot-v3"></span>Moins de 2 ans</label>
+            <label class="opt-v3" onclick="pick(this,'q2','entre26',{experience:2})"><input type="radio" name="q2" /><span class="dot-v3"></span>Entre 2 et 6 ans</label>
+            <label class="opt-v3" onclick="pick(this,'q2','plus6',{experience:3})"><input type="radio" name="q2" /><span class="dot-v3"></span>Plus de 6 ans</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">3. Quelle est la taille de votre commune ?</p>
-          <div class="options" id="q3">
-            <label class="opt" onclick="pick(this,'q3','tres_petite',{isolation:2})"><input type="radio" name="q3" /><span class="dot"></span>Moins de 1 000 habitants</label>
-            <label class="opt" onclick="pick(this,'q3','petite',{isolation:1})"><input type="radio" name="q3" /><span class="dot"></span>1 000 à 5 000 habitants</label>
-            <label class="opt" onclick="pick(this,'q3','moyenne',{})"><input type="radio" name="q3" /><span class="dot"></span>5 000 à 20 000 habitants</label>
-            <label class="opt" onclick="pick(this,'q3','grande',{pressure:1,exposure:1})"><input type="radio" name="q3" /><span class="dot"></span>Plus de 20 000 habitants</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">3. Quelle est la taille de votre commune ?</p>
+          <div class="options-v3" id="q3">
+            <label class="opt-v3" onclick="pick(this,'q3','tres_petite',{isolation:2})"><input type="radio" name="q3" /><span class="dot-v3"></span>Moins de 1 000 habitants</label>
+            <label class="opt-v3" onclick="pick(this,'q3','petite',{isolation:1})"><input type="radio" name="q3" /><span class="dot-v3"></span>1 000 à 5 000 habitants</label>
+            <label class="opt-v3" onclick="pick(this,'q3','moyenne',{})"><input type="radio" name="q3" /><span class="dot-v3"></span>5 000 à 20 000 habitants</label>
+            <label class="opt-v3" onclick="pick(this,'q3','grande',{pressure:1,exposure:1})"><input type="radio" name="q3" /><span class="dot-v3"></span>Plus de 20 000 habitants</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">4. Avez-vous une activité professionnelle en parallèle ?</p>
-          <div class="options" id="q4">
-            <label class="opt" onclick="pick(this,'q4','oui_plein',{pressure:2,isolation:1})"><input type="radio" name="q4" /><span class="dot"></span>Oui, à temps plein</label>
-            <label class="opt" onclick="pick(this,'q4','oui_partiel',{pressure:1})"><input type="radio" name="q4" /><span class="dot"></span>Oui, à temps partiel</label>
-            <label class="opt" onclick="pick(this,'q4','non',{})"><input type="radio" name="q4" /><span class="dot"></span>Non</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">4. Avez-vous une activité professionnelle en parallèle ?</p>
+          <div class="options-v3" id="q4">
+            <label class="opt-v3" onclick="pick(this,'q4','oui_plein',{pressure:2,isolation:1})"><input type="radio" name="q4" /><span class="dot-v3"></span>Oui, à temps plein</label>
+            <label class="opt-v3" onclick="pick(this,'q4','oui_partiel',{pressure:1})"><input type="radio" name="q4" /><span class="dot-v3"></span>Oui, à temps partiel</label>
+            <label class="opt-v3" onclick="pick(this,'q4','non',{})"><input type="radio" name="q4" /><span class="dot-v3"></span>Non</label>
           </div>
         </div>
 
-        <div class="nav-btns">
-          <button class="btn-next" id="next1" onclick="goBloc(2)" disabled>Continuer →</button>
+        <div class="nav-btns-v3">
+          <button class="btn-primary-v3" id="next1" onclick="goBloc(2)" disabled>Continuer →</button>
         </div>
       </div>
 
-      <div id="bloc2" class="hidden">
-        <div class="bloc-header">
-          <p class="bloc-num">Bloc 2 sur 5 · Votre environnement</p>
-          <h2 class="bloc-title">L'appui que vous anticipez</h2>
+      <div id="bloc2" class="hidden bloc-v3">
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 2 sur 5 · Votre environnement</p>
+          <h2 class="bloc-title-v3">L'appui que vous anticipez</h2>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">5. Pensez-vous que vous serez suffisamment accompagné·e dans votre mandat ?</p>
-          <div class="options" id="q5">
-            <label class="opt" onclick="pick(this,'q5','oui',{})"><input type="radio" name="q5" /><span class="dot"></span>Oui, j'ai déjà de bons appuis autour de moi</label>
-            <label class="opt" onclick="pick(this,'q5','incertain',{isolation:1,human:1})"><input type="radio" name="q5" /><span class="dot"></span>Je ne sais pas encore, c'est incertain</label>
-            <label class="opt" onclick="pick(this,'q5','peuprobable',{isolation:2,human:1})"><input type="radio" name="q5" /><span class="dot"></span>Probablement peu — je m'attends à manquer de soutien</label>
-            <label class="opt" onclick="pick(this,'q5','non',{isolation:3,human:2})"><input type="radio" name="q5" /><span class="dot"></span>Non, je pense que je serai plutôt seul·e</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">5. Pensez-vous que vous serez suffisamment accompagné·e dans votre mandat ?</p>
+          <div class="options-v3" id="q5">
+            <label class="opt-v3" onclick="pick(this,'q5','oui',{})"><input type="radio" name="q5" /><span class="dot-v3"></span>Oui, j'ai déjà de bons appuis autour de moi</label>
+            <label class="opt-v3" onclick="pick(this,'q5','incertain',{isolation:1,human:1})"><input type="radio" name="q5" /><span class="dot-v3"></span>Je ne sais pas encore, c'est incertain</label>
+            <label class="opt-v3" onclick="pick(this,'q5','peuprobable',{isolation:2,human:1})"><input type="radio" name="q5" /><span class="dot-v3"></span>Probablement peu — je m'attends à manquer de soutien</label>
+            <label class="opt-v3" onclick="pick(this,'q5','non',{isolation:3,human:2})"><input type="radio" name="q5" /><span class="dot-v3"></span>Non, je pense que je serai plutôt seul·e</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">6. Sur quels types de soutien pouvez-vous compter (ou espérez-vous pouvoir compter) ?</p>
-          <p class="q-hint">Plusieurs réponses possibles.</p>
-          <div class="options" id="q6">
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','parti',{})"><input type="checkbox" /><span class="dot"></span>Un parti ou un groupe politique structuré</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','cabinet',{})"><input type="checkbox" /><span class="dot"></span>Un cabinet ou des collaborateurs</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','collegues',{})"><input type="checkbox" /><span class="dot"></span>Des collègues élus de confiance</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','formations',{})"><input type="checkbox" /><span class="dot"></span>Des formations ou organismes d'accompagnement</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q6','aucun',{isolation:3,human:2})"><input type="checkbox" /><span class="dot"></span>Aucun de ces appuis — je pars plutôt seul·e</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">6. Sur quels types de soutien pouvez-vous compter ?</p>
+          <p class="q-hint-v3">Plusieurs réponses possibles.</p>
+          <div class="options-v3" id="q6">
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q6','parti',{})"><input type="checkbox" /><span class="dot-v3"></span>Un parti ou un groupe politique structuré</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q6','cabinet',{})"><input type="checkbox" /><span class="dot-v3"></span>Un cabinet ou des collaborateurs</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q6','collegues',{})"><input type="checkbox" /><span class="dot-v3"></span>Des collègues élus de confiance</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q6','formations',{})"><input type="checkbox" /><span class="dot-v3"></span>Des formations ou organismes d'accompagnement</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q6','aucun',{isolation:3,human:2})"><input type="checkbox" /><span class="dot-v3"></span>Aucun de ces appuis</label>
           </div>
         </div>
 
-        <div class="nav-btns">
-          <button class="btn-prev" onclick="goBloc(1)">← Retour</button>
-          <button class="btn-next" id="next2" onclick="goBloc(3)" disabled>Continuer →</button>
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(1)">← Retour</button>
+          <button class="btn-primary-v3" id="next2" onclick="goBloc(3)" disabled>Continuer →</button>
         </div>
       </div>
 
-      <div id="bloc3" class="hidden">
-        <div class="bloc-header">
-          <p class="bloc-num">Bloc 3 sur 5 · Vos difficultés</p>
-          <h2 class="bloc-title">Ce qui vous pèse le plus</h2>
+      <div id="bloc3" class="hidden bloc-v3">
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 3 sur 5 · Vos difficultés</p>
+          <h2 class="bloc-title-v3">Ce qui vous pèse le plus</h2>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">7. Parmi ces sujets, lesquels vous posent le plus de difficultés ?</p>
-          <p class="q-hint">Choisissez jusqu'à 3 réponses.</p>
-          <div class="options" id="q7">
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','instit',{institutional:3})"><input type="checkbox" /><span class="dot"></span>Comprendre le fonctionnement institutionnel</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','role',{posture:3})"><input type="checkbox" /><span class="dot"></span>Trouver ma place et tenir mon rôle</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','admin',{institutional:2,posture:1})"><input type="checkbox" /><span class="dot"></span>Travailler avec l'administration</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','parole',{comm_public:3})"><input type="checkbox" /><span class="dot"></span>Prendre la parole en public</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','expliquer',{comm_public:2})"><input type="checkbox" /><span class="dot"></span>Expliquer mon action à mes administrés</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','reseaux',{comm_digital:3})"><input type="checkbox" /><span class="dot"></span>Gérer les réseaux sociaux</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','critiques',{pressure:2,comm_public:1})"><input type="checkbox" /><span class="dot"></span>Répondre aux critiques ou tensions</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q7','prioriser',{method:3})"><input type="checkbox" /><span class="dot"></span>Prioriser et m'organiser</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">7. Parmi ces sujets, lesquels vous posent le plus de difficultés ?</p>
+          <p class="q-hint-v3">Choisissez jusqu'à 3 réponses.</p>
+          <div class="options-v3" id="q7">
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','instit',{institutional:3})"><input type="checkbox" /><span class="dot-v3"></span>Comprendre le fonctionnement institutionnel</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','role',{posture:3})"><input type="checkbox" /><span class="dot-v3"></span>Trouver ma place et tenir mon rôle</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','admin',{institutional:2,posture:1})"><input type="checkbox" /><span class="dot-v3"></span>Travailler avec l'administration</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','parole',{comm_public:3})"><input type="checkbox" /><span class="dot-v3"></span>Prendre la parole en public</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','expliquer',{comm_public:2})"><input type="checkbox" /><span class="dot-v3"></span>Expliquer mon action à mes administrés</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','reseaux',{comm_digital:3})"><input type="checkbox" /><span class="dot-v3"></span>Gérer les réseaux sociaux</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','critiques',{pressure:2,comm_public:1})"><input type="checkbox" /><span class="dot-v3"></span>Répondre aux critiques ou tensions</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q7','prioriser',{method:3})"><input type="checkbox" /><span class="dot-v3"></span>Prioriser et m'organiser</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">8. Quel est votre rapport à la communication publique ?</p>
-          <div class="options" id="q8">
-            <label class="opt" onclick="pick(this,'q8','alaise',{})"><input type="radio" name="q8" /><span class="dot"></span>Je suis à l'aise, j'ai ma méthode</label>
-            <label class="opt" onclick="pick(this,'q8','debrouille',{comm_public:1})"><input type="radio" name="q8" /><span class="dot"></span>Je me débrouille, mais sans vraie méthode</label>
-            <label class="opt" onclick="pick(this,'q8','hesitant',{comm_public:2,pressure:1})"><input type="radio" name="q8" /><span class="dot"></span>Je suis souvent hésitant·e</label>
-            <label class="opt" onclick="pick(this,'q8','difficulte',{comm_public:3,pressure:2})"><input type="radio" name="q8" /><span class="dot"></span>C'est une vraie difficulté pour moi</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">8. Quel est votre rapport à la communication publique ?</p>
+          <div class="options-v3" id="q8">
+            <label class="opt-v3" onclick="pick(this,'q8','alaise',{})"><input type="radio" name="q8" /><span class="dot-v3"></span>Je suis à l'aise, j'ai ma méthode</label>
+            <label class="opt-v3" onclick="pick(this,'q8','debrouille',{comm_public:1})"><input type="radio" name="q8" /><span class="dot-v3"></span>Je me débrouille, mais sans vraie méthode</label>
+            <label class="opt-v3" onclick="pick(this,'q8','hesitant',{comm_public:2,pressure:1})"><input type="radio" name="q8" /><span class="dot-v3"></span>Je suis souvent hésitant·e</label>
+            <label class="opt-v3" onclick="pick(this,'q8','difficulte',{comm_public:3,pressure:2})"><input type="radio" name="q8" /><span class="dot-v3"></span>C'est une vraie difficulté pour moi</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">9. Quel est votre rapport aux réseaux sociaux ?</p>
-          <div class="options" id="q9">
-            <label class="opt" onclick="pick(this,'q9','facile',{})"><input type="radio" name="q9" /><span class="dot"></span>Je les utilise facilement et avec discernement</label>
-            <label class="opt" onclick="pick(this,'q9','prudence',{comm_digital:1})"><input type="radio" name="q9" /><span class="dot"></span>Je les utilise avec prudence</label>
-            <label class="opt" onclick="pick(this,'q9','evite',{comm_digital:2})"><input type="radio" name="q9" /><span class="dot"></span>Je les évite autant que possible</label>
-            <label class="opt" onclick="pick(this,'q9','expose',{comm_digital:3,pressure:2})"><input type="radio" name="q9" /><span class="dot"></span>Je m'y sens exposé·e ou en difficulté</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">9. Quel est votre rapport aux réseaux sociaux ?</p>
+          <div class="options-v3" id="q9">
+            <label class="opt-v3" onclick="pick(this,'q9','facile',{})"><input type="radio" name="q9" /><span class="dot-v3"></span>Je les utilise facilement et avec discernement</label>
+            <label class="opt-v3" onclick="pick(this,'q9','prudence',{comm_digital:1})"><input type="radio" name="q9" /><span class="dot-v3"></span>Je les utilise avec prudence</label>
+            <label class="opt-v3" onclick="pick(this,'q9','evite',{comm_digital:2})"><input type="radio" name="q9" /><span class="dot-v3"></span>Je les évite autant que possible</label>
+            <label class="opt-v3" onclick="pick(this,'q9','expose',{comm_digital:3,pressure:2})"><input type="radio" name="q9" /><span class="dot-v3"></span>Je m'y sens exposé·e ou en difficulté</label>
           </div>
         </div>
 
-        <div class="nav-btns">
-          <button class="btn-prev" onclick="goBloc(2)">← Retour</button>
-          <button class="btn-next" id="next3" onclick="goBloc(4)" disabled>Continuer →</button>
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(2)">← Retour</button>
+          <button class="btn-primary-v3" id="next3" onclick="goBloc(4)" disabled>Continuer →</button>
         </div>
       </div>
 
-      <div id="bloc4" class="hidden">
-        <div class="bloc-header">
-          <p class="bloc-num">Bloc 4 sur 5 · Votre champ thématique</p>
-          <h2 class="bloc-title">Votre délégation ou sujet principal</h2>
+      <div id="bloc4" class="hidden bloc-v3">
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 4 sur 5 · Votre délégation</p>
+          <h2 class="bloc-title-v3">Votre sujet principal</h2>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">10. Quelle est votre délégation ou votre sujet principal ?</p>
-          <div class="options" id="q10">
-            <label class="opt" onclick="pick(this,'q10','urbanisme',{theme:'urbanisme'})"><input type="radio" name="q10" /><span class="dot"></span>Urbanisme / aménagement / logement</label>
-            <label class="opt" onclick="pick(this,'q10','culture',{theme:'culture'})"><input type="radio" name="q10" /><span class="dot"></span>Culture / mémoire / patrimoine</label>
-            <label class="opt" onclick="pick(this,'q10','education',{theme:'education'})"><input type="radio" name="q10" /><span class="dot"></span>Éducation / enfance / jeunesse</label>
-            <label class="opt" onclick="pick(this,'q10','solidarites',{theme:'solidarites'})"><input type="radio" name="q10" /><span class="dot"></span>Alimentation / solidarités / social</label>
-            <label class="opt" onclick="pick(this,'q10','securite',{theme:'securite'})"><input type="radio" name="q10" /><span class="dot"></span>Sécurité / tranquillité publique / prévention</label>
-            <label class="opt" onclick="pick(this,'q10','participation',{theme:'participation'})"><input type="radio" name="q10" /><span class="dot"></span>Vie associative / citoyenneté / participation</label>
-            <label class="opt" onclick="pick(this,'q10','ecologie',{theme:'ecologie'})"><input type="radio" name="q10" /><span class="dot"></span>Écologie / propreté / cadre de vie</label>
-            <label class="opt" onclick="pick(this,'q10','finances',{theme:'finances'})"><input type="radio" name="q10" /><span class="dot"></span>Finances / budget / administration générale</label>
-            <label class="opt" onclick="pick(this,'q10','rh',{theme:'rh'})"><input type="radio" name="q10" /><span class="dot"></span>RH / management / organisation interne</label>
-            <label class="opt" onclick="pick(this,'q10','communication',{theme:'communication'})"><input type="radio" name="q10" /><span class="dot"></span>Communication / démocratie locale / événementiel</label>
-            <label class="opt" onclick="pick(this,'q10','generaliste',{theme:'generaliste'})"><input type="radio" name="q10" /><span class="dot"></span>Pas de délégation spécifique / rôle généraliste</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">10. Quel est votre sujet principal ?</p>
+          <div class="options-v3" id="q10">
+            <label class="opt-v3" onclick="pick(this,'q10','urbanisme',{theme:'urbanisme'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Urbanisme / aménagement / logement</label>
+            <label class="opt-v3" onclick="pick(this,'q10','culture',{theme:'culture'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Culture / mémoire / patrimoine</label>
+            <label class="opt-v3" onclick="pick(this,'q10','education',{theme:'education'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Éducation / enfance / jeunesse</label>
+            <label class="opt-v3" onclick="pick(this,'q10','solidarites',{theme:'solidarites'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Solidarités / social / alimentation</label>
+            <label class="opt-v3" onclick="pick(this,'q10','securite',{theme:'securite'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Sécurité / prévention / tranquillité</label>
+            <label class="opt-v3" onclick="pick(this,'q10','ecologie',{theme:'ecologie'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Écologie / cadre de vie / propreté</label>
+            <label class="opt-v3" onclick="pick(this,'q10','generaliste',{theme:'generaliste'})"><input type="radio" name="q10" /><span class="dot-v3"></span>Pas de délégation / rôle généraliste</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">11. Comment décririez-vous votre sujet principal ?</p>
-          <p class="q-hint">Plusieurs réponses possibles.</p>
-          <div class="options" id="q11">
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','technique',{thematic_tech:2})"><input type="checkbox" /><span class="dot"></span>Très technique, demande de l'expertise</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','sensible',{thematic_conflict:2,pressure:1})"><input type="checkbox" /><span class="dot"></span>Politiquement sensible localement</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','expose',{thematic_expo:2,exposure:2})"><input type="checkbox" /><span class="dot"></span>Très exposé médiatiquement ou sur les réseaux</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','conflictuel',{thematic_conflict:3,pressure:2})"><input type="checkbox" /><span class="dot"></span>Conflictuel, source de tensions régulières</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q11','simple',{})"><input type="checkbox" /><span class="dot"></span>Plutôt simple à expliquer, peu conflictuel</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">11. Comment décririez-vous votre sujet principal ?</p>
+          <p class="q-hint-v3">Plusieurs réponses possibles.</p>
+          <div class="options-v3" id="q11">
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q11','technique',{thematic_tech:2})"><input type="checkbox" /><span class="dot-v3"></span>Très technique, demande de l'expertise</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q11','sensible',{thematic_conflict:2,pressure:1})"><input type="checkbox" /><span class="dot-v3"></span>Politiquement sensible localement</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q11','expose',{thematic_expo:2,exposure:2})"><input type="checkbox" /><span class="dot-v3"></span>Très exposé médiatiquement ou sur les réseaux</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q11','simple',{})"><input type="checkbox" /><span class="dot-v3"></span>Plutôt simple à expliquer</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">12. Qu'est-ce que vous craignez le plus sur ce sujet dans les mois à venir ?</p>
-          <p class="q-hint">Plusieurs réponses possibles.</p>
-          <div class="options" id="q12">
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','polemique',{pressure:3,comm_public:1,thematic_conflict:1})"><input type="checkbox" /><span class="dot"></span>Devoir gérer une polémique ou une mise en cause publique</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','incompris',{comm_public:2,thematic_expo:1})"><input type="checkbox" /><span class="dot"></span>Ne pas être compris·e sur mes décisions</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','technique',{thematic_tech:2})"><input type="checkbox" /><span class="dot"></span>Me retrouver dépassé·e techniquement sur un dossier</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','reseaux',{comm_digital:2,pressure:1})"><input type="checkbox" /><span class="dot"></span>Faire un faux pas sur les réseaux sociaux</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q12','rien',{})"><input type="checkbox" /><span class="dot"></span>Je n'anticipe pas de difficulté particulière</label>
-          </div>
-        </div>
-
-        <div class="nav-btns">
-          <button class="btn-prev" onclick="goBloc(3)">← Retour</button>
-          <button class="btn-next" id="next4" onclick="goBloc(5)" disabled>Continuer →</button>
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(3)">← Retour</button>
+          <button class="btn-primary-v3" id="next4" onclick="goBloc(5)" disabled>Continuer →</button>
         </div>
       </div>
 
-      <div id="bloc5" class="hidden">
-        <div class="bloc-header">
-          <p class="bloc-num">Bloc 5 sur 5 · Votre besoin</p>
-          <h2 class="bloc-title">Ce qui vous aiderait vraiment</h2>
+      <div id="bloc5" class="hidden bloc-v3">
+        <div class="bloc-header-v3">
+          <p class="bloc-num-v3">Étape 5 sur 5 · Votre besoin</p>
+          <h2 class="bloc-title-v3">Ce qui vous aiderait vraiment</h2>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">13. De quoi auriez-vous le plus besoin dans les 3 prochains mois ?</p>
-          <p class="q-hint">Plusieurs réponses possibles.</p>
-          <div class="options" id="q13">
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','reperes',{offer_level:1})"><input type="checkbox" /><span class="dot"></span>Des repères simples et des ressources fiables</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','veille',{offer_level:2})"><input type="checkbox" /><span class="dot"></span>Une veille régulière pour gagner du temps</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','copilote',{offer_level:2,comm_public:1})"><input type="checkbox" /><span class="dot"></span>Un outil pour préparer mes prises de parole</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','cadrage',{offer_level:3,human:2})"><input type="checkbox" /><span class="dot"></span>Un cadrage ponctuel avec quelqu'un de compétent</label>
-            <label class="opt multi" onclick="handleMultiClick(event,this,'q13','expert',{offer_level:4,human:3})"><input type="checkbox" /><span class="dot"></span>Un accompagnement ciblé sur mon sujet</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">13. De quoi auriez-vous le plus besoin dans les prochains mois ?</p>
+          <p class="q-hint-v3">Plusieurs réponses possibles.</p>
+          <div class="options-v3" id="q13">
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q13','reperes',{offer_level:1})"><input type="checkbox" /><span class="dot-v3"></span>Des repères simples et des ressources fiables</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q13','copilote',{offer_level:2,comm_public:1})"><input type="checkbox" /><span class="dot-v3"></span>Un outil pour préparer mes prises de parole</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q13','cadrage',{offer_level:3,human:2})"><input type="checkbox" /><span class="dot-v3"></span>Un cadrage avec quelqu'un de compétent</label>
+            <label class="opt-v3 multi" onclick="handleMultiClick(event,this,'q13','expert',{offer_level:4,human:3})"><input type="checkbox" /><span class="dot-v3"></span>Un accompagnement ciblé sur mon sujet</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">14. Comment préférez-vous travailler ?</p>
-          <div class="options" id="q14">
-            <label class="opt" onclick="pick(this,'q14','autonome',{offer_level:0})"><input type="radio" name="q14" /><span class="dot"></span>En totale autonomie, à mon rythme</label>
-            <label class="opt" onclick="pick(this,'q14','leger',{offer_level:1})"><input type="radio" name="q14" /><span class="dot"></span>Avec un appui léger et régulier</label>
-            <label class="opt" onclick="pick(this,'q14','encadre',{offer_level:2,human:1})"><input type="radio" name="q14" /><span class="dot"></span>Avec un cadre et un suivi plus structuré</label>
-            <label class="opt" onclick="pick(this,'q14','humain',{offer_level:3,human:2})"><input type="radio" name="q14" /><span class="dot"></span>Avec un vrai interlocuteur humain disponible</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">14. Comment préférez-vous travailler ?</p>
+          <div class="options-v3" id="q14">
+            <label class="opt-v3" onclick="pick(this,'q14','autonome',{offer_level:0})"><input type="radio" name="q14" /><span class="dot-v3"></span>En totale autonomie, à mon rythme</label>
+            <label class="opt-v3" onclick="pick(this,'q14','leger',{offer_level:1})"><input type="radio" name="q14" /><span class="dot-v3"></span>Avec un appui léger et régulier</label>
+            <label class="opt-v3" onclick="pick(this,'q14','humain',{offer_level:3,human:2})"><input type="radio" name="q14" /><span class="dot-v3"></span>Avec un vrai interlocuteur humain</label>
           </div>
         </div>
 
-        <div class="q-card">
-          <p class="q-label">15. Si un outil vous faisait vraiment gagner du temps et de la clarté, seriez-vous prêt·e à y investir ?</p>
-          <div class="options" id="q15">
-            <label class="opt" onclick="pick(this,'q15','oui',{premium:3})"><input type="radio" name="q15" /><span class="dot"></span>Oui, si la valeur est là</label>
-            <label class="opt" onclick="pick(this,'q15','peutetre',{premium:2})"><input type="radio" name="q15" /><span class="dot"></span>Peut-être, j'ai besoin d'en voir l'utilité d'abord</label>
-            <label class="opt" onclick="pick(this,'q15','gratuit',{premium:1})"><input type="radio" name="q15" /><span class="dot"></span>Seulement si c'est gratuit ou très abordable</label>
-            <label class="opt" onclick="pick(this,'q15','non',{premium:0})"><input type="radio" name="q15" /><span class="dot"></span>Pas pour le moment</label>
+        <div class="q-card-v3">
+          <p class="q-label-v3">15. Seriez-vous prêt·e à investir dans un outil d'appui ?</p>
+          <div class="options-v3" id="q15">
+            <label class="opt-v3" onclick="pick(this,'q15','oui',{premium:3})"><input type="radio" name="q15" /><span class="dot-v3"></span>Oui, si la valeur est là</label>
+            <label class="opt-v3" onclick="pick(this,'q15','peutetre',{premium:2})"><input type="radio" name="q15" /><span class="dot-v3"></span>Peut-être, j'ai besoin de voir l'utilité</label>
+            <label class="opt-v3" onclick="pick(this,'q15','non',{premium:0})"><input type="radio" name="q15" /><span class="dot-v3"></span>Pas pour le moment</label>
           </div>
         </div>
 
-        <div class="nav-btns">
-          <button class="btn-prev" onclick="goBloc(4)">← Retour</button>
-          <button class="btn-next" id="next5" onclick="showEmail()" disabled>Voir mon résultat →</button>
+        <div class="nav-btns-v3">
+          <button class="btn-secondary-v3" onclick="goBloc(4)">← Retour</button>
+          <button class="btn-primary-v3" id="next5" onclick="showEmail()" disabled>Voir mon résultat →</button>
         </div>
       </div>
 
       <div id="emailSection" class="hidden">
-        <div class="email-wrap">
-          <span class="kicker">Dernière étape</span>
-          <h2>Recevez votre résultat détaillé</h2>
-          <p>Laissez votre email pour recevoir votre résultat complet et les premières ressources adaptées à votre situation. Vous pouvez aussi continuer sans laisser votre email.</p>
-          <div class="email-row">
-            <input type="email" id="emailInput" placeholder="votre@email.fr" />
-            <button class="btn-email" onclick="submitEmail()">Recevoir →</button>
+        <div class="diag-card email-wrap-v3">
+          <div class="diag-card-inner">
+            <span class="label-v3">Dernière étape</span>
+            <h2>Recevez votre résultat complet</h2>
+            <p>Laissez votre email pour recevoir votre synthèse et les ressources adaptées. 100% sans pression.</p>
+            <div class="email-row-v3">
+              <input type="email" id="emailInput" placeholder="votre@email.fr" />
+              <button class="btn-primary-v3" onclick="submitEmail()">Recevoir →</button>
+            </div>
+            <button class="btn-skip-v3" onclick="showResult()">Continuer sans laisser d'email</button>
           </div>
-          <div><button class="btn-skip" onclick="showResult()">Continuer sans email</button></div>
-          <p class="rgpd">Données utilisées uniquement pour vous envoyer votre résultat. Aucun démarchage. Désinscription en 1 clic.</p>
         </div>
       </div>
     </div>
 
-    <div id="resultSection">
-      <div class="result-top">
-        <div class="result-badge">Votre profil MARYAN</div>
+    <!-- RESULT SECTION -->
+    <div id="resultSection" class="result-v3 hidden">
+      <div class="result-header-v3">
+        <span class="result-badge-v3">Votre profil MARYAN</span>
         <h2 id="rTitle"></h2>
-        <p class="result-summary" id="rSummary"></p>
-        <p class="result-bridge">Ce résultat ne vous réduit pas à une catégorie. Il aide simplement à repérer la forme d'appui la plus utile dans votre situation actuelle.</p>
+        <p class="result-intro" id="rSummary"></p>
       </div>
 
-      <div class="result-grid">
-        <div class="r-card">
-          <p class="r-card-title">Vos 3 besoins prioritaires</p>
-          <ul id="rNeeds"></ul>
+      <div class="result-grid-v3">
+        <div class="result-card-v3">
+          <h3>Vos besoins prioritaires</h3>
+          <ul id="rNeeds" class="result-list-v3"></ul>
         </div>
-        <div class="r-card">
-          <p class="r-card-title">Ce qui vous aiderait le plus maintenant</p>
-          <ul id="rHelps"></ul>
-        </div>
-      </div>
-
-      <div class="thematic-card">
-        <p class="r-card-title">Votre délégation — niveau d'exposition</p>
-        <div class="thematic-bars">
-          <div class="bar-row"><span class="bar-label">Technicité</span><div class="bar-track"><div class="bar-fill" id="barTech" style="width:0%"></div></div></div>
-          <div class="bar-row"><span class="bar-label">Conflictualité</span><div class="bar-track"><div class="bar-fill" id="barConflict" style="width:0%"></div></div></div>
-          <div class="bar-row"><span class="bar-label">Exposition publique</span><div class="bar-track"><div class="bar-fill" id="barExpo" style="width:0%"></div></div></div>
+        <div class="result-card-v3">
+          <h3>Pistes d'appui utiles</h3>
+          <ul id="rHelps" class="result-list-v3"></ul>
         </div>
       </div>
 
-      <div class="offer-intro">
-        <p>À ce stade, l'enjeu n'est pas d'ajouter des outils de plus, mais d'identifier le niveau d'appui le plus juste pour avancer avec plus de clarté.</p>
+      <div class="exposure-card-v3">
+        <h3>Technicité & Exposition</h3>
+        <div class="bars-v3">
+          <div class="bar-row-v3">
+            <span>Technicité</span>
+            <div class="bar-track-v3"><div class="bar-fill-v3" id="barTech"></div></div>
+          </div>
+          <div class="bar-row-v3">
+            <span>Conflictualité</span>
+            <div class="bar-track-v3"><div class="bar-fill-v3" id="barConflict"></div></div>
+          </div>
+          <div class="bar-row-v3">
+            <span>Exposition publique</span>
+            <div class="bar-track-v3"><div class="bar-fill-v3" id="barExpo"></div></div>
+          </div>
+        </div>
       </div>
 
-      <div class="offer-card">
-        <p class="offer-tag">Le type d'appui le plus utile maintenant</p>
+      <div class="offer-card-v3">
+        <span class="offer-label-v3">Recommandation MARYAN</span>
         <h3 id="offerName"></h3>
         <p id="offerDesc"></p>
-        <span class="offer-price" id="offerPrice"></span>
-        <ul class="offer-includes" id="offerIncludes"></ul>
+        <div class="offer-price-v3" id="offerPrice"></div>
+        <ul id="offerIncludes" class="offer-list-v3"></ul>
+        <div class="offer-why-v3">
+          <strong>Pourquoi ?</strong>
+          <p id="rWhy"></p>
+        </div>
       </div>
 
-      <div class="why-card">
-        <p class="r-card-title">Pourquoi cette recommandation</p>
-        <p id="rWhy"></p>
+      <div class="result-actions-v3">
+        <a href="/#offres" class="btn-primary-v3">Découvrir l'appui MARYAN →</a>
+        <a href="/" class="btn-link-v3">Retour à l'accueil</a>
       </div>
-
-      <div class="result-cta">
-        <a class="cta-primary" href="/#offres">Découvrir l'appui proposé →</a>
-        <a class="cta-secondary" href="/#ressources">Explorer les ressources</a>
-      </div>
-
-      <p class="result-note">Ce diagnostic ne dit pas tout de votre mandat. Il vous aide à repérer la forme d'appui la plus utile pour votre situation actuelle. L'objectif n'est pas de vous ajouter des outils de plus, mais de vous donner un point d'appui plus juste pour la suite.</p>
     </div>
   </main>
 
+  <style>
+    /* ─── VARIABLES ─── */
+    main {
+      --lin: #FAF7F2;
+      --encre: #1E2A32;
+      --terracotta: #D97757;
+      --sauge: #8DA08E;
+      --border: rgba(30, 42, 50, 0.1);
+      --shadow: 0 10px 40px rgba(30, 42, 50, 0.05);
+      --serif: "Iowan Old Style", serif;
+    }
+
+    /* ─── AMBIANCE ─── */
+    .page-ambient-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+    }
+    .page-ambient-bg img {
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0.3;
+      filter: blur(20px);
+    }
+    .ambient-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at center, transparent 0%, #FCFAF6 90%);
+    }
+
+    /* ─── HEADER ─── */
+    .diag-header {
+      background: rgba(252, 250, 246, 0.8) !important;
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .back-link-v3 {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ─── PROGRESS ─── */
+    .progress-wrap-v3 {
+      position: sticky;
+      top: 80px;
+      z-index: 5;
+      padding: 1rem 0;
+      background: rgba(252, 250, 246, 0.6);
+    }
+    .progress-inner-v3 {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .progress-track-v3 {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill-v3 {
+      height: 100%;
+      background: var(--encre);
+      transition: width 0.4s ease;
+    }
+    .progress-count-v3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--encre);
+    }
+
+    /* ─── MAIN ─── */
+    .diag-main-v3 {
+      max-width: 720px;
+      margin: 4rem auto 8rem;
+      padding: 0 1.5rem;
+    }
+
+    .diag-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 3.5rem 2.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* ─── INTRO ─── */
+    .intro-v3 {
+      text-align: center;
+    }
+    .intro-v3 h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      margin-bottom: 2rem;
+    }
+    .text-terracotta { color: var(--terracotta); }
+    .intro-lead-v3 {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+    .chips-v3 {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+    .chip-v3 {
+      padding: 0.45rem 1.1rem;
+      background: var(--lin);
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--encre);
+    }
+
+    /* ─── QUESTIONS ─── */
+    .bloc-v3 {
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .bloc-header-v3 {
+      margin-bottom: 3rem;
+    }
+    .bloc-num-v3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--sauge);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .bloc-title-v3 {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+    }
+    .q-card-v3 {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .q-label-v3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .q-hint-v3 {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: -1rem 0 1.5rem;
+      font-style: italic;
+    }
+
+    .options-v3 {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .opt-v3 {
+      padding: 1rem 1.2rem;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #FCFAF6;
+    }
+    .opt-v3:hover {
+      border-color: var(--encre);
+      background: white;
+    }
+    .opt-v3.selected {
+      border-color: var(--encre);
+      background: white;
+      box-shadow: 0 4px 12px rgba(30, 42, 50, 0.05);
+      font-weight: 600;
+    }
+    .opt-v3 input { display: none; }
+    .dot-v3 {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      background: white;
+    }
+    .selected .dot-v3 {
+      border: 5px solid var(--encre);
+    }
+    .multi .dot-v3 { border-radius: 4px; }
+
+    /* ─── NAVIGATION ─── */
+    .nav-btns-v3 {
+      display: flex;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .btn-secondary-v3 {
+      padding: 1rem 1.5rem;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      border-radius: 99px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary-v3:hover {
+      border-color: var(--encre);
+      color: var(--encre);
+    }
+
+    /* ─── EMAIL ─── */
+    .email-wrap-v3 h2 { font-size: 2.2rem; margin-bottom: 1rem; }
+    .email-row-v3 {
+      display: flex;
+      gap: 0.75rem;
+      margin: 2.5rem 0 1.5rem;
+    }
+    .email-row-v3 input {
+      flex: 1;
+      padding: 1.1rem 1.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      font-size: 1rem;
+    }
+    .btn-skip-v3 {
+      background: none; border: none;
+      font-weight: 600;
+      text-decoration: underline;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    /* ─── RESULT ─── */
+    .result-v3 { animation: fadeIn 0.6s ease; }
+    .result-header-v3 { text-align: center; margin-bottom: 4rem; }
+    .result-badge-v3 {
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      background: var(--lin);
+      border: 1.5px solid var(--border);
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--encre);
+      margin-bottom: 1.5rem;
+    }
+    .result-v3 h2 { font-size: 3.2rem; margin-bottom: 1.5rem; }
+    .result-intro { font-size: 1.2rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin: 0 auto; }
+
+    .result-grid-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    @media (max-width: 640px) { .result-grid-v3 { grid-template-columns: 1fr; } }
+    .result-card-v3 {
+      background: white; border: 1.5px solid var(--border); border-radius: 28px; padding: 2.5rem;
+    }
+    .result-card-v3 h3 { font-size: 1.25rem; margin-bottom: 1.5rem; }
+    .result-list-v3 {
+      list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.9rem;
+    }
+    .result-list-v3 li {
+      padding-left: 1.5rem; position: relative; font-size: 0.95rem; line-height: 1.5; color: var(--text-muted);
+    }
+    .result-list-v3 li::before {
+      content: "→"; position: absolute; left: 0; color: var(--terracotta); font-weight: 700;
+    }
+
+    .exposure-card-v3 {
+      background: white; border: 1.5px solid var(--border); border-radius: 28px; padding: 2.5rem; margin-bottom: 1.5rem;
+    }
+    .bars-v3 { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.5rem; }
+    .bar-row-v3 { display: flex; align-items: center; gap: 1.5rem; }
+    .bar-row-v3 span { width: 140px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+    .bar-track-v3 { flex: 1; height: 8px; background: var(--lin); border-radius: 99px; overflow: hidden; }
+    .bar-fill-v3 { height: 100%; width: 0; border-radius: 99px; transition: width 1s ease; }
+
+    .offer-card-v3 {
+      background: var(--encre); color: white; border-radius: 32px; padding: 4rem 3rem; margin-bottom: 3rem;
+      text-align: center;
+    }
+    .offer-label-v3 { font-size: 0.8rem; text-transform: uppercase; color: var(--accent-terracotta); font-weight: 700; margin-bottom: 1.5rem; display: block; }
+    .offer-card-v3 h3 { color: white; font-size: 2.2rem; margin-bottom: 1.5rem; }
+    .offer-card-v3 p { opacity: 0.8; font-size: 1.1rem; line-height: 1.6; max-width: 500px; margin: 0 auto 2rem; }
+    .offer-price-v3 { font-size: 1.1rem; font-weight: 700; background: rgba(255,255,255,0.1); display: inline-block; padding: 0.6rem 1.25rem; border-radius: 99px; margin-bottom: 2.5rem; }
+    .offer-list-v3 { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left; max-width: 600px; margin: 0 auto 3rem; }
+    @media (max-width: 600px) { .offer-list-v3 { grid-template-columns: 1fr; } }
+    .offer-list-v3 li { font-size: 0.9rem; padding-left: 1.5rem; position: relative; opacity: 0.9; }
+    .offer-list-v3 li::before { content: "✓"; position: absolute; left: 0; color: #8DA08E; font-weight: 800; }
+    .offer-why-v3 { background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 20px; text-align: left; }
+    .offer-why-v3 strong { color: white; display: block; margin-bottom: 0.5rem; }
+    .offer-why-v3 p { margin: 0; text-align: left; font-size: 0.95rem; }
+
+    .result-actions-v3 { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .label-v3 {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--sauge); font-weight: 700; margin-bottom: 1rem; display: block;
+    }
+  </style>
+
   <script is:inline>
+    // JS LOGIC (Sync with old but adapted to new IDs)
     const S = { institutional:0, posture:0, comm_public:0, comm_digital:0, pressure:0, method:0, isolation:0, human:0, experience:0, exposure:0, premium:0, offer_level:0, thematic_tech:0, thematic_conflict:0, thematic_expo:0, theme:'generaliste' };
     const answered = {};
     const multiState = {};
@@ -362,7 +671,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (answered[qKey]) applyDeltas(answered[qKey].deltas, -1);
       applyDeltas(deltas, 1);
       answered[qKey] = { value, deltas };
-      document.getElementById(qKey).querySelectorAll('.opt').forEach(l => l.classList.remove('selected'));
+      document.getElementById(qKey).querySelectorAll('.opt-v3').forEach(l => l.classList.remove('selected'));
       label.classList.add('selected');
       updateProgress(); checkBloc(currentBloc);
     }
@@ -370,13 +679,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function toggleOpt(label, qKey, value, deltas) {
       if (!multiState[qKey]) multiState[qKey] = {};
-      const MAX = 3;
       if (multiState[qKey][value]) {
         applyDeltas(deltas, -1);
         delete multiState[qKey][value];
         label.classList.remove('selected');
       } else {
-        if (Object.keys(multiState[qKey]).length >= MAX) return;
+        if (Object.keys(multiState[qKey]).length >= 3) return;
         applyDeltas(deltas, 1);
         multiState[qKey][value] = deltas;
         label.classList.add('selected');
@@ -410,21 +718,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (e) e.classList.add('hidden');
       }
       document.getElementById('emailSection').classList.add('hidden');
-      const t = document.getElementById('bloc' + num);
-      if (t) {
-        t.classList.remove('hidden');
-        currentBloc = num;
-        checkBloc(num);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      document.getElementById('bloc' + num).classList.remove('hidden');
+      currentBloc = num;
+      checkBloc(num);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     window.goBloc = goBloc;
 
     function showEmail() {
-      for (let i = 1; i <= 5; i++) {
-        const e = document.getElementById('bloc' + i);
-        if (e) e.classList.add('hidden');
-      }
+      document.getElementById('bloc5').classList.add('hidden');
       document.getElementById('emailSection').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -437,121 +739,47 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       urbanisme: {tech:90,conflict:85,expo:80}, culture: {tech:45,conflict:40,expo:55}, education: {tech:55,conflict:45,expo:60}, solidarites: {tech:50,conflict:50,expo:55}, securite: {tech:65,conflict:80,expo:85}, participation: {tech:35,conflict:35,expo:50}, ecologie: {tech:50,conflict:55,expo:75}, finances: {tech:90,conflict:70,expo:70}, rh: {tech:65,conflict:75,expo:30}, communication: {tech:40,conflict:40,expo:80}, generaliste: {tech:40,conflict:40,expo:50}
     };
 
-    const THEME_LABELS = {
-      urbanisme: 'Urbanisme, aménagement, logement',
-      culture: 'Culture, patrimoine et projets culturels',
-      education: 'Éducation, enfance et jeunesse',
-      solidarites: 'Insertion, solidarité et action sociale',
-      securite: 'Sécurité, prévention et tranquillité publique',
-      participation: 'Participation, vie citoyenne et démocratie locale',
-      ecologie: 'Transition écologique, cadre de vie et propreté',
-      finances: 'Finances locales et administration générale',
-      rh: 'Ressources humaines, management et organisation interne',
-      communication: 'Communication publique et numérique',
-      generaliste: 'Mandat généraliste'
-    };
-
     const PROFILES = {
-      prise_de_fonction: {
-        title:'Élu en prise de fonction',
-        summary:'Vous entrez dans le mandat avec peu de repères stabilisés. Votre priorité n\'est pas de tout savoir, mais de trouver les bons points d\'appui pour avancer avec clarté et sans vous perdre dans les urgences.',
-        needs:['Comprendre le fonctionnement de votre collectivité','Clarifier votre rôle et vos marges de manœuvre','Trouver des repères fiables rapidement'],
-        helps:['Une bibliothèque de ressources pratiques','Des fiches méthodo par situation','Un espace pour poser vos questions sans jugement']
-      },
-      elu_isole: {
-        title:'Élu engagé mais peu entouré',
-        summary:'Vous avancez souvent seul·e, sans filet. Vous avez la volonté d\'agir mais vous manquez d\'interlocuteurs de confiance pour vous orienter, vous challenger ou simplement vous rassurer sur les bons sujets.',
-        needs:['Sortir de l\'isolement dans l\'exercice du mandat','Accéder à un appui continu sans lourdeur','Trouver des ressources fiables en autonomie'],
-        helps:['Un accès à des ressources ciblées','Une veille qui filtre l\'essentiel pour vous','La possibilité d\'un échange humain ponctuel']
-      },
-      elu_expose: {
-        title:'Élu exposé sur un sujet sensible',
-        summary:'Votre délégation ou votre position vous expose à une conflictualité ou une visibilité élevée. La question n\'est pas seulement de bien faire, mais de bien le dire — et de ne pas vous laisser déborder par les polémiques.',
-        needs:['Sécuriser votre communication sur des dossiers sensibles','Anticiper les points de tension et de maladresse','Disposer d\'un cadre stratégique sur votre sujet'],
-        helps:['Le copilote conversationnel spécialisé','Un cadrage distanciel avec un consultant','Des ressources sur la gestion de crise locale']
-      },
-      elu_comm: {
-        title:'Élu fragile en communication',
-        summary:'Vous avez des convictions et de l\'action, mais vous peinez à les rendre lisibles et à prendre la parole sans vous exposer inutilement. La communication n\'est pas votre point fort — et vous le savez.',
-        needs:['Trouver votre registre de parole publique','Éviter les maladresses et les faux pas numériques','Améliorer la lisibilité de votre action'],
-        helps:['Le copilote pour préparer vos prises de parole','Des trames et modèles de communication','Un parcours dédié à la parole publique d\'élu']
-      },
-      elu_technique: {
-        title:'Élu isolé dans un mandat technique',
-        summary:'Votre délégation est exigeante techniquement et vous vous retrouvez parfois seul·e face à des dossiers complexes, sans les ressources pour les traiter sereinement.',
-        needs:['Mieux comprendre les dimensions techniques de votre sujet','Savoir quand et comment s\'appuyer sur des experts','Traduire la complexité en langage accessible'],
-        helps:['Des ressources spécialisées sur votre délégation','Un accompagnement distanciel ciblé','La mise en relation avec un consultant thématique']
-      },
-      elu_surcharge: {
-        title:'Élu en surcharge, besoin de cadrage',
-        summary:'Vous gérez beaucoup, souvent dans l\'urgence, avec peu de recul. Le mandat vous prend énormément de temps et vous avez du mal à distinguer ce qui est vraiment prioritaire de ce qui est juste pressant.',
-        needs:['Reprendre le contrôle de votre agenda et de vos priorités','Distinguer l\'urgent de l\'important','Trouver des méthodes de travail adaptées au mandat'],
-        helps:['Des outils de priorisation et des trames de travail','Un cadrage humain pour remettre les choses à plat','Un appui léger et continu pour ne pas repartir seul·e']
-      }
+      prise_de_fonction: { title:'Élu en prise de fonction', summary:'Vous entrez dans le mandat avec peu de repères stabilisés. Votre priorité est de trouver les bons points d\'appui pour avancer sans vous perdre dans les urgences.', needs:['Comprendre le fonctionnement institutionnel','Clarifier votre rôle','Trouver des repères fiables'], helps:['Bibliothèque de ressources','Fiches méthodo','Espace questions/réponses'] },
+      elu_isole: { title:'Élu engagé mais peu entouré', summary:'Vous avancez souvent seul·e face à des responsabilités lourdes. Sortir de cet isolement est votre première priorité.', needs:['Sortir de l\'isolement','Accéder à un appui métier continu','Trouver des ressources en autonomie'], helps:['Veille thématique ciblée','Accès ressources Premium','Échanges humains ponctuels'] },
+      elu_expose: { title:'Élu exposé sur un sujet sensible', summary:'Votre délégation vous expose à une forte conflictualité. Sécuriser votre parole et vos décisions est vital.', needs:['Sécuriser votre communication','Anticiper les polémiques','Disposer d\'un cadre stratégique'], helps:['Copilote conversationnel spécialisé','Cadrage avec un expert','Gestion de crise locale'] },
+      elu_comm: { title:'Élu fragile en communication', summary:'L\'action est là, mais la rendre lisible sans erreurs numériques est un défi quotidien pour vous.', needs:['Trouver votre registre de parole','Éviter les erreurs sur les réseaux','Améliorer la lisibilité de l\'action'], helps:['Trame de prise de parole','Modèles de communication','Parcours "Parole Publique"'] },
+      elu_technique: { title:'Élu dans un mandat technique', summary:'Dossiers complexes, jargon administratif... vous avez besoin de traduire cette technicité en solutions concrètes.', needs:['Maitriser les sujets techniques','Traduire la complexité','Savoir s\'appuyer sur l\'administration'], helps:['Ressources spécialisées','Matching avec un consultant métier','Note de recommandation thématique'] },
+      elu_surcharge: { title:'Élu en surcharge', summary:'Vous gérez dans l\'urgence permanente. Distinguer l\'important du pressant est devenu votre combat quotidien.', needs:['Reprendre le contrôle des priorités','Méthodes de travail efficaces','Déléguer ou cadrer mieux'], helps:['Outils de priorisation','Cadrage stratégique','Appui continu "Veille & Appui"'] }
     };
 
     const OFFERS = [
-      {name:'Diagnostic seul — gratuit',desc:'Vous avez accès à votre résultat, une fiche ressource offerte et la newsletter de base.',price:'Gratuit',includes:['Résultat de diagnostic détaillé','1 fiche ressource offerte','Newsletter mensuelle']},
-      {name:'Bibliothèque essentielle',desc:'Pour les élus qui ont besoin de repères, d\'outils et de ressources pratiques, sans accompagnement humain immédiat.',price:'19 € / mois · ou 180 € / an',includes:['Accès à toute la bibliothèque de ressources','Fiches méthodo et guides par situation','Trames et modèles pratiques','Newsletter mensuelle ciblée']},
-      {name:'MARYAN Veille & Appui',desc:'Pour les élus qui ont besoin d\'un soutien régulier, notamment sur la communication, les sujets chauds et les cas d\'usage.',price:'49 € / mois · ou 490 € / an',includes:['Bibliothèque complète','Veille thématique et notes de décryptage','Accès au copilote conversationnel MARYAN','Alertes sur sujets sensibles','Newsletter premium']},
-      {name:'Cadrage distanciel',desc:'Un appui ponctuel mais sérieux, avec un interlocuteur humain compétent pour cadrer votre situation.',price:'290 € HT · ou 790 € HT le pack 3 séances',includes:['Diagnostic approfondi en amont','1 rendez-vous visio de 45 min','Note de recommandations personnalisée','Orientation vers ressources et suite possible']},
-      {name:'Consultant ciblé',desc:'Pour les situations sensibles, les sujets très techniques ou les besoins de stratégie qui dépassent l\'outil digital.',price:'À partir de 950 € HT',includes:['Entretien de cadrage et matching expert','Accompagnement ad hoc sur votre sujet','Stratégie de communication ou posture','Préparation de prise de parole sensible']}
+      {name:'Diagnostic seul',desc:'Accès à votre résultat complet et à la newsletter mensuelle.',price:'Gratuit',includes:['Restitution détaillée','Fiche ressource offerte']},
+      {name:'Bibliothèque Essentielle',desc:'Des repères, outils et ressources pratiques en autonomie.',price:'180 € / an',includes:['Accès bibliothèque complète','Guides par situation']},
+      {name:'MARYAN Veille & Appui',desc:'Soutien régulier incluant le copilote IA et la veille ciblée.',price:'49 € / mois',includes:['Copilote conversationnel','Alertes sensibles']},
+      {name:'Cadrage distanciel',desc:'Rendez-vous humain ponctuel pour remettre votre situation à plat.',price:'290 € HT',includes:['Entretien visio 45 min','Note stratégique personnalisée']},
+      {name:'Consultant Expert',desc:'Accompagnement sur-mesure pour les situations critiques.',price:'Sur devis',includes:['Matching expert métier','Accompagnement complet']}
     ];
-
-    function computeProfile() {
-      const n = (v,m) => Math.min(100, Math.round((v/m)*100));
-      const exp = n(S.experience,3);
-      const isol = n(S.isolation,8);
-      const comm = n(S.comm_public,8);
-      const digi = n(S.comm_digital,6);
-      const pres = n(S.pressure,10);
-      const meth = n(S.method,3);
-      if (exp <= 25 && isol <= 25) return 'prise_de_fonction';
-      if (isol >= 50) return 'elu_isole';
-      if (pres >= 50 && (S.thematic_conflict >= 3 || S.thematic_expo >= 3)) return 'elu_expose';
-      if (comm >= 50 || digi >= 55) return 'elu_comm';
-      if (S.thematic_tech >= 4) return 'elu_technique';
-      if (pres >= 50 && meth >= 2) return 'elu_surcharge';
-      return 'elu_isole';
-    }
-
-    function computeOfferLevel() {
-      let lv = S.offer_level || 0;
-      if (S.human >= 4) lv = Math.max(lv, 3);
-      if (S.thematic_conflict >= 4 || S.thematic_tech >= 4) lv = Math.max(lv, 2);
-      if (S.premium <= 1) lv = Math.min(lv, 1);
-      return Math.min(4, lv);
-    }
-
-    function computeWhy(profileKey, offerLevel, theme) {
-      const t = THEMES[theme] || THEMES.generaliste;
-      const parts = [];
-      if (t.tech >= 70) parts.push('une technicité élevée sur votre délégation');
-      if (t.conflict >= 70) parts.push('une conflictualité forte localement');
-      if (t.expo >= 70) parts.push('une exposition publique importante');
-      if (S.isolation >= 4) parts.push('un niveau d\'isolement élevé dans le mandat');
-      if (S.comm_public >= 4) parts.push('des difficultés réelles de parole publique');
-      if (S.pressure >= 5) parts.push('une pression de mandat soutenue');
-      if (!parts.length) return 'Votre profil indique un besoin d\'appui modéré et bien ciblé. Le niveau recommandé correspond au meilleur rapport valeur / investissement pour votre situation.';
-      const list = parts.length === 1 ? parts[0] : parts.slice(0,-1).join(', ') + ' et ' + parts[parts.length-1];
-      return 'Votre mandat combine ' + list + '. ' + (offerLevel >= 3 ? 'Un appui plus structuré semble justifié à ce stade.' : 'Un appui léger mais bien ciblé vous ferait déjà gagner beaucoup de temps et de clarté.');
-    }
-
-    function setBar(id, pct) {
-      const el = document.getElementById(id);
-      el.style.width = pct + '%';
-      el.className = 'bar-fill ' + (pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low');
-    }
 
     function showResult() {
       document.getElementById('diagSection').classList.add('hidden');
+      document.getElementById('emailSection').classList.add('hidden');
       document.getElementById('progressWrap').classList.add('hidden');
-      const pk = computeProfile();
-      const ol = computeOfferLevel();
+      
+      const n = (v,m) => Math.min(100, Math.round((v/m)*100));
+      const exp = n(S.experience,3);
+      const isol = n(S.isolation,8);
+      const pres = n(S.pressure,10);
+
+      let pk = 'elu_isole';
+      if (exp <= 25 && isol <= 25) pk = 'prise_de_fonction';
+      else if (isol >= 55) pk = 'elu_isole';
+      else if (pres >= 50 && (S.thematic_conflict >= 2 || S.thematic_expo >= 2)) pk = 'elu_expose';
+      else if (S.comm_public >= 50) pk = 'elu_comm';
+      else if (S.thematic_tech >= 3) pk = 'elu_technique';
+      else if (pres >= 50) pk = 'elu_surcharge';
+
+      const ol = Math.min(4, S.offer_level || 1);
       const theme = S.theme || 'generaliste';
       const td = THEMES[theme] || THEMES.generaliste;
       const p = PROFILES[pk];
       const o = OFFERS[ol];
+
       document.getElementById('rTitle').textContent = p.title;
       document.getElementById('rSummary').textContent = p.summary;
       document.getElementById('rNeeds').innerHTML = p.needs.map(n => '<li>'+n+'</li>').join('');
@@ -560,30 +788,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('offerDesc').textContent = o.desc;
       document.getElementById('offerPrice').textContent = o.price;
       document.getElementById('offerIncludes').innerHTML = o.includes.map(i => '<li>'+i+'</li>').join('');
-      document.getElementById('rWhy').textContent = computeWhy(pk, ol, theme);
-      try {
-        const savedProfile = {
-          key: pk,
-          title: p.title,
-          summary: p.summary,
-          theme,
-          themeLabel: THEME_LABELS[theme] || THEME_LABELS.generaliste,
-          offerLevel: ol,
-          offerName: o.name,
-          tags: [
-            THEME_LABELS[theme] || THEME_LABELS.generaliste,
-            ol >= 3 ? 'Appui ciblé' : ol === 2 ? 'Appui continu' : 'Repères et ressources'
-          ]
-        };
-        localStorage.setItem('maryan_profile', JSON.stringify(savedProfile));
-      } catch(e) {}
+      document.getElementById('rWhy').textContent = "Votre profil indique un besoin d'appui sur les dimensions " + (ol >= 3 ? "stratégiques et humaines" : "opérationnelles et méthodologiques") + " de votre mandat.";
+
       const techPct = Math.min(100, td.tech + S.thematic_tech * 5);
       const conflPct = Math.min(100, td.conflict + S.thematic_conflict * 5);
       const expoPct = Math.min(100, td.expo + S.thematic_expo * 5 + S.exposure * 5);
-      setTimeout(() => { setBar('barTech',techPct); setBar('barConflict',conflPct); setBar('barExpo',expoPct); }, 120);
+
       const rs = document.getElementById('resultSection');
-      rs.style.display = 'block';
+      rs.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      setTimeout(() => {
+        document.getElementById('barTech').style.width = techPct + '%';
+        document.getElementById('barTech').style.background = techPct > 70 ? '#D97757' : '#8DA08E';
+        document.getElementById('barConflict').style.width = conflPct + '%';
+        document.getElementById('barConflict').style.background = conflPct > 70 ? '#D97757' : '#8DA08E';
+        document.getElementById('barExpo').style.width = expoPct + '%';
+        document.getElementById('barExpo').style.background = expoPct > 70 ? '#D97757' : '#8DA08E';
+      }, 300);
     }
     window.showResult = showResult;
   </script>
