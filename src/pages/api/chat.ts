@@ -18,7 +18,7 @@ const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
+  const apiKey = (import.meta.env.ANTHROPIC_API_KEY as string) || (process.env.ANTHROPIC_API_KEY as string);
 
   if (!apiKey) {
     return json(
@@ -47,7 +47,7 @@ export const POST: APIRoute = async ({ request }) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: import.meta.env.ANTHROPIC_MODEL || process.env.ANTHROPIC_MODEL || DEFAULT_MODEL,
+        model: (import.meta.env.ANTHROPIC_MODEL as string) || (process.env.ANTHROPIC_MODEL as string) || DEFAULT_MODEL,
         max_tokens: 1000,
         temperature: 0.5,
         system: buildSystemPrompt(profile),
@@ -55,7 +55,7 @@ export const POST: APIRoute = async ({ request }) => {
       })
     });
 
-    const data = await upstream.json().catch(() => ({}));
+    const data = (await upstream.json().catch(() => ({ }))) as any;
 
     if (!upstream.ok) {
       const apiError =
@@ -68,7 +68,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const reply = Array.isArray(data?.content)
       ? data.content
-          .filter((item: unknown): item is { type: string; text: string } => {
+          .filter((item: any): item is { type: string; text: string } => {
             if (!item || typeof item !== 'object') {
               return false;
             }
@@ -76,7 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
             const candidate = item as { type?: unknown; text?: unknown };
             return candidate.type === 'text' && typeof candidate.text === 'string';
           })
-          .map((item) => item.text)
+          .map((item: any) => item.text)
           .join('\n\n')
       : '';
 
