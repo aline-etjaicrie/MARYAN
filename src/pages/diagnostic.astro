@@ -327,6 +327,7 @@ import InternalHeader from '../components/InternalHeader.astro';
   </style>
 
   <script is:inline>
+    console.log("Script Diagnostic Initialisé");
     const S = { institutional:0, posture:0, comm_public:0, pressure:0, isolation:0, human:0, experience:0, exposure:0, offer_level:0, theme:'generaliste' };
     const answered = {};
     const REQUIRED = { 1:['q1','q2','q3'], 2:['q5'], 3:['q8'], 4:['q10'], 5:['q14'] };
@@ -341,10 +342,20 @@ import InternalHeader from '../components/InternalHeader.astro';
     }
 
     function startDiag() {
-      document.getElementById('introSection').classList.add('hidden');
-      document.getElementById('progressWrap').classList.remove('hidden');
-      document.getElementById('diagSection').classList.remove('hidden');
-      goBloc(1);
+      try {
+        console.log("Démarrage du diagnostic...");
+        const intro = document.getElementById('introSection');
+        const diag = document.getElementById('diagSection');
+        const progress = document.getElementById('progressWrap');
+        
+        if (intro) intro.classList.add('hidden');
+        if (diag) diag.classList.remove('hidden');
+        if (progress) progress.classList.remove('hidden');
+        
+        goBloc(1);
+      } catch (e) {
+        console.error("Erreur startDiag:", e);
+      }
     }
     window.startDiag = startDiag;
 
