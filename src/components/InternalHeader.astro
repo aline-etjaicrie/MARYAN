@@ -10,6 +10,9 @@ const { title, subtitle, label, isDark = false } = Astro.props;
 ---
 <header class={`internal-header-v3 ${isDark ? 'dark' : ''}`}>
   <div class="container-narrow text-center">
+    <div class="back-link-wrap">
+      <a href="/" class="back-link-v3">← Retour à l'accueil</a>
+    </div>
     {label && <span class="label-v3">{label}</span>}
     <h1 set:html={title} />
     {subtitle && <p class="intro-v3" set:html={subtitle} />}
@@ -28,6 +31,21 @@ const { title, subtitle, label, isDark = false } = Astro.props;
   .internal-header-v3.dark h1 { color: white; }
   .internal-header-v3.dark .label-v3 { color: var(--neon); }
   .internal-header-v3.dark .label-v3::before { background: var(--accent-red); }
+
+  .back-link-wrap { margin-bottom: 2rem; }
+  .back-link-v3 { 
+    font-size: 0.85rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+    color: #54636C; 
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .back-link-v3:hover { opacity: 1; color: var(--accent-red); }
+  .internal-header-v3.dark .back-link-v3 { color: rgba(255,255,255,0.6); }
+  .internal-header-v3.dark .back-link-v3:hover { color: var(--neon); }
   
   h1 { 
     font-size: clamp(2.5rem, 6vw, 4rem); 
