@@ -1,303 +1,307 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InternalHeader from '../components/InternalHeader.astro';
 ---
 
 <BaseLayout 
   title="Diagnostic — MARYAN" 
-  description="Une analyse précise de votre réalité de mandat local. Comprenez vos zones de risque et vos priorités d'appui.">
+  description="Faites un point rapide sur votre situation d’élu·e. Identifiez votre point de tension principal et vos points de vigilance.">
   
-  <InternalHeader 
-    label="Analyse de situation"
-    title="Faire le point sur votre mandat en <span class='emphasis'>quelques minutes</span>."
-    subtitle="MARYAN analyse votre contexte, vos points de tension et votre niveau d’exposition pour vous aider à clarifier vos priorités et sécuriser vos décisions."
-  />
+  <main class="diag-v1-launch">
 
-  <main class="diag-app-v4">
+    <!-- 1. ÉCRAN D'ENTRÉE -->
+    <div id="introSection" class="diag-step-v4 active">
+      <div class="container-narrow text-center">
+        <p class="diag-kicker-v4">Diagnostic MARYAN</p>
+        <h1 class="diag-title-v4">Faites un point rapide sur votre situation d’élu·e.</h1>
+        <p class="diag-lead-v4">En 6 questions, MARYAN vous aide à repérer votre point de tension principal, vos points de vigilance et le type d’appui le plus utile pour avancer.</p>
+        
+        <div class="diag-benefits-v4">
+          <div class="benefit-item">✨ <span>Une lecture claire de votre situation</span></div>
+          <div class="benefit-item">🛡️ <span>Vos points de vigilance prioritaires</span></div>
+          <div class="benefit-item">🎯 <span>Un appui adapté à votre réalité de mandat</span></div>
+        </div>
 
-    <!-- 0. HERO D'ENTRÉE -->
-    <div id="introSection" class="container container-narrow diag-step active">
-      <div class="diag-intro-card card-v3">
-        <p class="diag-kicker">Le diagnostic MARYAN</p>
-        <ul class="diag-intro-list">
-          <li>✨ <span><strong>Une lecture claire</strong> de votre situation d’élu·e.</span></li>
-          <li>🛡️ <span><strong>Vos points de vigilance</strong> prioritaires.</span></li>
-          <li>🎯 <span><strong>Un appui adapté</strong> à votre contexte réel.</span></li>
-        </ul>
-        <div class="diag-intro-cta">
-          <button class="btn-primary-v3 big" id="startBtn">Lancer le diagnostic</button>
-          <p class="diag-hint">6 questions · 3 minutes · Confidentiel · Sans engagement</p>
+        <div class="diag-actions-v4">
+          <button class="btn-primary-v4 big" id="startBtn">Lancer le diagnostic</button>
+          <p class="diag-hint-v4">3 minutes · Confidentiel · Sans engagement</p>
         </div>
       </div>
     </div>
 
-    <!-- PROGRESS BAR -->
-    <div class="progress-wrap-v3 hidden" id="progressWrap">
-      <div class="container-narrow">
-        <div class="progress-inner-v3">
-          <div class="progress-track-v3"><div class="progress-fill-v3" id="progressFill"></div></div>
-          <p id="progressLabel" class="progress-label-v3">Question 1 sur 5</p>
+    <!-- QUESTIONS WRAPPER -->
+    <div id="questionsContainer" class="hidden">
+      <!-- STEPPER & PROGRESS -->
+      <nav class="diag-nav-v4">
+        <div class="container-narrow">
+          <div class="nav-inner-v4">
+            <button class="back-link-v4" id="prevBtn" onclick="history.back()">← Retour</button>
+            <div class="stepper-v4">
+              <p id="stepLabel" class="step-label-v4">Question 1 sur 6</p>
+              <div class="progress-track-v4"><div id="progressFill" class="progress-fill-v4"></div></div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </nav>
 
-    <!-- QUESTIONS -->
-    <div id="diagSection" class="hidden questions-v4 container-narrow">
-
-      <!-- Q1 : RÔLE -->
-      <div class="diag-step" id="q1-step">
-        <div class="q-content-v4">
-          <h2 class="q-label-v4">Quel est votre rôle aujourd’hui dans la vie politique locale ?</h2>
+      <div class="container-narrow questions-layout-v4">
+        
+        <!-- Q1 : RÔLE -->
+        <div class="diag-step-v4 hidden" id="q1-step">
+          <h2 class="q-label-v4">Quel est votre rôle aujourd’hui dans la vie locale ?</h2>
           <p class="q-help-v4">Votre rôle influence votre niveau d’exposition, vos marges de manœuvre et la nature des décisions à sécuriser.</p>
           <div class="options-v4">
-            <button class="opt-v4" onclick="pick(this,'role','maire',1,{exp:3,comp:2})">Maire</button>
-            <button class="opt-v4" onclick="pick(this,'role','adjoint',1,{exp:1,comp:1})">Adjoint·e au maire</button>
-            <button class="opt-v4" onclick="pick(this,'role','conseiller_maj',1,{exp:1,comp:1})">Conseiller·e de la majorité</button>
-            <button class="opt-v4" onclick="pick(this,'role','conseiller_opp',1,{exp:2,comp:1})">Conseiller·e d’opposition</button>
-            <button class="opt-v4" onclick="pick(this,'role','interco',1,{exp:2,comp:4})">Président·e / VP d’intercommunalité</button>
+            <button class="opt-v4" onclick="pick(this,'role','maire',1)">Maire</button>
+            <button class="opt-v4" onclick="pick(this,'role','adjoint',1)">Adjoint·e au maire</button>
+            <button class="opt-v4" onclick="pick(this,'role','conseiller_maj',1)">Conseiller·e de la majorité</button>
+            <button class="opt-v4" onclick="pick(this,'role','conseiller_opp',1)">Conseiller·e d’opposition</button>
+            <button class="opt-v4" onclick="pick(this,'role','interco',1)">Président·e / VP d’intercommunalité</button>
           </div>
         </div>
-      </div>
 
-      <!-- Q2 : ANCIENNETÉ -->
-      <div class="diag-step hidden" id="q2-step">
-        <div class="q-content-v4">
+        <!-- Q2 : ANCIENNETÉ -->
+        <div class="diag-step-v4 hidden" id="q2-step">
           <h2 class="q-label-v4">Depuis combien de temps exercez-vous ce mandat ?</h2>
-          <p class="q-help-v4">Cette information nous aide à ajuster le niveau d’accompagnement.</p>
+          <p class="q-help-v4">Cette information nous aide à situer votre niveau de repères et le type d’appui le plus utile.</p>
           <div class="options-v4">
-            <button class="opt-v4" onclick="pick(this,'seniority','moins1an',2,{comp:2,urg:1})">Moins d’un an</button>
-            <button class="opt-v4" onclick="pick(this,'seniority','1-3ans',2,{comp:1})">Entre 1 et 3 ans</button>
-            <button class="opt-v4" onclick="pick(this,'seniority','3-6ans',2,{comp:0})">Entre 3 et 6 ans</button>
-            <button class="opt-v4" onclick="pick(this,'seniority','renouvele',2,{comp:0})">Plus de 6 ans / mandat renouvelé</button>
+            <button class="opt-v4" onclick="pick(this,'seniority','moins1an',2)">Moins d’un an</button>
+            <button class="opt-v4" onclick="pick(this,'seniority','1-3ans',2)">Entre 1 et 3 ans</button>
+            <button class="opt-v4" onclick="pick(this,'seniority','3-6ans',2)">Entre 3 et 6 ans</button>
+            <button class="opt-v4" onclick="pick(this,'seniority','renouvele',2)">Plus de 6 ans / mandat renouvelé</button>
           </div>
         </div>
-      </div>
 
-      <!-- Q3 : BESOIN PRINCIPAL -->
-      <div class="diag-step hidden" id="q3-step">
-        <div class="q-content-v4">
-          <h2 class="q-label-v4">Qu’est-ce qui vous amène à faire ce diagnostic ?</h2>
-          <p class="q-help-v4">Nous distinguons ici une urgence ponctuelle d’un besoin d’appui plus structurel.</p>
+        <!-- Q3 : POIDS DU MOMENT -->
+        <div class="diag-step-v4 hidden" id="q3-step">
+          <h2 class="q-label-v4">Qu’est-ce qui vous pèse le plus en ce moment dans votre mandat ?</h2>
+          <p class="q-help-v4">Il ne s’agit pas seulement du sujet du moment, mais de ce qui fragilise réellement votre action.</p>
           <div class="options-v4">
-            <button class="opt-v4" onclick="pick(this,'need','arbitrage',3,{exp:2,comp:2,urg:2})">Arbitrer une décision sensible</button>
-            <button class="opt-v4" onclick="pick(this,'need','conflit',3,{exp:1,comp:1,urg:3,frag:2})">Gérer une tension ou un conflit</button>
-            <button class="opt-v4" onclick="pick(this,'need','prise_parole',3,{exp:3,urg:1})">Préparer une prise de parole ou séquence politique</button>
-            <button class="opt-v4" onclick="pick(this,'need','methode',3,{comp:3})">Remettre de la méthode sur un dossier complexe</button>
-            <button class="opt-v4" onclick="pick(this,'need','recul',3,{comp:2,frag:1})">Prendre du recul et clarifier mes priorités</button>
+            <button class="opt-v4" onclick="pick(this,'tension','flou',3)">Devoir arbitrer dans le flou</button>
+            <button class="opt-v4" onclick="pick(this,'tension','conflit',3)">Gérer une tension ou un conflit</button>
+            <button class="opt-v4" onclick="pick(this,'tension','exposition',3)">Porter un sujet très exposé</button>
+            <button class="opt-v4" onclick="pick(this,'tension','sollicitations',3)">Répondre à trop de sollicitations contradictoires</button>
+            <button class="opt-v4" onclick="pick(this,'tension','duree',3)">Garder une ligne claire dans la durée</button>
           </div>
         </div>
-      </div>
 
-      <!-- Q4 : ENTOURAGE -->
-      <div class="diag-step hidden" id="q4-step">
-        <div class="q-content-v4">
-          <h2 class="q-label-v4">Dans votre mandat, vous sentez-vous suffisamment entouré·e pour décider sereinement ?</h2>
+        <!-- Q4 : LE MANQUE -->
+        <div class="diag-step-v4 hidden" id="q4-step">
+          <h2 class="q-label-v4">Quand une situation devient sensible, qu’est-ce qui vous manque le plus aujourd’hui ?</h2>
           <div class="options-v4">
-            <button class="opt-v4" onclick="pick(this,'support','oui',4,{frag:0})">Oui, je peux m’appuyer sur des relais solides</button>
-            <button class="opt-v4" onclick="pick(this,'support','partiel',4,{frag:2,urg:1})">Cela dépend des sujets et des moments</button>
-            <button class="opt-v4" onclick="pick(this,'support','non',4,{frag:4,urg:2,exp:1})">Non, je porte trop souvent les décisions seul·e</button>
+            <button class="opt-v4" onclick="pick(this,'lack','recul',4)">Du recul pour ne pas réagir trop vite</button>
+            <button class="opt-v4" onclick="pick(this,'lack','cadre',4)">Un cadre clair pour arbitrer</button>
+            <button class="opt-v4" onclick="pick(this,'lack','relais',4)">Des relais fiables pour ne pas porter seul·e</button>
+            <button class="opt-v4" onclick="pick(this,'lack','mots',4)">Les bons mots pour tenir une position</button>
+            <button class="opt-v4" onclick="pick(this,'lack','priorites',4)">Une vision plus nette de mes priorités</button>
           </div>
         </div>
-      </div>
 
-      <!-- Q5 : SUJET DU MOMENT -->
-      <div class="diag-step hidden" id="q5-step">
-        <div class="q-content-v4">
-          <h2 class="q-label-v4">Quel sujet concentre le plus votre attention en ce moment ?</h2>
-          <div class="options-v4" id="subjectOptions">
-            <button class="opt-v4" onclick="pick(this,'topic','urbanisme',5,{comp:2,exp:1})">Urbanisme, aménagement, habitat</button>
-            <button class="opt-v4" onclick="pick(this,'topic','budget',5,{comp:3,urg:1})">Budget, finances, arbitrages</button>
-            <button class="opt-v4" onclick="pick(this,'topic','gouvernance',5,{comp:2,frag:2,exp:2})">Gouvernance, majorité, relations politiques</button>
-            <button class="opt-v4" onclick="pick(this,'topic','securite',5,{exp:2,urg:3})">Sécurité, tranquillité publique, gestion de crise</button>
-            <button class="opt-v4" onclick="pick(this,'topic','social',5,{exp:1,comp:1})">Écoles, solidarités, services à la population</button>
-            <button class="opt-v4" onclick="toggleOther(true)">Autre sujet prioritaire</button>
-          </div>
-          
-          <div id="otherInputWrapper" class="hidden" style="margin-top:1.5rem;">
-            <input type="text" id="otherTopic" placeholder="Décrivez en quelques mots le sujet principal..." class="input-v4" />
-            <button class="btn-primary-v3" style="margin-top:1rem; width:100%;" onclick="pickOther()">Valider →</button>
-            <button class="btn-link-simple" style="margin-top:1rem; display:block; width:100%;" onclick="toggleOther(false)">← Revenir aux choix</button>
+        <!-- Q5 : SENTIMENT -->
+        <div class="diag-step-v4 hidden" id="q5-step">
+          <h2 class="q-label-v4">Dans votre mandat, vous vous sentez aujourd’hui plutôt…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'feeling','entoure',5)">Bien entouré·e</button>
+            <button class="opt-v4" onclick="pick(this,'feeling','soutenu_partiel',5)">Entouré·e, mais pas toujours soutenu·e au bon moment</button>
+            <button class="opt-v4" onclick="pick(this,'feeling','seul',5)">Souvent seul·e pour tenir les décisions</button>
+            <button class="opt-v4" onclick="pick(this,'feeling','expose_sans_prise',5)">Exposé·e sans avoir vraiment prise sur la situation</button>
+            <button class="opt-v4" onclick="pick(this,'feeling','surcharge',5)">En surcharge sur trop de fronts à la fois</button>
           </div>
         </div>
-      </div>
 
-      <!-- TRANSITION DE CALCUL -->
-      <div class="diag-step hidden" id="calculating-step">
-        <div class="q-content-v4 text-center">
+        <!-- Q6 : VIGILANCE -->
+        <div class="diag-step-v4 hidden" id="q6-step">
+          <h2 class="q-label-v4">Sur quoi voulez-vous surtout éviter de vous tromper ?</h2>
+          <p class="q-help-v4">Cette question nous aide à comprendre votre vigilance principale.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'vigilance','decision',6)">Sur la décision elle-même</button>
+            <button class="opt-v4" onclick="pick(this,'vigilance','maniere',6)">Sur la manière de la porter</button>
+            <button class="opt-v4" onclick="pick(this,'vigilance','relation',6)">Sur la relation avec les autres acteurs</button>
+            <button class="opt-v4" onclick="pick(this,'vigilance','tempo',6)">Sur le tempo / le bon moment pour agir</button>
+            <button class="opt-v4" onclick="pick(this,'vigilance','impact',6)">Sur l’impact politique ou public</button>
+          </div>
+        </div>
+
+        <!-- TRANSITION -->
+        <div class="diag-step-v4 hidden text-center" id="calculating-step" style="padding: 4rem 0;">
            <div class="loader-v4"></div>
-           <h2 class="q-label-v4">Analyse en cours...</h2>
-           <p style="opacity:0.6;">Nous relions votre rôle, votre contexte et vos points de tension pour préparer votre lecture de situation.</p>
+           <h2 class="q-label-v4">Votre diagnostic se prépare</h2>
+           <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN relie votre rôle, votre contexte et vos points de tension pour faire ressortir ce qui mérite le plus d’attention aujourd’hui.</p>
         </div>
+
       </div>
     </div>
 
-    <!-- RESTITUTION FINALE -->
-    <div id="resultSection" class="result-v4 hidden container">
-       
-       <header class="result-header-v4">
-          <span class="label-v4">Votre lecture de mandat</span>
-          <h2 id="resTitle" class="emphasis result-title-v4">—</h2>
-          <p id="resSummary" class="intro-v3"></p>
-       </header>
+    <!-- 4. RÉSULTAT FINAL -->
+    <div id="resultSection" class="diag-result-v4 hidden">
+       <div class="container-narrow">
+          
+          <header class="res-header-v4">
+             <span class="label-v4">Votre lecture de mandat</span>
+             <h2 id="resVigilanceTitle" class="res-title-v4">—</h2>
+          </header>
 
-       <div class="result-grid-v4">
-          <!-- Bloc 1 : Implications -->
-          <div class="card-v4 result-card-v4">
-             <div class="card-kicker-v4">Ce que cela implique</div>
-             <ul id="resImplications" class="v3-list-dots"></ul>
-          </div>
+          <div class="res-body-v4">
+             
+             <!-- BLOC 1 : SITUATION -->
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">1. Votre situation aujourd’hui</h3>
+                <p id="resSituationText" class="res-text-v4"></p>
+             </section>
 
-          <!-- Bloc 2 : Priorités -->
-          <div class="card-v4 result-card-v4 bg-light">
-             <div class="card-kicker-v4">Vos priorités maintenant</div>
-             <ul id="resPriorities" class="v3-list-dots-red"></ul>
+             <!-- BLOC 2 : VIGILANCE -->
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">2. Votre point de vigilance principal</h3>
+                <div class="vigilance-card-v4">
+                   <p id="resVigilanceText"></p>
+                </div>
+             </section>
+
+             <!-- BLOC 3 : PRIORITÉS -->
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">3. Ce qui vous aiderait le plus maintenant</h3>
+                <ul id="resPrioritiesList" class="res-list-v4"></ul>
+             </section>
+
+             <!-- BLOC 4 : RECOMMANDE (TYPE D'APPUI) -->
+             <section class="res-reco-v4">
+                <h3 class="section-title-v4">4. Le type d’appui le plus pertinent pour vous</h3>
+                <p id="resOfferText" class="res-text-v4" style="margin-bottom:2rem;"></p>
+                
+                <div id="resCTA" class="res-actions-v4">
+                   <!-- Filled by JS -->
+                </div>
+             </section>
+
+             <!-- BLOC EMAIL (OPTIONNEL APRÈS RÉSULTAT) -->
+             <section class="res-email-v4" id="emailBox">
+                <h3>Recevoir votre synthèse</h3>
+                <p>Vous pouvez recevoir ce diagnostic par email pour le relire plus tard, le partager ou retrouver rapidement vos points de vigilance.</p>
+                <div class="email-input-v4">
+                   <input type="email" id="emailInput" placeholder="vous@collectivite.fr" />
+                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
+                </div>
+             </section>
+
+             <footer class="res-footer-v4 text-center">
+                <p>Un mandat ne se porte pas seul·e face à l'incertitude.</p>
+                <a href="/" class="btn-link-v4">Retour à l'accueil</a>
+             </footer>
+
           </div>
        </div>
-
-       <!-- Bloc 3 : Recommandation d'Offre -->
-       <div class="reco-box-v4">
-          <div class="reco-content-v4">
-             <span class="badge-v4">Appui le plus pertinent</span>
-             <h3 id="resOfferTitle" style="font-size:1.8rem; margin:1rem 0; color:white;">—</h3>
-             <p id="resOfferText" class="intro-v3 small" style="opacity:0.9; color:white;"></p>
-          </div>
-          <div id="ctaContainer" class="reco-cta-v4">
-             <!-- Dynamically filled -->
-          </div>
-       </div>
-
-       <!-- Bloc 4 : Email (Sauvegarde) -->
-       <div id="emailSectionWrapper" class="email-save-v4">
-          <div class="email-text-v4">
-             <h3>Recevoir votre synthèse complète</h3>
-             <p>Vous pouvez recevoir ce diagnostic par email pour le relire plus tard, le partager ou retrouver vos priorités en un clic.</p>
-          </div>
-          <div class="email-form-v4">
-             <input type="email" id="emailInput" placeholder="vous@collectivite.fr" class="input-v4" />
-             <button class="btn-primary-v3" onclick="submitEmail()">Recevoir</button>
-          </div>
-       </div>
-
-       <footer class="result-footer-v4 text-center">
-          <p>Un mandat ne se porte pas seul·e face à l'incertitude.</p>
-          <div class="footer-links-v4">
-             <a href="/contact" class="btn-link-simple">Parler à un conseiller MARYAN</a>
-             <a href="/" class="btn-link-simple">Retour à l'accueil</a>
-          </div>
-       </footer>
     </div>
 
   </main>
 
   <style>
-    .diag-app-v4 { height: 100vh; overflow: hidden; display: flex; flex-direction: column; background: #FDFBF8; }
-    .container { max-width: 1000px; margin: 0 auto; width: 100%; padding: 0 1.5rem; }
-    .container-narrow { max-width: 620px; margin: 0 auto; width: 100%; padding: 0 1.5rem; }
-
-    /* Transitions steps */
-    .diag-step {
-      display: flex; flex-direction: column; justify-content: center;
-      height: 70vh; opacity: 0; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      position: absolute; width: 100%; left: 0; pointer-events: none;
+    :root {
+      --deep: #0A192F;
+      --neon: #ADFF2F;
+      --red: #E63946;
+      --bg: #F8F9FA;
+      --card-bg: #FFFFFF;
+      --border: rgba(10, 25, 47, 0.08);
     }
-    .diag-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .diag-step.hidden { display: none; }
-    .questions-v4 { position: relative; flex: 1; min-height: 480px; }
 
-    /* UI Logic */
-    .progress-wrap-v3 { padding: 1.5rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); }
-    .progress-inner-v3 { display: flex; align-items: center; gap: 2rem; }
-    .progress-track-v3 { flex: 1; height: 3px; background: #EEE; border-radius: 99px; overflow: hidden; }
-    .progress-fill-v3 { height: 100%; background: var(--accent-red); transition: width 0.4s; }
-    .progress-label-v3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .diag-v1-launch { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .container-narrow { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
 
-    .q-help-v4 { margin-bottom: 2rem; opacity: 0.6; font-size: 0.95rem; line-height: 1.4; color: #555; }
-    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.2rem); margin-bottom: 0.8rem; color: var(--deep); line-height: 1.1; font-weight: 700; }
-    .options-v4 { display: flex; flex-direction: column; gap: 0.75rem; }
-    .opt-v4 { 
-        padding: 1.1rem 1.4rem; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; 
-        text-align: left; font-size: 1rem; font-weight: 600; color: var(--deep); cursor: pointer; transition: all 0.2s; 
-    }
-    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    /* STEP MANAGEMENT */
+    .diag-step-v4 { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .diag-step-v4.active { display: block; opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
 
-    .input-v4 { width: 100%; padding: 1rem 1.4rem; border: 1.5px solid #E5E7EB; border-radius: 12px; font-size: 1rem; font-family: inherit; }
-
-    /* Result Styles */
-    .result-v4 { overflow-y: scroll; padding: 6rem 1.5rem; height: 100vh; background: #FFFDF8; }
-    .result-header-v4 { margin-bottom: 4rem; max-width: 850px; }
-    .result-title-v4 { font-size: clamp(1.8rem, 5vw, 3.2rem); margin: 1.5rem 0; line-height: 1.1; }
-    .result-grid-v4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; margin-bottom: 3rem; }
-    .card-kicker-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--accent-red); margin-bottom: 1.5rem; display: block; letter-spacing: 0.08em; }
-
-    .reco-box-v4 { background: var(--deep); color: white; border-radius: 24px; padding: 3.5rem 4rem; display: flex; justify-content: space-between; align-items: center; gap: 4rem; margin: 4rem 0; }
-    .reco-cta-v4 { display: flex; flex-direction: column; gap: 1rem; min-width: 280px; }
+    /* ÉCRAN D'ENTRÉE */
+    #introSection { padding: 8vh 0; }
+    .diag-kicker-v4 { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .diag-title-v4 { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .diag-lead-v4 { font-size: 1.25rem; line-height: 1.5; opacity: 0.8; margin-bottom: 3rem; }
     
-    .email-save-v4 { background: #fff; padding: 3rem; border-radius: 20px; border: 1px solid #EEE; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: center; margin: 4rem 0; }
-    .email-text-v4 h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
-    .email-text-v4 p { font-size: 0.95rem; opacity: 0.6; margin: 0; line-height: 1.5; }
-    .email-form-v4 { display: flex; gap: 0.6rem; }
+    .diag-benefits-v4 { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; text-align: left; max-width: 440px; margin-inline: auto; }
+    .benefit-item { display: flex; align-items: center; gap: 1rem; font-weight: 600; font-size: 1.1rem; }
 
-    .v3-list-dots-red li { position: relative; padding-left: 1.5rem; margin-bottom: 0.8rem; font-weight: 600; font-size: 1rem; color: var(--deep); }
-    .v3-list-dots-red li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%; }
+    .diag-hint-v4 { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
 
-    /* Loader */
-    .loader-v4 { width: 45px; height: 45px; border: 3px solid #EEE; border-top-color: var(--accent-red); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem; }
+    /* NAV & PROGRESS */
+    .diag-nav-v4 { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .nav-inner-v4 { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .back-link-v4 { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .back-link-v4:hover { opacity: 1; }
+    .stepper-v4 { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .step-label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .progress-track-v4 { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .progress-fill-v4 { height: 100%; background: var(--red); width: 16.6%; transition: width 0.4s ease; }
+
+    /* QUESTIONS */
+    .questions-layout-v4 { padding-bottom: 5rem; }
+    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .q-help-v4 { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+
+    .options-v4 { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-v4 { 
+      padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px; 
+      text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s; 
+      line-height: 1.3;
+    }
+    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .opt-v4.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+
+    /* RÉSULTAT */
+    .diag-result-v4 { padding: 6rem 0; background: #FFFDF8; }
+    .res-title-v4 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4rem; cursor: default; }
+    .res-section-v4 { margin-bottom: 4rem; }
+    .section-title-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 1.5rem; }
+    .res-text-v4 { font-size: 1.2rem; line-height: 1.6; color: #333; }
+    
+    .vigilance-card-v4 { background: #fff; border: 1.5px solid var(--deep); padding: 2.5rem; border-radius: 20px; font-size: 1.3rem; font-weight: 700; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    
+    .res-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .res-list-v4 li { position: relative; padding-left: 2rem; font-size: 1.15rem; font-weight: 600; color: #444; }
+    .res-list-v4 li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+
+    .res-reco-v4 { background: var(--deep); color: #fff; padding: 4rem; border-radius: 32px; margin: 5rem 0; position: relative; overflow: hidden; }
+    .res-reco-v4 .section-title-v4 { color: #E1FF01; }
+    .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    /* EMAIL BOX */
+    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
+    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
+    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
+    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
+
+    /* BUTTONS */
+    .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; }
+    .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .btn-primary-v4.big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    
+    .btn-secondary-v4 { background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.2); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; text-align: center; }
+    .btn-secondary-v4:hover { background: rgba(255,255,255,0.2); }
+    
+    .btn-link-v4 { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; }
+    .btn-link-v4:hover { opacity: 1; }
+
+    /* LOADER */
+    .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .footer-links-v4 { display: flex; gap: 2rem; justify-content: center; margin-top: 1.5rem; }
-
-    @media (max-width: 900px) {
-       .result-grid-v4 { grid-template-columns: 1fr; }
-       .reco-box-v4 { flex-direction: column; padding: 2.5rem; text-align: center; gap: 2rem; }
-       .reco-cta-v4 { width: 100%; min-width: 0; }
-       .email-save-v4 { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; text-align: center; }
-       .email-form-v4 { flex-direction: column; }
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      #introSection { padding-top: 5vh; }
+      .diag-title-v4 { font-size: 2.4rem; }
+      .diag-lead-v4 { font-size: 1.1rem; }
+      .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
+      .email-input-v4 { flex-direction: column; }
+      .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
+      .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; border-radius: 14px; }
     }
   </style>
 
   <script is:inline>
-    // --- 1. CONFIG & DATA ---
-    const MAPPINGS = {
-      role: {
-        maire: { exposure: 8, complexity: 6 },
-        adjoint: { exposure: 4, complexity: 3 },
-        conseiller_maj: { exposure: 2, complexity: 2 },
-        conseiller_opp: { exposure: 4, complexity: 2 },
-        interco: { exposure: 6, complexity: 9 }
-      },
-      seniority: {
-        moins1an: { complexity: 6, urgency: 4 },
-        '1-3ans': { complexity: 4, urgency: 2 },
-        '3-6ans': { complexity: 2, urgency: 1 },
-        renouvele: { complexity: 1, urgency: 1 }
-      },
-      need: {
-        arbitrage: { exposure: 4, complexity: 6, urgency: 6 },
-        conflit: { exposure: 6, supportFragility: 6, urgency: 8 },
-        prise_parole: { exposure: 8, urgency: 4 },
-        methode: { complexity: 8, urgency: 2 },
-        recul: { complexity: 4, supportFragility: 4, urgency: 2 }
-      },
-      support: {
-        oui: { supportFragility: 0 },
-        partiel: { supportFragility: 4, urgency: 2 },
-        non: { supportFragility: 10, urgency: 6, exposure: 2 }
-      },
-      topic: {
-        urbanisme: { complexity: 4, exposure: 2 },
-        budget: { complexity: 6, urgency: 4 },
-        gouvernance: { complexity: 4, supportFragility: 4, exposure: 4 },
-        securite: { exposure: 6, urgency: 8 },
-        social: { complexity: 2, exposure: 2 }
-      }
-    };
-
     const state = { answers: {}, step: 0 };
-    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'calc'];
 
-    // --- 2. NAVIGATION ---
     function showStep(id) {
-       document.querySelectorAll('.diag-step').forEach(s => {
+       document.querySelectorAll('.diag-step-v4').forEach(s => {
           s.classList.remove('active');
           setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
        });
@@ -306,214 +310,132 @@ import InternalHeader from '../components/InternalHeader.astro';
           target.classList.remove('hidden');
           setTimeout(() => target.classList.add('active'), 50);
        }
+       // Update Progress
        const idx = STEPS.indexOf(id.replace('-step', ''));
-       if(idx > 0) {
-          const pct = (idx / (STEPS.length - 2)) * 100;
-          document.getElementById('progressFill').style.width = Math.min(100, pct) + '%';
-          document.getElementById('progressLabel').textContent = `Question ${idx} sur 5`;
+       if(idx > 0 && idx < 7) {
+          document.getElementById('stepLabel').innerText = `Question ${idx} sur 6`;
+          document.getElementById('progressFill').style.width = (idx / 6) * 100 + '%';
        }
     }
 
     document.getElementById('startBtn').addEventListener('click', () => {
-       document.getElementById('progressWrap').classList.remove('hidden');
-       document.getElementById('diagSection').classList.remove('hidden');
+       document.getElementById('introSection').classList.add('hidden');
+       document.getElementById('questionsContainer').classList.remove('hidden');
        showStep('q1-step');
     });
 
-    window.toggleOther = (active) => {
-       document.getElementById('subjectOptions').classList.toggle('hidden', active);
-       document.getElementById('otherInputWrapper').classList.toggle('hidden', !active);
-    };
-
     window.pick = (btn, key, val, stepIdx) => {
        state.answers[key] = val;
-       if(stepIdx < 5) {
-          setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 300);
+       
+       // UI feedback
+       const stepEl = btn.closest('.diag-step-v4');
+       stepEl.querySelectorAll('.opt-v4').forEach(opt => opt.classList.remove('selected'));
+       btn.classList.add('selected');
+
+       if(stepIdx < 6) {
+          setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350);
        } else {
           showStep('calculating-step');
-          setTimeout(calculateProfile, 1500);
+          setTimeout(processDiagnosis, 1500);
        }
     };
 
-    window.pickOther = () => {
-       const val = document.getElementById('otherTopic').value.trim();
-       if(!val) return;
-       window.pick(null, 'topic', 'autre', 5);
-    };
-
-    // --- 3. SCORING ENGINE ---
-    function calculateProfile() {
+    function processDiagnosis() {
        const a = state.answers;
        
-       let exposureScore = 0;
-       let supportFragilityScore = 0;
-       let complexityScore = 0;
-       let urgencyScore = 0;
+       const results = {
+          situation: "",
+          vigilance: "",
+          priorities: [],
+          offerType: "copilote"
+       };
 
-       // Aggregate scores from mappings
-       Object.entries(a).forEach(([key, val]) => {
-          const map = MAPPINGS[key]?.[val];
-          if (map) {
-             exposureScore += (map.exposure || 0);
-             supportFragilityScore += (map.supportFragility || 0);
-             complexityScore += (map.complexity || 0);
-             urgencyScore += (map.urgency || 0);
-          }
-       });
-
-       // Derived Levels
-       const exposureLevel = exposureScore >= 12 ? "très élevé" : (exposureScore >= 7 ? "élevé" : "modéré");
-       const supportLevel = supportFragilityScore >= 8 ? "fragile" : (supportFragilityScore >= 4 ? "variable" : "solide");
-
-       // Determine Primary Risk based on SPEC priority
-       let primaryRisk = "dispersion_strategique";
-       if (supportFragilityScore >= 8 && exposureScore >= 8) primaryRisk = "isolement_decisionnel";
-       else if (urgencyScore >= 10 && exposureScore >= 8) primaryRisk = "pression_decisionnelle";
-       else if (complexityScore >= 12) primaryRisk = "flou_de_cadrage";
-       else if (a.need === 'conflit') primaryRisk = "tension_relationnelle";
-       else primaryRisk = "dispersion_strategique";
-
-       // Offer Determination
-       let offer = "copilote";
-       if (exposureScore >= 12 || supportFragilityScore >= 8 || a.need === 'arbitrage' || a.need === 'conflit') {
-          offer = "maryan_plus";
-       }
-       if (a.role === 'interco' || complexityScore >= 15) {
-          offer = "contact";
+       // BLOC 1 : SITUATION
+       if (a.feeling === 'seul' || a.feeling === 'expose_sans_prise') {
+          results.situation = "Votre diagnostic fait apparaître une situation où la difficulté principale n’est pas seulement le sujet à traiter, mais la manière de tenir la décision dans un contexte exigeant et parfois isolé.";
+       } else if (a.feeling === 'surcharge') {
+          results.situation = "Votre situation montre une forte sollicitation qui brouille la visibilité sur les priorités réelles du mandat.";
+       } else {
+          results.situation = "Votre diagnostic fait apparaître une situation de mandat où la difficulté principale est de maintenir une ligne claire malgré la pression des sollicitations contradictoires.";
        }
 
-       // Final JSON Object for Memory
-       const resultProfile = {
-          role: a.role,
-          seniority: a.seniority,
-          motive: a.need,
-          focus: a.topic,
-          scores: { exposure: exposureScore, fragility: supportFragilityScore, complexity: complexityScore, urgency: urgencyScore },
-          primaryRisk,
-          exposureLevel,
-          supportLevel,
-          offer
-       };
+       // BLOC 2 : VIGILANCE
+       if (a.tension === 'flou' || a.lack === 'cadre') {
+          results.vigilance = "Vous avez surtout besoin d’un cadre plus solide pour arbitrer sans laisser l’urgence ou la pression décider à votre place.";
+          results.priorities = ["Recréer du recul avant les décisions sensibles", "Clarifier ce qui relève du politique, du technique et du relationnel", "Vous appuyer sur un cadre de décision plus lisible et plus stable"];
+       } else if (a.feeling === 'seul' || a.lack === 'relais' || a.tension === 'conflit') {
+          results.vigilance = "Votre point de fragilité principal semble être le fait de devoir trop souvent tenir seul·e des décisions sensibles ou exposées.";
+          results.priorities = ["Retrouver des relais fiables sur les sujets exposés", "Sécuriser le cadrage des dossiers sensibles", "Déléguer la mise en forme pour garder la main sur le fond"];
+       } else if (a.feeling === 'surcharge' || a.lack === 'priorites' || a.tension === 'sollicitations') {
+          results.vigilance = "Votre enjeu principal n’est pas seulement de faire face aux sujets, mais de retrouver un ordre clair entre urgence, priorité et cap politique.";
+          results.priorities = ["Mieux hiérarchiser ce qui mérite une vraie décision", "Reprendre la main sur le rythme plutôt que subir l'agenda", "Clarifier votre ligne de conduite sur le semestre"];
+       } else {
+          results.vigilance = "Votre vigilance principale porte sur la manière de tenir une position juste, lisible et solide dans un contexte où la parole et le tempo comptent autant que la décision elle-même.";
+          results.priorities = ["Sécuriser la manière de porter une décision", "Mieux calibrer le tempo de vos interventions", "Tenir une position ferme sans vous crisper"];
+       }
 
-       console.log("SCORES CALCULATED:", resultProfile);
-       localStorage.setItem('maryan_profile_v4', JSON.stringify(resultProfile));
+       // BLOC 4 : ORIENTATION
+       if (a.seniority === 'moins1an' || a.vigilance === 'relation' || (a.lack === 'relais' && a.feeling === 'seul')) {
+          results.offerType = "formation_irl";
+       } else if (a.role === 'interco' || a.tension === 'sollicitations' || a.vigilance === 'impact') {
+          results.offerType = "collectivite";
+       } else if (a.tension === 'conflit' || a.tension === 'duree' || a.lack === 'cadre' || a.feeling === 'soutenu_partiel') {
+          results.offerType = "individuel";
+       } else {
+          results.offerType = "copilote";
+       }
 
-       renderSynthesis(resultProfile);
-    }
-
-    // --- 4. SYNTHESIS GENERATOR ---
-    function renderSynthesis(p) {
-       const a = state.answers;
-       
-       // 1. Title Construction
-       const titles = {
-          isolement_decisionnel: "Votre point de vigilance principal : décider trop souvent seul·e",
-          pression_decisionnelle: "Votre point de vigilance principal : une pression décisionnelle élevée",
-          flou_de_cadrage: "Votre point de vigilance principal : un besoin de cadrage technique et politique",
-          tension_relationnelle: "Votre point de vigilance principal : une séquence politique sous tension",
-          dispersion_strategique: "Votre point de vigilance principal : le risque de dispersion stratégique"
-       };
-
-       // 2. Summary Generation
-       const needLabels = {
-          arbitrage: "arbitrer une décision sensible",
-          conflit: "gérer une situation de tension ou de conflit",
-          prise_parole: "préparer une prise de parole stratégique",
-          methode: "remettre de la méthode sur un dossier complexe",
-          recul: "prendre du recul et clarifier vos priorités"
-       };
-       
-       const summary = `Votre diagnostic fait apparaître un mandat ${p.exposureLevel === "très élevé" ? "à très forte exposition" : "à exposition élevée"}, avec des relais ${p.supportLevel} et un besoin dominant de ${needLabels[a.need] || "clarification"}. Votre enjeu principal aujourd’hui est de ${p.primaryRisk.replace('_', ' ')}.`;
-
-       // 3. Lists Logic
-       const implicationsMap = {
-          isolement_decisionnel: [
-             "Apparition d'une fatigue décisionnelle réelle",
-             "Risque d'arbitrages défensifs par manque de relais",
-             "Difficulté à hiérarchiser les urgences politiques",
-             "Exposition personnelle accrue sur les sujets sensibles"
-          ],
-          pression_decisionnelle: [
-             "Prise de décision sous le coup de l'émotion ou de l'urgence",
-             "Risque d'erreur de communication irréversible",
-             "Sentiment de subir l'agenda extérieur",
-             "Fragilisation de l'autorité politique"
-          ],
-          flou_de_cadrage: [
-             "Perte de temps sur des allers-retours techniques",
-             "Difficulté à prioriser les grands projets",
-             "Risque de réponses institutionnelles trop fragiles",
-             "Moindre lisibilité de votre action politique"
-          ],
-          tension_relationnelle: [
-             "Crispation politique au sein de l'équipe",
-             "Usure personnelle liée à la gestion de l'humain",
-             "Décisions plus coûteuses à porter publiquement",
-             "Risque de séquence médiatique mal maîtrisée"
-          ],
-          dispersion_strategique: [
-             "Essoufflement sur des micro-dossiers",
-             "Manque de cap clair pour les services",
-             "Dilution de votre message politique",
-             "Sensation de ne pas avancer sur l'essentiel"
-          ]
-       };
-       const implications = implicationsMap[p.primaryRisk] || implicationsMap.flou_de_cadrage;
-
-       const prioritiesMap = {
-          isolement_decisionnel: ["Recréer un espace de recul avant les décisions sensibles", "Sécuriser le cadrage des dossiers les plus exposés", "Vous appuyer sur un cadre d’analyse plus stable"],
-          pression_decisionnelle: ["Déléguer le traitement technique pour garder le cap politique", "Cadrer les points de vigilance en amont des séquences", "Ralentir le tempo sur les dossiers mal maîtrisés"],
-          tension_relationnelle: ["Désamorcer les points de friction par un tiers", "Sécuriser les éléments de langage immédiats", "Retrouver une posture d'arbitre"],
-          flou_de_cadrage: ["Stocker les faits pour objectiver la décision", "Identifier les risques administratifs et financiers", "Traduire le dossier technique en vision politique"]
-       };
-       const priorities = prioritiesMap[p.primaryRisk] || prioritiesMap.flou_de_cadrage;
-
-       // 4. Offer UI Generation
-       const offers = {
+       const offerContent = {
           copilote: {
-             title: "MARYAN Copilote (Accès Gratuit)",
-             text: "Votre socle est sain. Le Copilote peut vous aider ponctuellement à cadrer vos réflexions et vos prises de parole en toute autonomie.",
-             ctas: `<a href="/copilote" class="btn-primary-v3" style="background:var(--neon); color:var(--deep); width:100%; text-align:center;">Tester le copilote gratuit</a>`
+             text: "Au vu de votre situation, un premier niveau d’appui peut déjà vous aider à clarifier vos options, prendre du recul et tester la valeur de MARYAN dans votre quotidien.",
+             ctas: `<a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Tester le copilote gratuit</a>
+                    <a href="/offres#avancer" class="btn-secondary-v4">Découvrir l’offre individuelle</a>
+                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
           },
-          maryan_plus: {
-             title: "MARYAN Plus (Accompagnement Expert)",
-             text: "Au vu de votre profil, un simple outil risque d'être insuffisant dans les moments à forte tension. MARYAN Plus vous offre un cadre d'appui stable pour sécuriser vos arbitrages stratégiques.",
-             ctas: `<a href="/offres" class="btn-primary-v3 big" style="background:var(--neon); color:var(--deep);">Découvrir MARYAN Plus</a><a href="/copilote" class="btn-secondary-v3 dark">Tester le copilote gratuit</a>`
+          individuel: {
+             text: "Au vu de votre situation, l’usage le plus pertinent de MARYAN semble être un appui individuel, réactif et confidentiel pour cadrer, arbitrer et tenir vos décisions dans la durée.",
+             ctas: `<a href="/offres#avancer" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Découvrir l’offre AVANCER</a>
+                    <a href="/copilote" class="btn-secondary-v4">Tester le copilote gratuit</a>
+                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
           },
-          contact: {
-             title: "Accompagnement institutionnel sur-mesure",
-             text: "Votre profil de collectivité demande une approche plus globale. Nous recommandons un échange avec un conseiller MARYAN pour structurer l'appui à votre exécutif.",
-             ctas: `<a href="/contact" class="btn-primary-v3 big" style="background:var(--neon); color:var(--deep);">Parler à un conseiller</a><a href="/offres" class="btn-secondary-v3 dark">Voir les offres</a>`
+          collectivite: {
+             text: "Au vu de votre situation, le besoin semble dépasser un usage individuel ponctuel. MARYAN peut aussi être déployé comme outil partagé pour plusieurs élu·es ou pour votre collectivité.",
+             ctas: `<a href="/offres#collectivites" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Voir l’offre collectivité</a>
+                    <a href="/contact" class="btn-secondary-v4">Être rappelé</a>
+                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
+          },
+          formation_irl: {
+             text: "Au vu de votre situation, un appui présentiel ou une formation ciblée semble pouvoir vous faire gagner du temps et de la solidité plus vite qu’un simple usage autonome. Votre situation semble appeler un temps de travail plus structuré : prise de fonction, clarification des rôles ou travail d’équipe.",
+             ctas: `<a href="/methode" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Découvrir les formations</a>
+                    <a href="/contact" class="btn-secondary-v4">Être rappelé</a>
+                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
           }
        };
-       const off = offers[p.offer];
+
+       const off = offerContent[results.offerType];
 
        // Update DOM
-       document.getElementById('resTitle').textContent = titles[p.primaryRisk] || titles.dispersion_strategique;
-       document.getElementById('resSummary').textContent = summary;
-       document.getElementById('resImplications').innerHTML = implications.map(i => `<li>${i}</li>`).join('');
-       document.getElementById('resPriorities').innerHTML = priorities.map(pr => `<li>${pr}</li>`).join('');
-       document.getElementById('resOfferTitle').textContent = off.title;
+       document.getElementById('resVigilanceTitle').textContent = results.vigilance.split('.')[0] + '.';
+       document.getElementById('resSituationText').textContent = results.situation;
+       document.getElementById('resVigilanceText').textContent = results.vigilance;
+       document.getElementById('resPrioritiesList').innerHTML = results.priorities.map(p => `<li>${p}</li>`).join('');
        document.getElementById('resOfferText').textContent = off.text;
-       document.getElementById('ctaContainer').innerHTML = off.ctas + `<button class="btn-link-simple" style="color:white; opacity:0.6; margin-top:0.5rem;" onclick="scrollToEmail()">Recevoir ma synthèse par email</button>`;
+       document.getElementById('resCTA').innerHTML = off.ctas;
 
-       // Toggle Views
-       document.getElementById('diagSection').classList.add('hidden');
-       document.getElementById('progressWrap').classList.add('hidden');
+       // Memory persist
+       localStorage.setItem('maryan_v4_diag', JSON.stringify(a));
+
+       // Toggle
+       document.getElementById('questionsContainer').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    // --- 5. UTILS ---
-    window.scrollToEmail = () => {
-       document.getElementById('emailSectionWrapper').scrollIntoView({ behavior: 'smooth' });
-    };
 
     window.submitEmail = () => {
        const email = document.getElementById('emailInput').value.trim();
        if(!email) return;
        localStorage.setItem('user_email', email);
-       document.getElementById('emailSectionWrapper').innerHTML = `<div style="text-align:center;width:100%;"><h3 style="color:var(--deep);">✓ Synthèse envoyée</h3><p>Vous recevrez votre profil complet sur ${email} d'ici quelques instants.</p></div>`;
+       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre synthèse complète vous attend sur ${email}.</p>`;
     };
   </script>
 </BaseLayout>
