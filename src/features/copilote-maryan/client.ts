@@ -76,6 +76,7 @@ function initCopilot(rootElement: HTMLElement) {
   renderCounter();
   toggleSuggestions();
   syncInputUi();
+  hydratePrefill();
 
   bindSuggestions();
   bindDrawer();
@@ -96,6 +97,24 @@ function initCopilot(rootElement: HTMLElement) {
   sendBtn.addEventListener('click', () => {
     void sendMessage();
   });
+
+  function hydratePrefill() {
+    if (input.value.trim()) return;
+
+    const prefill = sessionStorage.getItem('maryan_copilot_prefill');
+    if (!prefill) return;
+
+    sessionStorage.removeItem('maryan_copilot_prefill');
+    input.value = prefill.trim();
+    autoResize(input);
+    syncInputUi();
+
+    requestAnimationFrame(() => {
+      input.focus();
+      const end = input.value.length;
+      input.setSelectionRange(end, end);
+    });
+  }
 
   function loadProfile(): MaryanProfile | null {
     try {

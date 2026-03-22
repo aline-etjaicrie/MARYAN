@@ -6,113 +6,232 @@ import { maryanPaths } from '../data/paths';
 import { maryanSituations } from '../data/situations';
 
 const pillars = [
-  { id: 'se_situer', label: 'Se Situer', marker: '01', description: 'Repérer sa place et son rôle réel dans le mandat.' },
-  { id: 'comprendre', label: 'Comprendre', marker: '02', description: 'Décrypter les circuits de décision et les enjeux locaux.' },
-  { id: 'agir', label: 'Agir', marker: '03', description: 'Trancher, porter des projets et piloter avec méthode.' },
-  { id: 'se_proteger', label: 'Se Protéger', marker: '04', description: 'Sécuriser sa pratique, sa parole et son endurance.' }
+  { id: 'all', label: 'Tous' },
+  { id: 'se_situer', label: 'Se situer' },
+  { id: 'comprendre', label: 'Comprendre' },
+  { id: 'agir', label: 'Agir' },
+  { id: 'se_proteger', label: 'Se protéger / se positionner' }
 ];
 
-const getResourcesByPillar = (pillarId: string) =>
-  maryanResources.filter(r => r.pillar === pillarId);
+const situationFilters = [
+  { id: 'all', label: 'Toutes' },
+  { id: 'prise_de_fonction', label: 'Prise de fonction', markers: ['prise_de_fonction', 'posture', 'legitimite', 'repères', 'conseil_municipal'] },
+  { id: 'arbitrage', label: 'Arbitrage', markers: ['arbitrage', 'decision', 'dossier', 'priorisation', 'budget', 'finances'] },
+  { id: 'tension_locale', label: 'Tension locale', markers: ['tension', 'conflit', 'tension_locale', 'situation_sensible', 'crise', 'relations_internes'] },
+  { id: 'prise_de_parole', label: 'Prise de parole', markers: ['prise_de_parole', 'parole', 'reponse', 'communication_publique', 'reunion_publique', 'annonce'] },
+  { id: 'reseaux_sociaux', label: 'Réseaux sociaux', markers: ['facebook', 'reseaux', 'réseaux', 'publication', 'commentaires', 'communication'] },
+  { id: 'participation', label: 'Participation', markers: ['participation', 'concertation', 'co_construction', 'reunion_publique', 'habitants', 'restitution'] },
+  { id: 'porteurs_de_projet', label: 'Porteurs de projet', markers: ['projet_citoyen', 'projet_entreprise', 'collectif_habitants', 'initiative_locale', 'relation_partenaire', 'implantation', 'projet'] },
+  { id: 'budget', label: 'Budget', markers: ['budget', 'finances', 'arbitrage budgetaire', 'finances locales'] },
+  { id: 'services', label: 'Relations avec les services', markers: ['services', 'administration', 'gouvernance', 'relations_internes', 'blocage'] },
+  { id: 'ia', label: 'IA / outils numériques', markers: ['ia', 'chatgpt', 'outil', 'numerique', 'numérique'] }
+];
 
+const copilotSuggestions = [
+  'Aide-moi à préparer une prise de parole sensible',
+  'Aide-moi à cadrer un arbitrage',
+  'Aide-moi à répondre à une tension locale',
+  'Aide-moi à relire une réunion participative',
+  'Aide-moi à préparer mon premier conseil'
+];
 ---
 
-<BaseLayout 
-  title="La Bibliothèque — MARYAN" 
-  description="Accédez au savoir-faire MARYAN : fiches pratiques, trames et repères pour tenir votre mandat avec clarté.">
-  
+<BaseLayout
+  title="Vos ressources MARYAN"
+  description="Des repères concrets pour comprendre, décider et agir selon votre réalité de mandat."
+>
   <div class="res-hero-bg">
     <div class="container relative-z header-white-force">
-      <InternalHeader 
-        label="La Bibliothèque"
-        title="Des ressources utiles,<br/><span class='emphasis text-neon'>classées par piliers</span>"
-        subtitle="Plus de 20 fiches pratiques, trames et repères simples pour ne plus jamais décider seul·e face à l'incertitude du mandat."
+      <InternalHeader
+        label="Vos ressources"
+        title="Vos ressources <span class='emphasis text-neon'>MARYAN</span>"
+        subtitle="Des repères concrets pour comprendre, décider et agir selon votre réalité de mandat."
       />
+
+      <div class="hero-note-card">
+        <p class="hero-note-lead">Votre diagnostic nous aide à vous orienter vers les ressources les plus utiles pour vous.</p>
+        <p class="hero-note-text">Mais toutes les ressources restent accessibles à tout moment.</p>
+      </div>
     </div>
     <div class="hero-glow glow-red"></div>
     <div class="hero-glow glow-green"></div>
   </div>
 
-  <main class="ressources-lux">
-    
-    <!-- 1. À COMMENCER PAR LÀ (PERSONALIZED RESOURCES) - DARK THEME -->
-    <section id="personalizedResources" class="section-v3 hidden recommended-section">
-      <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Selon votre dernier diagnostic</span>
-          <h2 class="section-title-standard">À commencer par là</h2>
-          <p class="section-subtitle-v4">Les 3 ressources prioritaires identifiées pour vous.</p>
-        </header>
-        <div id="recommendedGrid" class="rec-v4-grid">
-          <!-- Filled by JS -->
+  <main class="resources-main">
+    <section id="diagnosticHelper" class="section-v3 hidden">
+      <div class="container container-medium">
+        <div class="diagnostic-helper-card card-v3">
+          <div class="diagnostic-helper-copy">
+            <span class="label-v3">Personnalisation</span>
+            <h2>Commencez par le diagnostic pour orienter vos premières lectures</h2>
+            <p>
+              MARYAN peut faire remonter les ressources, parcours et situations les plus utiles pour vous. Mais vous restez libre d’explorer tout le reste.
+            </p>
+          </div>
+
+          <div class="diagnostic-helper-actions">
+            <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+            <a href="/copilote" class="btn-secondary-v3">Ouvrir le copilote</a>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 2. UN PARCOURS UTILE (PERSONALIZED PATH) -->
-    <section id="personalizedPath" class="section-v3 hidden" style="background: white;">
+    <section id="prioritiesSection" class="section-v3 hidden">
       <div class="container">
+        <header class="section-header-v4">
+          <span class="label-v3">Pour vous, en priorité</span>
+          <h2 class="section-title-standard">Vos priorités du moment</h2>
+          <p class="section-subtitle-v4">
+            À partir de votre diagnostic, voici les sujets sur lesquels MARYAN vous recommande de vous concentrer en premier.
+          </p>
+        </header>
+
+        <div id="priorityGrid" class="priority-grid"></div>
+
+        <div id="prioritySituationBlock" class="priority-situation-block hidden">
+          <p class="priority-situation-label">Situations proches de votre réalité actuelle</p>
+          <div id="prioritySituationGrid" class="priority-situation-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="personalizedResources" class="section-v3 hidden recommended-section">
+      <div class="container">
+        <header class="section-header-v4">
+          <span class="label-v3">Sélectionnées à partir de votre diagnostic</span>
+          <h2 class="section-title-standard">À commencer par là</h2>
+          <p class="section-subtitle-v4">Une première sélection de ressources particulièrement adaptées à votre situation actuelle.</p>
+        </header>
+
+        <div id="recommendedGrid" class="rec-v4-grid"></div>
+      </div>
+    </section>
+
+    <section id="personalizedPath" class="section-v3 hidden path-section">
+      <div class="container">
+        <header class="section-header-v4">
+          <span class="label-v3">Parcours conseillé</span>
+          <h2 class="section-title-standard">Un parcours utile pour votre situation</h2>
+          <p class="section-subtitle-v4">Si vous voulez avancer de manière plus structurée, commencez par ce parcours.</p>
+        </header>
+
         <div class="path-highlight-card card-v3">
           <div class="path-content">
-            <span class="path-badge">Parcours conseillé</span>
+            <span class="path-badge">Parcours recommandé</span>
             <h2 id="pathTitle" class="path-title-v4">—</h2>
             <p id="pathPromise" class="path-promise-v4">—</p>
-            
+            <p id="pathDescription" class="path-description-v4"></p>
+
             <div class="path-priorities-box">
-              <h3>Vos 3 priorités dans ce parcours :</h3>
+              <h3>Vos 3 priorités dans ce parcours</h3>
               <ul id="pathPrioritiesList" class="res-check-list-small"></ul>
             </div>
 
             <div class="path-resources-box">
-              <h3>Fiches liées :</h3>
+              <h3>Ressources liées</h3>
               <div id="pathResourcesGrid" class="path-mini-grid"></div>
+            </div>
+
+            <div class="path-actions">
+              <a id="pathCta" href="/ressources" class="btn-secondary-v3">Commencer ce parcours</a>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3. EXPLORER PAR UNIVERS (PILLARS) -->
-    <section class="section-v3">
+    <section class="section-v3 explore-section">
       <div class="container">
         <header class="section-header-v4">
-          <span class="label-v3">Univers</span>
-          <h2 class="section-title-standard">Explorer par univers</h2>
+          <span class="label-v3">Explorer</span>
+          <h2 class="section-title-standard">Trouver une ressource</h2>
+          <p class="section-subtitle-v4">
+            Votre profil nous aide à vous orienter, pas à vous limiter. Vous pouvez explorer librement l’ensemble des ressources MARYAN.
+          </p>
         </header>
 
-        <div class="pillar-nav-grid">
-          {pillars.map(pillar => (
-            <a href={`#${pillar.id}`} class="pillar-nav-card card-v3">
-              <div class={`pillar-nav-icon pillar-mark ${pillar.id}`} aria-hidden="true">
-                <span>{pillar.marker}</span>
-              </div>
-              <div class="pillar-nav-info">
-                <h3>{pillar.label}</h3>
-                <p>{pillar.description}</p>
-              </div>
-            </a>
-          ))}
+        <div class="filter-shell card-v3">
+          <div class="filter-search">
+            <label for="resourceSearch" class="filter-label">Recherche</label>
+            <input id="resourceSearch" type="search" class="search-input" placeholder="Rechercher un sujet, un format, une situation..." />
+          </div>
+
+          <div class="filter-grid">
+            <label class="filter-field">
+              <span class="filter-label">Par univers</span>
+              <select id="pillarFilter">
+                {pillars.map((pillar) => <option value={pillar.id}>{pillar.label}</option>)}
+              </select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Par situation</span>
+              <select id="situationFilter">
+                {situationFilters.map((item) => <option value={item.id}>{item.label}</option>)}
+              </select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Par format</span>
+              <select id="formatFilter">
+                <option value="all">Tous</option>
+                <option value="fiche">Fiches</option>
+                <option value="checklist">Checklists</option>
+                <option value="guide">Guides</option>
+                <option value="repere">Repères</option>
+              </select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Trier par</span>
+              <select id="sortFilter">
+                <option value="recommended">Recommandé pour vous</option>
+                <option value="useful">Les plus utiles</option>
+                <option value="recent">Les plus récentes</option>
+                <option value="consulted">Les plus consultées</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="catalogue-head">
+          <div>
+            <p class="catalogue-kicker">Explorer toutes les ressources</p>
+            <p class="catalogue-copy">
+              Le diagnostic sert à orienter, pas à enfermer. Toutes les fiches restent accessibles à tout moment.
+            </p>
+          </div>
+          <p id="resourceCount" class="resource-count">—</p>
+        </div>
+
+        <div id="resourceGrid" class="res-grid"></div>
+        <div id="emptyState" class="empty-state hidden">
+          <p>Aucune ressource ne correspond à cette combinaison de filtres pour l’instant.</p>
+          <button type="button" class="btn-secondary-v3" id="resetFiltersBtn">Réinitialiser les filtres</button>
         </div>
       </div>
     </section>
 
-    <!-- 4. SITUATIONS FRÉQUENTES -->
-    <section class="section-v3" style="background: var(--bg);">
+    <section class="section-v3 situations-section">
       <div class="container">
         <header class="section-header-v4">
-          <span class="label-v3">Cas d'usage</span>
+          <span class="label-v3">Cas concrets</span>
           <h2 class="section-title-standard">Situations fréquentes</h2>
-          <p class="section-subtitle-v4">Accédez directement aux ressources par situation concrète.</p>
+          <p class="section-subtitle-v4">
+            Entrer par un cas concret, quand vous cherchez moins un thème qu’une situation à traverser.
+          </p>
         </header>
 
         <div class="sit-grid">
-          {maryanSituations.map(sit => (
+          {maryanSituations.map((sit) => (
             <button type="button" class="sit-card card-v3" onclick={`openSituation('${sit.id}')`}>
               <div class="sit-card-content">
                 <h3 class="sit-title">{sit.title}</h3>
                 <p class="sit-desc">{sit.shortDescription}</p>
                 <div class="sit-footer">
-                  <span class="sit-link">Explorer la situation →</span>
+                  <span class="sit-link">Explorer la situation</span>
+                  <span class="sit-arrow">↗</span>
                 </div>
               </div>
             </button>
@@ -121,72 +240,51 @@ const getResourcesByPillar = (pillarId: string) =>
       </div>
     </section>
 
-    <!-- 5. PILLARS CONTENT -->
-    {pillars.map(pillar => (
-      <section class="section-v3" id={pillar.id} style="padding-top: 4rem;">
-        <div class="container">
-          <header class="pillar-header">
-            <div class={`pillar-icon-box pillar-mark ${pillar.id}`} aria-hidden="true">
-              <span>{pillar.marker}</span>
-            </div>
-            <div class="pillar-info">
-              <span class="label-v3">Pilier {pillar.label}</span>
-              <h2 class="pillar-title">{pillar.label}</h2>
-            </div>
-          </header>
+    <section class="section-v3 copilot-section">
+      <div class="container container-medium">
+        <div class="copilot-card card-v3">
+          <div class="copilot-copy">
+            <span class="label-v3">Poser une question à MARYAN</span>
+            <h2>Vous ne trouvez pas exactement votre cas ?</h2>
+            <p>
+              Si vous ne trouvez pas exactement votre cas, MARYAN peut aussi vous aider à le cadrer directement.
+            </p>
+          </div>
 
-          <div class="res-grid">
-            {getResourcesByPillar(pillar.id).map(res => (
-              <a href={`/ressources/${res.slug}`} class="res-lux-card card-v3">
-                <div class="card-inner">
-                  <header class="card-top">
-                    <span class={`format-tag ${res.format}`}>{res.format}</span>
-                    {res.priority === 'haute' && <span class="priority-dot" title="Priorité haute"></span>}
-                  </header>
-                  <h3 class="card-title">{res.title}</h3>
-                  <p class="card-promise">{res.promise}</p>
-                  
-                  <footer class="card-meta">
-                    <div class="roles-tags">
-                      {res.targetRoles.slice(0, 2).map(role => <span class="role-mini">{role}</span>)}
-                    </div>
-                    <div class="arrow-circle">→</div>
-                  </footer>
-                </div>
-              </a>
+          <div class="copilot-suggestions">
+            {copilotSuggestions.map((prompt) => (
+              <button type="button" class="copilot-chip" onclick={`openCopilotPrompt(${JSON.stringify(prompt)})`}>
+                {prompt}
+              </button>
             ))}
           </div>
-        </div>
-      </section>
-    ))}
 
-    <!-- FINAL CTA -->
-    <section class="section-v3">
-      <div class="container">
-        <div class="app-cta-banner card-v3">
-           <div class="banner-content">
-             <span class="label-v3">Copilote MARYAN</span>
-             <h3>Passez en mode <span class="emphasis">opérationnel.</span></h3>
-             <p>Le Copilote utilise toute notre bibliothèque pour vous répondre en direct sur votre situation spécifique.</p>
-             <a href="/copilote" class="btn-primary-v3">Ouvrir le copilote</a>
-           </div>
-           <div class="banner-visual">
-             <div class="pwa-mockup">
-               <div class="mock-header"></div>
-               <div class="mock-body">
-                 <span class="mock-line" style="width: 80%;"></span>
-                 <span class="mock-line" style="width: 60%;"></span>
-                 <span class="mock-line" style="width: 70%;"></span>
-               </div>
-             </div>
-           </div>
+          <div class="copilot-actions">
+            <a href="/copilote" class="btn-primary-v3">Ouvrir le copilote</a>
+          </div>
         </div>
       </div>
     </section>
 
+    <section class="section-v3 subtle-support-section">
+      <div class="container container-medium">
+        <div class="subtle-support-card">
+          <div class="subtle-support-copy">
+            <span class="label-v3">Aller plus loin</span>
+            <h3>Selon votre situation, MARYAN peut aussi vous orienter vers le bon niveau d’appui.</h3>
+            <p>Copilote, accompagnement individuel, offre collectivité ou formation ciblée : l’idée reste la même, vous proposer l’appui juste.</p>
+          </div>
+
+          <div class="subtle-support-actions">
+            <a href="/offres" class="btn-secondary-v3">Voir les offres</a>
+            <a href="/methode" class="btn-secondary-v3">Découvrir la méthode</a>
+            <a href="/contact" class="btn-secondary-v3">Être rappelé</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- SITUATION MODAL -->
   <div id="sitModal" class="modal-overlay hidden">
     <div class="modal-card">
       <button type="button" class="modal-close" onclick="closeSituation()">×</button>
@@ -194,77 +292,413 @@ const getResourcesByPillar = (pillarId: string) =>
     </div>
   </div>
 
-  <script is:inline define:vars={{ maryanResources, maryanPaths, maryanSituations }}>
-    // Personalization logic
+  <script
+    is:inline
+    define:vars={{ maryanResources, maryanPaths, maryanSituations, pillars, situationFilters }}
+  >
+    const profilePriorityCopy = {
+      mandat_recent: [
+        'prendre vos repères sans vous disperser',
+        'mieux comprendre qui fait quoi dans la collectivité',
+        'tenir une posture juste sans surjouer la fonction'
+      ],
+      arbitrage: [
+        'retrouver du recul avant les décisions sensibles',
+        'clarifier ce qui mérite un vrai arbitrage',
+        'éviter que l’urgence décide à votre place'
+      ],
+      isolement: [
+        'sortir du sentiment de devoir tout porter seul·e',
+        'retrouver des repères stables pour le mandat',
+        'remettre de la clarté dans votre manière d’agir'
+      ],
+      surcharge: [
+        'reprendre la main sur ce qui mérite vraiment votre énergie',
+        'retrouver un ordre d’action plus lisible',
+        'ne pas laisser toutes les urgences se valoir'
+      ],
+      exposition: [
+        'tenir une parole publique plus lisible',
+        'mieux distinguer réaction rapide et réponse juste',
+        'protéger votre clarté dans les séquences exposées'
+      ],
+      tension_relationnelle: [
+        'relire la situation avant de personnaliser le conflit',
+        'distinguer ce qui relève du fond, de la méthode ou de la relation',
+        'retrouver du cadre pour agir sans sur-réagir'
+      ],
+      besoin_methode: [
+        'clarifier les étapes avant d’entrer dans la complexité',
+        'retrouver une méthode simple pour cadrer les sujets',
+        'mieux distinguer compréhension, décision et mise en œuvre'
+      ],
+      prise_de_parole: [
+        'tenir une parole plus lisible et plus sobre',
+        'préparer vos prises de parole sans les surcharger',
+        'trouver le bon tempo dans les séquences visibles'
+      ],
+      gouvernance: [
+        'clarifier les rôles et les marges de manœuvre',
+        'mieux lire les tensions de fonctionnement',
+        'rendre la conduite du mandat plus stable et plus lisible'
+      ]
+    };
+
+    const pillarLabels = Object.fromEntries(pillars.filter((pillar) => pillar.id !== 'all').map((pillar) => [pillar.id, pillar.label]));
+    const formatLabels = {
+      fiche: 'Fiche',
+      checklist: 'Checklist',
+      guide: 'Guide',
+      repere: 'Repère'
+    };
+
+    const state = {
+      profile: null,
+      recommendedPath: null,
+      search: '',
+      pillar: 'all',
+      situation: 'all',
+      format: 'all',
+      sort: 'recommended'
+    };
+
+    const els = {
+      diagnosticHelper: document.getElementById('diagnosticHelper'),
+      prioritiesSection: document.getElementById('prioritiesSection'),
+      priorityGrid: document.getElementById('priorityGrid'),
+      prioritySituationBlock: document.getElementById('prioritySituationBlock'),
+      prioritySituationGrid: document.getElementById('prioritySituationGrid'),
+      personalizedResources: document.getElementById('personalizedResources'),
+      recommendedGrid: document.getElementById('recommendedGrid'),
+      personalizedPath: document.getElementById('personalizedPath'),
+      pathTitle: document.getElementById('pathTitle'),
+      pathPromise: document.getElementById('pathPromise'),
+      pathDescription: document.getElementById('pathDescription'),
+      pathPrioritiesList: document.getElementById('pathPrioritiesList'),
+      pathResourcesGrid: document.getElementById('pathResourcesGrid'),
+      pathCta: document.getElementById('pathCta'),
+      resourceGrid: document.getElementById('resourceGrid'),
+      resourceCount: document.getElementById('resourceCount'),
+      emptyState: document.getElementById('emptyState'),
+      resourceSearch: document.getElementById('resourceSearch'),
+      pillarFilter: document.getElementById('pillarFilter'),
+      situationFilter: document.getElementById('situationFilter'),
+      formatFilter: document.getElementById('formatFilter'),
+      sortFilter: document.getElementById('sortFilter'),
+      resetFiltersBtn: document.getElementById('resetFiltersBtn')
+    };
+
+    initResourcesPage();
+
+    function initResourcesPage() {
+      state.profile = resolveProfile();
+      state.recommendedPath = state.profile ? getRecommendedPaths(maryanPaths, state.profile, 1)[0] || null : null;
+
+      renderPersonalizedContent();
+      bindFilters();
+      bindTracking();
+      renderCatalog();
+    }
+
+    function resolveProfile() {
+      const diag = JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}');
+      let profile = diag.tension || diag.vigilance || diag.lack || diag.feeling || '';
+
+      const mapping = {
+        flou: 'besoin_methode',
+        conflit: 'tension_relationnelle',
+        exposition: 'exposition',
+        sollicitations: 'surcharge',
+        surcharge: 'surcharge',
+        seul: 'isolement',
+        priorites: 'surcharge',
+        parole: 'prise_de_parole',
+        relation: 'tension_relationnelle',
+        cadre: 'besoin_methode',
+        recul: 'arbitrage'
+      };
+
+      if (mapping[profile]) profile = mapping[profile];
+      if (!profile && diag.seniority === 'moins1an') profile = 'mandat_recent';
+
+      return profile || null;
+    }
+
     function getRecommendedResources(resources, profile, limit = 3) {
       return resources
-        .filter((r) => r.diagnosticProfiles.includes(profile))
+        .filter((resource) => resource.diagnosticProfiles.includes(profile))
         .sort((a, b) => {
-          if (a.priority === "haute" && b.priority !== "haute") return -1;
-          if (a.priority !== "haute" && b.priority === "haute") return 1;
+          if (a.priority === 'haute' && b.priority !== 'haute') return -1;
+          if (a.priority !== 'haute' && b.priority === 'haute') return 1;
           return 0;
         })
         .slice(0, limit);
     }
 
     function getRecommendedPaths(paths, profile, limit = 1) {
-      return paths
-        .filter((p) => p.diagnosticProfiles.includes(profile))
-        .slice(0, limit);
+      return paths.filter((path) => path.diagnosticProfiles.includes(profile)).slice(0, limit);
     }
 
-    const diag = JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}');
-    let profile = diag.tension || diag.vigilance; 
-    const mapping = {
-      'flou': 'besoin_methode',
-      'conflit': 'tension_relationnelle',
-      'exposition': 'exposition',
-      'sollicitations': 'surcharge',
-      'seul': 'isolement'
-    };
-    if (mapping[profile]) profile = mapping[profile];
+    function getRecommendedSituations(profile, limit = 2) {
+      return maryanSituations.filter((item) => item.diagnosticProfiles.includes(profile)).slice(0, limit);
+    }
 
-    if (profile) {
-      // 1. Recommended Resources
-      const recs = getRecommendedResources(maryanResources, profile);
-      if (recs.length > 0) {
-        document.getElementById('personalizedResources').classList.remove('hidden');
-        document.getElementById('recommendedGrid').innerHTML = recs.map((res, index) => `
-           <a href="/ressources/${res.slug}" class="rec-lux-card-v4">
+    function renderPersonalizedContent() {
+      if (!state.profile) {
+        els.diagnosticHelper?.classList.remove('hidden');
+        return;
+      }
+
+      els.diagnosticHelper?.classList.add('hidden');
+
+      const priorities = state.recommendedPath?.priorities?.slice(0, 3)?.length
+        ? state.recommendedPath.priorities.slice(0, 3)
+        : (profilePriorityCopy[state.profile] || []).slice(0, 3);
+      const recommendedResources = getRecommendedResources(maryanResources, state.profile);
+      const recommendedSituations = getRecommendedSituations(state.profile, 2);
+
+      if (priorities.length) {
+        els.prioritiesSection?.classList.remove('hidden');
+        els.priorityGrid.innerHTML = priorities
+          .map(
+            (item, index) => `
+              <article class="priority-card">
+                <span class="priority-index">0${index + 1}</span>
+                <p>${item}</p>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      if (recommendedSituations.length) {
+        els.prioritySituationBlock?.classList.remove('hidden');
+        els.prioritySituationGrid.innerHTML = recommendedSituations
+          .map(
+            (item) => `
+              <button type="button" class="priority-situation-pill" onclick="openSituation('${item.id}')">
+                ${item.title}
+              </button>
+            `
+          )
+          .join('');
+      }
+
+      if (recommendedResources.length) {
+        els.personalizedResources?.classList.remove('hidden');
+        els.recommendedGrid.innerHTML = recommendedResources
+          .map(
+            (resource, index) => `
+              <a href="/ressources/${resource.slug}" class="rec-lux-card-v4" data-resource-link data-slug="${resource.slug}">
                 <div class="rec-card-top">
                   <span class="rec-index">0${index + 1}</span>
-                  <span class="rec-chip">Priorité</span>
+                  <span class="rec-chip">Pour vous</span>
                 </div>
                 <div class="rec-content">
-                  <h3 class="rec-title-v4">${res.title}</h3>
-                  <p class="rec-promise-v4">${res.promise}</p>
+                  <h3 class="rec-title-v4">${resource.title}</h3>
+                  <p class="rec-promise-v4">${resource.promise}</p>
                 </div>
                 <div class="rec-card-footer">
                   <span class="rec-link-label">Lire la fiche</span>
                   <span class="rec-arrow">↗</span>
                 </div>
               </a>
-        `).join('');
+            `
+          )
+          .join('');
       }
 
-      // 2. Recommended Path
-      const recPath = getRecommendedPaths(maryanPaths, profile)[0];
-      if (recPath) {
-        document.getElementById('personalizedPath').classList.remove('hidden');
-        document.getElementById('pathTitle').innerText = recPath.title;
-        document.getElementById('pathPromise').innerText = recPath.promise;
-        document.getElementById('pathPrioritiesList').innerHTML = recPath.priorities.map(p => `
-          <li><span class="check-icon-small" aria-hidden="true"></span> ${p}</li>
-        `).join('');
-        
-        const pathResources = recPath.resourceIds.map(id => maryanResources.find(r => r.id === id)).filter(Boolean);
-        document.getElementById('pathResourcesGrid').innerHTML = pathResources.map(res => `
-          <a href="/ressources/${res.slug}" class="path-mini-card">
-            <span class="mini-format">${res.format}</span>
-            <h4>${res.title}</h4>
-          </a>
-        `).join('');
+      if (state.recommendedPath) {
+        els.personalizedPath?.classList.remove('hidden');
+        const pathResources = state.recommendedPath.resourceIds
+          .map((id) => maryanResources.find((resource) => resource.id === id))
+          .filter(Boolean);
+
+        els.pathTitle.textContent = state.recommendedPath.title;
+        els.pathPromise.textContent = state.recommendedPath.promise;
+        els.pathDescription.textContent = state.recommendedPath.description;
+        els.pathPrioritiesList.innerHTML = state.recommendedPath.priorities
+          .slice(0, 3)
+          .map((priority) => `<li><span class="check-icon-small" aria-hidden="true"></span>${priority}</li>`)
+          .join('');
+        els.pathResourcesGrid.innerHTML = pathResources
+          .map(
+            (resource) => `
+              <a href="/ressources/${resource.slug}" class="path-mini-card" data-resource-link data-slug="${resource.slug}">
+                <span class="mini-format">${formatLabels[resource.format] || resource.format}</span>
+                <h4>${resource.title}</h4>
+              </a>
+            `
+          )
+          .join('');
+
+        if (pathResources[0]) {
+          els.pathCta.setAttribute('href', `/ressources/${pathResources[0].slug}`);
+        }
       }
+    }
+
+    function bindFilters() {
+      els.resourceSearch?.addEventListener('input', (event) => {
+        state.search = event.currentTarget.value || '';
+        renderCatalog();
+      });
+
+      els.pillarFilter?.addEventListener('change', (event) => {
+        state.pillar = event.currentTarget.value;
+        renderCatalog();
+      });
+
+      els.situationFilter?.addEventListener('change', (event) => {
+        state.situation = event.currentTarget.value;
+        renderCatalog();
+      });
+
+      els.formatFilter?.addEventListener('change', (event) => {
+        state.format = event.currentTarget.value;
+        renderCatalog();
+      });
+
+      els.sortFilter?.addEventListener('change', (event) => {
+        state.sort = event.currentTarget.value;
+        renderCatalog();
+      });
+
+      els.resetFiltersBtn?.addEventListener('click', () => {
+        state.search = '';
+        state.pillar = 'all';
+        state.situation = 'all';
+        state.format = 'all';
+        state.sort = 'recommended';
+
+        if (els.resourceSearch) els.resourceSearch.value = '';
+        if (els.pillarFilter) els.pillarFilter.value = 'all';
+        if (els.situationFilter) els.situationFilter.value = 'all';
+        if (els.formatFilter) els.formatFilter.value = 'all';
+        if (els.sortFilter) els.sortFilter.value = 'recommended';
+
+        renderCatalog();
+      });
+    }
+
+    function renderCatalog() {
+      const filtered = sortResources(
+        maryanResources.filter(matchesActiveFilters),
+        state.sort
+      );
+
+      els.resourceCount.textContent = `${filtered.length} ressource${filtered.length > 1 ? 's' : ''}`;
+      els.resourceGrid.innerHTML = filtered.map(renderResourceCard).join('');
+      els.emptyState.classList.toggle('hidden', filtered.length > 0);
+    }
+
+    function matchesActiveFilters(resource) {
+      if (state.pillar !== 'all' && resource.pillar !== state.pillar) return false;
+      if (state.format !== 'all' && resource.format !== state.format) return false;
+      if (state.search && !matchesSearch(resource, state.search)) return false;
+      if (state.situation !== 'all' && !matchesSituation(resource, state.situation)) return false;
+      return true;
+    }
+
+    function matchesSearch(resource, query) {
+      const corpus = [resource.title, resource.promise, resource.intro, ...(resource.tags || []), ...(resource.useCases || [])].join(' ');
+      return normalizeText(corpus).includes(normalizeText(query));
+    }
+
+    function matchesSituation(resource, filterId) {
+      const filter = situationFilters.find((item) => item.id === filterId);
+      if (!filter || filter.id === 'all') return true;
+
+      const corpus = normalizeText([resource.title, resource.promise, resource.intro, ...(resource.tags || []), ...(resource.useCases || [])].join(' '));
+      return filter.markers.some((marker) => corpus.includes(normalizeText(marker)));
+    }
+
+    function sortResources(resources, sortValue) {
+      const profile = state.profile;
+      const score = (resource) => {
+        let total = 0;
+        if (resource.priority === 'haute') total += 2;
+        if (profile && resource.diagnosticProfiles.includes(profile)) total += 6;
+        if (state.recommendedPath && state.recommendedPath.resourceIds.includes(resource.id)) total += 4;
+        return total;
+      };
+
+      const viewCounts = JSON.parse(localStorage.getItem('maryan_resource_views') || '{}');
+
+      const sorted = [...resources];
+      sorted.sort((a, b) => {
+        if (sortValue === 'consulted') {
+          const viewedDiff = (viewCounts[b.slug] || 0) - (viewCounts[a.slug] || 0);
+          if (viewedDiff !== 0) return viewedDiff;
+        }
+
+        if (sortValue === 'recent') {
+          return (
+            maryanResources.findIndex((item) => item.id === b.id) -
+            maryanResources.findIndex((item) => item.id === a.id)
+          );
+        }
+
+        if (sortValue === 'useful') {
+          const usefulDiff = (b.priority === 'haute') - (a.priority === 'haute');
+          if (usefulDiff !== 0) return usefulDiff;
+        }
+
+        const recommendedDiff = score(b) - score(a);
+        if (recommendedDiff !== 0) return recommendedDiff;
+
+        return a.title.localeCompare(b.title, 'fr');
+      });
+
+      return sorted;
+    }
+
+    function renderResourceCard(resource) {
+      return `
+        <a href="/ressources/${resource.slug}" class="res-lux-card card-v3" data-resource-link data-slug="${resource.slug}">
+          <div class="card-inner">
+            <header class="card-top">
+              <div class="card-pills">
+                <span class="format-tag">${formatLabels[resource.format] || resource.format}</span>
+                <span class="meta-pill">${pillarLabels[resource.pillar] || resource.pillar}</span>
+              </div>
+              ${resource.priority === 'haute' ? '<span class="priority-dot" title="Priorité haute"></span>' : ''}
+            </header>
+            <h3 class="card-title">${resource.title}</h3>
+            <p class="card-promise">${resource.promise}</p>
+            <footer class="card-meta">
+              <div class="card-tags">
+                ${(resource.tags || []).slice(0, 2).map((tag) => `<span class="role-mini">${tag}</span>`).join('')}
+              </div>
+              <div class="arrow-circle">↗</div>
+            </footer>
+          </div>
+        </a>
+      `;
+    }
+
+    function bindTracking() {
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest('[data-resource-link]');
+        if (!link) return;
+
+        const slug = link.getAttribute('data-slug');
+        if (!slug) return;
+
+        const viewCounts = JSON.parse(localStorage.getItem('maryan_resource_views') || '{}');
+        viewCounts[slug] = (viewCounts[slug] || 0) + 1;
+        localStorage.setItem('maryan_resource_views', JSON.stringify(viewCounts));
+      });
+    }
+
+    function normalizeText(value) {
+      return value
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9'\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
     }
 
     const ctaContent = {
@@ -290,13 +724,17 @@ const getResourcesByPillar = (pillarId: string) =>
       }
     };
 
-    // Situation Logic
+    window.openCopilotPrompt = (prompt) => {
+      sessionStorage.setItem('maryan_copilot_prefill', prompt);
+      window.location.href = '/copilote';
+    };
+
     window.openSituation = (id) => {
-      const sit = maryanSituations.find(s => s.id === id);
+      const sit = maryanSituations.find((item) => item.id === id);
       if (!sit) return;
 
-      const resources = sit.resourceIds.map(rid => maryanResources.find(r => r.id === rid)).filter(Boolean);
-      const paths = sit.pathIds.map(pid => maryanPaths.find(p => p.id === pid)).filter(Boolean);
+      const resources = sit.resourceIds.map((rid) => maryanResources.find((resource) => resource.id === rid)).filter(Boolean);
+      const paths = sit.pathIds.map((pid) => maryanPaths.find((path) => path.id === pid)).filter(Boolean);
       const cta = ctaContent[sit.ctaType] || ctaContent.copilote;
 
       const html = `
@@ -305,46 +743,58 @@ const getResourcesByPillar = (pillarId: string) =>
           <h2 class="modal-title">${sit.title}</h2>
           <p class="modal-intro">${sit.longDescription}</p>
         </div>
-        
+
         <div class="modal-body-grid">
           <div class="modal-main">
             <div class="modal-section">
-              <h3 class="modal-sub">Vos priorités :</h3>
+              <h3 class="modal-sub">Vos priorités</h3>
               <ul class="modal-list">
-                ${sit.priorities.map(p => `<li>${p}</li>`).join('')}
+                ${sit.priorities.map((priority) => `<li>${priority}</li>`).join('')}
               </ul>
             </div>
-            
+
             <div class="modal-section">
-              <h3 class="modal-sub">Ressources indispensables :</h3>
+              <h3 class="modal-sub">Ressources indispensables</h3>
               <div class="modal-res-grid">
-                ${resources.map(res => `
-                  <a href="/ressources/${res.slug}" class="modal-res-link">
-                    <span class="mini-format">${res.format}</span>
-                    <span class="mini-title">${res.title}</span>
-                  </a>
-                `).join('')}
+                ${resources
+                  .map(
+                    (resource) => `
+                      <a href="/ressources/${resource.slug}" class="modal-res-link" data-resource-link data-slug="${resource.slug}">
+                        <span class="mini-format">${formatLabels[resource.format] || resource.format}</span>
+                        <span class="mini-title">${resource.title}</span>
+                      </a>
+                    `
+                  )
+                  .join('')}
               </div>
             </div>
           </div>
-          
+
           <aside class="modal-aside">
-            ${paths.length > 0 ? `
+            ${
+              paths.length
+                ? `
               <div class="modal-section">
-                <h3 class="modal-sub">Parcours lié :</h3>
-                ${paths.map(p => `
-                  <div class="aside-path-card">
-                    <h4>${p.title}</h4>
-                    <p>${p.promise}</p>
-                  </div>
-                `).join('')}
+                <h3 class="modal-sub">Parcours lié</h3>
+                ${paths
+                  .map(
+                    (path) => `
+                      <div class="aside-path-card">
+                        <h4>${path.title}</h4>
+                        <p>${path.promise}</p>
+                      </div>
+                    `
+                  )
+                  .join('')}
               </div>
-            ` : ''}
-            
+            `
+                : ''
+            }
+
             <div class="modal-section">
-              <h3 class="modal-sub">Appui conseillé :</h3>
+              <h3 class="modal-sub">Appui conseillé</h3>
               <div class="cta-mini-box">
-                <span class="cta-label">${sit.ctaType.replace('_', ' ')}</span>
+                <span class="cta-label">${sit.ctaType.replaceAll('_', ' ')}</span>
                 <p>${cta.note}</p>
                 <a href="${cta.href}" class="btn-primary-v3 btn-tiny">${cta.label}</a>
               </div>
@@ -363,69 +813,239 @@ const getResourcesByPillar = (pillarId: string) =>
       document.body.style.overflow = '';
     };
 
-    // Close on overlay click
-    document.getElementById('sitModal').onclick = (e) => {
-      if (e.target === document.getElementById('sitModal')) closeSituation();
+    document.getElementById('sitModal').onclick = (event) => {
+      if (event.target === document.getElementById('sitModal')) closeSituation();
     };
-
   </script>
-
 </BaseLayout>
 
 <style>
   :root {
-    --deep: #0A192F;
-    --neon: #ADFF2F;
-    --red: #E63946;
-    --bg: #F8F9FA;
+    --deep: #0a192f;
+    --neon: #adff2f;
+    --red: #e63946;
+    --bg: #f8f9fa;
     --border: rgba(10, 25, 47, 0.08);
   }
 
-  .hidden { display: none !important; }
+  .hidden {
+    display: none !important;
+  }
 
-  /* ─── HERO ─── */
-  .res-hero-bg { background: var(--deep); color: white; padding-bottom: 6rem; position: relative; overflow: hidden; }
-  .header-white-force :global(h1), 
-  .header-white-force :global(p), 
+  .res-hero-bg {
+    background: var(--deep);
+    color: white;
+    padding-bottom: 5.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-white-force :global(h1),
+  .header-white-force :global(p),
   .header-white-force :global(.internal-label),
-  .header-white-force :global(.back-link) { color: white !important; }
-  
-  .hero-glow { position: absolute; width: 40vw; height: 40vw; filter: blur(100px); opacity: 0.1; z-index: 1; pointer-events: none; }
-  .glow-red { top: -10%; left: -10%; background: var(--red); }
-  .glow-green { bottom: -10%; right: -10%; background: var(--neon); }
-  .relative-z { position: relative; z-index: 5; }
+  .header-white-force :global(.back-link) {
+    color: white !important;
+  }
 
-  /* ─── SECTION HEADERS ─── */
-  .section-header-v4 { text-align: left; margin-bottom: 3rem; }
-  .section-title-standard { font-size: 2.2rem; font-weight: 800; margin: 0.5rem 0; letter-spacing: -0.02em; }
-  .section-subtitle-v4 { opacity: 0.8; font-size: 1.1rem; color: #54636C; }
+  .hero-glow {
+    position: absolute;
+    width: 40vw;
+    height: 40vw;
+    filter: blur(100px);
+    opacity: 0.1;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .glow-red {
+    top: -10%;
+    left: -10%;
+    background: var(--red);
+  }
+
+  .glow-green {
+    bottom: -10%;
+    right: -10%;
+    background: var(--neon);
+  }
+
+  .relative-z {
+    position: relative;
+    z-index: 5;
+  }
+
+  .hero-note-card {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 1.2rem 1.35rem;
+    border-radius: 1.4rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+  }
+
+  .hero-note-lead,
+  .hero-note-text {
+    margin: 0;
+    color: white;
+  }
+
+  .hero-note-lead {
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .hero-note-text {
+    margin-top: 0.3rem;
+    font-size: 0.95rem;
+    opacity: 0.8;
+  }
+
+  .resources-main {
+    padding-bottom: 5rem;
+  }
+
+  .diagnostic-helper-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.4rem;
+    padding: 1.7rem 1.8rem;
+    background: linear-gradient(180deg, #fff 0%, #f5f8fc 100%);
+    border-radius: 1.8rem;
+    box-shadow: 0 16px 36px rgba(10, 25, 47, 0.05);
+  }
+
+  .diagnostic-helper-copy h2 {
+    margin: 0.4rem 0 0.7rem;
+    color: var(--deep);
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  .diagnostic-helper-copy p {
+    margin: 0;
+    max-width: 42rem;
+    color: #54636c;
+    line-height: 1.55;
+    font-size: 1rem;
+  }
+
+  .diagnostic-helper-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+  }
+
+  .section-header-v4 {
+    text-align: left;
+    margin-bottom: 2.6rem;
+  }
+
+  .section-title-standard {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    margin: 0.55rem 0 0.7rem;
+    letter-spacing: -0.03em;
+  }
+
+  .section-subtitle-v4 {
+    max-width: 48rem;
+    opacity: 0.82;
+    font-size: 1.08rem;
+    line-height: 1.55;
+    color: #54636c;
+  }
+
+  .priority-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+
+  .priority-card {
+    padding: 1.5rem 1.35rem;
+    border-radius: 1.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    box-shadow: 0 14px 34px rgba(10, 25, 47, 0.04);
+  }
+
+  .priority-index {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: rgba(10, 25, 47, 0.44);
+  }
+
+  .priority-card p {
+    margin: 0;
+    color: var(--deep);
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  .priority-situation-block {
+    margin-top: 1.3rem;
+  }
+
+  .priority-situation-label {
+    margin: 0 0 0.8rem;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.58);
+  }
+
+  .priority-situation-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .priority-situation-pill {
+    border: 1px solid rgba(10, 25, 47, 0.1);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--deep);
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .priority-situation-pill:hover,
+  .priority-situation-pill:focus-visible {
+    border-color: rgba(10, 25, 47, 0.22);
+    outline: none;
+  }
 
   .recommended-section {
-    padding: 6rem 0;
+    padding: 5.5rem 0;
     background: linear-gradient(180deg, #f8f9fa 0%, #eef3f8 100%);
   }
 
-  .recommended-section .section-title-standard,
-  .recommended-section .section-subtitle-v4,
-  .recommended-section .label-v3 {
-    color: var(--deep);
-  }
-
-  /* ─── REC CARDS V4 ─── */
   .rec-v4-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.35rem;
   }
-  .rec-lux-card-v4 { 
+
+  .rec-lux-card-v4 {
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
     min-height: 100%;
     padding: 1.7rem 1.65rem 1.55rem;
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(250,252,255,0.94) 100%);
-    border: 1px solid rgba(10,25,47,0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 252, 255, 0.94) 100%);
+    border: 1px solid rgba(10, 25, 47, 0.08);
     border-radius: 28px;
     text-decoration: none;
     color: var(--deep);
@@ -434,33 +1054,38 @@ const getResourcesByPillar = (pillarId: string) =>
     position: relative;
     overflow: hidden;
   }
+
   .rec-lux-card-v4::before {
     content: "";
     position: absolute;
     inset: 0 auto auto 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, var(--accent-red) 0%, rgba(173,255,47,0.9) 100%);
-    opacity: 0.9;
+    background: linear-gradient(90deg, var(--red) 0%, rgba(173, 255, 47, 0.9) 100%);
+    opacity: 0.95;
   }
+
   .rec-lux-card-v4:hover {
     background: white;
-    border-color: rgba(10,25,47,0.16);
+    border-color: rgba(10, 25, 47, 0.16);
     transform: translateY(-5px);
     box-shadow: 0 22px 42px rgba(10, 25, 47, 0.08);
   }
+
   .rec-card-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.9rem;
   }
+
   .rec-index {
     font-size: 0.84rem;
     font-weight: 900;
     letter-spacing: 0.12em;
     color: rgba(10, 25, 47, 0.42);
   }
+
   .rec-chip {
     display: inline-flex;
     align-items: center;
@@ -475,11 +1100,13 @@ const getResourcesByPillar = (pillarId: string) =>
     text-transform: uppercase;
     color: var(--deep);
   }
+
   .rec-content {
     flex: 1;
     display: grid;
     gap: 0.7rem;
   }
+
   .rec-title-v4 {
     font-size: 1.28rem;
     font-weight: 800;
@@ -488,12 +1115,14 @@ const getResourcesByPillar = (pillarId: string) =>
     margin: 0;
     letter-spacing: -0.02em;
   }
+
   .rec-promise-v4 {
-    font-size: 0.98rem;
-    color: #54636C;
-    line-height: 1.5;
     margin: 0;
+    font-size: 0.98rem;
+    color: #54636c;
+    line-height: 1.5;
   }
+
   .rec-card-footer {
     display: flex;
     align-items: center;
@@ -502,6 +1131,7 @@ const getResourcesByPillar = (pillarId: string) =>
     padding-top: 1rem;
     border-top: 1px solid rgba(10, 25, 47, 0.08);
   }
+
   .rec-link-label {
     font-size: 0.78rem;
     font-weight: 800;
@@ -510,6 +1140,7 @@ const getResourcesByPillar = (pillarId: string) =>
     color: var(--deep);
     opacity: 0.72;
   }
+
   .rec-arrow {
     width: 2rem;
     height: 2rem;
@@ -522,96 +1153,599 @@ const getResourcesByPillar = (pillarId: string) =>
     font-size: 1rem;
     transition: all 0.28s ease;
   }
+
   .rec-lux-card-v4:hover .rec-link-label {
     opacity: 1;
-    color: var(--accent-red);
+    color: var(--red);
   }
+
   .rec-lux-card-v4:hover .rec-arrow {
-    background: var(--accent-red);
+    background: var(--red);
     color: white;
     transform: translateY(-1px);
   }
 
-  /* ─── PILLAR NAV ─── */
-  .pillar-nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-  .pillar-nav-card { text-decoration: none; padding: 2rem; background: white; border: 1px solid var(--border); border-radius: 24px; transition: all 0.3s; display: flex; gap: 1.2rem; align-items: flex-start; }
-  .pillar-nav-card:hover { transform: translateY(-5px); border-color: var(--neon); }
-  .pillar-nav-icon { width: 48px; height: 48px; flex-shrink: 0; }
-  .pillar-nav-info h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
-  .pillar-nav-info p { font-size: 0.85rem; opacity: 0.6; line-height: 1.4; }
+  .path-section {
+    background: white;
+  }
 
-  /* ─── PILLAR CONTENT ─── */
-  .pillar-header { display: flex; gap: 1.5rem; align-items: center; margin-bottom: 3rem; }
-  .pillar-icon-box { width: 48px; height: 48px; }
-  .pillar-title { font-size: 1.8rem; margin: 0; }
+  .path-highlight-card {
+    background: var(--deep);
+    color: #fff;
+    padding: 3.6rem;
+    border-radius: 40px;
+    border: none;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+  }
 
-  .pillar-mark {
-    background: #fff;
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-radius: 12px;
+  .path-badge {
+    background: var(--neon);
+    color: var(--deep);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    display: inline-block;
+    margin-bottom: 1.6rem;
+  }
+
+  .path-title-v4 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 900;
+    margin-bottom: 0.8rem;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+
+  .path-promise-v4 {
+    font-size: 1.15rem;
+    color: #fff;
+    opacity: 0.96;
+    margin-bottom: 1rem;
+    max-width: 42rem;
+    line-height: 1.45;
+  }
+
+  .path-description-v4 {
+    max-width: 42rem;
+    color: rgba(255, 255, 255, 0.76);
+    line-height: 1.6;
+    margin-bottom: 2.4rem;
+  }
+
+  .path-priorities-box h3,
+  .path-resources-box h3 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--neon);
+    letter-spacing: 0.1em;
+    margin-bottom: 1.3rem;
+  }
+
+  .res-check-list-small {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-bottom: 2.6rem;
+  }
+
+  .res-check-list-small li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    font-size: 1.06rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .check-icon-small {
+    width: 0.48rem;
+    height: 0.48rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: var(--neon);
+    display: inline-block;
+    margin-top: 0.38rem;
+  }
+
+  .path-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .path-mini-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.25rem;
+    border-radius: 16px;
+    text-decoration: none;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+  }
+
+  .path-mini-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+  }
+
+  .mini-format {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    opacity: 0.56;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+    display: block;
+    letter-spacing: 0.08em;
+  }
+
+  .path-mini-card h4 {
+    margin: 0;
+    font-size: 0.96rem;
+    line-height: 1.3;
+  }
+
+  .path-actions {
+    margin-top: 2rem;
+  }
+
+  .explore-section {
+    background: var(--bg);
+  }
+
+  .filter-shell {
+    padding: 1.4rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .filter-search {
+    margin-bottom: 1rem;
+  }
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .filter-field,
+  .filter-search {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .filter-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.56);
+  }
+
+  .search-input,
+  .filter-field select {
+    width: 100%;
+    border: 1px solid rgba(10, 25, 47, 0.12);
+    border-radius: 0.95rem;
+    background: white;
+    color: var(--deep);
+    font: inherit;
+    padding: 0.85rem 0.95rem;
+  }
+
+  .catalogue-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 2rem 0 1.4rem;
+  }
+
+  .catalogue-kicker {
+    margin: 0 0 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.56);
+  }
+
+  .catalogue-copy {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.55;
+    max-width: 40rem;
+  }
+
+  .resource-count {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: rgba(10, 25, 47, 0.58);
+    white-space: nowrap;
+  }
+
+  .res-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.3rem;
+  }
+
+  .res-lux-card {
+    text-decoration: none;
+    padding: 1.7rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transition: all 0.28s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .res-lux-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(10, 25, 47, 0.18);
+    box-shadow: 0 18px 38px rgba(10, 25, 47, 0.06);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .format-tag,
+  .meta-pill,
+  .role-mini {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .format-tag {
+    color: var(--red);
+    background: rgba(230, 57, 70, 0.07);
+  }
+
+  .meta-pill {
+    color: var(--deep);
+    background: rgba(10, 25, 47, 0.05);
+  }
+
+  .priority-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--red);
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    color: var(--deep);
+    margin-bottom: 0.7rem;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .card-promise {
+    font-size: 0.96rem;
+    line-height: 1.55;
+    color: #54636c;
+    margin-bottom: 1.7rem;
+  }
+
+  .card-meta {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .role-mini {
+    color: rgba(10, 25, 47, 0.68);
+    background: rgba(10, 25, 47, 0.04);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.74rem;
+  }
+
+  .arrow-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgba(10, 25, 47, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.04);
+    color: var(--deep);
+    font-weight: 900;
+    transition: 0.3s;
   }
 
-  .pillar-mark span {
-    font-size: 0.76rem;
+  .res-lux-card:hover .arrow-circle {
+    background: var(--red);
+    color: white;
+  }
+
+  .empty-state {
+    margin-top: 1.2rem;
+    padding: 1.6rem;
+    border-radius: 1.4rem;
+    border: 1px dashed rgba(10, 25, 47, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+    text-align: center;
+  }
+
+  .empty-state p {
+    margin: 0 0 1rem;
+    color: #54636c;
+  }
+
+  .situations-section {
+    background: white;
+  }
+
+  .sit-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.3rem;
+  }
+
+  .sit-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 1.7rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .sit-card:hover {
+    border-color: rgba(10, 25, 47, 0.16);
+    transform: translateY(-4px);
+    box-shadow: 0 18px 38px rgba(10, 25, 47, 0.06);
+  }
+
+  .sit-title {
+    font-size: 1.15rem;
     font-weight: 800;
+    color: var(--deep);
+    margin-bottom: 0.65rem;
+    line-height: 1.24;
+  }
+
+  .sit-desc {
+    font-size: 0.95rem;
+    color: #54636c;
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
+  }
+
+  .sit-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .sit-link {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--deep);
+    text-transform: uppercase;
     letter-spacing: 0.08em;
+  }
+
+  .sit-arrow {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgba(10, 25, 47, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: var(--deep);
   }
 
-  .pillar-mark.agir {
-    border-color: rgba(173, 255, 47, 0.45);
+  .sit-card:hover .sit-arrow {
+    background: var(--red);
+    color: white;
   }
 
-  .pillar-mark.comprendre {
-    border-color: rgba(10, 25, 47, 0.18);
+  .copilot-card {
+    padding: 2.4rem;
+    border-radius: 32px;
   }
 
-  .pillar-mark.se_situer,
-  .pillar-mark.se_proteger {
-    border-color: rgba(230, 57, 70, 0.16);
+  .copilot-copy h2 {
+    margin: 1rem 0 0.8rem;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
   }
 
-  /* ─── SITUATIONS GRID ─── */
-  .sit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-  .sit-card { 
-    background: white; border: 1px solid var(--border); border-radius: 24px; padding: 2rem; 
-    text-align: left; cursor: pointer; transition: all 0.3s; 
-    display: flex; flex-direction: column; width: 100%;
+  .copilot-copy p {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: #54636c;
+    max-width: 42rem;
   }
-  .sit-card:hover { border-color: var(--neon); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-  .sit-title { font-size: 1.2rem; font-weight: 800; color: var(--deep); margin-bottom: 0.8rem; }
-  .sit-desc { font-size: 0.9rem; opacity: 0.7; line-height: 1.4; margin-bottom: 1.5rem; }
-  .sit-link { font-size: 0.8rem; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.05em; }
 
-  /* ─── MODAL ─── */
-  .modal-overlay { 
-    position: fixed; inset: 0; background: rgba(10, 25, 47, 0.8); 
-    backdrop-filter: blur(10px); z-index: 1000; 
-    display: flex; align-items: center; justify-content: center; padding: 2rem;
+  .copilot-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin: 1.6rem 0 2rem;
   }
-  .modal-card { 
-    background: white; width: 100%; max-width: 900px; max-height: 90vh; 
-    border-radius: 32px; position: relative; overflow-y: auto; padding: 4rem;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+
+  .copilot-chip {
+    border: 1px solid rgba(10, 25, 47, 0.1);
+    background: rgba(10, 25, 47, 0.03);
+    color: var(--deep);
+    border-radius: 999px;
+    padding: 0.8rem 1rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
   }
-  .modal-close { 
-    position: absolute; top: 1.5rem; right: 1.5rem; 
-    width: 40px; height: 40px; border-radius: 50%; border: none;
-    background: var(--bg); font-size: 1.5rem; cursor: pointer; transition: 0.2s;
+
+  .copilot-chip:hover,
+  .copilot-chip:focus-visible {
+    background: rgba(10, 25, 47, 0.06);
+    outline: none;
   }
-  .modal-close:hover { background: var(--red); color: white; }
-  
-  .modal-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
-  .modal-intro { font-size: 1.1rem; opacity: 0.8; line-height: 1.5; margin-bottom: 3rem; }
-  
-  .modal-body-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 4rem; }
-  .modal-sub { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--red); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
-  .modal-list { list-style: none; padding: 0; margin-bottom: 3rem; }
-  .modal-list li { position: relative; padding-left: 1.5rem; font-size: 1rem; font-weight: 600; margin-bottom: 0.8rem; }
+
+  .subtle-support-card {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    padding: 2rem 2.1rem;
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(10, 25, 47, 0.03) 0%, rgba(10, 25, 47, 0.01) 100%);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+  }
+
+  .subtle-support-copy h3 {
+    margin: 1rem 0 0.8rem;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--deep);
+  }
+
+  .subtle-support-copy p {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.6;
+  }
+
+  .subtle-support-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    justify-content: flex-start;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 25, 47, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-card {
+    background: white;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 32px;
+    position: relative;
+    overflow-y: auto;
+    padding: 4rem;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .modal-close:hover {
+    background: var(--red);
+    color: white;
+  }
+
+  .modal-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .modal-intro {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+  }
+
+  .modal-body-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 4rem;
+  }
+
+  .modal-sub {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .modal-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 3rem;
+  }
+
+  .modal-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
   .modal-list li::before {
     content: "";
     position: absolute;
@@ -623,77 +1757,189 @@ const getResourcesByPillar = (pillarId: string) =>
     background: var(--neon);
     transform: translateY(-50%);
   }
-  
-  .modal-res-grid { display: flex; flex-direction: column; gap: 0.8rem; }
-  .modal-res-link { 
-    display: flex; flex-direction: column; padding: 1rem; background: var(--bg); 
-    border-radius: 12px; text-decoration: none; border: 1px solid var(--border); transition: 0.2s;
-  }
-  .modal-res-link:hover { border-color: var(--red); background: white; }
-  .modal-res-link .mini-title { font-weight: 700; color: var(--deep); }
-  
-  .aside-path-card { background: var(--deep); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; }
-  .aside-path-card h4 { font-size: 1.1rem; color: var(--neon); margin-bottom: 0.5rem; }
-  .aside-path-card p { font-size: 0.85rem; opacity: 0.8; line-height: 1.3; }
 
-  .cta-mini-box { background: #E6F3FF; padding: 2rem; border-radius: 20px; }
-  .cta-label { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; color: #0077ED; margin-bottom: 0.5rem; display: block; }
-  .cta-mini-box p { font-size: 0.9rem; color: var(--deep); margin-bottom: 1.5rem; }
-  .btn-tiny { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
-
-  /* ─── PATH CARD ─── */
-  .path-highlight-card { background: var(--deep); color: #fff; padding: 4rem; border-radius: 40px; border: none; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
-  .path-badge { background: var(--neon); color: var(--deep); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 99px; display: inline-block; margin-bottom: 2rem; }
-  .path-title-v4 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff; letter-spacing: -0.02em; }
-  .path-promise-v4 { font-size: 1.3rem; color: #fff; opacity: 0.95; margin-bottom: 3rem; max-width: 600px; line-height: 1.4; }
-  
-  .path-priorities-box h3, .path-resources-box h3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
-  .res-check-list-small { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; }
-  .res-check-list-small li { display: flex; gap: 0.8rem; align-items: center; font-size: 1.1rem; font-weight: 600; color: #fff; }
-  .check-icon-small {
-    width: 0.48rem;
-    height: 0.48rem;
-    flex-shrink: 0;
-    border-radius: 999px;
-    background: var(--neon);
-    display: inline-block;
-    margin-top: 0.08rem;
+  .modal-res-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
 
-  .path-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-  .path-mini-card { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 16px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; }
-  .path-mini-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
-  .mini-format { font-size: 0.6rem; text-transform: uppercase; opacity: 0.5; font-weight: 800; margin-bottom: 0.3rem; display: block; }
-  .path-mini-card h4 { font-size: 1rem; line-height: 1.2; }
+  .modal-res-link {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: 12px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: 0.2s;
+  }
 
-  /* ─── REUSE GRID ─── */
-  .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
-  .res-lux-card { text-decoration: none; padding: 2.5rem; background: white; border: 1px solid var(--border); border-radius: 28px; transition: all 0.4s; height: 100%; display: flex; flex-direction: column; }
-  .res-lux-card:hover { transform: translateY(-8px); border-color: var(--red); box-shadow: 0 20px 40px rgba(10, 25, 47, 0.05); }
-  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-  .format-tag { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); background: rgba(230, 57, 70, 0.05); padding: 0.4rem 0.8rem; border-radius: 6px; }
-  .priority-dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; }
-  .card-title { font-size: 1.4rem; color: var(--deep); margin-bottom: 1rem; line-height: 1.2; font-weight: 800; }
-  .card-promise { font-size: 0.95rem; line-height: 1.5; color: #54636C; margin-bottom: 2rem; }
-  .card-meta { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-  .arrow-circle { width: 36px; height: 36px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--deep); font-weight: 900; transition: 0.3s; }
+  .modal-res-link:hover {
+    border-color: var(--red);
+    background: white;
+  }
 
-  /* ─── BANNER CTA ─── */
-  .app-cta-banner { background: var(--deep); color: white; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 5rem; align-items: center; overflow: hidden; border: none; }
-  .pwa-mockup { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); width: 220px; height: 400px; border-radius: 40px; margin: 0 auto; transform: rotate(8deg) translateY(40px); display: flex; flex-direction: column; padding: 1rem; }
-  .mock-header { height: 40px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; }
-  .mock-body { display: flex; flex-direction: column; gap: 1rem; padding: 0 1rem; }
-  .mock-line { height: 8px; background: rgba(255,255,255,0.1); border-radius: 99px; }
+  .modal-res-link .mini-title {
+    font-weight: 700;
+    color: var(--deep);
+  }
+
+  .aside-path-card {
+    background: var(--deep);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+
+  .aside-path-card h4 {
+    font-size: 1.1rem;
+    color: var(--neon);
+    margin-bottom: 0.5rem;
+  }
+
+  .aside-path-card p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    line-height: 1.45;
+  }
+
+  .cta-mini-box {
+    background: #e6f3ff;
+    padding: 2rem;
+    border-radius: 20px;
+  }
+
+  .cta-label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #0077ed;
+    margin-bottom: 0.5rem;
+    display: block;
+    letter-spacing: 0.08em;
+  }
+
+  .cta-mini-box p {
+    font-size: 0.92rem;
+    color: var(--deep);
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-tiny {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 1100px) {
+    .diagnostic-helper-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .diagnostic-helper-actions {
+      justify-content: flex-start;
+    }
+
+    .priority-grid,
+    .rec-v4-grid,
+    .res-grid,
+    .sit-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .path-mini-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 
   @media (max-width: 900px) {
-    .rec-v4-grid { grid-template-columns: 1fr; }
-    .path-highlight-card { padding: 2.5rem 1.5rem; border-radius: 24px; }
-    .path-title-v4 { font-size: 2rem; }
-    .res-grid { grid-template-columns: 1fr; }
-    .app-cta-banner { grid-template-columns: 1fr; padding: 3rem; text-align: center; }
-    .pwa-mockup { display: none; }
-    .modal-card { padding: 2rem; border-radius: 16px; width: 95%; }
-    .modal-body-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .modal-title { font-size: 1.8rem; }
+    .priority-grid,
+    .rec-v4-grid,
+    .res-grid,
+    .sit-grid,
+    .filter-grid,
+    .path-mini-grid,
+    .modal-body-grid,
+    .subtle-support-card {
+      grid-template-columns: 1fr;
+    }
+
+    .catalogue-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .path-highlight-card,
+    .copilot-card,
+    .filter-shell {
+      padding: 1.6rem;
+    }
+
+    .modal-card {
+      padding: 2rem;
+      border-radius: 20px;
+      width: 95%;
+    }
+
+    .modal-title {
+      font-size: 1.85rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-v3 {
+      padding: 4rem 0;
+    }
+
+    .res-hero-bg {
+      padding-bottom: 4rem;
+    }
+
+    .diagnostic-helper-card {
+      padding: 1.3rem;
+      border-radius: 1.4rem;
+    }
+
+    .diagnostic-helper-actions {
+      width: 100%;
+    }
+
+    .diagnostic-helper-actions .btn-primary-v3,
+    .diagnostic-helper-actions .btn-secondary-v3 {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .hero-note-card {
+      padding: 1rem 1rem 1.05rem;
+      border-radius: 1.2rem;
+    }
+
+    .priority-grid,
+    .rec-v4-grid,
+    .res-grid,
+    .sit-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-shell {
+      padding: 1.1rem;
+    }
+
+    .subtle-support-actions,
+    .copilot-suggestions {
+      flex-direction: column;
+    }
+
+    .subtle-support-actions .btn-secondary-v3,
+    .copilot-chip {
+      width: 100%;
+    }
   }
 </style>
