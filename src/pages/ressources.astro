@@ -77,13 +77,13 @@ const copilotSuggestions = [
       </div>
     </section>
 
-    <section id="prioritiesSection" class="section-v3 hidden">
+    <section id="prioritiesSection" class="section-v3 hidden priorities-section">
       <div class="container">
         <header class="section-header-v4">
           <span class="label-v3">Pour vous, en priorité</span>
           <h2 class="section-title-standard">Vos priorités du moment</h2>
           <p class="section-subtitle-v4">
-            À partir de votre diagnostic, voici les sujets sur lesquels MARYAN vous recommande de vous concentrer en premier.
+            Trois points d’appui pour avancer sans vous disperser.
           </p>
         </header>
 
@@ -101,7 +101,7 @@ const copilotSuggestions = [
         <header class="section-header-v4">
           <span class="label-v3">Sélectionnées à partir de votre diagnostic</span>
           <h2 class="section-title-standard">À commencer par là</h2>
-          <p class="section-subtitle-v4">Une première sélection de ressources particulièrement adaptées à votre situation actuelle.</p>
+          <p class="section-subtitle-v4">Trois ressources choisies pour entrer dans le sujet avec méthode, sans vous perdre dans l’ensemble.</p>
         </header>
 
         <div id="recommendedGrid" class="rec-v4-grid"></div>
@@ -145,9 +145,9 @@ const copilotSuggestions = [
       <div class="container">
         <header class="section-header-v4">
           <span class="label-v3">Explorer</span>
-          <h2 class="section-title-standard">Trouver une ressource</h2>
+          <h2 class="section-title-standard">Explorer les ressources</h2>
           <p class="section-subtitle-v4">
-            Votre profil nous aide à vous orienter, pas à vous limiter. Vous pouvez explorer librement l’ensemble des ressources MARYAN.
+            Votre profil vous oriente, mais il ne vous enferme pas. Toutes les ressources restent ouvertes à l’exploration.
           </p>
         </header>
 
@@ -197,16 +197,19 @@ const copilotSuggestions = [
 
         <div class="catalogue-head">
           <div class="catalogue-copy-wrap">
-            <span class="label-v3">Catalogue</span>
-            <h2 class="catalogue-title">Explorer toutes les ressources</h2>
+            <span class="label-v3">Explorer librement</span>
+            <h2 class="catalogue-title">Toutes les ressources</h2>
             <p class="catalogue-copy">
-              Le diagnostic sert à orienter, pas à enfermer. Toutes les fiches restent accessibles à tout moment.
+              Entrez par un besoin, un thème ou une situation.
             </p>
           </div>
           <p id="resourceCount" class="resource-count">—</p>
         </div>
 
         <div id="resourceGrid" class="res-grid"></div>
+        <div id="catalogActions" class="catalog-actions hidden">
+          <button type="button" class="btn-secondary-v3" id="toggleCatalogBtn">Voir plus de ressources</button>
+        </div>
         <div id="emptyState" class="empty-state hidden">
           <p>Aucune ressource ne correspond à cette combinaison de filtres pour l’instant.</p>
           <button type="button" class="btn-secondary-v3" id="resetFiltersBtn">Réinitialiser les filtres</button>
@@ -360,7 +363,8 @@ const copilotSuggestions = [
       pillar: 'all',
       situation: 'all',
       format: 'all',
-      sort: 'recommended'
+      sort: 'recommended',
+      expandedCatalog: false
     };
 
     const els = {
@@ -381,6 +385,8 @@ const copilotSuggestions = [
       resourceGrid: document.getElementById('resourceGrid'),
       resourceCount: document.getElementById('resourceCount'),
       emptyState: document.getElementById('emptyState'),
+      catalogActions: document.getElementById('catalogActions'),
+      toggleCatalogBtn: document.getElementById('toggleCatalogBtn'),
       resourceSearch: document.getElementById('resourceSearch'),
       pillarFilter: document.getElementById('pillarFilter'),
       situationFilter: document.getElementById('situationFilter'),
@@ -442,6 +448,38 @@ const copilotSuggestions = [
 
     function getRecommendedSituations(profile, limit = 2) {
       return maryanSituations.filter((item) => item.diagnosticProfiles.includes(profile)).slice(0, limit);
+    }
+
+    function humanizeTaxonomy(value) {
+      const normalized = String(value || '').trim();
+      if (!normalized) return '';
+
+      const overrides = {
+        projet_citoyen: 'projet citoyen',
+        projet_entreprise: "projet d’entreprise",
+        collectif_habitants: "collectif d’habitants",
+        initiative_locale: 'initiative locale',
+        relation_partenaire: 'relation partenaire',
+        co_construction: 'co-construction',
+        reunion_publique: 'réunion publique',
+        communication_publique: 'communication publique',
+        prise_de_parole: 'prise de parole',
+        tension_locale: 'tension locale',
+        situation_sensible: 'situation sensible',
+        finances_locales: 'finances locales',
+        relations_internes: 'relations internes',
+        conseil_municipal: 'conseil municipal',
+        ia: 'IA',
+        chatgpt: 'ChatGPT'
+      };
+
+      if (overrides[normalized]) return overrides[normalized];
+
+      return normalized
+        .replaceAll('_', ' ')
+        .replaceAll('-', ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
     }
 
     function capitalizeFirst(value) {
@@ -597,26 +635,36 @@ const copilotSuggestions = [
     function bindFilters() {
       els.resourceSearch?.addEventListener('input', (event) => {
         state.search = event.currentTarget.value || '';
+        state.expandedCatalog = false;
         renderCatalog();
       });
 
       els.pillarFilter?.addEventListener('change', (event) => {
         state.pillar = event.currentTarget.value;
+        state.expandedCatalog = false;
         renderCatalog();
       });
 
       els.situationFilter?.addEventListener('change', (event) => {
         state.situation = event.currentTarget.value;
+        state.expandedCatalog = false;
         renderCatalog();
       });
 
       els.formatFilter?.addEventListener('change', (event) => {
         state.format = event.currentTarget.value;
+        state.expandedCatalog = false;
         renderCatalog();
       });
 
       els.sortFilter?.addEventListener('change', (event) => {
         state.sort = event.currentTarget.value;
+        state.expandedCatalog = false;
+        renderCatalog();
+      });
+
+      els.toggleCatalogBtn?.addEventListener('click', () => {
+        state.expandedCatalog = !state.expandedCatalog;
         renderCatalog();
       });
 
@@ -626,6 +674,7 @@ const copilotSuggestions = [
         state.situation = 'all';
         state.format = 'all';
         state.sort = 'recommended';
+        state.expandedCatalog = false;
 
         if (els.resourceSearch) els.resourceSearch.value = '';
         if (els.pillarFilter) els.pillarFilter.value = 'all';
@@ -642,10 +691,20 @@ const copilotSuggestions = [
         maryanResources.filter(matchesActiveFilters),
         state.sort
       );
+      const defaultVisible = 3;
+      const visibleResources = state.expandedCatalog ? filtered : filtered.slice(0, defaultVisible);
 
       els.resourceCount.textContent = `${filtered.length} ressource${filtered.length > 1 ? 's' : ''}`;
-      els.resourceGrid.innerHTML = filtered.map(renderResourceCard).join('');
+      els.resourceGrid.innerHTML = visibleResources.map(renderResourceCard).join('');
       els.emptyState.classList.toggle('hidden', filtered.length > 0);
+
+      const showToggle = filtered.length > defaultVisible;
+      els.catalogActions?.classList.toggle('hidden', !showToggle || filtered.length === 0);
+      if (els.toggleCatalogBtn) {
+        els.toggleCatalogBtn.textContent = state.expandedCatalog
+          ? 'Afficher moins'
+          : `Voir plus de ressources`;
+      }
     }
 
     function matchesActiveFilters(resource) {
@@ -710,21 +769,24 @@ const copilotSuggestions = [
     }
 
     function renderResourceCard(resource) {
+      const prettyPillar = pillarLabels[resource.pillar] || resource.pillar;
+      const prettyFormat = formatLabels[resource.format] || resource.format;
+      const tagList = (resource.tags || [])
+        .slice(0, 2)
+        .map((tag) => humanizeTaxonomy(tag))
+        .filter(Boolean);
+
       return `
         <a href="/ressources/${resource.slug}" class="res-lux-card card-v3" data-resource-link data-slug="${resource.slug}">
           <div class="card-inner">
             <header class="card-top">
-              <div class="card-pills">
-                <span class="format-tag">${formatLabels[resource.format] || resource.format}</span>
-                <span class="meta-pill">${pillarLabels[resource.pillar] || resource.pillar}</span>
-              </div>
-              ${resource.priority === 'haute' ? '<span class="priority-dot" title="Priorité haute"></span>' : ''}
+              <span class="card-kicker-line">${prettyPillar} · ${prettyFormat}</span>
             </header>
             <h3 class="card-title">${resource.title}</h3>
             <p class="card-promise">${resource.promise}</p>
             <footer class="card-meta">
               <div class="card-tags">
-                ${(resource.tags || []).slice(0, 2).map((tag) => `<span class="role-mini">${tag}</span>`).join('')}
+                ${tagList.map((tag) => `<span class="role-mini">${tag}</span>`).join('')}
               </div>
               <div class="arrow-circle">↗</div>
             </footer>
@@ -1016,6 +1078,10 @@ const copilotSuggestions = [
     color: #54636c;
   }
 
+  .priorities-section {
+    background: linear-gradient(180deg, #fbf8f2 0%, #fffdfa 100%);
+  }
+
   .priority-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1181,7 +1247,7 @@ const copilotSuggestions = [
 
   .recommended-section {
     padding: 5.5rem 0;
-    background: linear-gradient(180deg, #f8f9fa 0%, #eef3f8 100%);
+    background: white;
   }
 
   .rec-v4-grid {
@@ -1448,6 +1514,15 @@ const copilotSuggestions = [
   .filter-shell {
     padding: 1.4rem;
     margin-bottom: 1.6rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 249, 252, 0.98) 100%);
+    border-radius: 1.8rem;
+    box-shadow: 0 12px 28px rgba(10, 25, 47, 0.03);
+  }
+
+  .filter-shell:hover {
+    transform: none;
+    border-color: var(--border);
+    box-shadow: 0 12px 28px rgba(10, 25, 47, 0.03);
   }
 
   .filter-search {
@@ -1531,71 +1606,46 @@ const copilotSuggestions = [
     white-space: nowrap;
   }
 
+  .catalog-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
   .res-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .res-lux-card {
     text-decoration: none;
-    padding: 2.5rem;
+    padding: 2rem 1.8rem;
     background: white;
     border: 1px solid var(--border);
-    border-radius: 28px;
-    transition: all 0.4s;
+    border-radius: 24px;
+    transition: all 0.28s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
   }
 
   .res-lux-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--red);
-    box-shadow: 0 20px 40px rgba(10, 25, 47, 0.05);
+    transform: translateY(-5px);
+    border-color: rgba(10, 25, 47, 0.16);
+    box-shadow: 0 18px 36px rgba(10, 25, 47, 0.05);
   }
 
   .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.95rem;
   }
 
-  .card-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-
-  .format-tag,
-  .meta-pill,
-  .role-mini {
-    font-size: 0.68rem;
+  .card-kicker-line {
+    font-size: 0.7rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    border-radius: 999px;
-    padding: 0.35rem 0.7rem;
-  }
-
-  .format-tag {
-    color: var(--red);
-    background: rgba(230, 57, 70, 0.07);
-  }
-
-  .meta-pill {
-    color: var(--deep);
-    background: rgba(10, 25, 47, 0.05);
-  }
-
-  .priority-dot {
-    width: 0.55rem;
-    height: 0.55rem;
-    background: var(--red);
-    border-radius: 999px;
-    flex-shrink: 0;
+    color: rgba(10, 25, 47, 0.46);
   }
 
   .card-title {
@@ -1611,7 +1661,7 @@ const copilotSuggestions = [
     font-size: 0.96rem;
     line-height: 1.55;
     color: #54636c;
-    margin-bottom: 1.7rem;
+    margin-bottom: 1.35rem;
   }
 
   .card-meta {
@@ -1636,6 +1686,8 @@ const copilotSuggestions = [
     text-transform: none;
     letter-spacing: 0;
     font-size: 0.74rem;
+    padding: 0.32rem 0.72rem;
+    border-radius: 999px;
   }
 
   .arrow-circle {
