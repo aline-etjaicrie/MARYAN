@@ -1,226 +1,231 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
-
-const repereWho = [
-  'de clarifier leur situation',
-  'de comprendre leurs points de vigilance',
-  "d'identifier les premières ressources utiles",
-  'de ne pas partir dans tous les sens'
-];
-
-const repereWhat = [
-  'un diagnostic structuré',
-  'un profil de situation',
-  'des recommandations ciblées',
-  'une première orientation'
-];
-
-const repereFit = [
-  'vous débutez',
-  'vous manquez de repères',
-  "vous voulez d'abord comprendre avant d'investir plus loin",
-  'vous cherchez un point de départ simple et sérieux'
-];
-
-const outillerWhat = [
-  'une bibliothèque de ressources complète',
-  'des fiches par situation',
-  'des trames utiles',
-  'un copilote conversationnel spécialisé',
-  'un appui continu pour mieux formuler et prioriser'
-];
-
-const outillerFit = [
-  'vous manquez de méthode',
-  'vous voulez gagner du temps',
-  "vous avez besoin d'un cadre plus stable",
-  'vous cherchez un outil utile dans la durée'
-];
-
-const epaulerExamples = [
-  'sujet sensible localement',
-  'forte exposition publique',
-  'technicité élevée',
-  'difficulté de communication',
-  "besoin de cadrage ou d'arbitrage"
-];
-
-const epaulerWhat = [
-  'une visio de cadrage',
-  'un échange ponctuel',
-  'une orientation vers un expert',
-  'un accompagnement ciblé sur une situation précise'
-];
-
-const epaulerFit = [
-  'vous sentez que vous tournez en rond',
-  "vous avez besoin d'un regard compétent",
-  'la situation devient trop sensible pour rester seul·e',
-  "vous avez besoin d'une aide très ajustée"
-];
-
-const progression = [
-  { step: '01. Clarifier', title: 'Faire le point', text: 'Comprendre, repérer ses besoins réels.' },
-  { step: '02. Outiller', title: 'Accéder aux outils', text: 'Ressources, méthodes, copilote IA.' },
-  { step: '03. Renforcer', title: 'Cadrage stratégique', text: 'Monter en appui quand la situation l\'exige.' },
-  { step: '04. Relayer', title: 'Experts Humains', text: 'Orienter vers un accompagnement humain.' }
-];
 ---
+
 <BaseLayout
-  title="Les Niveaux d'Appui — MARYAN"
-  description="Trouvez le bon niveau d'accompagnement selon votre situation : se repérer, s'outiller ou se faire épauler."
+  title="Offres & Tarifs — MARYAN"
+  description="Découvrez MARYAN : votre copilote d'élu personnel ou l'outil partagé pour votre collectivité. Des offres adaptées à chaque besoin."
 >
   
   <InternalHeader 
-    label="Système d'appui"
-    title="Le bon niveau d'appui, au <em class='emphasis'>bon moment</em>"
-    subtitle="MARYAN n'a pas vocation à vendre la même chose à tout le monde. Nous vous orientons vers la forme d'appui la plus utile selon votre situation réelle."
+    label="Offres MARYAN"
+    title="MARYAN, votre <em class='emphasis'>copilote d'élu·e</em>"
+    subtitle="Un agent conversationnel conçu pour vous aider à comprendre, décider et agir dans votre mandat. Des réponses claires, des outils concrets."
   />
 
-  <main class="offres-main-v3">
+  <main class="offres-v3">
     
-    <!-- 1. SE REPERER -->
-    <section class="section-v3 bg-grid-reveal">
-      <div class="bg-grid-v3"></div>
+    <!-- HERO SELECTION -->
+    <section class="section-v3 bg-grid-v3">
+      <div class="container-narrow text-center">
+         <div class="hero-cta-group">
+            <a href="/copilote" class="btn-primary-v3 big">Essayer gratuitement</a>
+            <a href="#collectivites" class="btn-secondary-v3">Voir les offres collectivités</a>
+         </div>
+      </div>
+    </section>
+
+    <!-- CE QUE VOUS TROUVEZ ICI -->
+    <section class="section-v3 no-padding-top">
       <div class="container">
-        <div class="offer-level-box">
-           <div class="level-indicator">
-              <span class="level-num">Niveau 01</span>
-              <div class="level-line"></div>
+        <div class="info-grid-v3">
+           <div class="info-text">
+              <span class="label-v3">L'utilité</span>
+              <h2>Être élu·e, c’est décider souvent, parfois seul·e, souvent vite.</h2>
+              <p class="intro-v3">MARYAN est là pour ça. Vous posez votre question, vous repartez avec une réponse claire, utile, actionnable.</p>
            </div>
-           <div class="level-content">
-              <h2>Se <span class="emphasis">repérer</span></h2>
-              <p class="level-intro">L'entrée dans le mandat nécessite d'abord de la clarté.</p>
-              
-              <div class="level-grid">
-                <div class="card-v3">
-                   <span class="card-kicker">Pour qui ?</span>
-                   <ul class="v3-list">
-                      {repereWho.map(item => <li>{item}</li>)}
-                   </ul>
-                </div>
-                <div class="card-v3 highlight-neon">
-                   <span class="card-kicker text-red">Apport MARYAN</span>
-                   <ul class="v3-list-check">
-                      {repereWhat.map(item => <li>{item}</li>)}
-                   </ul>
-                   <div class="card-footer-v3" style="margin-top:2rem;">
-                      <button class="btn-primary-v3 checkout-btn" data-price-id="price_MARYAN_LIBRE" style="width:100%;">Commencer gratuitement</button>
-                   </div>
-                </div>
+           <div class="info-cards">
+              <div class="mini-card-v3">
+                 <span class="card-num">01</span>
+                 <p>Vous devez prendre position ?</p>
+              </div>
+              <div class="mini-card-v3">
+                 <span class="card-num">02</span>
+                 <p>Vous préparez une prise de parole ?</p>
+              </div>
+              <div class="mini-card-v3">
+                 <span class="card-num">03</span>
+                 <p>Vous hésitez entre plusieurs options ?</p>
               </div>
            </div>
         </div>
       </div>
     </section>
 
-    <!-- 2. S'OUTILLER -->
+    <!-- OFFRE INDIVIDUELLE : AVANCER -->
     <section class="section-v3 bg-deep text-white">
-      <div class="glow-v3 glow-red"></div>
       <div class="container">
-        <div class="offer-level-box reverse">
-           <div class="level-indicator">
-              <span class="level-num text-neon">Niveau 02</span>
-              <div class="level-line bg-neon"></div>
-           </div>
-           <div class="level-content">
-              <h2 class="text-white">S'<span class="emphasis text-neon">outiller</span></h2>
-              <p class="level-intro opacity-70">Un appui régulier et digital pour sécuriser le quotidien.</p>
-              
-              <div class="level-grid">
-                <div class="card-v3 dark-card">
-                   <span class="card-kicker text-neon" style="opacity:1;">L'appui Copilote</span>
-                   <p style="color:white;opacity:0.9;">Pour les élu·es qui ont besoin d'une méthode stable sans basculer vers l'humain lourd.</p>
-                   <ul class="v3-list-white" style="color:white;">
-                      {outillerWhat.map(item => <li style="opacity:0.8;">{item}</li>)}
-                   </ul>
-                </div>
-                 <div class="card-v3 dark-card border-red">
-                   <span class="card-kicker text-red" style="opacity:1;">Pertinence</span>
-                   <p style="color:white;opacity:0.9; margin-bottom:1rem;">Gagnez du temps et structurez vos dossiers stratégiques.</p>
-                   <ul class="v3-list-check-neon" style="color:white; margin-bottom: 2rem;">
-                      {outillerFit.map(item => <li style="opacity:0.8;">{item}</li>)}
-                   </ul>
-                   <button class="btn-primary-v3 checkout-btn" data-price-id="price_MARYAN_PLUS" style="width:100%; border:none;">Choisir MARYAN Plus</button>
-                </div>
+        <div class="plan-hero-v3">
+           <div class="plan-header-v3">
+              <span class="card-kicker text-red">Offre Individuelle</span>
+              <h2 class="text-white">AVANCER</h2>
+              <p class="intro-v3 opacity-70">Pour ne plus rester seul·e face aux décisions.</p>
+              <div class="plan-price-v3">
+                 <span class="amount">29€</span><span class="period">/mois</span>
               </div>
-            </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. SE FAIRE EPAULER -->
-    <section class="section-v3">
-      <div class="container">
-        <div class="offer-level-box">
-           <div class="level-indicator">
-              <span class="level-num">Niveau 03</span>
-              <div class="level-line"></div>
            </div>
-           <div class="level-content">
-              <h2>Se faire <span class="emphasis">épauler</span></h2>
-              <p class="level-intro">L'expertise humaine prend le relais sur les sujets complexes.</p>
-              
-              <div class="level-grid">
-                <div class="card-v3">
-                   <span class="card-kicker">Situations cibles</span>
-                   <p>Quand l'outil seul ne suffit plus à l'arbitrage :</p>
-                   <ul class="v3-list-dots">
-                      {epaulerExamples.map(item => <li>{item}</li>)}
-                   </ul>
-                </div>
-                <div class="card-v3 border-neon">
-                   <span class="card-kicker text-sauge">Le Hub d'Experts</span>
-                   <p>Accès direct à notre réseau de consultants stratégiques, juridiques et RH.</p>
-                   <ul class="v3-list-check">
-                      {epaulerWhat.map(item => <li>{item}</li>)}
-                   </ul>
-                </div>
+           <div class="plan-features-v3">
+              <ul class="v3-list-check-neon">
+                 <li>Agent conversationnel complet</li>
+                 <li>Aide à la décision sur des cas concrets</li>
+                 <li>Préparation de prises de parole</li>
+                 <li>Décryptage de situations locales</li>
+                 <li>Diagnostic rapide pour prendre du recul</li>
+              </ul>
+              <p class="plan-footer-text">Pour les élu·es qui veulent aller vite, sans faire n’importe quoi.</p>
+              <div class="plan-buttons-v3">
+                 <button class="btn-primary-v3 checkout-btn" data-price-id="price_INDIVIDUAL_AVANCER" style="background:var(--neon);color:var(--deep);">S’abonner</button>
+                 <a href="/copilote" class="btn-secondary-v3 dark">Essayer gratuitement</a>
               </div>
            </div>
         </div>
       </div>
     </section>
 
-    <!-- PROGRESSION LOGIC -->
-    <section class="section-v3 bg-ivory">
+    <!-- OFFRE COLLECTIVITES -->
+    <section id="collectivites" class="section-v3 bg-ivory">
       <div class="container">
-        <div class="section-header text-center">
-           <span class="label-v3">Philosophie</span>
-           <h2>Une logique <span class="emphasis">progressive</span></h2>
-           <p class="intro-v3">Pas plus d'outils que nécessaire, mais pas moins d'appui qu'il n'en faut.</p>
+        <div class="section-header text-center" style="margin-bottom: 5rem;">
+           <span class="label-v3">Collectivités</span>
+           <h2>MARYAN pour votre <span class="emphasis">collectivité</span></h2>
+           <p class="intro-v3">Un outil partagé au service de vos élu·es. Mise en place simple, coût maîtrisé, usage immédiat.</p>
         </div>
 
-        <div class="progression-steps-v3">
-           {progression.map(item => (
-             <div class="p-step-v3">
-                <span class="p-step-num">{item.step}</span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+        <div class="pricing-grid-v3">
+           <!-- Petite Commune -->
+           <div class="price-bubble-v3 border-green">
+              <span class="dot-v3 bg-green"></span>
+              <h3>Petites communes</h3>
+              <p class="size-label">(Jusqu'à 5 000 hab.)</p>
+              <p class="price-v3">À partir de 50€/mois</p>
+              <ul class="v3-list-dots">
+                 <li>Accès pour quelques élu·es</li>
+                 <li>Appui sur les décisions du quotidien</li>
+                 <li>Préparation de prises de parole</li>
+              </ul>
+           </div>
+
+           <!-- Intermédiaire -->
+           <div class="price-bubble-v3 border-yellow">
+              <span class="dot-v3 bg-yellow"></span>
+              <h3>Communes intermédiaires</h3>
+              <p class="size-label">(5 000 à 20 000 hab.)</p>
+              <p class="price-v3">À partir de 100€/mois</p>
+              <ul class="v3-list-dots">
+                 <li>Accès élargi</li>
+                 <li>Aide à la décision plus régulière</li>
+                 <li>Décryptage de situations locales</li>
+              </ul>
+           </div>
+
+           <!-- Ville -->
+           <div class="price-bubble-v3 border-blue">
+              <span class="dot-v3 bg-blue"></span>
+              <h3>Villes et intercommunalités</h3>
+              <p class="size-label">(20 000 à 100 000 hab.)</p>
+              <p class="price-v3">À partir de 200€/mois</p>
+              <ul class="v3-list-dots">
+                 <li>Usage collectif (élu·es + cabinet)</li>
+                 <li>Appui sur des sujets complexes</li>
+                 <li>Accompagnement des prises de position</li>
+              </ul>
+           </div>
+
+           <!-- Grande -->
+           <div class="price-bubble-v3 border-red">
+              <span class="dot-v3 bg-red"></span>
+              <h3>Grandes collectivités</h3>
+              <p class="size-label">Besoin spécifique</p>
+              <p class="price-v3">Offre personnalisée</p>
+              <ul class="v3-list-dots">
+                 <li>Nombre d'utilisateurs adapté</li>
+                 <li>Paramétrage sur-mesure</li>
+                 <li>Appui renforcé</li>
+              </ul>
+           </div>
+        </div>
+
+        <!-- PERSONNALISATION -->
+        <div class="custom-note-v3 card-v3">
+           <div class="note-content-v3">
+              <h3>Une offre <span class="emphasis">personnalisable</span></h3>
+              <p>Parce qu'aucune collectivité ne fonctionne pareil, vous pouvez ajuster le nombre d'utilisateurs, les profils (élus, cabinet, direction) et le niveau d'appui.</p>
+           </div>
+           <div class="note-cta-v3">
+              <a href="/contact" class="btn-primary-v3">Équiper ma collectivité</a>
+           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTER 2 SEMAINES -->
+    <section class="section-v3 no-padding-bottom">
+       <div class="container container-medium">
+          <div class="promo-banner-v3">
+             <div class="promo-text-v3">
+                <span class="badge-v3">2 semaines offertes</span>
+                <h2>Mise à disposition gratuite</h2>
+                <p>Accès complet, sans engagement. Le temps de voir concrètement si MARYAN vous est utile avant d'ajuster l'offre.</p>
              </div>
-           ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section class="section-v3 bg-deep text-white text-center">
-       <div class="container-narrow">
-          <h2>Vous ne savez pas par où <span class="emphasis text-neon">commencer</span> ?</h2>
-          <p class="intro-v3 text-white opacity-70">Laissez-vous guider par le diagnostic. C'est lui qui définit votre trajectoire d'appui.</p>
-          <div class="offres-cta-v3">
-             <a href="/diagnostic" class="btn-primary-v3 big">Faire mon diagnostic</a>
-             <a href="/contact" class="btn-secondary-v3 dark">Contacter l'équipe</a>
+             <a href="/contact" class="btn-primary-v3">Être rappelé</a>
           </div>
        </div>
     </section>
+
+    <!-- CONCRETEMENT -->
+    <section class="section-v3">
+       <div class="container">
+          <div class="section-header">
+             <h2>Concrètement</h2>
+             <p class="intro-v3">MARYAN vous aide là où ça compte vraiment.</p>
+          </div>
+          <div class="feature-pills-v3">
+             <span class="pill-v3">Préparer un conseil municipal</span>
+             <span class="pill-v3">Comprendre rapidement un dossier</span>
+             <span class="pill-v3">Arbitrer entre plusieurs options</span>
+             <span class="pill-v3">Gérer une situation sensible</span>
+             <span class="pill-v3">Formuler une prise de parole claire</span>
+          </div>
+       </div>
+    </section>
+
+    <!-- POURQUOI PAS CHATGPT -->
+    <section class="section-v3 bg-deep text-white">
+       <div class="container-narrow text-center">
+          <span class="label-v3 text-neon">La différence</span>
+          <h2>Pourquoi pas juste <span class="emphasis text-neon">ChatGPT ?</span></h2>
+          <div class="diff-grid-v3">
+             <div class="diff-item">
+                <p>Ici, vous n’avez pas à expliquer le fonctionnement des collectivités.</p>
+             </div>
+             <div class="diff-item">
+                <p>Les réponses sont pensées pour des situations d’élus municipaux.</p>
+             </div>
+             <div class="diff-item">
+                <p>L’objectif n’est pas d’informer, mais de vous aider à décider.</p>
+             </div>
+          </div>
+          <p class="final-motto-v3">Un mandat local, ça ne devrait pas se faire seul. <strong>MARYAN est là pour ça.</strong></p>
+       </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="section-v3 text-center">
+       <div class="container-narrow">
+          <div class="offres-cta-v3">
+             <a href="/copilote" class="btn-primary-v3 big">Essayer gratuitement</a>
+             <a href="/contact" class="btn-secondary-v3">Équiper ma collectivité</a>
+          </div>
+       </div>
+    </section>
+
   </main>
 </BaseLayout>
 
 <script>
   // STRIPE CLIENT INTEGRATION
-  const checkoutButtons = document.querySelectorAll('.checkout-btn');
+  const checkoutButtons = document.querySelectorAll<HTMLButtonElement>('.checkout-btn');
   
   checkoutButtons.forEach(btn => {
     btn.addEventListener('click', async (e) => {
@@ -248,13 +253,13 @@ const progression = [
           window.location.href = session.url;
         } else {
           alert("Erreur de session. Veuillez vérifier vos clés Stripe.");
-          target.innerText = "Choisir ce forfait";
+          target.innerText = "S'abonner";
           target.disabled = false;
         }
       } catch (err) {
         console.error(err);
         alert("La connexion à Stripe a échoué.");
-        target.innerText = "Choisir ce forfait";
+        target.innerText = "S'abonner";
         target.disabled = false;
       }
     });
@@ -262,65 +267,85 @@ const progression = [
 </script>
 
 <style>
-  .offres-main-v3 {
-    --border-soft: rgba(30, 42, 50, 0.08);
+  .offres-v3 {
+    --green: #22C55E;
+    --yellow: #FACC15;
+    --blue: #3B82F6;
+    --red: #EF4444;
   }
 
-  .bg-grid-reveal { position: relative; overflow: hidden; }
+  /* ─── HERO CTA ─── */
+  .hero-cta-group { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
 
-  /* ─── LEVEL LAYOUT ─── */
-  .offer-level-box { display: flex; gap: 4rem; }
-  .offer-level-box.reverse { flex-direction: row-reverse; }
-  
-  .level-indicator { flex-shrink: 0; width: 100px; padding-top: 1rem; }
-  .level-num { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 1.5rem; }
-  .level-line { width: 40px; height: 3px; background: var(--deep); }
-  .level-line.bg-neon { background: var(--neon); }
+  /* ─── INFO GRID ─── */
+  .info-grid-v3 { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; align-items: center; }
+  .info-cards { display: flex; flex-direction: column; gap: 1rem; }
+  .mini-card-v3 { background: #fff; padding: 1.25rem 1.5rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.04); display: flex; align-items: center; gap: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+  .card-num { font-size: 0.7rem; font-weight: 800; color: var(--accent-red); opacity: 0.5; }
+  .mini-card-v3 p { font-weight: 600; font-size: 0.95rem; margin: 0; }
 
-  .level-content { flex: 1; }
-  .level-content h2 { font-size: 3.5rem; margin-bottom: 1rem; }
-  .level-intro { font-size: 1.4rem; font-family: var(--font-accent); font-style: italic; margin-bottom: 3.5rem; color: #54636C; }
-  .level-intro.opacity-70 { opacity: 0.7; color: white; }
+  /* ─── PLAN HERO (INDIVIDUAL) ─── */
+  .plan-hero-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 4rem; }
+  .plan-price-v3 { margin-top: 2rem; }
+  .plan-price-v3 .amount { font-size: 4rem; font-weight: 800; color: var(--neon); }
+  .plan-price-v3 .period { font-size: 1.2rem; opacity: 0.6; }
+  .v3-list-check-neon { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+  .v3-list-check-neon li { position: relative; padding-left: 2rem; }
+  .v3-list-check-neon li::before { content: '→'; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
+  .plan-footer-text { font-style: italic; opacity: 0.7; font-size: 0.9rem; margin-bottom: 2.5rem; }
+  .plan-buttons-v3 { display: flex; gap: 1rem; }
 
-  .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  /* ─── PRICING GRID (COLLECTIVITIES) ─── */
+  .pricing-grid-v3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+  .price-bubble-v3 { background: #fff; padding: 2.5rem 1.5rem; border-radius: 20px; border-top: 4px solid #eee; transition: transform 0.2s; position: relative; }
+  .price-bubble-v3:hover { transform: translateY(-5px); }
+  .dot-v3 { width: 12px; height: 12px; border-radius: 50%; display: block; margin-bottom: 1.5rem; }
+  .pricing-grid-v3 h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .size-label { font-size: 0.8rem; font-style: italic; color: #777; margin-bottom: 1rem; min-height: 2.5em; }
+  .price-v3 { font-weight: 800; font-size: 1rem; color: var(--deep); margin-bottom: 1.5rem; }
+  .v3-list-dots { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; }
+  .v3-list-dots li { position: relative; padding-left: 1.2rem; opacity: 0.8; }
+  .v3-list-dots li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 4px; height: 4px; background: #ccc; border-radius: 50%; }
 
-  /* ─── CARDS SPECIFIC ─── */
-  .card-kicker { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; display: block; }
-  .v3-list, .v3-list-white, .v3-list-check, .v3-list-check-neon, .v3-list-dots { 
-    list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.95rem;
-  }
-  .v3-list li, .v3-list-white li { position: relative; padding-left: 1.5rem; }
-  .v3-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent-red); font-weight: 900; }
-  .v3-list-white li::before { content: '→'; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
-  
-  .v3-list-check li, .v3-list-check-neon li { position: relative; padding-left: 2rem; }
-  .v3-list-check li::before { content: '✓'; position: absolute; left: 0; color: #8DA08E; font-weight: 900; }
-  .v3-list-check-neon li::before { content: '✓'; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
+  .bg-green { background: var(--green); }
+  .bg-yellow { background: var(--yellow); }
+  .bg-blue { background: var(--blue); }
+  .bg-red { background: var(--red); }
+  .border-green { border-color: var(--green); }
+  .border-yellow { border-color: var(--yellow); }
+  .border-blue { border-color: var(--blue); }
+  .border-red { border-color: var(--red); }
 
-  .card-v3 { color: var(--deep); }
-  .dark-card { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: white !important; }
-  .dark-card p, .dark-card span, .dark-card li { color: white !important; }
-  .card-footer-v3 { margin-top: auto; padding-top: 1.5rem; border-top: 1px dashed var(--border-soft); font-size: 0.85rem; color: #54636C; }
-  
-  .border-red { border-color: var(--accent-red); border-width: 1.5px; }
-  .border-neon { border-color: var(--neon); border-width: 1.5px; }
+  /* ─── CUSTOM NOTE ─── */
+  .custom-note-v3 { background: #fff; padding: 2.5rem; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; gap: 4rem; }
+  .note-content-v3 h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
 
-  /* ─── PROGRESSION ─── */
-  .progression-steps-v3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 4rem; }
-  .p-step-v3 { position: relative; }
-  .p-step-num { font-size: 0.8rem; font-weight: 800; color: var(--accent-red); display: block; margin-bottom: 1rem; }
-  .p-step-v3 h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
-  .p-step-v3 p { font-size: 0.9rem; opacity: 0.7; line-height: 1.5; }
+  /* ─── PROMO BANNER ─── */
+  .promo-banner-v3 { background: var(--accent-red); color: white; border-radius: 24px; padding: 3rem 4rem; display: flex; justify-content: space-between; align-items: center; gap: 4rem; }
+  .badge-v3 { background: rgba(0,0,0,0.2); color: white; padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; margin-bottom: 1rem; display: inline-block; }
+  .promo-text-v3 h2 { color: white; font-size: 2.2rem; margin-bottom: 1rem; }
+  .promo-text-v3 p { color: white; opacity: 0.9; margin: 0; }
 
-  .offres-cta-v3 { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-top: 4rem; }
-  .btn-secondary-v3.dark { background: transparent; color: white; border-color: rgba(255,255,255,0.2); }
-  .btn-secondary-v3.dark:hover { border-color: white; background: rgba(255,255,255,0.05); }
+  /* ─── FEATURES PILLS ─── */
+  .feature-pills-v3 { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 3rem; }
+  .pill-v3 { background: #F0F2F5; color: var(--deep); padding: 0.75rem 1.5rem; border-radius: 999px; font-weight: 600; font-size: 0.9rem; }
+
+  /* ─── WHY NOT CHATGPT ─── */
+  .diff-grid-v3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 4rem 0; }
+  .diff-item { background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
+  .final-motto-v3 { font-size: 1.4rem; margin-top: 4rem; opacity: 0.9; font-family: var(--font-accent); font-style: italic; }
 
   @media (max-width: 900px) {
-    .offer-level-box, .offer-level-box.reverse { flex-direction: column; gap: 2rem; }
-    .level-indicator { width: 100%; display: flex; align-items: center; gap: 1.5rem; }
-    .level-line { flex: 1; height: 2px; }
-    .level-grid { grid-template-columns: 1fr; }
-    .progression-steps-v3 { grid-template-columns: 1fr 1fr; }
+    .info-grid-v3 { grid-template-columns: 1fr; gap: 2rem; }
+    .plan-hero-v3 { grid-template-columns: 1fr; padding: 2rem; }
+    .pricing-grid-v3 { grid-template-columns: repeat(2, 1fr); }
+    .custom-note-v3 { flex-direction: column; text-align: center; gap: 2rem; }
+    .promo-banner-v3 { flex-direction: column; text-align: center; padding: 2rem; gap: 2rem; }
+    .diff-grid-v3 { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .pricing-grid-v3 { grid-template-columns: 1fr; }
+    .plan-buttons-v3 { flex-direction: column; }
   }
 </style>
