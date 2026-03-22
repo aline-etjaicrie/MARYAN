@@ -1,31 +1,173 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import InternalHeader from '../components/InternalHeader.astro';
 ---
-<BaseLayout title="Contact — MARYAN" description="Contacter MARYAN.">
-  <header class="site-header">
-    <div class="container header-inner">
-      <div>
-        <a href="/" class="brand">MARYAN</a>
-        <p class="brand-sub">appui intelligent pour élus municipaux</p>
+
+<BaseLayout 
+  title="Contact & Démo — MARYAN" 
+  description="Échangez avec l'équipe MARYAN pour équiper votre collectivité ou obtenir un appui personnalisé.">
+  
+  <InternalHeader 
+    label="Contact direct"
+    title="Échanger autour de <span class='emphasis'>votre mandat</span>"
+    subtitle="Pour une démonstration, un devis pour votre collectivité ou un appui ponctuel sur un dossier sensible."
+  />
+
+  <main class="contact-v3">
+    <div class="container-narrow">
+      
+      <div id="contactFormWrapper" class="card-v3 contact-card-v3">
+        <form id="contactForm" class="form-v3">
+          
+          <div class="form-row-v3">
+            <div class="form-group-v3">
+              <label for="firstname">Prénom</label>
+              <input type="text" id="firstname" name="firstname" required placeholder="Gaspard" />
+            </div>
+            <div class="form-group-v3">
+              <label for="lastname">Nom</label>
+              <input type="text" id="lastname" name="lastname" required placeholder="Proust" />
+            </div>
+          </div>
+
+          <div class="form-group-v3">
+            <label for="email">Email institutionnel</label>
+            <input type="email" id="email" name="email" required placeholder="votre@mairie.fr" />
+          </div>
+
+          <div class="form-row-v3">
+            <div class="form-group-v3">
+              <label for="mandate">Votre mandat / fonction</label>
+              <select id="mandate" name="mandate" required>
+                <option value="" disabled selected>Choisir...</option>
+                <option value="maire">Maire</option>
+                <option value="adjoint">Adjoint·e au maire</option>
+                <option value="conseiller">Conseiller·e municipal</option>
+                <option value="cabinet">Cabinet / Direction</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div class="form-group-v3">
+              <label for="citySize">Taille de collectivité</label>
+              <select id="citySize" name="citySize">
+                <option value="petite">Moins de 5 000 hab.</option>
+                <option value="moyenne">5 000 - 20 000 hab.</option>
+                <option value="grande">Plus de 20 000 hab.</option>
+                <option value="interco">Intercommunalité</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-v3">
+            <label for="subject">Objet de votre demande</label>
+            <select id="subject" name="subject" required>
+              <option value="demo">Demander une démonstration</option>
+              <option value="devis">Obtenir un devis collectivité</option>
+              <option value="appui">Appui sur une situation précise</option>
+              <option value="autre">Autre question</option>
+            </select>
+          </div>
+
+          <div class="form-group-v3">
+            <label for="message">Comment pouvons-nous vous aider ?</label>
+            <textarea id="message" name="message" rows="5" placeholder="Dites-nous en quelques mots votre besoin..."></textarea>
+          </div>
+
+          <div class="form-footer-v3">
+            <button type="submit" class="btn-primary-v3 big" id="submitBtn">Envoyer ma demande</button>
+            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par l'équipe MARYAN pour répondre à votre demande. Confidentialité garantie.</p>
+          </div>
+        </form>
       </div>
-      <a href="/" class="back-link">← Accueil</a>
+
+      <!-- SUCCESS STATE -->
+      <div id="successState" class="hidden card-v3 text-center success-box-v3">
+         <div class="success-icon-v3">✓</div>
+         <h2>Demande <span class="emphasis">transmise</span></h2>
+         <p class="intro-v3">Merci de votre confiance. L'équipe MARYAN (Aline Weber) reviendra vers vous sous 24h à 48h.</p>
+         <a href="/" class="btn-secondary-v3">Retour à l'accueil</a>
+      </div>
+
     </div>
-  </header>
-  <main class="page-main">
-    <section class="page-hero">
-      <div class="container narrow">
-        <p class="section-kicker">Contact</p>
-        <h1>Échanger autour de MARYAN.</h1>
-        <p class="lead">Pour une démonstration, un échange exploratoire, un partenariat ou un premier retour sur le projet, cette page servira de point d'entrée simple.</p>
-      </div>
-    </section>
-    <section class="section">
-      <div class="container narrow">
-        <div class="card">
-          <h3>Contact de travail</h3>
-          <p>À compléter avec l'adresse email, le formulaire ou le lien de prise de rendez-vous que tu voudras utiliser.</p>
-        </div>
-      </div>
-    </section>
   </main>
+
+  <style>
+    .contact-v3 { padding-bottom: 8rem; }
+    .container-narrow { max-width: 700px; margin: 0 auto; padding: 0 1.5rem; }
+    .contact-card-v3 { padding: 4rem; margin-top: -2rem; }
+
+    .form-v3 { display: flex; flex-direction: column; gap: 2rem; }
+    .form-row-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    
+    .form-group-v3 { display: flex; flex-direction: column; gap: 0.6rem; }
+    .form-group-v3 label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #888; letter-spacing: 0.05em; }
+    
+    .form-group-v3 input, .form-group-v3 select, .form-group-v3 textarea {
+      background: #FDFBF8;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--deep);
+      transition: all 0.2s;
+    }
+    .form-group-v3 input:focus, .form-group-v3 select:focus, .form-group-v3 textarea:focus {
+      outline: none;
+      border-color: var(--deep);
+      background: #fff;
+    }
+
+    .form-footer-v3 { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; margin-top: 1rem; }
+    .form-consent-v3 { font-size: 0.8rem; opacity: 0.5; text-align: center; max-width: 400px; line-height: 1.4; }
+
+    /* Success State */
+    .success-box-v3 { padding: 5rem 3rem; background: #fff; border: 2px solid var(--neon); }
+    .success-icon-v3 { width: 60px; height: 60px; background: var(--neon); color: var(--deep); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; margin: 0 auto 2rem; }
+
+    @media (max-width: 600px) {
+      .form-row-v3 { grid-template-columns: 1fr; }
+      .contact-card-v3 { padding: 2rem 1.5rem; }
+    }
+  </style>
+
+  <script is:inline>
+    const form = document.getElementById('contactForm');
+    const wrapper = document.getElementById('contactFormWrapper');
+    const success = document.getElementById('successState');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      btn.innerText = "Transmission...";
+      btn.disabled = true;
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('/api/contact-send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          wrapper.classList.add('hidden');
+          success.classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          alert("Une erreur est survenue. Veuillez réessayer ou contacter directment aline@etjaicrie.com");
+          btn.innerText = "Envoyer ma demande";
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Connexion échouée. Veuillez vérifier votre réseau.");
+        btn.innerText = "Envoyer ma demande";
+        btn.disabled = false;
+      }
+    });
+  </script>
 </BaseLayout>
