@@ -6,10 +6,10 @@ import { maryanPaths } from '../data/paths';
 import { maryanSituations } from '../data/situations';
 
 const pillars = [
-  { id: 'se_situer', label: 'Se Situer', icon: '📍', description: 'Repérer sa place et son rôle réel dans le mandat.' },
-  { id: 'comprendre', label: 'Comprendre', icon: '🧠', description: 'Décrypter les circuits de décision et les enjeux locaux.' },
-  { id: 'agir', label: 'Agir', icon: '⚡', description: 'Trancher, porter des projets et piloter avec méthode.' },
-  { id: 'se_proteger', label: 'Se Protéger', icon: '🛡️', description: 'Sécuriser sa pratique, sa parole et son endurance.' }
+  { id: 'se_situer', label: 'Se Situer', marker: '01', description: 'Repérer sa place et son rôle réel dans le mandat.' },
+  { id: 'comprendre', label: 'Comprendre', marker: '02', description: 'Décrypter les circuits de décision et les enjeux locaux.' },
+  { id: 'agir', label: 'Agir', marker: '03', description: 'Trancher, porter des projets et piloter avec méthode.' },
+  { id: 'se_proteger', label: 'Se Protéger', marker: '04', description: 'Sécuriser sa pratique, sa parole et son endurance.' }
 ];
 
 const getResourcesByPillar = (pillarId: string) =>
@@ -36,12 +36,12 @@ const getResourcesByPillar = (pillarId: string) =>
   <main class="ressources-lux">
     
     <!-- 1. À COMMENCER PAR LÀ (PERSONALIZED RESOURCES) - DARK THEME -->
-    <section id="personalizedResources" class="section-v3 hidden" style="background: var(--deep); color: white; padding: 6rem 0;">
+    <section id="personalizedResources" class="section-v3 hidden recommended-section">
       <div class="container">
         <header class="section-header-v4">
-          <span class="label-v3" style="color: var(--neon);">Selon votre dernier diagnostic</span>
-          <h2 class="section-title-standard" style="color: white;">À commencer par là</h2>
-          <p class="section-subtitle-v4" style="color: white; opacity: 0.9;">Les 3 ressources prioritaires identifiées pour vous.</p>
+          <span class="label-v3">Selon votre dernier diagnostic</span>
+          <h2 class="section-title-standard">À commencer par là</h2>
+          <p class="section-subtitle-v4">Les 3 ressources prioritaires identifiées pour vous.</p>
         </header>
         <div id="recommendedGrid" class="rec-v4-grid">
           <!-- Filled by JS -->
@@ -83,7 +83,9 @@ const getResourcesByPillar = (pillarId: string) =>
         <div class="pillar-nav-grid">
           {pillars.map(pillar => (
             <a href={`#${pillar.id}`} class="pillar-nav-card card-v3">
-              <div class="pillar-nav-icon">{pillar.icon}</div>
+              <div class={`pillar-nav-icon pillar-mark ${pillar.id}`} aria-hidden="true">
+                <span>{pillar.marker}</span>
+              </div>
               <div class="pillar-nav-info">
                 <h3>{pillar.label}</h3>
                 <p>{pillar.description}</p>
@@ -124,7 +126,9 @@ const getResourcesByPillar = (pillarId: string) =>
       <section class="section-v3" id={pillar.id} style="padding-top: 4rem;">
         <div class="container">
           <header class="pillar-header">
-            <div class="pillar-icon-box">{pillar.icon}</div>
+            <div class={`pillar-icon-box pillar-mark ${pillar.id}`} aria-hidden="true">
+              <span>{pillar.marker}</span>
+            </div>
             <div class="pillar-info">
               <span class="label-v3">Pilier {pillar.label}</span>
               <h2 class="pillar-title">{pillar.label}</h2>
@@ -227,7 +231,7 @@ const getResourcesByPillar = (pillarId: string) =>
         document.getElementById('personalizedResources').classList.remove('hidden');
         document.getElementById('recommendedGrid').innerHTML = recs.map(res => `
            <a href="/ressources/${res.slug}" class="rec-lux-card-v4">
-                <div class="rec-bolt">⚡</div>
+                <div class="rec-mark" aria-hidden="true"><span></span></div>
                 <div class="rec-content">
                   <h3 class="rec-title-v4">${res.title}</h3>
                   <p class="rec-promise-v4">${res.promise}</p>
@@ -244,7 +248,7 @@ const getResourcesByPillar = (pillarId: string) =>
         document.getElementById('pathTitle').innerText = recPath.title;
         document.getElementById('pathPromise').innerText = recPath.promise;
         document.getElementById('pathPrioritiesList').innerHTML = recPath.priorities.map(p => `
-          <li><span class="check-icon-small">✓</span> ${p}</li>
+          <li><span class="check-icon-small" aria-hidden="true"></span> ${p}</li>
         `).join('');
         
         const pathResources = recPath.resourceIds.map(id => maryanResources.find(r => r.id === id)).filter(Boolean);
@@ -388,36 +392,96 @@ const getResourcesByPillar = (pillarId: string) =>
   /* ─── SECTION HEADERS ─── */
   .section-header-v4 { text-align: left; margin-bottom: 3rem; }
   .section-title-standard { font-size: 2.2rem; font-weight: 800; margin: 0.5rem 0; letter-spacing: -0.02em; }
-  .section-subtitle-v4 { opacity: 0.8; font-size: 1.1rem; }
+  .section-subtitle-v4 { opacity: 0.8; font-size: 1.1rem; color: #54636C; }
 
-  /* ─── REC CARDS V4 (DARK) ─── */
+  .recommended-section {
+    padding: 6rem 0;
+    background: linear-gradient(180deg, #f8f9fa 0%, #eef3f8 100%);
+  }
+
+  .recommended-section .section-title-standard,
+  .recommended-section .section-subtitle-v4,
+  .recommended-section .label-v3 {
+    color: var(--deep);
+  }
+
+  /* ─── REC CARDS V4 ─── */
   .rec-v4-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
   .rec-lux-card-v4 { 
     display: flex; gap: 2rem; align-items: center; 
-    padding: 2.5rem; background: rgba(255,255,255,0.03); 
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
-    text-decoration: none; color: white; transition: all 0.3s;
+    padding: 2.2rem; background: rgba(255,255,255,0.92); 
+    border: 1px solid rgba(10,25,47,0.08); border-radius: 24px;
+    text-decoration: none; color: var(--deep); transition: all 0.3s;
+    box-shadow: 0 16px 34px rgba(10, 25, 47, 0.05);
   }
-  .rec-lux-card-v4:hover { background: rgba(255,255,255,0.07); border-color: var(--neon); transform: translateX(10px); }
-  .rec-bolt { font-size: 1.5rem; color: var(--neon); }
+  .rec-lux-card-v4:hover { background: white; border-color: rgba(10,25,47,0.18); transform: translateY(-4px); }
+  .rec-mark {
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 0.95rem;
+    border: 1px solid rgba(10,25,47,0.1);
+    background: rgba(10,25,47,0.03);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .rec-mark span {
+    display: block;
+    width: 0.95rem;
+    height: 0.14rem;
+    border-radius: 99px;
+    background: var(--accent-red);
+    box-shadow: 0 -0.38rem 0 0 rgba(10,25,47,0.2), 0 0.38rem 0 0 var(--neon);
+  }
   .rec-content { flex: 1; }
-  .rec-title-v4 { font-size: 1.4rem; font-weight: 800; color: white; margin-bottom: 0.5rem; }
-  .rec-promise-v4 { font-size: 1rem; color: white; opacity: 0.9; line-height: 1.4; }
-  .rec-arrow { font-size: 1.5rem; opacity: 0.3; transition: all 0.3s; }
-  .rec-lux-card-v4:hover .rec-arrow { opacity: 1; color: var(--neon); }
+  .rec-title-v4 { font-size: 1.32rem; font-weight: 800; color: var(--deep); margin-bottom: 0.45rem; }
+  .rec-promise-v4 { font-size: 1rem; color: #54636C; line-height: 1.45; }
+  .rec-arrow { font-size: 1.35rem; opacity: 0.34; color: var(--deep); transition: all 0.3s; }
+  .rec-lux-card-v4:hover .rec-arrow { opacity: 1; color: var(--accent-red); }
 
   /* ─── PILLAR NAV ─── */
   .pillar-nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-  .pillar-nav-card { text-decoration: none; padding: 2rem; background: white; border: 1px solid var(--border); border-radius: 24px; transition: all 0.3s; display: flex; gap: 1.5rem; align-items: flex-start; }
+  .pillar-nav-card { text-decoration: none; padding: 2rem; background: white; border: 1px solid var(--border); border-radius: 24px; transition: all 0.3s; display: flex; gap: 1.2rem; align-items: flex-start; }
   .pillar-nav-card:hover { transform: translateY(-5px); border-color: var(--neon); }
-  .pillar-nav-icon { font-size: 1.5rem; background: var(--bg); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pillar-nav-icon { width: 48px; height: 48px; flex-shrink: 0; }
   .pillar-nav-info h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
   .pillar-nav-info p { font-size: 0.85rem; opacity: 0.6; line-height: 1.4; }
 
   /* ─── PILLAR CONTENT ─── */
   .pillar-header { display: flex; gap: 1.5rem; align-items: center; margin-bottom: 3rem; }
-  .pillar-icon-box { width: 48px; height: 48px; background: white; border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+  .pillar-icon-box { width: 48px; height: 48px; }
   .pillar-title { font-size: 1.8rem; margin: 0; }
+
+  .pillar-mark {
+    background: #fff;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.04);
+  }
+
+  .pillar-mark span {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--deep);
+  }
+
+  .pillar-mark.agir {
+    border-color: rgba(173, 255, 47, 0.45);
+  }
+
+  .pillar-mark.comprendre {
+    border-color: rgba(10, 25, 47, 0.18);
+  }
+
+  .pillar-mark.se_situer,
+  .pillar-mark.se_proteger {
+    border-color: rgba(230, 57, 70, 0.16);
+  }
 
   /* ─── SITUATIONS GRID ─── */
   .sit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
@@ -456,7 +520,17 @@ const getResourcesByPillar = (pillarId: string) =>
   .modal-sub { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--red); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
   .modal-list { list-style: none; padding: 0; margin-bottom: 3rem; }
   .modal-list li { position: relative; padding-left: 1.5rem; font-size: 1rem; font-weight: 600; margin-bottom: 0.8rem; }
-  .modal-list li::before { content: "✓"; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
+  .modal-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65rem;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: var(--neon);
+    transform: translateY(-50%);
+  }
   
   .modal-res-grid { display: flex; flex-direction: column; gap: 0.8rem; }
   .modal-res-link { 
@@ -484,7 +558,15 @@ const getResourcesByPillar = (pillarId: string) =>
   .path-priorities-box h3, .path-resources-box h3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
   .res-check-list-small { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; }
   .res-check-list-small li { display: flex; gap: 0.8rem; align-items: center; font-size: 1.1rem; font-weight: 600; color: #fff; }
-  .check-icon-small { color: var(--neon); font-weight: 900; }
+  .check-icon-small {
+    width: 0.48rem;
+    height: 0.48rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: var(--neon);
+    display: inline-block;
+    margin-top: 0.08rem;
+  }
 
   .path-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .path-mini-card { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 16px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; }
