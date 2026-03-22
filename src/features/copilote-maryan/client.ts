@@ -6,7 +6,6 @@ import {
   type MaryanMode,
   type MaryanProfile
 } from './config';
-import { generateDemoReply } from './demo-replies';
 
 type HistoryMessage = {
   role: 'user' | 'assistant';
@@ -29,21 +28,17 @@ function initCopilot(rootElement: HTMLElement) {
   const endpoint = rootElement.dataset.endpoint?.trim() || '';
 
   const messages = rootElement.querySelector<HTMLElement>('[data-messages]')!;
-  const welcomeTime = rootElement.querySelector<HTMLElement>('[data-welcome-time]')!;
   const input = rootElement.querySelector<HTMLTextAreaElement>('[data-user-input]')!;
   const sendBtn = rootElement.querySelector<HTMLButtonElement>('[data-send-btn]')!;
-  const inputHint = rootElement.querySelector<HTMLElement>('[data-input-hint]')!;
-  const counter = rootElement.querySelector<HTMLElement>('[data-msg-counter]')!;
-  const counterText = rootElement.querySelector<HTMLElement>('[data-counter-text]')!;
-  const counterDots = rootElement.querySelector<HTMLElement>('[data-counter-dots]')!;
-  const profileBlock = rootElement.querySelector<HTMLElement>('[data-profile-block]')!;
-  const profileFilled = rootElement.querySelector<HTMLElement>('[data-profile-filled]')!;
-  const profileEmpty = rootElement.querySelector<HTMLElement>('[data-profile-empty]')!;
-  const profileName = rootElement.querySelector<HTMLElement>('[data-profile-name]')!;
-  const profileSummary = rootElement.querySelector<HTMLElement>('[data-profile-summary]')!;
-  const profileTags = rootElement.querySelector<HTMLElement>('[data-profile-tags]')!;
-  const modeButtons = Array.from(rootElement.querySelectorAll<HTMLButtonElement>('[data-mode]'));
-  const suggestionButtons = Array.from(rootElement.querySelectorAll<HTMLButtonElement>('[data-suggestion]'));
+  const inputHint = rootElement.querySelector<HTMLElement>('#inputHint')!;
+  const headerCounter = document.getElementById('headerCounter');
+
+  // Drawer Elements
+  const profileFilled = document.getElementById('drawerProfileFilled');
+  const profileEmpty = document.getElementById('drawerProfileEmpty');
+  const profileName = document.getElementById('drawerProfileName');
+  const profileSummary = document.getElementById('drawerProfileSummary');
+  const profileTags = document.getElementById('drawerProfileTags');
 
   const state = {
     mode: 'libre' as MaryanMode,
@@ -56,26 +51,9 @@ function initCopilot(rootElement: HTMLElement) {
     userProfile: loadProfile()
   };
 
-  welcomeTime.textContent = formatTime(new Date());
   renderCounter();
   renderProfile();
-  syncModeUi();
   syncInputUi();
-
-  modeButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      setMode((button.dataset.mode as MaryanMode) || 'libre');
-    });
-  });
-
-  suggestionButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      input.value = button.textContent?.trim() || '';
-      autoResize(input);
-      syncInputUi();
-      input.focus();
-    });
-  });
 
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -85,7 +63,6 @@ function initCopilot(rootElement: HTMLElement) {
   });
 
   input.addEventListener('input', () => {
-    autoResize(input);
     syncInputUi();
   });
 
@@ -102,103 +79,62 @@ function initCopilot(rootElement: HTMLElement) {
     }
   }
 
-  function setMode(mode: MaryanMode) {
-    state.mode = mode;
-    syncModeUi();
-    syncInputUi();
-
-    if (mode === 'profil' && !state.userProfile) {
-      showProfileRequiredNotice();
-    }
-  }
-
-  function syncModeUi() {
-    modeButtons.forEach((button) => {
-      button.classList.toggle('active', button.dataset.mode === state.mode);
-    });
-
-    counter.classList.toggle('hidden', state.mode !== 'libre');
-    profileBlock.classList.toggle('hidden', state.mode === 'libre');
-  }
-
   function renderProfile() {
-    if (!state.userProfile) {
-      profileFilled.classList.add('hidden');
-      profileEmpty.classList.remove('hidden');
-      return;
-    }
+    if (!state.userProfile || !profileFilled || !profileEmpty) return;
 
     profileFilled.classList.remove('hidden');
     profileEmpty.classList.add('hidden');
-    profileName.textContent = state.userProfile.title;
-    profileSummary.textContent = state.userProfile.summary;
-    profileTags.innerHTML = state.userProfile.tags
-      .map((tag) => `<span class="profile-tag">${escapeHtml(tag)}</span>`)
-      .join('');
+    if(profileName) profileName.textContent = state.userProfile.title;
+    if(profileSummary) profileSummary.textContent = state.userProfile.summary;
+    if(profileTags) {
+        profileTags.innerHTML = state.userProfile.tags
+        .map((tag) => `<span class="profile-tag">${escapeHtml(tag)}</span>`)
+        .join('');
+    }
   }
 
   function renderCounter() {
     const remaining = Math.max(0, FREE_LIMIT - state.msgCount);
-    counterText.textContent =
-      state.msgCount === 0 ? `${FREE_LIMIT} messages disponibles` : `${remaining} message${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`;
-
-    counterDots.innerHTML = '';
-    for (let index = 0; index < FREE_LIMIT; index += 1) {
-      const dot = document.createElement('span');
-      dot.className = `counter-dot${index < state.msgCount ? ' used' : ''}`;
-      counterDots.appendChild(dot);
+    if (headerCounter) {
+        headerCounter.textContent = `${remaining}/${FREE_LIMIT}`;
     }
   }
 
   function syncInputUi() {
-    const profileLocked = state.mode === 'profil' && !state.userProfile;
     const hasText = input.value.trim().length > 0;
 
-    input.disabled = state.isBusy || state.isBlocked || profileLocked;
-    sendBtn.disabled = state.isBusy || state.isBlocked || profileLocked || !hasText;
+    input.disabled = state.isBusy || state.isBlocked;
+    sendBtn.disabled = state.isBusy || state.isBlocked || !hasText;
 
     if (state.isBlocked) {
-      input.placeholder = 'Passez à MARYAN Plus pour continuer…';
+      input.placeholder = 'MARYAN Plus requis…';
       inputHint.textContent = 'Version libre terminée · découvrez MARYAN Plus';
       return;
     }
 
-    if (profileLocked) {
-      input.placeholder = 'Faites d’abord le diagnostic pour activer Mon profil.';
-      inputHint.textContent = 'Version Mon profil · diagnostic requis';
-      return;
-    }
-
-    input.placeholder = 'Posez votre question…';
-    inputHint.textContent =
-      state.mode === 'libre'
-        ? `Version libre · ${Math.max(0, FREE_LIMIT - state.msgCount)} message${Math.max(0, FREE_LIMIT - state.msgCount) > 1 ? 's' : ''} restant${Math.max(0, FREE_LIMIT - state.msgCount) > 1 ? 's' : ''}`
-        : 'Version Mon profil · réponses adaptées à votre situation';
+    inputHint.textContent = state.userProfile 
+        ? `Mode Personnalisé · ${state.userProfile.title}`
+        : `Mode Libre · ${Math.max(0, FREE_LIMIT - state.msgCount)} messages restants`;
   }
 
   async function sendMessage() {
     const text = input.value.trim();
 
-    if (!text || state.isBusy) {
-      return;
-    }
+    if (!text || state.isBusy) return;
 
-    if (state.mode === 'profil' && !state.userProfile) {
-      showProfileRequiredNotice();
-      return;
-    }
-
-    if (state.mode === 'libre' && state.msgCount >= FREE_LIMIT) {
+    if (state.msgCount >= FREE_LIMIT && !state.userProfile?.plan?.includes("Plus")) {
       showPaywall();
       return;
     }
 
     input.value = '';
-    autoResize(input);
+    // Auto-reset height
+    input.style.height = 'auto';
+    
     addMessage('user', escapeHtml(text), false);
     state.history.push({ role: 'user', content: text });
 
-    if (state.mode === 'libre') {
+    if (!state.userProfile?.plan?.includes("Plus")) {
       state.msgCount += 1;
       renderCounter();
     }
@@ -210,7 +146,7 @@ function initCopilot(rootElement: HTMLElement) {
     try {
       const reply = await getAssistantReply({
         endpoint,
-        profile: state.userProfile, // Toujours envoyer si dispo pour démontrer la force de Maryan
+        profile: state.userProfile,
         history: state.history,
         message: text
       });
@@ -219,19 +155,12 @@ function initCopilot(rootElement: HTMLElement) {
       addMessage('assistant', reply.html, true);
       state.history.push({ role: 'assistant', content: reply.plainText });
 
-      if (state.mode === 'libre' && state.msgCount >= FREE_LIMIT) {
+      if (state.msgCount >= FREE_LIMIT && !state.userProfile?.plan?.includes("Plus")) {
         showPaywall();
       }
     } catch (error) {
       removeTyping(typing);
-      const fallbackMessage =
-        'Je rencontre un souci technique. Vous pouvez réessayer dans quelques instants.';
-      const errorMessage = error instanceof Error && error.message ? error.message : fallbackMessage;
-      addMessage(
-        'assistant',
-        escapeHtml(errorMessage),
-        false
-      );
+      addMessage('assistant', 'Souci technique. Réessayez dans un instant.', false);
     } finally {
       state.isBusy = false;
       syncInputUi();
@@ -258,28 +187,23 @@ function initCopilot(rootElement: HTMLElement) {
       bubble.innerHTML = `<p>${content}</p>`;
     }
 
-    const time = document.createElement('span');
-    time.className = 'msg-time';
-    time.textContent = formatTime(new Date());
-
     wrapper.appendChild(bubble);
-    wrapper.appendChild(time);
     messages.appendChild(wrapper);
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
   }
 
   function addTyping(): HTMLElement {
     const wrapper = document.createElement('div');
-    wrapper.className = 'msg assistant typing-indicator';
+    wrapper.className = 'msg assistant';
     wrapper.innerHTML = `
-      <div class="typing-bubble">
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
+      <div class="msg-bubble typing-indicator">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
       </div>
     `;
     messages.appendChild(wrapper);
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
     return wrapper;
   }
 
@@ -287,34 +211,21 @@ function initCopilot(rootElement: HTMLElement) {
     element.remove();
   }
 
-  function showProfileRequiredNotice() {
-    if (state.profileNoticeShown) {
-      return;
-    }
-
-    state.profileNoticeShown = true;
-    addMessage('assistant', PROFILE_REQUIRED_HTML, true);
-  }
-
   function showPaywall() {
-    if (state.paywallShown) {
-      return;
-    }
-
     state.isBlocked = true;
     state.paywallShown = true;
 
     const wrapper = document.createElement('div');
-    wrapper.className = 'msg paywall-msg';
+    wrapper.className = 'msg assistant';
     wrapper.innerHTML = `
-      <div class="paywall-bubble">
-        <p>${PAYWALL_HTML}</p>
-        <a class="paywall-cta" href="${upgradeUrl}">Découvrir MARYAN Plus</a>
+      <div class="msg-bubble" style="background: var(--deep) !important; color: white !important; border: none;">
+        <p><strong>Limite atteinte.</strong> Votre session libre est terminée. Pour continuer à profiter de l'expertise de MARYAN sans limite, découvrez nos offres.</p>
+        <a href="${upgradeUrl}" class="btn-primary-v3" style="display:block; margin-top:1rem; text-align:center; background:var(--neon); color:var(--deep);">Voir les offres</a>
       </div>
     `;
 
     messages.appendChild(wrapper);
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
     syncInputUi();
   }
 }
@@ -330,60 +241,32 @@ async function getAssistantReply({
   history: HistoryMessage[];
   message: string;
 }): Promise<AssistantReply> {
-  if (endpoint) {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        profile,
-        messages: history,
-        message, // Ajout du message actuel
-        mode: profile ? (profile as any).situation || (profile as any).key : null // On tente de récupérer le mode
-      })
-    });
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      profile,
+      messages: history,
+      message
+    })
+  });
 
-    const data = (await response.json().catch(() => ({}))) as { reply?: string; error?: string };
+  const data = (await response.json().catch(() => ({}))) as { reply?: string; error?: string };
 
-    if (!response.ok) {
-      throw new Error(data.error || 'Le copilote n’a pas pu répondre pour le moment.');
-    }
-
-    const reply = data.reply || 'Je n’ai pas pu générer de réponse.';
-    return {
-      html: formatAssistantReply(reply),
-      plainText: reply
-    };
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur API Mistral.');
   }
 
-  const html = generateDemoReply({ message, profile });
+  const reply = data.reply || '...';
   return {
-    html,
-    plainText: stripHtml(html)
+    html: formatAssistantReply(reply),
+    plainText: reply
   };
 }
 
 function formatAssistantReply(text: string): string {
-  const escaped = escapeHtml(text);
-  const blocks = escaped
-    .split(/\n{2,}/)
-    .map((block) => block.trim())
-    .filter(Boolean)
-    .map((block) => {
-      const lines = block.split('\n').map((line) => line.trim());
-      const isList = lines.every((line) => line.startsWith('- '));
-
-      if (isList) {
-        return `<ul>${lines.map((line) => `<li>${line.slice(2)}</li>`).join('')}</ul>`;
-      }
-
-      return `<p>${block.replace(/\n/g, '<br />')}</p>`;
-    });
-
-  return blocks.join('');
-}
-
-function stripHtml(value: string): string {
-  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const escaped = escapeHtml(text).replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br />');
+  return `<p>${escaped}</p>`;
 }
 
 function escapeHtml(value: string): string {
@@ -393,13 +276,4 @@ function escapeHtml(value: string): string {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-}
-
-function autoResize(element: HTMLTextAreaElement) {
-  element.style.height = 'auto';
-  element.style.height = `${Math.min(element.scrollHeight, 140)}px`;
-}
-
-function formatTime(date: Date): string {
-  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 }
