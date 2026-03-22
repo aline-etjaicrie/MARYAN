@@ -73,12 +73,12 @@ import InternalHeader from '../components/InternalHeader.astro';
     </section>
 
     <!-- OFFRE INDIVIDUELLE : AVANCER -->
-    <section class="section-v3 bg-deep text-white">
+    <section class="section-v3 plan-section-v4">
       <div class="container">
         <div class="plan-hero-v3">
            <div class="plan-header-v3">
               <span class="card-kicker text-red">Offre Individuelle</span>
-              <h2 class="text-white">AVANCER</h2>
+              <h2>AVANCER</h2>
               <p class="intro-v3 opacity-70">Pour ne plus rester seul·e face aux décisions.</p>
               <div class="plan-price-v3">
                  <span class="amount">29€</span><span class="period">/mois</span>
@@ -227,10 +227,10 @@ import InternalHeader from '../components/InternalHeader.astro';
     </section>
 
     <!-- POURQUOI PAS CHATGPT -->
-    <section class="section-v3 bg-deep text-white">
+    <section class="section-v3 diff-section-v4">
        <div class="container-narrow text-center">
-          <span class="label-v3 text-neon">La différence</span>
-          <h2>Pourquoi pas juste <span class="emphasis text-neon">ChatGPT ?</span></h2>
+          <span class="label-v3">La différence</span>
+          <h2>Pourquoi pas juste <span class="emphasis">ChatGPT ?</span></h2>
           <div class="diff-grid-v3">
              <div class="diff-item">
                 <p>Ici, vous n’avez pas à expliquer le fonctionnement des collectivités.</p>
@@ -318,6 +318,11 @@ import InternalHeader from '../components/InternalHeader.astro';
 
   .offres-v3 .section-v3:not(.bg-deep) :where(p, li) {
     color: #54636c;
+  }
+
+  .plan-section-v4,
+  .diff-section-v4 {
+    background: linear-gradient(180deg, #fbf8f2 0%, #fffdfa 100%);
   }
 
   .bg-ivory {
@@ -518,11 +523,11 @@ import InternalHeader from '../components/InternalHeader.astro';
     display: grid;
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
     gap: 2rem;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, #ffffff 0%, #f8f3eb 100%);
+    border: 1px solid rgba(10, 25, 47, 0.08);
     border-radius: 2rem;
     padding: 2.2rem;
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 24px 50px rgba(10, 25, 47, 0.06);
   }
 
   .plan-header-v3 {
@@ -534,10 +539,11 @@ import InternalHeader from '../components/InternalHeader.astro';
     margin: 0.8rem 0 0.7rem;
     font-size: clamp(2.5rem, 5vw, 4rem);
     line-height: 0.98;
+    color: var(--deep);
   }
 
   .plan-header-v3 .intro-v3 {
-    color: rgba(255, 255, 255, 0.86);
+    color: #54636c;
     font-size: 1.12rem;
   }
 
@@ -551,26 +557,26 @@ import InternalHeader from '../components/InternalHeader.astro';
   .plan-price-v3 .amount {
     font-size: clamp(3rem, 5vw, 4.8rem);
     font-weight: 800;
-    color: var(--neon);
+    color: var(--deep);
     line-height: 0.95;
   }
 
   .plan-price-v3 .period {
     font-size: 1.15rem;
-    color: rgba(255, 255, 255, 0.68);
+    color: rgba(10, 25, 47, 0.58);
   }
 
   .plan-summary-v3 {
     margin: 0;
     max-width: 28rem;
-    color: rgba(255, 255, 255, 0.78);
+    color: #54636c;
     line-height: 1.6;
     font-size: 0.98rem;
   }
 
   .plan-features-v3 {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 25, 47, 0.03);
+    border: 1px solid rgba(10, 25, 47, 0.08);
     border-radius: 1.6rem;
     padding: 1.6rem;
   }
@@ -581,7 +587,7 @@ import InternalHeader from '../components/InternalHeader.astro';
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--neon);
+    color: rgba(10, 25, 47, 0.62);
   }
 
   .v3-list-check-neon {
@@ -596,7 +602,7 @@ import InternalHeader from '../components/InternalHeader.astro';
   .v3-list-check-neon li {
     position: relative;
     padding-left: 1.55rem;
-    color: white;
+    color: var(--deep);
     line-height: 1.5;
   }
 
@@ -608,13 +614,13 @@ import InternalHeader from '../components/InternalHeader.astro';
     width: 0.45rem;
     height: 0.45rem;
     border-radius: 999px;
-    background: var(--neon);
+    background: var(--accent-red);
     transform: translateY(-50%);
   }
 
   .plan-footer-text {
     margin: 0 0 1.6rem;
-    color: rgba(255, 255, 255, 0.72);
+    color: #54636c;
     font-size: 0.94rem;
     line-height: 1.55;
   }
@@ -824,22 +830,23 @@ import InternalHeader from '../components/InternalHeader.astro';
   }
 
   .diff-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: white;
     padding: 1.7rem 1.45rem;
     border-radius: 1.4rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    box-shadow: 0 12px 26px rgba(10, 25, 47, 0.03);
   }
 
   .diff-item p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--deep);
     line-height: 1.55;
   }
 
   .diff-footnote-v4 {
     margin: 0 auto 1rem;
     max-width: 38rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: #54636c;
     line-height: 1.6;
   }
 
@@ -848,7 +855,7 @@ import InternalHeader from '../components/InternalHeader.astro';
     margin: 0 auto;
     font-size: 1.35rem;
     line-height: 1.45;
-    color: white;
+    color: var(--deep);
     font-family: var(--font-accent);
     font-style: italic;
   }

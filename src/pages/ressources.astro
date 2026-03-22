@@ -90,7 +90,7 @@ const copilotSuggestions = [
         <div id="priorityGrid" class="priority-grid"></div>
 
         <div id="prioritySituationBlock" class="priority-situation-block hidden">
-          <p class="priority-situation-label">Situations proches de votre réalité actuelle</p>
+          <a href="#situationsSection" class="priority-situation-cta">Situations proches de votre réalité actuelle</a>
           <div id="prioritySituationGrid" class="priority-situation-grid"></div>
         </div>
       </div>
@@ -217,7 +217,7 @@ const copilotSuggestions = [
       </div>
     </section>
 
-    <section class="section-v3 situations-section">
+    <section id="situationsSection" class="section-v3 situations-section">
       <div class="container">
         <header class="section-header-v4">
           <span class="label-v3">Cas concrets</span>
@@ -777,19 +777,18 @@ const copilotSuggestions = [
         .filter(Boolean);
 
       return `
-        <a href="/ressources/${resource.slug}" class="res-lux-card card-v3" data-resource-link data-slug="${resource.slug}">
-          <div class="card-inner">
-            <header class="card-top">
-              <span class="card-kicker-line">${prettyPillar} · ${prettyFormat}</span>
-            </header>
-            <h3 class="card-title">${resource.title}</h3>
-            <p class="card-promise">${resource.promise}</p>
-            <footer class="card-meta">
-              <div class="card-tags">
-                ${tagList.map((tag) => `<span class="role-mini">${tag}</span>`).join('')}
-              </div>
-              <div class="arrow-circle">↗</div>
-            </footer>
+        <a href="/ressources/${resource.slug}" class="res-lux-card" data-resource-link data-slug="${resource.slug}">
+          <div class="res-card-content">
+            <span class="res-card-kicker">${prettyPillar} · ${prettyFormat}</span>
+            <h3 class="res-card-title">${resource.title}</h3>
+            <p class="res-card-promise">${resource.promise}</p>
+            <div class="res-card-tags">
+              ${tagList.map((tag) => `<span class="res-card-tag">${tag}</span>`).join('')}
+            </div>
+            <div class="res-card-footer">
+              <span class="res-card-link">Lire la fiche</span>
+              <span class="res-card-arrow">↗</span>
+            </div>
           </div>
         </a>
       `;
@@ -1150,13 +1149,32 @@ const copilotSuggestions = [
     margin-top: 1.55rem;
   }
 
-  .priority-situation-label {
-    margin: 0 0 0.9rem;
-    font-size: 0.76rem;
+  .priority-situation-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 1rem;
+    padding: 0.95rem 1.5rem;
+    border-radius: 999px;
+    background: var(--deep);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    font-size: 0.78rem;
     font-weight: 800;
-    letter-spacing: 0.11em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.58);
+    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.14);
+    transition: all 0.22s ease;
+  }
+
+  .priority-situation-cta:hover,
+  .priority-situation-cta:focus-visible {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+    transform: translateY(-2px);
+    outline: none;
   }
 
   .priority-situation-grid {
@@ -1620,7 +1638,6 @@ const copilotSuggestions = [
 
   .res-lux-card {
     text-decoration: none;
-    padding: 2rem 1.8rem;
     background: white;
     border: 1px solid var(--border);
     border-radius: 24px;
@@ -1628,19 +1645,29 @@ const copilotSuggestions = [
     height: 100%;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    padding: 2rem;
+    text-align: left;
+    color: var(--deep);
   }
 
-  .res-lux-card:hover {
+  .res-lux-card:hover,
+  .res-lux-card:focus-visible {
+    border-color: var(--neon);
     transform: translateY(-5px);
-    border-color: rgba(10, 25, 47, 0.16);
-    box-shadow: 0 18px 36px rgba(10, 25, 47, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    outline: none;
   }
 
-  .card-top {
+  .res-card-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .res-card-kicker {
+    display: inline-block;
     margin-bottom: 0.95rem;
-  }
-
-  .card-kicker-line {
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -1648,23 +1675,38 @@ const copilotSuggestions = [
     color: rgba(10, 25, 47, 0.46);
   }
 
-  .card-title {
-    font-size: 1.25rem;
-    color: var(--deep);
-    margin-bottom: 0.7rem;
-    line-height: 1.2;
+  .res-card-title {
+    font-size: 1.15rem;
     font-weight: 800;
-    letter-spacing: -0.02em;
+    color: var(--deep);
+    margin: 0 0 0.65rem;
+    line-height: 1.24;
   }
 
-  .card-promise {
-    font-size: 0.96rem;
-    line-height: 1.55;
+  .res-card-promise {
+    font-size: 0.95rem;
+    line-height: 1.5;
     color: #54636c;
-    margin-bottom: 1.35rem;
+    margin: 0 0 1.2rem;
   }
 
-  .card-meta {
+  .res-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: auto;
+    margin-bottom: 1rem;
+  }
+
+  .res-card-tag {
+    color: rgba(10, 25, 47, 0.68);
+    background: rgba(10, 25, 47, 0.04);
+    font-size: 0.74rem;
+    padding: 0.32rem 0.72rem;
+    border-radius: 999px;
+  }
+
+  .res-card-footer {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
@@ -1674,36 +1716,33 @@ const copilotSuggestions = [
     border-top: 1px solid var(--border);
   }
 
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
+  .res-card-link {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--deep);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
-  .role-mini {
-    color: rgba(10, 25, 47, 0.68);
-    background: rgba(10, 25, 47, 0.04);
-    text-transform: none;
-    letter-spacing: 0;
-    font-size: 0.74rem;
-    padding: 0.32rem 0.72rem;
-    border-radius: 999px;
-  }
-
-  .arrow-circle {
+  .res-card-arrow {
     width: 2rem;
     height: 2rem;
     border-radius: 999px;
     background: rgba(10, 25, 47, 0.05);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--deep);
-    font-weight: 900;
     transition: 0.3s;
   }
 
-  .res-lux-card:hover .arrow-circle {
+  .res-lux-card:hover .res-card-link,
+  .res-lux-card:focus-visible .res-card-link {
+    color: var(--red);
+  }
+
+  .res-lux-card:hover .res-card-arrow,
+  .res-lux-card:focus-visible .res-card-arrow {
     background: var(--red);
     color: white;
   }
@@ -2156,6 +2195,10 @@ const copilotSuggestions = [
 
     .subtle-support-actions .btn-secondary-v3,
     .copilot-chip {
+      width: 100%;
+    }
+
+    .priority-situation-cta {
       width: 100%;
     }
   }
