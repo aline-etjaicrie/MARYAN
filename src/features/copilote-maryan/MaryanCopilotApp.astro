@@ -226,12 +226,13 @@ import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
     .app-header {
       background: rgba(255,255,255,0.9);
       backdrop-filter: blur(20px);
-      padding: 3rem 1.5rem 1rem; /* Safe area for iOS */
+      padding: 3.5rem 1.5rem 1rem; /* Safe area for iOS */
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(0,0,0,0.05);
       z-index: 100;
+      flex-shrink: 0;
     }
     .header-center { text-align: center; }
     .app-title { display: block; font-weight: 800; font-size: 1rem; letter-spacing: 0.1em; color: var(--deep); }
@@ -244,12 +245,13 @@ import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
     /* THREAD */
     .chat-thread {
       flex: 1;
-      overflow-y: auto;
+      overflow-y: scroll; /* Force native scroll */
+      -webkit-overflow-scrolling: touch; /* iOS Momentum scroll */
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 5rem;
+      height: 100%;
+      padding-bottom: 7rem; /* Extra padding for sticky input */
     }
     .messages-container {
       display: flex;

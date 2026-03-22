@@ -28,6 +28,7 @@ function initCopilot(rootElement: HTMLElement) {
   const endpoint = rootElement.dataset.endpoint?.trim() || '';
 
   const messages = rootElement.querySelector<HTMLElement>('[data-messages]')!;
+  const chatThread = document.getElementById('chatThread')!;
   const input = rootElement.querySelector<HTMLTextAreaElement>('[data-user-input]')!;
   const sendBtn = rootElement.querySelector<HTMLButtonElement>('[data-send-btn]')!;
   const inputHint = rootElement.querySelector<HTMLElement>('#inputHint')!;
@@ -243,7 +244,7 @@ function initCopilot(rootElement: HTMLElement) {
 
     wrapper.appendChild(bubble);
     messages.appendChild(wrapper);
-    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    chatThread.scrollTo({ top: chatThread.scrollHeight, behavior: 'smooth' });
   }
 
   function addTyping(): HTMLElement {
@@ -257,7 +258,7 @@ function initCopilot(rootElement: HTMLElement) {
       </div>
     `;
     messages.appendChild(wrapper);
-    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    chatThread.scrollTo({ top: chatThread.scrollHeight, behavior: 'smooth' });
     return wrapper;
   }
 
@@ -279,7 +280,7 @@ function initCopilot(rootElement: HTMLElement) {
     `;
 
     messages.appendChild(wrapper);
-    messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    chatThread.scrollTo({ top: chatThread.scrollHeight, behavior: 'smooth' });
     syncInputUi();
   }
 }
