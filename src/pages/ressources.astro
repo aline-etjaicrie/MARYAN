@@ -443,6 +443,45 @@ const copilotSuggestions = [
       return maryanSituations.filter((item) => item.diagnosticProfiles.includes(profile)).slice(0, limit);
     }
 
+    function capitalizeFirst(value) {
+      if (!value) return '';
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    function describePriority(priority) {
+      const normalized = normalizeText(priority);
+
+      if (normalized.includes('dispersion')) {
+        return 'Remettre de l’ordre dans ce qui mérite vraiment votre attention, sans courir après tous les fronts à la fois.';
+      }
+
+      if (normalized.includes('recul')) {
+        return 'Ralentir juste assez pour relire les enjeux, avant de décider trop vite sous la pression.';
+      }
+
+      if (normalized.includes('priorit')) {
+        return 'Distinguer ce qui demande un vrai arbitrage, ce qui peut attendre, et ce qui n’a pas à peser autant.';
+      }
+
+      if (normalized.includes('repere') || normalized.includes('place')) {
+        return 'Retrouver un cadre simple pour mieux comprendre votre rôle, votre marge d’action et vos points d’appui.';
+      }
+
+      if (normalized.includes('parole')) {
+        return 'Clarifier ce qui doit être dit, à quel moment, et avec quel niveau d’exposition.';
+      }
+
+      if (normalized.includes('tension') || normalized.includes('conflit')) {
+        return 'Lire ce qui se joue vraiment avant de réagir, pour éviter d’aggraver une situation déjà sensible.';
+      }
+
+      if (normalized.includes('methode') || normalized.includes('cadre')) {
+        return 'Retrouver une méthode stable pour cadrer les sujets avant qu’ils ne deviennent trop diffus.';
+      }
+
+      return 'Un premier point d’appui pour avancer avec plus de clarté, sans vous disperser inutilement.';
+    }
+
     function renderPersonalizedContent() {
       if (!state.profile) {
         els.diagnosticHelper?.classList.remove('hidden');
@@ -460,14 +499,20 @@ const copilotSuggestions = [
       if (priorities.length) {
         els.prioritiesSection?.classList.remove('hidden');
         els.priorityGrid.innerHTML = priorities
-          .map(
-            (item, index) => `
+          .map((item, index) => {
+            const title = capitalizeFirst(item);
+            const description = describePriority(item);
+
+            return `
               <article class="priority-card">
-                <span class="priority-index">0${index + 1}</span>
-                <p>${item}</p>
+                <div class="priority-card-top">
+                  <span class="priority-index">Priorité ${String(index + 1).padStart(2, '0')}</span>
+                </div>
+                <h3 class="priority-title">${title}</h3>
+                <p class="priority-description">${description}</p>
               </article>
             `
-          )
+          })
           .join('');
       }
 
@@ -476,8 +521,10 @@ const copilotSuggestions = [
         els.prioritySituationGrid.innerHTML = recommendedSituations
           .map(
             (item) => `
-              <button type="button" class="priority-situation-pill" onclick="openSituation('${item.id}')">
-                ${item.title}
+              <button type="button" class="priority-situation-card" onclick="openSituation('${item.id}')">
+                <span class="priority-situation-kicker">Situation à relire</span>
+                <strong>${item.title}</strong>
+                <span class="priority-situation-action">Explorer ↗</span>
               </button>
             `
           )
@@ -486,13 +533,16 @@ const copilotSuggestions = [
 
       if (recommendedResources.length) {
         els.personalizedResources?.classList.remove('hidden');
+        const recommendationLabels = ['Commencer ici', 'À lire ensuite', 'À garder sous la main'];
         els.recommendedGrid.innerHTML = recommendedResources
           .map(
             (resource, index) => `
               <a href="/ressources/${resource.slug}" class="rec-lux-card-v4" data-resource-link data-slug="${resource.slug}">
                 <div class="rec-card-top">
-                  <span class="rec-index">0${index + 1}</span>
-                  <span class="rec-chip">Pour vous</span>
+                  <div class="rec-card-topline">
+                    <span class="rec-step">${recommendationLabels[index] || `Sélection ${index + 1}`}</span>
+                    <span class="rec-meta">${formatLabels[resource.format] || resource.format} · ${pillarLabels[resource.pillar] || resource.pillar}</span>
+                  </div>
                 </div>
                 <div class="rec-content">
                   <h3 class="rec-title-v4">${resource.title}</h3>
@@ -963,40 +1013,73 @@ const copilotSuggestions = [
   .priority-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.1rem;
+    gap: 1.25rem;
   }
 
   .priority-card {
-    padding: 1.5rem 1.35rem;
-    border-radius: 1.5rem;
-    background: white;
+    position: relative;
+    overflow: hidden;
+    padding: 1.75rem;
+    border-radius: 1.55rem;
+    background: #fff;
     border: 1px solid var(--border);
     box-shadow: 0 14px 34px rgba(10, 25, 47, 0.04);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .priority-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(230, 57, 70, 0.92) 0%, rgba(173, 255, 47, 0.8) 100%);
+  }
+
+  .priority-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .priority-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(10, 25, 47, 0.16);
+    box-shadow: 0 18px 38px rgba(10, 25, 47, 0.06);
   }
 
   .priority-index {
     display: inline-block;
-    margin-bottom: 1rem;
-    font-size: 0.78rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    color: rgba(10, 25, 47, 0.44);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.48);
   }
 
-  .priority-card p {
-    margin: 0;
+  .priority-title {
+    margin: 0 0 0.7rem;
     color: var(--deep);
-    font-size: 1rem;
-    line-height: 1.5;
-    font-weight: 700;
+    font-size: 1.22rem;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .priority-description {
+    margin: 0;
+    color: #54636c;
+    font-size: 0.96rem;
+    line-height: 1.55;
   }
 
   .priority-situation-block {
-    margin-top: 1.3rem;
+    margin-top: 1.55rem;
   }
 
   .priority-situation-label {
-    margin: 0 0 0.8rem;
+    margin: 0 0 0.9rem;
     font-size: 0.76rem;
     font-weight: 800;
     letter-spacing: 0.11em;
@@ -1005,26 +1088,52 @@ const copilotSuggestions = [
   }
 
   .priority-situation-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
   }
 
-  .priority-situation-pill {
-    border: 1px solid rgba(10, 25, 47, 0.1);
-    background: rgba(255, 255, 255, 0.92);
+  .priority-situation-card {
+    display: grid;
+    gap: 0.45rem;
+    text-align: left;
+    padding: 1.2rem 1.25rem;
+    border: 1px solid var(--border);
+    background: #fff;
     color: var(--deep);
-    border-radius: 999px;
-    padding: 0.7rem 1rem;
+    border-radius: 1.35rem;
     font: inherit;
-    font-weight: 700;
     cursor: pointer;
+    transition: all 0.22s ease;
   }
 
-  .priority-situation-pill:hover,
-  .priority-situation-pill:focus-visible {
-    border-color: rgba(10, 25, 47, 0.22);
+  .priority-situation-card:hover,
+  .priority-situation-card:focus-visible {
+    border-color: rgba(10, 25, 47, 0.16);
+    transform: translateY(-2px);
     outline: none;
+  }
+
+  .priority-situation-kicker {
+    font-size: 0.66rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.48);
+  }
+
+  .priority-situation-card strong {
+    font-size: 1rem;
+    line-height: 1.3;
+    color: var(--deep);
+  }
+
+  .priority-situation-action {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
   }
 
   .recommended-section {
@@ -1073,32 +1182,28 @@ const copilotSuggestions = [
   }
 
   .rec-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.9rem;
+    display: block;
   }
 
-  .rec-index {
-    font-size: 0.84rem;
+  .rec-card-topline {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .rec-step {
+    font-size: 0.72rem;
     font-weight: 900;
     letter-spacing: 0.12em;
-    color: rgba(10, 25, 47, 0.42);
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.52);
   }
 
-  .rec-chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.34rem 0.72rem;
-    border-radius: 999px;
-    background: rgba(10, 25, 47, 0.05);
-    border: 1px solid rgba(10, 25, 47, 0.08);
+  .rec-meta {
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--deep);
+    color: rgba(10, 25, 47, 0.46);
   }
 
   .rec-content {
@@ -1371,26 +1476,26 @@ const copilotSuggestions = [
 
   .res-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.3rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
   }
 
   .res-lux-card {
     text-decoration: none;
-    padding: 1.7rem;
+    padding: 2.5rem;
     background: white;
     border: 1px solid var(--border);
-    border-radius: 24px;
-    transition: all 0.28s ease;
+    border-radius: 28px;
+    transition: all 0.4s;
     height: 100%;
     display: flex;
     flex-direction: column;
   }
 
   .res-lux-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(10, 25, 47, 0.18);
-    box-shadow: 0 18px 38px rgba(10, 25, 47, 0.06);
+    transform: translateY(-8px);
+    border-color: var(--red);
+    box-shadow: 0 20px 40px rgba(10, 25, 47, 0.05);
   }
 
   .card-top {
@@ -1514,27 +1619,27 @@ const copilotSuggestions = [
 
   .sit-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.3rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 
   .sit-card {
     background: white;
     border: 1px solid var(--border);
     border-radius: 24px;
-    padding: 1.7rem;
+    padding: 2rem;
     text-align: left;
     cursor: pointer;
-    transition: all 0.28s ease;
+    transition: all 0.3s;
     display: flex;
     flex-direction: column;
     width: 100%;
   }
 
   .sit-card:hover {
-    border-color: rgba(10, 25, 47, 0.16);
-    transform: translateY(-4px);
-    box-shadow: 0 18px 38px rgba(10, 25, 47, 0.06);
+    border-color: var(--neon);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   }
 
   .sit-title {
@@ -1843,7 +1948,6 @@ const copilotSuggestions = [
     }
 
     .priority-grid,
-    .rec-v4-grid,
     .res-grid,
     .sit-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1885,6 +1989,10 @@ const copilotSuggestions = [
       padding: 2rem;
       border-radius: 20px;
       width: 95%;
+    }
+
+    .priority-situation-grid {
+      grid-template-columns: 1fr;
     }
 
     .modal-title {
