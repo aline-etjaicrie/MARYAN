@@ -21,7 +21,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
     }
 
     .msg.user {
@@ -52,11 +52,11 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     .msg-bubble {
       width: 100%;
       border-radius: 1.35rem;
-      padding: 1rem 1rem 0.95rem;
+      padding: 0.95rem 1rem 0.88rem;
       border: 1px solid rgba(10, 25, 47, 0.08);
       background: #fff;
       box-shadow: 0 10px 24px rgba(10, 25, 47, 0.05);
-      line-height: 1.6;
+      line-height: 1.56;
       overflow-wrap: anywhere;
     }
 
@@ -75,7 +75,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
     .msg-bubble p {
       margin: 0 0 0.8rem;
-      font-size: 0.98rem;
+      font-size: 0.95rem;
     }
 
     .msg-bubble p:last-child {
@@ -89,8 +89,8 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     }
 
     .reply-section + .reply-section {
-      margin-top: 0.95rem;
-      padding-top: 0.95rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
       border-top: 1px solid rgba(10, 25, 47, 0.08);
     }
 
@@ -107,7 +107,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       margin: 0;
       padding-left: 1.15rem;
       display: grid;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .reply-list li {
@@ -237,7 +237,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
       <main class="chat-thread" data-chat-thread>
         <div class="chat-inner">
-          <section class="intro-card">
+          <section class="intro-card" data-intro-card>
             <p class="intro-kicker">Le bon niveau d'appui, au bon moment</p>
             <h1>Parlez d'abord de ce que vous vivez.</h1>
             <p class="intro-text">
@@ -248,6 +248,9 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
               <div class="counter-dots" data-counter-dots></div>
               <span class="counter-caption">Version libre : 5 messages par session</span>
             </div>
+            <p class="intro-linkline">
+              Pour des reponses plus personnalisees, vous pouvez aussi <a href="/diagnostic">faire le diagnostic</a>.
+            </p>
           </section>
 
           <div class="messages-container" data-messages>
@@ -409,7 +412,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 1rem 0 8rem;
+      padding: 0.75rem 0 7.6rem;
     }
 
     .chat-inner {
@@ -419,8 +422,8 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     }
 
     .intro-card {
-      margin: 0.35rem 0 1.2rem;
-      padding: 1.2rem;
+      margin: 0.2rem 0 1rem;
+      padding: 1rem;
       border-radius: 1.6rem;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.82));
       border: 1px solid rgba(10, 25, 47, 0.08);
@@ -445,16 +448,29 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
     .intro-text {
       margin: 0;
-      font-size: 0.98rem;
+      font-size: 0.95rem;
       color: rgba(30, 42, 50, 0.84);
     }
 
     .counter-row {
-      margin-top: 1rem;
+      margin-top: 0.85rem;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 0.75rem;
+    }
+
+    .intro-linkline {
+      margin: 0.8rem 0 0;
+      font-size: 0.83rem;
+      line-height: 1.45;
+      color: rgba(10, 25, 47, 0.62);
+    }
+
+    .intro-linkline a {
+      color: var(--deep);
+      font-weight: 700;
+      text-decoration: underline;
     }
 
     .counter-dots {
@@ -488,7 +504,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     }
 
     .suggestions-strip {
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       padding-bottom: 0.35rem;
     }
 
@@ -514,9 +530,9 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       background: rgba(255, 255, 255, 0.82);
       color: var(--deep);
       border-radius: 1rem;
-      padding: 0.9rem 1rem;
+      padding: 0.85rem 0.95rem;
       font: inherit;
-      font-size: 0.93rem;
+      font-size: 0.89rem;
       line-height: 1.45;
       cursor: pointer;
       transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
@@ -780,6 +796,39 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       font-weight: 700;
       padding: 0.85rem 0;
       border-top: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    @media (max-width: 767px) {
+      .profile-trigger,
+      .profile-drawer,
+      .drawer-overlay {
+        display: none;
+      }
+
+      .app-header {
+        grid-template-columns: 1fr auto;
+      }
+
+      .msg.user,
+      .msg.assistant {
+        max-width: 100%;
+      }
+
+      .msg {
+        margin-bottom: 1.05rem;
+      }
+
+      .msg-bubble {
+        padding: 0.9rem 0.92rem 0.82rem;
+      }
+
+      .intro-card h1 {
+        font-size: 1.28rem;
+      }
+
+      .intro-text {
+        font-size: 0.91rem;
+      }
     }
 
     .sr-only {

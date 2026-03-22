@@ -76,7 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
             },
             ...messages
           ],
-          max_tokens: 500,
+          max_tokens: 340,
           temperature: 0.35
         }
       : {
@@ -88,7 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
             },
             ...messages
           ],
-          max_tokens: 500,
+          max_tokens: 340,
           temperature: 0.35
         };
 

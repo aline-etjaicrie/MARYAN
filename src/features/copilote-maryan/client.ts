@@ -37,6 +37,7 @@ function initCopilot(rootElement: HTMLElement) {
   const headerCounter = rootElement.querySelector<HTMLElement>('[data-counter-label]');
   const counterDots = rootElement.querySelector<HTMLElement>('[data-counter-dots]');
   const suggestionStrip = rootElement.querySelector<HTMLElement>('[data-suggestions]');
+  const introCard = rootElement.querySelector<HTMLElement>('[data-intro-card]');
   const suggestionButtons = Array.from(
     rootElement.querySelectorAll<HTMLButtonElement>('[data-suggestion]')
   );
@@ -308,9 +309,13 @@ function initCopilot(rootElement: HTMLElement) {
   }
 
   function toggleSuggestions() {
-    if (!suggestionStrip) return;
     const hasConversation = state.history.some((message) => message.role === 'user');
-    suggestionStrip.classList.toggle('hidden', hasConversation);
+    if (suggestionStrip) {
+      suggestionStrip.classList.toggle('hidden', hasConversation);
+    }
+    if (introCard) {
+      introCard.classList.toggle('hidden', hasConversation);
+    }
   }
 
   async function sendMessage() {
@@ -575,7 +580,7 @@ function renderReplyBlock(block: string): string {
   const listItems = lines
     .filter((line) => isListLine(line))
     .map((line) => line.replace(/^[-*•]\s+/, '').replace(/^\d+\.\s+/, '').trim())
-    .slice(0, 4);
+    .slice(0, 3);
 
   if (listItems.length === lines.length) {
     return `<ul class="reply-list">${listItems.map((item) => `<li>${formatInline(item)}</li>`).join('')}</ul>`;
@@ -588,7 +593,7 @@ function renderReplyBlock(block: string): string {
       .join('')}</ul>`;
   }
 
-  return `<p>${formatInline(lines.join(' '))}</p>`;
+  return `<p>${formatInline(trimParagraph(lines.join(' ')))}</p>`;
 }
 
 function isListLine(line: string): boolean {
@@ -597,9 +602,17 @@ function isListLine(line: string): boolean {
 
 function formatInline(value: string): string {
   let escaped = escapeHtml(value);
+  escaped = escaped.replace(/^-{3,}$/gm, '');
   escaped = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   escaped = escaped.replace(/\*(.+?)\*/g, '<em>$1</em>');
   return escaped;
+}
+
+function trimParagraph(value: string): string {
+  const cleaned = value.replace(/^-{3,}$/gm, '').trim();
+  if (cleaned.length <= 220) return cleaned;
+  const sentences = cleaned.match(/[^.!?]+[.!?]?/g) || [cleaned];
+  return sentences.slice(0, 2).join(' ').trim();
 }
 
 function escapeHtml(value: string): string {

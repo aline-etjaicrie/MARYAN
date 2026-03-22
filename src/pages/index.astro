@@ -39,7 +39,8 @@ import Layout from '../layouts/BaseLayout.astro';
         
         <div class="hero-actions">
           <a href="/diagnostic" class="btn-primary-v3 big pulse-border">Faire le diagnostic →</a>
-          <a href="/copilote" class="btn-secondary-v3 hero-secondary desktop-copilot-cta">Ouvrir le copilote</a>
+          <a href="/copilote" class="btn-secondary-v3 hero-secondary desktop-copilot-cta">Tester le copilote gratuit</a>
+          <p class="hero-alt-entry">Commencez par un diagnostic, ou posez tout de suite une première question.</p>
           <div class="hero-hint">
             <span class="dot-neon"></span> 5 minutes · Gratuit · Confidentiel
           </div>
@@ -122,23 +123,28 @@ import Layout from '../layouts/BaseLayout.astro';
       </div>
 
       <div class="method-steps">
-        <div class="step-v3">
+        <a href="/diagnostic" class="step-v3 step-link-v3">
           <div class="step-num">01.</div>
           <h3>Diagnostic initial</h3>
           <p>5 minutes pour qualifier votre profil et vos besoins prioritaires.</p>
-        </div>
+        </a>
         <div class="step-arrow-v3"></div>
-        <div class="step-v3">
+        <a href="/copilote" class="step-v3 step-link-v3">
           <div class="step-num">02.</div>
           <h3>Appui Copilote</h3>
           <p>Accès immédiat à l'agent de discernement et aux ressources ciblées.</p>
-        </div>
+        </a>
         <div class="step-arrow-v3"></div>
-        <div class="step-v3">
+        <a href="/hub-experts" class="step-v3 step-link-v3">
           <div class="step-num">03.</div>
           <h3>Hub d'Experts</h3>
           <p>Passage de relais à nos experts humains sur les arbitrages critiques.</p>
-        </div>
+        </a>
+      </div>
+
+      <div class="method-actions">
+        <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+        <a href="/copilote" class="btn-secondary-v3">Tester le copilote gratuit</a>
       </div>
     </div>
   </section>
@@ -176,6 +182,7 @@ import Layout from '../layouts/BaseLayout.astro';
         <h2>Reprenez de la <span class="emphasis">clarté</span><br />sur votre mandat.</h2>
         <div class="final-actions-v3">
           <a href="/diagnostic" class="btn-primary-v3 big">Faire le diagnostic (5min)</a>
+          <a href="/copilote" class="btn-secondary-v3 big">Tester le copilote gratuit</a>
           <a href="/contact" class="btn-link-simple">Poser une question à l'équipe</a>
         </div>
       </div>
@@ -231,6 +238,13 @@ import Layout from '../layouts/BaseLayout.astro';
     .text-red { color: var(--accent-red); }
 
     .hero-actions { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .hero-alt-entry {
+      margin: -0.1rem 0 0;
+      max-width: 34rem;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.72);
+    }
     .hero-secondary {
       background: rgba(255,255,255,0.12);
       color: white;
@@ -262,9 +276,33 @@ import Layout from '../layouts/BaseLayout.astro';
     /* ─── METHOD ─── */
     .method-steps { display: flex; align-items: flex-start; gap: 2rem; margin: 4rem 0; }
     .step-v3 { flex: 1; }
+    .step-link-v3 {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      padding: 1.5rem;
+      border-radius: 24px;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .step-link-v3:hover,
+    .step-link-v3:focus-visible {
+      transform: translateY(-3px);
+      border-color: var(--border);
+      background: white;
+      box-shadow: 0 14px 28px rgba(10, 25, 47, 0.06);
+      outline: none;
+    }
     .step-num { font-size: 3rem; font-weight: 900; color: var(--deep); opacity: 0.1; line-height: 1; margin-bottom: 1.5rem; }
     .step-v3 h3 { margin-bottom: 1rem; font-size: 1.2rem; }
     .step-arrow-v3 { width: 40px; height: 1.5px; background: var(--border); margin-top: 5rem; }
+    .method-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
 
     /* ─── HUB ─── */
     .dark-hub { border-radius: 60px 60px 0 0; margin-top: -2rem; }
@@ -291,8 +329,10 @@ import Layout from '../layouts/BaseLayout.astro';
       .hub-v3-badge { order: -1; }
       .diff-grid-v3 { grid-template-columns: 1fr; }
       .desktop-only { display: none; }
-      .desktop-copilot-link,
-      .desktop-copilot-cta { display: none; }
+      .method-actions { flex-direction: column; align-items: stretch; }
+      .method-actions a,
+      .final-actions-v3 a,
+      .hero-actions a { width: 100%; }
     }
 
     .text-center { text-align: center !important; }

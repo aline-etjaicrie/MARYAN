@@ -886,6 +886,307 @@ export const maryanResources: MaryanResource[] = [
     ctaType: "offre_individuelle",
     irlPotential: true,
     priority: "moyenne"
+  },
+  {
+    id: "avant-dorganiser-une-reunion-participative-qu-est-ce-qui-est-vraiment-ouvert",
+    title: "Avant d’organiser une réunion participative : qu’est-ce qui est vraiment ouvert ?",
+    slug: "avant-dorganiser-une-reunion-participative-qu-est-ce-qui-est-vraiment-ouvert",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Clarifier le cadre réel d’une réunion participative avant de parler de méthode ou d’animation.",
+    intro: "Une réunion participative n’est utile que si les participant·es comprennent ce qui est réellement ouvert à discussion. Si tout semble ouvert alors que les marges de décision sont très faibles, la frustration est presque inévitable. Avant de penser format, animation ou mobilisation, il faut clarifier ce qui est déjà décidé, ce qui peut encore évoluer, et ce que la réunion peut vraiment produire.",
+    understand: [
+      "Une démarche participative n’est utile que si son cadre est lisible.",
+      "Les habitants supportent mieux une marge limitée mais claire qu’une ouverture fictive.",
+      "Le bon niveau de participation doit être défini avant le format."
+    ],
+    commonTrap: "Inviter à “co-construire” sans avoir défini ce qui peut réellement être discuté.",
+    actions: [
+      "Lister clairement les points ouverts et non ouverts.",
+      "Expliciter le niveau de participation attendu.",
+      "Formuler en amont ce que la réunion peut vraiment produire."
+    ],
+    reflex: "La qualité d’une démarche participative dépend d’abord de la clarté de son cadre.",
+    sensitiveNote: "Plus le sujet est exposé ou conflictuel, plus le cadre doit être formulé sans ambiguïté dès l’ouverture.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "tension_relationnelle", "besoin_methode", "exposition"],
+    useCases: ["participation", "reunion_publique", "concertation", "cadre"],
+    tags: [
+      "participation",
+      "concertation",
+      "co-construction",
+      "réunion publique",
+      "cadre",
+      "habitants"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "concertation-consultation-information-co-construction-ne-pas-tout-confondre",
+    title: "Concertation, consultation, information, co-construction : ne pas tout confondre",
+    slug: "concertation-consultation-information-co-construction-ne-pas-tout-confondre",
+    pillar: "comprendre",
+    format: "repere",
+    promise: "Clarifier les mots de la participation pour éviter les mauvaises attentes.",
+    intro: "Ces mots sont souvent utilisés comme s’ils étaient équivalents. Ils ne le sont pas. Informer, consulter, concerter et co-construire n’ouvrent pas le même espace politique ni le même niveau d’implication. Quand on utilise le mauvais mot, on crée de mauvaises attentes et on fragilise la relation avec les habitants.",
+    understand: [
+      "Informer, consulter, concerter et co-construire ne produisent pas le même rapport à la décision.",
+      "Le mot utilisé donne déjà un cadre d’attente.",
+      "Mal nommer une démarche, c’est souvent la rendre plus fragile."
+    ],
+    commonTrap: "Employer “co-construction” pour qualifier une réunion où les habitants peuvent surtout réagir à un cadre déjà très fermé.",
+    actions: [
+      "Choisir le mot juste avant de communiquer sur la démarche.",
+      "Expliquer ce que ce mot implique concrètement.",
+      "Assumer publiquement le niveau réel d’ouverture."
+    ],
+    reflex: "Nommer juste, c’est déjà éviter une partie des malentendus.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["besoin_methode", "gouvernance", "tension_relationnelle"],
+    useCases: ["participation", "concertation", "co_construction", "communication_publique"],
+    tags: [
+      "concertation",
+      "consultation",
+      "information",
+      "co-construction",
+      "cadre",
+      "méthode"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "comment-eviter-de-promettre-de-la-participation-la-ou-la-decision-est-deja-presque-faite",
+    title: "Comment éviter de promettre de la participation là où la décision est déjà presque faite",
+    slug: "comment-eviter-de-promettre-de-la-participation-la-ou-la-decision-est-deja-presque-faite",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Éviter de créer de fausses attentes quand le cadre de décision est déjà très avancé.",
+    intro: "Il n’est pas illégitime qu’une collectivité arrive à une réunion avec un cadre déjà très avancé. Ce qui pose problème, ce n’est pas qu’un projet soit mûr. C’est de faire croire qu’il est encore largement ouvert s’il ne l’est plus vraiment. Les habitants acceptent souvent mieux une marge de discussion limitée mais claire qu’une pseudo-ouverture qui se referme ensuite sans explication.",
+    understand: [
+      "Un projet avancé n’empêche pas le dialogue, mais il change sa nature.",
+      "Le problème vient souvent moins de la fermeture que du faux sentiment d’ouverture.",
+      "La clarté sur les marges de discussion protège la suite."
+    ],
+    commonTrap: "Mettre en scène une ouverture de débat que la décision ne permet plus réellement.",
+    actions: [
+      "Dire clairement ce qui a déjà été arbitré.",
+      "Identifier ce qui peut encore être ajusté.",
+      "Ne pas utiliser le registre participatif comme habillage d’une décision verrouillée."
+    ],
+    reflex: "Une marge de discussion limitée mais assumée vaut mieux qu’une ouverture fictive.",
+    sensitiveNote: "Sur des sujets déjà polarisés, toute ambiguïté sur le niveau réel d’ouverture sera relue comme une manipulation.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "exposition", "tension_relationnelle", "arbitrage"],
+    useCases: ["participation", "projet_expose", "reunion_publique", "communication_publique"],
+    tags: [
+      "participation",
+      "promesse",
+      "cadre",
+      "attentes",
+      "réunion publique",
+      "décision"
+    ],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "faire-une-reunion-publique-utile-pas-seulement-defoulatoire",
+    title: "Faire une réunion publique utile, pas seulement défoulatoire",
+    slug: "faire-une-reunion-publique-utile-pas-seulement-defoulatoire",
+    pillar: "agir",
+    format: "guide",
+    promise: "Donner à une réunion publique un objectif réel, un cadre et une utilité politique claire.",
+    intro: "Une réunion publique ne sert pas seulement à “laisser s’exprimer” les gens. Elle doit permettre de rendre une situation lisible, de poser un cadre, de faire apparaître les vrais sujets et d’éviter que tout se transforme en accumulation de frustrations. Une réunion sans objectif clair devient vite un lieu de décharge émotionnelle, souvent coûteux politiquement et peu utile pour la suite.",
+    understand: [
+      "Une réunion publique a besoin d’un objectif précis.",
+      "L’expression ne suffit pas si elle n’est reliée à aucun cadre.",
+      "Une bonne réunion fait émerger de la clarté, pas seulement de l’intensité."
+    ],
+    commonTrap: "Organiser une réunion parce qu’il “faut bien en faire une”, sans clarifier ce qu’on attend d’elle.",
+    actions: [
+      "Définir l’objectif précis de la réunion.",
+      "Choisir ce qui doit être présenté, discuté, entendu ou cadré.",
+      "Structurer les temps de parole pour éviter la confusion totale."
+    ],
+    reflex: "Une réunion utile n’est pas une réunion où tout sort. C’est une réunion où quelque chose devient plus clair.",
+    sensitiveNote: "Si le sujet est conflictuel, prévoir le cadre de parole et le mode d’animation avant de communiquer sur la réunion.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "gouvernance", "exposition"],
+    useCases: ["reunion_publique", "participation", "tension_locale", "animation"],
+    tags: [
+      "réunion publique",
+      "participation",
+      "animation",
+      "cadre",
+      "habitants",
+      "tension locale"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "que-faire-des-contributions-apres-une-demarche-participative",
+    title: "Que faire des contributions après une démarche participative ?",
+    slug: "que-faire-des-contributions-apres-une-demarche-participative",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Rendre compte clairement de ce qui a été entendu, retenu, transformé ou écarté.",
+    intro: "Le moment le plus fragile d’une démarche participative n’est pas toujours la réunion elle-même. C’est l’après. Si les contributions recueillies disparaissent, ne sont pas reformulées, ne sont pas reliées à une décision ou ne reçoivent aucun retour, la confiance se dégrade vite. Les participant·es n’attendent pas forcément que tout soit repris. Mais ils attendent de savoir ce qui a été entendu, retenu, écarté ou transformé.",
+    understand: [
+      "Une démarche participative se juge aussi à la qualité du retour fait aux participant·es.",
+      "Le silence après coup affaiblit fortement la confiance.",
+      "Expliquer ce qui n’est pas retenu compte autant que valoriser ce qui l’est."
+    ],
+    commonTrap: "Faire participer, puis ne pas rendre compte clairement de ce qui est fait de cette parole.",
+    actions: [
+      "Restituer ce qui a été exprimé.",
+      "Expliquer ce qui est retenu, non retenu ou encore en discussion.",
+      "Relier les contributions à une suite concrète, même limitée."
+    ],
+    reflex: "La participation ne se juge pas seulement à l’écoute. Elle se juge à la manière dont on rend compte ensuite.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "tension_relationnelle", "besoin_methode"],
+    useCases: ["participation", "restitution", "suite_de_demarche", "habitants"],
+    tags: [
+      "participation",
+      "restitution",
+      "suite",
+      "contributions",
+      "habitants",
+      "confiance"
+    ],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "quand-une-reunion-participative-devient-un-lieu-de-colere",
+    title: "Quand une réunion participative devient un lieu de colère",
+    slug: "quand-une-reunion-participative-devient-un-lieu-de-colere",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Aider à relire la colère dans une réunion participative sans laisser le cadre se dissoudre.",
+    intro: "Une réunion participative n’est pas ratée simplement parce qu’il y a de la colère. La colère peut être un signal d’usure, un symptôme de défiance, une réaction à un sentiment de non-écoute ou l’expression d’un désaccord réel. Le problème n’est donc pas la colère en soi. Le problème, c’est ce qu’on en fait : l’ignorer, la subir sans cadre ou y répondre de manière défensive. Quand une réunion devient uniquement un lieu de décharge, elle cesse d’être utile. Mais quand la colère est reconnue, recadrée et reliée à des enjeux concrets, elle peut parfois être traversée sans tout faire exploser.",
+    understand: [
+      "La colère n’est pas forcément un échec de la réunion, mais elle demande un cadre.",
+      "L’enjeu n’est pas de l’éteindre à tout prix, mais de la relier à ce qui se joue vraiment.",
+      "Une réunion tendue reste utile si le désaccord retrouve une forme lisible."
+    ],
+    commonTrap: "Croire qu’il faut soit laisser tout sortir sans limite, soit reprendre la main brutalement pour “tenir la salle”.",
+    actions: [
+      "Reconnaître la tension sans dramatiser ni mépriser.",
+      "Rappeler le cadre de la réunion et ce qui peut être utilement discuté.",
+      "Reformuler les points de fond derrière les réactions les plus vives."
+    ],
+    reflex: "Dans une réunion tendue, il ne s’agit pas seulement de calmer. Il s’agit de redonner une forme au désaccord.",
+    sensitiveNote: "Si la colère est très forte, l’enjeu n’est pas de sauver la réunion à tout prix. Parfois, il vaut mieux resserrer, reformuler, différer un point ou changer de format plutôt que laisser la situation s’abîmer davantage.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "exposition", "gouvernance"],
+    useCases: ["participation", "reunion_publique", "tension_locale", "cadre"],
+    tags: [
+      "participation",
+      "concertation",
+      "co_construction",
+      "réunion publique",
+      "habitants",
+      "tension locale",
+      "cadre",
+      "désaccord",
+      "confiance"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "co-construire-sans-abandonner-la-responsabilite-politique",
+    title: "Co-construire sans abandonner la responsabilité politique",
+    slug: "co-construire-sans-abandonner-la-responsabilite-politique",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Clarifier ce que la co-construction ouvre réellement sans effacer le rôle politique des élus.",
+    intro: "La co-construction ne veut pas dire que l’élu disparaît du processus de décision. Elle ne veut pas dire non plus que toutes les paroles se valent de la même manière dans l’arbitrage final. Associer des habitants, des acteurs ou des partenaires à l’élaboration d’un projet peut être très utile. Mais la responsabilité politique reste entière : clarifier le cadre, arbitrer, assumer une décision et expliquer ce qui a été retenu ou non. Le risque, sinon, est double : faire semblant de co-construire ou se défausser sur la participation pour ne plus porter la décision.",
+    understand: [
+      "La participation peut nourrir la décision sans s’y substituer.",
+      "La responsabilité politique ne disparaît pas parce qu’un cadre participatif est ouvert.",
+      "Une co-construction plus honnête renforce souvent la lisibilité finale."
+    ],
+    commonTrap: "Présenter la co-construction comme un partage intégral de la responsabilité politique.",
+    actions: [
+      "Expliciter ce qui est partagé, ce qui ne l’est pas et ce qui relève de l’arbitrage final.",
+      "Assumer que la participation nourrit la décision sans s’y substituer.",
+      "Expliquer ensuite comment les contributions ont été prises en compte."
+    ],
+    reflex: "Co-construire n’efface pas la responsabilité politique. Cela oblige à l’exercer plus clairement.",
+    sensitiveNote: "Sur un sujet exposé, il vaut mieux assumer le niveau réel d’ouverture que laisser croire à une horizontalité totale qu’aucune décision publique ne pourra tenir ensuite.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "besoin_methode", "tension_relationnelle", "exposition"],
+    useCases: ["participation", "co_construction", "arbitrage", "cadre"],
+    tags: [
+      "participation",
+      "concertation",
+      "co_construction",
+      "gouvernance",
+      "cadre",
+      "responsabilité politique",
+      "confiance"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "comment-preparer-un-cadre-de-participation-lisible-pour-les-habitants",
+    title: "Comment préparer un cadre de participation lisible pour les habitants",
+    slug: "comment-preparer-un-cadre-de-participation-lisible-pour-les-habitants",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Rendre une démarche participative plus honnête et plus utile en clarifiant d’emblée ses règles du jeu.",
+    intro: "Une démarche participative devient vite confuse si les habitants ne savent pas pourquoi ils sont là, sur quoi ils peuvent agir, ce qui est déjà décidé, ce qui sera fait de leur parole et ce qui se passera après. Un bon cadre ne ferme pas la participation. Il la rend plus honnête, plus lisible et souvent plus utile. Le niveau d’adhésion ne dépend pas seulement de la qualité de l’animation. Il dépend aussi de la qualité de la promesse faite au départ.",
+    understand: [
+      "Le cadre de participation n’est pas un détail logistique, mais le cœur de la confiance.",
+      "La clarté sur les règles du jeu rend souvent la participation plus tenable.",
+      "Une promesse mal formulée fragilise toute la suite de la démarche."
+    ],
+    commonTrap: "Soigner l’invitation ou la forme de la réunion sans expliciter clairement les règles du jeu.",
+    actions: [
+      "Dire à quoi sert la démarche.",
+      "Préciser ce qui est ouvert, fermé ou en discussion.",
+      "Expliquer ce que deviendront les contributions et annoncer la suite dès le départ."
+    ],
+    reflex: "Le cadre de participation n’est pas un détail logistique. C’est le cœur de la confiance.",
+    sensitiveNote: "Plus le sujet est conflictuel, plus il faut réduire les ambiguïtés au minimum. Quand le cadre est flou, chacun projette sa propre promesse et la déception arrive vite.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["besoin_methode", "gouvernance", "tension_relationnelle", "exposition"],
+    useCases: ["participation", "concertation", "cadre", "habitants"],
+    tags: [
+      "participation",
+      "concertation",
+      "co_construction",
+      "réunion publique",
+      "habitants",
+      "tension locale",
+      "cadre",
+      "confiance",
+      "restitution"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
   }
 ];
 

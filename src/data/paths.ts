@@ -230,6 +230,29 @@ export const maryanPaths: MaryanPath[] = [
     ],
     ctaType: "formation_irl",
     irlPotential: true
+  },
+  {
+    id: "mieux-conduire-une-demarche-participative",
+    title: "Mieux conduire une démarche participative",
+    slug: "mieux-conduire-une-demarche-participative",
+    promise: "Clarifier le cadre, éviter les faux accords et rendre la participation plus lisible et plus utile.",
+    description:
+      "Ce parcours aide à préparer une démarche participative sans confusion sur le niveau d’ouverture, à mieux tenir une réunion publique, et à rendre compte ensuite de ce qui a été entendu et transformé. Il est utile pour les sujets locaux sensibles, les projets exposés ou les démarches de concertation encore floues.",
+    diagnosticProfiles: ["gouvernance", "tension_relationnelle", "besoin_methode", "exposition"],
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    priorities: [
+      "Clarifier ce qui est réellement ouvert à discussion",
+      "Choisir le bon niveau de participation et le bon vocabulaire",
+      "Rendre la suite de la démarche lisible pour les habitants"
+    ],
+    resourceIds: [
+      "avant-dorganiser-une-reunion-participative-qu-est-ce-qui-est-vraiment-ouvert",
+      "concertation-consultation-information-co-construction-ne-pas-tout-confondre",
+      "que-faire-des-contributions-apres-une-demarche-participative"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true
   }
 ];
 
