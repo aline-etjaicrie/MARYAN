@@ -32,6 +32,7 @@ function initCopilot(rootElement: HTMLElement) {
   const sendBtn = rootElement.querySelector<HTMLButtonElement>('[data-send-btn]')!;
   const inputHint = rootElement.querySelector<HTMLElement>('#inputHint')!;
   const headerCounter = document.getElementById('headerCounter');
+  const micBtn = document.getElementById('micBtn');
 
   // Drawer Elements
   const profileFilled = document.getElementById('drawerProfileFilled');
@@ -54,6 +55,59 @@ function initCopilot(rootElement: HTMLElement) {
   renderCounter();
   renderProfile();
   syncInputUi();
+
+  // --- SPEECH RECOGNITION (STT) ---
+  let recognition: any = null;
+  let isRecording = false;
+
+  const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  if (SpeechRecognition && micBtn) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      isRecording = true;
+      micBtn.classList.add('recording');
+      input.placeholder = "Écoute en cours...";
+    };
+
+    recognition.onresult = (event: any) => {
+      let interimTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          input.value += (input.value ? ' ' : '') + transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+      input.dispatchEvent(new Event('input')); // Trigger auto-resize
+    };
+
+    recognition.onerror = () => stopRecording();
+    recognition.onend = () => stopRecording();
+
+    micBtn.addEventListener('click', () => {
+      if (isRecording) stopRecording();
+      else startRecording();
+    });
+  } else if (micBtn) {
+    micBtn.style.display = 'none'; // Hide if not supported
+  }
+
+  function startRecording() {
+    try { recognition?.start(); } catch(e) { }
+  }
+
+  function stopRecording() {
+    isRecording = false;
+    micBtn?.classList.remove('recording');
+    input.placeholder = "Écrivez ou dictez...";
+    recognition?.stop();
+  }
+  // --- END STT ---
 
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
