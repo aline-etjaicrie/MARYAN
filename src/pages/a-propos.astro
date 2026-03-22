@@ -60,13 +60,13 @@ import InternalHeader from '../components/InternalHeader.astro';
       </div>
     </section>
 
-    <section class="section-v3 bg-deep text-white overflow-hidden">
+    <section class="section-v3 about-support-section overflow-hidden">
       <div class="glow-v3 glow-red" style="top:-8%; right:-12%;"></div>
       <div class="container container-medium relative-z">
         <div class="about-deep-grid">
           <div>
             <span class="label-v3">Ce que fait MARYAN</span>
-            <h2 class="text-white">MARYAN ne remplace rien.</h2>
+            <h2>MARYAN ne remplace rien.</h2>
             <div class="about-prose deep-prose">
               <p>Elle ne décide pas à la place.</p>
               <p>Elle ne parle pas pour les élu·es.</p>
@@ -317,9 +317,13 @@ import InternalHeader from '../components/InternalHeader.astro';
     align-items: start;
   }
 
+  .about-support-section {
+    background: linear-gradient(180deg, #f8f9fa 0%, #eef3f8 100%);
+  }
+
   .deep-prose p,
   .deep-closing {
-    color: white;
+    color: var(--deep);
   }
 
   .deep-card-grid {
@@ -331,13 +335,14 @@ import InternalHeader from '../components/InternalHeader.astro';
   .deep-card {
     padding: 1.2rem 1.15rem;
     border-radius: 1.2rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    box-shadow: 0 14px 30px rgba(10, 25, 47, 0.05);
   }
 
   .deep-card span {
     display: block;
-    color: white;
+    color: var(--deep);
     font-weight: 700;
     line-height: 1.45;
   }
