@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request }) => {
   const stripeKey = import.meta.env.STRIPE_SECRET_KEY;
   

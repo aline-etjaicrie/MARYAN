@@ -426,6 +426,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        // Memory persist
        localStorage.setItem('maryan_v4_diag', JSON.stringify(a));
 
+       try {
+          const existingProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+          const derivedProfile = buildMaryanProfile(a, results);
+          const mergedProfile = {
+             ...derivedProfile,
+             firstName: existingProfile.firstName || derivedProfile.firstName,
+             commune: existingProfile.commune || derivedProfile.commune,
+             plan: existingProfile.plan || derivedProfile.plan
+          };
+          localStorage.setItem('maryan_profile', JSON.stringify(mergedProfile));
+       } catch (e) {
+          localStorage.setItem('maryan_profile', JSON.stringify(buildMaryanProfile(a, results)));
+       }
+
        // Toggle
        document.getElementById('questionsContainer').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
@@ -438,5 +452,51 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        localStorage.setItem('user_email', email);
        document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre synthèse complète vous attend sur ${email}.</p>`;
     };
+
+    function buildMaryanProfile(answers, results) {
+       const roleMap = {
+          maire: { title: 'Maire', theme: 'gouvernance', themeLabel: 'Gouvernance et arbitrage' },
+          adjoint: { title: 'Adjoint·e municipal·e', theme: 'delegation', themeLabel: 'Délégation et mise en oeuvre' },
+          majorite: { title: 'Élu·e de majorité', theme: 'mandat', themeLabel: 'Conduite du mandat' },
+          opposition: { title: 'Élu·e d’opposition', theme: 'positionnement', themeLabel: 'Positionnement politique' },
+          interco: { title: 'Élu·e intercommunal·e', theme: 'coordination', themeLabel: 'Coordination territoriale' }
+       };
+
+       const role = roleMap[answers.role] || {
+          title: 'Élu·e local·e',
+          theme: 'mandat',
+          themeLabel: 'Conduite du mandat'
+       };
+
+       const offerNames = {
+          copilote: 'Copilote',
+          individuel: 'Offre individuelle',
+          collectivite: 'Offre collectivité',
+          formation_irl: 'Formation / Appui IRL'
+       };
+
+       const tags = [];
+       if (answers.seniority === 'moins1an') tags.push('début de mandat');
+       if (answers.feeling === 'seul') tags.push('isolement');
+       if (answers.feeling === 'surcharge') tags.push('surcharge');
+       if (answers.tension === 'conflit') tags.push('tension');
+       if (answers.tension === 'exposition') tags.push('exposition');
+       if (answers.tension === 'flou') tags.push('arbitrage dans le flou');
+       if (answers.lack === 'cadre') tags.push('besoin de cadre');
+       if (answers.vigilance === 'parole') tags.push('prise de parole');
+       if (!tags.length) tags.push('mandat local');
+
+       return {
+          key: `${answers.role || 'elu'}-${answers.tension || answers.feeling || 'mandat'}`,
+          title: role.title,
+          summary: results.vigilance,
+          theme: role.theme,
+          themeLabel: role.themeLabel,
+          offerLevel: results.offerType === 'copilote' ? 1 : 2,
+          offerName: offerNames[results.offerType] || 'Copilote',
+          tags,
+          source: 'diagnostic'
+       };
+    }
   </script>
 </BaseLayout>

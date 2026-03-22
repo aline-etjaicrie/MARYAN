@@ -1,5 +1,11 @@
 import type { APIRoute } from 'astro';
-import { buildSystemPrompt, type MaryanProfile } from '../../features/copilote-maryan/config';
+import {
+  buildAgentPrimingMessage,
+  buildSystemPrompt,
+  inferMaryanSituationMode,
+  type MaryanProfile,
+  type MaryanSituationMode
+} from '../../features/copilote-maryan/config';
 
 interface CopilotMessage {
   role: 'user' | 'assistant';
@@ -9,7 +15,8 @@ interface CopilotMessage {
 interface CopilotRequestBody {
   profile?: MaryanProfile | null;
   messages?: CopilotMessage[];
-  mode?: string;
+  mode?: MaryanSituationMode | string;
+  message?: string;
 }
 
 // MISTRAL API ENDPOINTS
@@ -22,6 +29,10 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
   const apiKey = (import.meta.env.MISTRAL_API_KEY as string) || (process.env.MISTRAL_API_KEY as string);
   const agentId = (import.meta.env.MISTRAL_AGENT_ID as string) || (process.env.MISTRAL_AGENT_ID as string);
+  const model =
+    (import.meta.env.MISTRAL_MODEL as string) ||
+    (process.env.MISTRAL_MODEL as string) ||
+    DEFAULT_MODEL;
 
   if (!apiKey) {
     return json(
@@ -41,6 +52,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   const profile = body?.profile || null;
   const messages = Array.isArray(body?.messages) ? body.messages.filter(isCopilotMessage) : [];
+  const latestUserMessage =
+    typeof body?.message === 'string' && body.message.trim()
+      ? body.message.trim()
+      : [...messages].reverse().find((message) => message.role === 'user')?.content || '';
+  const resolvedMode = inferMaryanSituationMode(latestUserMessage, profile);
 
   if (!messages.length) {
     return json({ error: 'Aucun message à traiter.' }, 400);
@@ -50,18 +66,30 @@ export const POST: APIRoute = async ({ request }) => {
     const isAgentMode = !!agentId;
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
 
-    // Build Payload for Mistral
-    const payload = isAgentMode 
+    const payload = isAgentMode
       ? {
           agent_id: agentId,
-          messages: messages
+          messages: [
+            {
+              role: 'user',
+              content: buildAgentPrimingMessage(profile, body?.mode, latestUserMessage)
+            },
+            ...messages
+          ],
+          max_tokens: 500,
+          temperature: 0.35
         }
       : {
-          model: DEFAULT_MODEL,
+          model,
           messages: [
-            { role: 'system', content: buildSystemPrompt(profile, body?.mode) },
+            {
+              role: 'system',
+              content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage)
+            },
             ...messages
-          ]
+          ],
+          max_tokens: 500,
+          temperature: 0.35
         };
 
     const upstream = await fetch(url, {
@@ -73,17 +101,17 @@ export const POST: APIRoute = async ({ request }) => {
       body: JSON.stringify(payload)
     });
 
-    const data = (await upstream.json().catch(() => ({ }))) as any;
+    const data = (await upstream.json().catch(() => ({}))) as Record<string, any>;
 
     if (!upstream.ok) {
       const apiError = data?.message || data?.error?.message || 'Le moteur Mistral n’a pas pu répondre.';
       return json({ error: apiError }, upstream.status);
     }
 
-    const reply = data?.choices?.[0]?.message?.content || '';
+    const reply = extractReply(data);
 
     return json({
-      reply: reply || 'Je n’ai pas pu générer de réponse. Vérifiez votre Agent ID.'
+      reply: reply || 'Je n’ai pas pu générer de réponse utile pour le moment.'
     });
   } catch (e: any) {
     return json(
@@ -105,6 +133,32 @@ function isCopilotMessage(value: unknown): value is CopilotMessage {
     typeof candidate.content === 'string' &&
     candidate.content.trim().length > 0
   );
+}
+
+function extractReply(data: Record<string, any>): string {
+  const content = data?.choices?.[0]?.message?.content;
+
+  if (typeof content === 'string') {
+    return content.trim();
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item.text === 'string') return item.text;
+        if (item && typeof item.content === 'string') return item.content;
+        return '';
+      })
+      .join('\n')
+      .trim();
+  }
+
+  if (content && typeof content.text === 'string') {
+    return content.text.trim();
+  }
+
+  return '';
 }
 
 function json(payload: Record<string, string>, status = 200): Response {

@@ -19,6 +19,7 @@ import Layout from '../layouts/BaseLayout.astro';
           <a href="/a-propos">À propos</a>
           <a href="/offres">Offres</a>
           <a href="/diagnostic">Diagnostic</a>
+          <a href="/copilote" class="desktop-copilot-link">Copilote</a>
         </div>
         <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
         <div class="hero-brand-wrap">
@@ -29,7 +30,7 @@ import Layout from '../layouts/BaseLayout.astro';
       <div class="hero-content">
         <h1>
           Un appui pour les élu·es <br class="desktop-only" />
-          qui <span class="emphasis text-neon">tiennent</span> leur mandat.
+          qui <span class="emphasis">tiennent</span> leur mandat.
         </h1>
         <p class="hero-lead">
           Décider, répondre, arbitrer… souvent seul·e, souvent vite.<br />
@@ -38,6 +39,7 @@ import Layout from '../layouts/BaseLayout.astro';
         
         <div class="hero-actions">
           <a href="/diagnostic" class="btn-primary-v3 big pulse-border">Faire le diagnostic →</a>
+          <a href="/copilote" class="btn-secondary-v3 hero-secondary desktop-copilot-cta">Ouvrir le copilote</a>
           <div class="hero-hint">
             <span class="dot-neon"></span> 5 minutes · Gratuit · Confidentiel
           </div>
@@ -101,7 +103,7 @@ import Layout from '../layouts/BaseLayout.astro';
       <h2 class="text-white" style="font-size: clamp(2.5rem, 5vw, 4rem); margin: 2rem 0;">
         Pas plus lente.<br />
         Pas plus compliquée.<br />
-        Juste plus <span class="emphasis text-neon">lucide.</span>
+        Juste plus <span class="emphasis">lucide.</span>
       </h2>
       <p class="intro-v3 text-white" style="opacity:0.75; max-width: 600px; margin: 0 auto 4rem;">
         Prendre deux minutes pour cadrer une situation,<br />
@@ -147,7 +149,7 @@ import Layout from '../layouts/BaseLayout.astro';
       <div class="hub-v3-inner">
         <div class="hub-v3-content">
           <span class="label-v3">Le Réseau</span>
-          <h2 class="text-white">Un outil. Et un <span class="text-neon emphasis">relais humain</span><br />quand il le faut.</h2>
+          <h2 class="text-white">Un outil. Et un <span class="emphasis">relais humain</span><br />quand il le faut.</h2>
           <p style="font-size:1.25rem;color:white;opacity:0.95;margin-bottom:1rem;">
             Parce que certaines situations ne se traitent pas seul.
           </p>
@@ -190,7 +192,9 @@ import Layout from '../layouts/BaseLayout.astro';
       color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; 
       text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; 
     }
-    .top-nav-v3 a:hover { color: var(--neon); opacity: 1; }
+    .top-nav-v3 a:hover { color: white; opacity: 1; }
+    .desktop-copilot-link,
+    .desktop-copilot-cta { display: inline-flex; }
 
     /* ─── HERO V3 ─── */
     .hero-v3-signature {
@@ -207,7 +211,7 @@ import Layout from '../layouts/BaseLayout.astro';
     .hero-container { position: relative; z-index: 2; margin-top: -1rem; }
     .hero-header { margin-bottom: 4rem; position: relative; z-index: 10; }
 
-    .hero-badge { display: inline-block; padding: 0.65rem 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 99px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); margin-bottom: 2.5rem; }
+    .hero-badge { display: inline-block; padding: 0.65rem 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 99px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; color: white; margin-bottom: 2.5rem; }
 
     .hero-brand-wrap { margin-bottom: 3rem; }
     .brand-logo-full {
@@ -227,6 +231,16 @@ import Layout from '../layouts/BaseLayout.astro';
     .text-red { color: var(--accent-red); }
 
     .hero-actions { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .hero-secondary {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border-color: rgba(255,255,255,0.18);
+    }
+    .hero-secondary:hover {
+      background: white;
+      color: var(--deep);
+      border-color: white;
+    }
     .pulse-border { position: relative; }
     .pulse-border::after { content: ''; position: absolute; inset: -3px; border-radius: 99px; border: 1.5px solid var(--neon); opacity: 0.3; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { scale: 1; opacity: 0.5; } 100% { scale: 1.1; opacity: 0; } }
@@ -277,6 +291,8 @@ import Layout from '../layouts/BaseLayout.astro';
       .hub-v3-badge { order: -1; }
       .diff-grid-v3 { grid-template-columns: 1fr; }
       .desktop-only { display: none; }
+      .desktop-copilot-link,
+      .desktop-copilot-cta { display: none; }
     }
 
     .text-center { text-align: center !important; }

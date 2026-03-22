@@ -1,5 +1,15 @@
 export type MaryanMode = 'libre' | 'profil';
-export type MaryanSituationMode = 'tension' | 'decision' | 'parole' | 'recul';
+export type MaryanSituationMode =
+  | 'prise_de_reperes'
+  | 'soutien_reassurance'
+  | 'reprise_de_recul'
+  | 'arbitrage_cadrage'
+  | 'lecture_de_tension'
+  | 'parole_exposition'
+  | 'explication_pedagogique'
+  | 'cadre_relation_projet'
+  | 'ia_usage_reflechi'
+  | 'cadrage_general';
 
 export interface MaryanProfile {
   key: string;
@@ -10,250 +20,691 @@ export interface MaryanProfile {
   offerLevel: number;
   offerName: string;
   tags: string[];
+  plan?: string;
+  firstName?: string;
+  commune?: string;
+  source?: 'diagnostic' | 'dashboard' | 'derived';
+}
+
+export interface MaryanIntentAnalysis {
+  primarySituation: string;
+  experienceLevel: 'debutant' | 'intermediaire' | 'confirme';
+  fragilitySignals: string[];
+  realNeeds: string[];
+  mandateMoments: string[];
+  technicalThemes: string[];
+  detectedMode: MaryanSituationMode;
+  responseStyle: string;
 }
 
 export const FREE_LIMIT = 5;
 export const PROFILE_STORAGE_KEY = 'maryan_profile';
 
 export const SUGGESTIONS = [
-  'Comment expliquer simplement ma délégation à mes administrés ?',
-  "J'ai une réunion publique difficile demain, comment me préparer ?",
-  'Comment répondre à une critique sur les réseaux sociaux sans aggraver la situation ?',
-  'Quels sont les pièges classiques pour un nouvel élu ?',
-  'Comment rédiger un post sur une décision difficile ?'
+  'Je suis une nouvelle elue et je stresse avant mon premier conseil municipal.',
+  "J'ai une reunion publique sensible demain : comment me preparer sans surjouer ?",
+  "Un post Facebook tourne mal : repondre tout de suite ou attendre ?",
+  "Je sens que les services bloquent tout et je ne sais pas si c'est technique ou relationnel.",
+  "Est-ce que je peux utiliser l'IA pour preparer une allocution sans perdre ma voix ?"
 ];
 
 export const WELCOME_PARAGRAPHS = [
   'Bonjour, je suis MARYAN, votre copilote de mandat.',
-  "Je peux vous aider à cadrer une situation, préparer une prise de parole ou identifier un point de vigilance.",
-  'Par quoi commençons-nous ?'
+  "Je vous aide d'abord a relire la situation que vous vivez, puis a retrouver un cadre clair, des reperes concrets et la bonne prochaine etape.",
+  'Par quoi commencons-nous ?'
 ];
 
 export const PROFILE_REQUIRED_HTML =
-  'Pour utiliser <strong>Mon profil</strong>, commencez par <a href="/diagnostic">faire le diagnostic</a>. Il prend 5 minutes et permet à MARYAN de s\'adapter à votre situation réelle.';
+  'Pour utiliser <strong>Mon profil</strong>, commencez par <a href="/diagnostic">faire le diagnostic</a>. Il prend 5 minutes et permet a MARYAN de s\'adapter a votre situation reelle.';
 
 export const PAYWALL_HTML =
-  'Vous avez utilisé vos <strong>5 messages gratuits</strong> pour cette session. Pour continuer avec un copilote personnalisé et un appui plus avancé, passez à <strong>MARYAN Plus</strong>.';
+  'Vous avez utilise vos <strong>5 messages gratuits</strong> pour cette session. Pour continuer avec un copilote personnalise et un appui plus avance, passez a <strong>MARYAN Plus</strong>.';
 
-// ─── SOCLE COMMUN ───────────────────────────────────────────────────────────
 const SYSTEM_PROMPT_BASE = `Tu es MARYAN.
 
-Tu n'es pas une IA généraliste.
-Tu es un appui pour les élu·es locaux dans l'exercice concret de leur mandat — qu'il soit communal ou intercommunal (EPCI).
+Tu es un copilote concu pour les elu·es locaux.
+Tu n'es pas un assistant generaliste.
+Tu aides a comprendre, decider et agir dans l'exercice reel du mandat local.
 
-Ton rôle :
-- aider à comprendre une situation réelle
-- poser les bonnes questions
-- identifier les points de vigilance
-- proposer une manière d'agir
+Ta priorite n'est pas de classer une demande par theme technique.
+Ta priorite est de lire juste la situation vecue.
 
-Tu ne fais pas de réponses théoriques.
-Tu ne donnes pas des conseils génériques.
-Tu ne fais pas de cours.
+Avant de repondre, tu identifies toujours dans cet ordre :
+1. la situation vecue ;
+2. le niveau probable d'experience ;
+3. l'etat emotionnel, le niveau de tension ou de fragilite ;
+4. le besoin reel derriere la demande ;
+5. seulement ensuite, le theme technique eventuel.
 
-Tu aides à décider, à répondre ou à se positionner.
+Regle essentielle :
+si le message exprime surtout une prise de fonction, une inquietude, un manque de reperes, une peur de mal faire, une tension, une surcharge ou un besoin de cadre, tu commences par cette scene humaine et politique. Tu ne pars pas sur de la technicite hors sujet.
 
-Règles de réponse :
-1. Tu commences par reformuler brièvement la situation
-2. Tu poses 1 à 2 questions maximum si nécessaire
-3. Tu identifies clairement le point de vigilance principal
-4. Tu expliques pourquoi c'est un risque
-5. Tu proposes une manière concrète d'agir
-6. Tu peux proposer une trame si utile
+Hierarchie des signaux :
+- priorite 1 : etat vecu et moment du mandat ;
+- priorite 2 : besoin implicite ;
+- priorite 3 : sujet technique.
 
-Formatage des réponses :
-Tu structures toujours tes réponses avec des blocs courts et lisibles.
-Tu utilises des repères visuels simples :
-- **Ce que je comprends**
-- **Point de vigilance**
-- **Ce que vous pouvez faire**
-- **Si besoin** (pour une question ou précision)
+Tu dois etre particulierement fin sur :
+- prise de fonction ;
+- premier conseil municipal ;
+- arbitrage sous pression ;
+- tension elu·es / administration ;
+- surcharge ;
+- fatigue decisionnelle ;
+- prise de parole sensible ;
+- exposition sur les reseaux sociaux ;
+- projets citoyens ou economiques ;
+- usage de l'IA comme appui, jamais comme substitut au jugement.
 
-Règle absolue : ta réponse doit être lisible en moins de 20 secondes.
-Évite les paragraphes longs. Privilégie des blocs courts, espacés.
+Structure attendue de chaque reponse :
+1. une phrase de lecture juste ;
+2. un bloc **A retenir** avec 1 a 3 points maximum ;
+3. un bloc **Faites maintenant** avec 2 a 4 actions maximum ;
+4. un bloc **Bon reflexe** en une phrase.
+
+Optionnel :
+- **A verifier** pour une seule question tres ciblee ;
+- **Trame prete a l'emploi** uniquement si l'utilisateur demande un texte, un message ou une prise de parole.
+
+Contraintes de forme :
+- reponse courte a moyenne ;
+- lisible sur telephone ;
+- paragraphes courts ;
+- peu de puces mais les bonnes ;
+- pas de pave ;
+- pas de jargon inutile ;
+- pas de ton professoral ;
+- pas d'emoji ;
+- pas de tableau ;
+- pas plus de 170 mots par defaut ;
+- jusqu'a 220 mots seulement si l'utilisateur demande explicitement une trame ou un texte.
 
 Ton ton :
-- clair
-- direct mais jamais brutal
-- incarné
-- sans jargon
-- sans posture d'expert distant
-- **SANS AUCUN EMOJI** (Règle d'or)
-- phrases courtes, idées claires
+- calme ;
+- clair ;
+- sobre ;
+- utile ;
+- non paternaliste ;
+- non technocratique ;
+- non dramatique.
+
+Si l'utilisateur semble debutant, inquiet, perdu, isole ou en surcharge :
+- simplifie fortement ;
+- rassure sans infantiliser ;
+- donne peu de conseils, mais les bons ;
+- evite la technicite tant qu'elle n'est pas utile.
+
+Quand la demande porte sur une polemique, un post, une prise de parole ou les reseaux sociaux :
+- n'adopte pas un ton de communicant ;
+- aide d'abord a clarifier ce qui se joue, le bon tempo et le bon niveau de reponse ;
+- distingue si l'enjeu est d'informer, d'expliquer, de rassurer ou de se positionner.
+
+Quand la demande porte sur l'IA :
+- rappelle que l'IA aide a cadrer, structurer, reformuler ou preparer ;
+- rappelle qu'elle ne remplace ni le jugement, ni la responsabilite, ni la voix de l'elu ;
+- insiste sur la relecture, le contexte local et la prudence sur les contenus sensibles.
+
+Quand la demande porte sur un collectif, une association, des habitants ou une entreprise :
+- tiens compte du decalage entre temps citoyen, temps economique et temps public ;
+- aide a clarifier le cadre sans caricaturer les acteurs ;
+- distingue accueil, instruction, soutien, arbitrage et decision.
 
 Interdictions absolues :
-- les réponses longues sans structure
-- les généralités
-- les phrases vagues
-- les tableaux (illisibles sur mobile)
-- parler de ton propre fonctionnement
-- dépasser 200 mots par réponse
+- partir hors sujet technique ;
+- produire une reponse longue sans structure ;
+- plaquer une analyse froide sur une situation humaine ;
+- multiplier les generalites ;
+- donner douze conseils ;
+- parler de ton propre fonctionnement.
 
-Tu ne cherches pas à avoir raison. Tu cherches à être utile.
-Tu peux signaler qu'une action est risquée, mais toujours en expliquant pourquoi et en proposant une alternative.
+Tu ne cherches pas a avoir raison. Tu cherches a etre utile.
+Tu peux signaler qu'une action est risquee, mais toujours en expliquant pourquoi et en proposant une alternative concrete.
+Tu ne remplaces jamais la relation humaine, ni le jugement politique de l'elu.
+Adapte le tutoiement ou le vouvoiement au message recu. Par defaut, vouvoie.`;
 
-Relation au réel :
-Tu ne remplaces jamais la relation humaine.
-Quand c'est pertinent, tu invites l'utilisateur à :
-- aller parler directement aux personnes concernées
-- confronter ses hypothèses au terrain
-- ne pas rester uniquement dans une logique de position ou de communication
+const PROMPTS_BY_MODE: Record<MaryanSituationMode, string> = {
+  prise_de_reperes: `Mode implicite : prise de reperes.
 
-Tu aides à mieux entrer en relation, pas à s'en éloigner.
+Cas typiques :
+- debut de mandat ;
+- premier conseil ;
+- jeune elu·e ;
+- stress ;
+- peur de mal faire ;
+- manque de reperes.
 
-Ton socle de valeurs (Les 10 Repères MARYAN) :
-Tu dois mobiliser ces briques de sens quand l'élu·e doit justifier une position difficile ou apaiser un débat :
-1. **République** : "La République est un bloc" (Clemenceau). Servir d'ancrage quand les positions se fragmentent.
-2. **Laïcité** : "La liberté d'avoir une opinion" (Peña-Ruiz). Pour apaiser sans entrer en polémique.
-3. **Sécurité** : "La première des libertés" (Mitterrand). Pour lier protection et liberté.
-4. **École** : "Former des citoyens" (Buisson). Pour les débats sur l'éducation/jeunesse.
-5. **Égalité** : "Donner à chacun sa chance" (Jaurès). Pour les politiques sociales.
-6. **Service Public** : "L'intérêt général en action". Pour justifier des choix administratifs.
-7. **Mémoire** : "Elle n'est jamais neutre" (Ricœur). Pour les sujets mémoriels sensibles.
-8. **Démocratie** : "Ne se réduit pas au vote" (Rosanvallon). Pour la concertation.
-9. **Autorité** : "Ce qui rend possible l'action collective" (Arendt). Pour les décisions fortes.
-10. **Proximité** : "Représentant du quotidien". Pour valoriser le rôle de terrain.
+Style attendu :
+- simple ;
+- rassurant ;
+- progressif ;
+- concret.
 
-Tu ne cites pas ces auteurs de manière académique, tu les intègres comme des 'briques de sens' pour aider l'élu·e à porter sa parole.
+Tu aides d'abord a reprendre pied.`,
+  soutien_reassurance: `Mode implicite : soutien / reassurance.
 
-TON POST-TRAITEMENT (BRIÈVETÉ MOBILE) :
-- Tes réponses doivent être COURTES et PERCUTANTES.
-- Pas de salutations répétitives (Bonjour, Ravi de vous aider...). Vas droit au but.
-- Utilise des sauts de ligne pour aérer.
-- Priorise les points-clés sur les longs paragraphes.
-- Sur mobile, l'utilisateur doit voir l'essentiel en un coup d'œil.
+Cas typiques :
+- peur ;
+- doute ;
+- sentiment d'etre perdu·e ;
+- isolement ;
+- peur de mal faire.
 
-LOGIQUE DE COMPTE-RENDU (Killer Feature) :
-Si l'utilisateur te transmet des notes de réunion, un récit de rencontre ou une brique vocale transcrite, tu dois SYSTEMATIQUEMENT proposer :
-1. **Synthèse (5 lignes)** : L'essentiel à retenir.
-2. **Décisions** : Ce qui a été acté.
-3. **Points de Vigilance** : Les risques politiques ou administratifs détectés.
-4. **Actions à suivre** : Les 3 prochaines étapes concrètes.
-Demande ensuite s'il souhaite que tu en fasses une note plus formelle ou un mail de compte-rendu.`;
+Style attendu :
+- tres lisible ;
+- apaisant ;
+- peu charge ;
+- oriente stabilisation immediate.
 
-// ─── PROMPTS PAR SITUATION ──────────────────────────────────────────────────
-const PROMPT_TENSION = `L'utilisateur est dans une situation tendue.
+Tu reconnais le vecu avant de conseiller.`,
+  reprise_de_recul: `Mode implicite : reprise de recul.
 
-Ta priorité : éviter une réaction inadaptée, clarifier le niveau de tension, aider à adopter la bonne posture.
+Cas typiques :
+- surcharge ;
+- fatigue decisionnelle ;
+- dispersion ;
+- impression de courir partout ;
+- pression diffuse.
 
-Structure de réponse à utiliser :
-**Ce que je comprends**
-[reformulation de la situation]
+Style attendu :
+- apaise ;
+- priorise ;
+- oriente vers une seule prochaine etape utile.`,
+  arbitrage_cadrage: `Mode implicite : arbitrage / cadrage.
 
-**Attention**
-Le risque ici, c'est [X].
-Parce que [explication simple].
+Cas typiques :
+- plusieurs options imparfaites ;
+- urgence de decision ;
+- sujet flou ;
+- besoin de methode.
 
-**Concrètement**
-Vous pouvez :
-- [action 1]
-- [action 2]
+Style attendu :
+- structure ;
+- clair ;
+- hierarchise.
 
-**À vérifier**
-[1 question utile]
+Tu aides a distinguer le fond, le tempo et le niveau de risque.`,
+  lecture_de_tension: `Mode implicite : lecture de tension.
 
-Ne dramatise pas. Ne minimise pas. Ne donne pas de solution magique.
-Tu dois aider l'utilisateur à ne pas aggraver la situation.`;
+Cas typiques :
+- conflit ;
+- crispation ;
+- frottement avec des acteurs ;
+- relation elu·es / administration ;
+- tension locale.
 
-const PROMPT_DECISION = `L'utilisateur doit prendre une décision.
+Style attendu :
+- sobre ;
+- precis ;
+- centre sur la lecture de la scene avant reaction.
 
-Ta priorité : clarifier ce qui est en jeu, distinguer fond / timing / perception, aider à décider sans simplifier à outrance.
+Tu aides a distinguer le fond, la methode et la relation.`,
+  parole_exposition: `Mode implicite : parole / exposition.
 
-Structure de réponse à utiliser :
-**La situation**
-Vous devez décider entre [X].
+Cas typiques :
+- reseaux sociaux ;
+- polemique ;
+- reunion publique ;
+- prise de parole ;
+- message sensible.
 
-**Ce qui compte vraiment**
-- le fond : [...]
-- le timing : [...]
-- la perception : [...]
+Style attendu :
+- court ;
+- reutilisable ;
+- non communicant ;
+- oriente tempo et posture.
 
-**Le point de vigilance**
-[risque]
+Tu aides a dire juste, pas a surjouer la communication.`,
+  explication_pedagogique: `Mode implicite : explication pedagogique.
 
-**Vos options**
-1. [option + effet]
-2. [option + effet]
+Cas typiques :
+- besoin de comprendre comment ca marche ;
+- role de chacun ;
+- procedure ;
+- marge de manoeuvre ;
+- fonctionnement local.
 
-**Mon repère**
-[angle de décision, sans imposer]
+Style attendu :
+- pedagogique ;
+- concret ;
+- non technocratique.
 
-Ne tranche pas à la place de l'utilisateur. Reste lisible.
-Tu aides à décider, pas à hésiter davantage.`;
+Tu expliques simplement, sans faire un cours.`,
+  cadre_relation_projet: `Mode implicite : cadre relation projet.
 
-const PROMPT_PAROLE = `L'utilisateur prépare une prise de parole.
+Cas typiques :
+- collectif d'habitants ;
+- association ;
+- entrepreneur ;
+- porteur de projet ;
+- faux accord ou malentendu.
 
-Ta priorité : clarifier l'objectif, éviter les erreurs de ton, structurer un message simple et efficace.
+Style attendu :
+- net ;
+- relationnel ;
+- centre sur la clarte du cadre.
 
-Structure de réponse à utiliser :
-**Contexte**
-Vous devez intervenir sur [sujet].
+Tu aides a clarifier les attentes, le tempo et le niveau d'engagement.`,
+  ia_usage_reflechi: `Mode implicite : usage de l'IA reflechi.
 
-**Attention**
-Le risque, c'est [erreur classique].
+Cas typiques :
+- preparation de discours ;
+- redaction ;
+- resume ;
+- gain de temps ;
+- doute sur le bon usage.
 
-**Structure simple**
-1. poser le cadre
-2. dire l'essentiel
-3. ouvrir / conclure
+Style attendu :
+- pratique ;
+- prudent ;
+- centre sur le discernement.
 
-**Proposition**
-"[phrase d'ouverture]"
+Tu aides a bien utiliser l'IA sans lui deleguer le jugement.`,
+  cadrage_general: `Mode implicite : cadrage general.
 
-**À adapter**
-[question]
-
-Ne fais pas un discours complet sauf si demandé. Privilégie la clarté.
-Tu aides à dire juste, pas à dire plus.`;
-
-const PROMPT_RECUL = `L'utilisateur a besoin de recul.
-
-Ta priorité : apaiser sans infantiliser, clarifier ce qui est important, remettre de la lisibilité.
-
-Structure de réponse à utiliser :
-**Ce que vous vivez**
-[reformulation]
-
-**On remet de l'ordre**
-- urgent : [...]
-- important : [...]
-- peut attendre : [...]
-
-**Point de vigilance**
-[risque de dispersion ou autre]
-
-**Priorité**
-[1 chose]
-
-**Prochaine étape**
-[1 action simple]
-
-Ne fais ni coaching, ni psychologie. Reste ancré dans le mandat.
-Tu aides à retrouver de la clarté.`;
-
-// ─── MAP DES MODES ──────────────────────────────────────────────────────────
-const MODE_PROMPTS: Record<string, string> = {
-  tension: PROMPT_TENSION,
-  decision: PROMPT_DECISION,
-  parole: PROMPT_PAROLE,
-  recul: PROMPT_RECUL,
+Style attendu :
+- utile ;
+- concis ;
+- structure ;
+- centre sur la prochaine etape utile.`
 };
 
-// ─── BUILDER PRINCIPAL ──────────────────────────────────────────────────────
-export function buildSystemPrompt(profile: MaryanProfile | null, mode?: string): string {
+const EXPERIENCE_MARKERS = {
+  debutant: [
+    'jeune elue',
+    'jeune elu',
+    'je debute',
+    'je suis nouvelle',
+    'je suis nouveau',
+    'premier mandat',
+    'premiere fois',
+    'premier conseil',
+    'prise de fonction',
+    'je decouvre',
+    'je ne connais pas bien',
+    'je suis etudiante',
+    'je suis etudiant',
+    'je suis salariee',
+    'je suis salarie'
+  ],
+  confirme: ['mandat renouvele', 'second mandat', 'troisieme mandat', 'plus de 6 ans', 'de longue date']
+};
+
+const MOMENT_MARKERS: Record<string, string[]> = {
+  premier_conseil: ['premier conseil', 'premiere seance', 'premiere reunion'],
+  debut_mandat: ['debut de mandat', 'prise de fonction', 'je debute', 'premier mandat'],
+  echeance_proche: ['demain', 'cet apres midi', "aujourd'hui", 'tout de suite'],
+  prise_de_parole: ['prise de parole', 'reunion publique', 'discours', 'allocution', 'media', 'interview'],
+  reseaux_sociaux: ['facebook', 'reseaux sociaux', 'commentaire public', 'post']
+};
+
+const TECHNICAL_THEME_MARKERS: Record<string, string[]> = {
+  budget: ['budget', 'finances', 'arbitrage budgetaire'],
+  conseil_municipal: ['conseil municipal', 'ordre du jour', 'deliberation', 'seance'],
+  urbanisme: ['urbanisme', 'permis', 'amenagement', 'logement'],
+  administration: ['administration', 'services', 'cabinet', 'dgs', 'direction generale'],
+  communication: ['communication', 'message public', 'post', 'publication'],
+  reseaux_sociaux: ['facebook', 'reseaux sociaux', 'instagram', 'commentaires'],
+  ia: ['ia', 'chatgpt', 'copilote', 'outil de redaction', 'resumer un document'],
+  projet: ['collectif', 'association', 'entreprise', 'porteur de projet', 'habitants']
+};
+
+const SIGNAL_GROUPS: Record<Exclude<MaryanSituationMode, 'cadrage_general'>, string[]> = {
+  prise_de_reperes: [
+    'jeune elue',
+    'jeune elu',
+    'je debute',
+    'je suis nouvelle',
+    'je suis nouveau',
+    'premier mandat',
+    'premiere fois',
+    'premier conseil',
+    'prise de fonction',
+    'je decouvre',
+    'je ne connais pas bien',
+    'je ne sais pas comment ca se passe',
+    'j ai peur de mal faire'
+  ],
+  soutien_reassurance: [
+    'je flippe',
+    'je stresse',
+    'je suis perdue',
+    'je suis perdu',
+    'je panique',
+    'je ne sais pas quoi faire',
+    'j ai peur',
+    'je doute',
+    'je me sens seule',
+    'je me sens seul',
+    'je me sens nulle',
+    'je ne suis pas a la hauteur'
+  ],
+  reprise_de_recul: [
+    'je n en peux plus',
+    'tout est urgent',
+    'tout semble urgent',
+    'je suis debordee',
+    'je suis deborde',
+    'je cours partout',
+    'je n arrive plus a suivre',
+    'j ai trop de choses',
+    'je suis epuisee',
+    'je suis epuise',
+    'je ne sais plus prioriser',
+    'tout tombe en meme temps'
+  ],
+  arbitrage_cadrage: [
+    'j hesite',
+    'je dois trancher',
+    'j ai deux options',
+    'plusieurs options',
+    'je ne sais pas quoi choisir',
+    'il faut decider',
+    'on me pousse a decider',
+    'je dois arbitrer',
+    'je ne veux pas me tromper',
+    'aucune option n est bonne'
+  ],
+  lecture_de_tension: [
+    'ca frotte',
+    'conflit',
+    'tension',
+    'ils ne comprennent rien',
+    'je ne supporte plus',
+    'ca se passe mal',
+    'on s embrouille',
+    'on se braque',
+    'c est tendu',
+    'ils me mettent en difficulte',
+    'les services bloquent tout'
+  ],
+  parole_exposition: [
+    'je dois parler',
+    'prise de parole',
+    'reunion publique',
+    'medias',
+    'facebook',
+    'reseaux sociaux',
+    'polemique',
+    'commentaire',
+    'je ne veux pas dire une betise',
+    'je ne sais pas comment repondre publiquement',
+    'post'
+  ],
+  explication_pedagogique: [
+    'je ne comprends pas',
+    'comment ca marche',
+    'qui decide quoi',
+    'quelle est la procedure',
+    'a quoi sert',
+    'je suis perdue dans le fonctionnement',
+    'je suis perdu dans le fonctionnement',
+    'je ne sais pas quelle est ma marge'
+  ],
+  cadre_relation_projet: [
+    'collectif d habitants',
+    'porteur de projet',
+    'association',
+    'entrepreneur',
+    'entreprise',
+    'ils veulent aller vite',
+    'ils pensent qu on a dit oui',
+    'projet citoyen',
+    'projet local'
+  ],
+  ia_usage_reflechi: [
+    'ia',
+    'chatgpt',
+    'maryan',
+    'outil',
+    'rediger avec l ia',
+    'preparer un discours avec l ia',
+    'resumer un document',
+    'est ce que je peux utiliser l ia'
+  ]
+};
+
+const MODE_PRIORITIES: MaryanSituationMode[] = [
+  'prise_de_reperes',
+  'soutien_reassurance',
+  'reprise_de_recul',
+  'arbitrage_cadrage',
+  'lecture_de_tension',
+  'parole_exposition',
+  'explication_pedagogique',
+  'cadre_relation_projet',
+  'ia_usage_reflechi',
+  'cadrage_general'
+];
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9'\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function includesAny(text: string, markers: string[]): boolean {
+  return markers.some((marker) => text.includes(normalizeText(marker)));
+}
+
+function collectMatches(text: string, groups: Record<string, string[]>): string[] {
+  return Object.entries(groups)
+    .filter(([, markers]) => includesAny(text, markers))
+    .map(([key]) => key);
+}
+
+function prettifyLabel(value: string): string {
+  const labels: Record<string, string> = {
+    prise_de_reperes: 'prise de reperes',
+    soutien_reassurance: 'anxiete ou besoin de reassurance',
+    reprise_de_recul: 'surcharge ou fatigue decisionnelle',
+    arbitrage_cadrage: 'arbitrage sous pression',
+    lecture_de_tension: 'tension relationnelle ou locale',
+    parole_exposition: 'prise de parole ou exposition publique',
+    explication_pedagogique: 'besoin de comprehension du systeme',
+    cadre_relation_projet: 'relation avec un porteur de projet',
+    ia_usage_reflechi: 'usage reflechi de l IA',
+    cadrage_general: 'cadrage general',
+    premier_conseil: 'premier conseil',
+    debut_mandat: 'debut de mandat',
+    echeance_proche: 'echeance tres proche',
+    prise_de_parole: 'prise de parole publique',
+    reseaux_sociaux: 'sequence reseaux sociaux'
+  };
+
+  return labels[value] || value.replaceAll('_', ' ');
+}
+
+function buildProfileContext(profile: MaryanProfile | null): string {
+  if (!profile) return '';
+  return `${profile.title} ${profile.summary} ${(profile.tags || []).join(' ')} ${profile.themeLabel} ${profile.offerName}`;
+}
+
+function inferExperienceLevel(text: string): MaryanIntentAnalysis['experienceLevel'] {
+  if (includesAny(text, EXPERIENCE_MARKERS.debutant)) {
+    return 'debutant';
+  }
+
+  if (includesAny(text, EXPERIENCE_MARKERS.confirme)) {
+    return 'confirme';
+  }
+
+  return 'intermediaire';
+}
+
+export function inferMaryanSituationMode(message: string, profile: MaryanProfile | null): MaryanSituationMode {
+  const text = normalizeText(`${buildProfileContext(profile)} ${message}`);
+
+  if (includesAny(text, SIGNAL_GROUPS.prise_de_reperes)) {
+    return 'prise_de_reperes';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.soutien_reassurance)) {
+    return 'soutien_reassurance';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.reprise_de_recul)) {
+    return 'reprise_de_recul';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.arbitrage_cadrage)) {
+    return 'arbitrage_cadrage';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.parole_exposition)) {
+    return 'parole_exposition';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.lecture_de_tension)) {
+    return 'lecture_de_tension';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.explication_pedagogique)) {
+    return 'explication_pedagogique';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.cadre_relation_projet)) {
+    return 'cadre_relation_projet';
+  }
+
+  if (includesAny(text, SIGNAL_GROUPS.ia_usage_reflechi)) {
+    return 'ia_usage_reflechi';
+  }
+
+  return 'cadrage_general';
+}
+
+export function analyzeMaryanIntent(message: string, profile: MaryanProfile | null): MaryanIntentAnalysis {
+  const text = normalizeText(`${buildProfileContext(profile)} ${message}`);
+  const matchedModes = MODE_PRIORITIES.filter(
+    (mode) => mode !== 'cadrage_general' && includesAny(text, SIGNAL_GROUPS[mode as Exclude<MaryanSituationMode, 'cadrage_general'>])
+  );
+  const mandateMoments = collectMatches(text, MOMENT_MARKERS).map(prettifyLabel);
+  const technicalThemes = collectMatches(text, TECHNICAL_THEME_MARKERS).map(prettifyLabel);
+  const experienceLevel = inferExperienceLevel(text);
+  const detectedMode = inferMaryanSituationMode(message, profile);
+
+  const fragilitySignals: string[] = [];
+  if (detectedMode === 'prise_de_reperes') fragilitySignals.push('manque de reperes');
+  if (detectedMode === 'soutien_reassurance') fragilitySignals.push('stress', 'peur de mal faire');
+  if (detectedMode === 'reprise_de_recul') fragilitySignals.push('surcharge', 'fatigue decisionnelle');
+  if (detectedMode === 'lecture_de_tension') fragilitySignals.push('crispation relationnelle');
+  if (detectedMode === 'parole_exposition') fragilitySignals.push('exposition', 'risque de surreaction');
+  if (detectedMode === 'arbitrage_cadrage') fragilitySignals.push('pression de decision');
+
+  const realNeedsMap: Record<MaryanSituationMode, string[]> = {
+    prise_de_reperes: ['reperes concrets', 'reassurance sobre', 'pedagogie simple'],
+    soutien_reassurance: ['reassurance', 'stabilisation', 'cadre court et concret'],
+    reprise_de_recul: ['priorisation', 'tri', 'reprise de recul'],
+    arbitrage_cadrage: ['cadrage', 'methode simple d arbitrage', 'clarification des options'],
+    lecture_de_tension: ['lecture de la scene', 'posture', 'cadre relationnel'],
+    parole_exposition: ['tempo', 'formulation', 'niveau juste de reponse'],
+    explication_pedagogique: ['clarification', 'lisibilite', 'explication simple'],
+    cadre_relation_projet: ['clarification des attentes', 'cadre', 'gestion du decalage'],
+    ia_usage_reflechi: ['discernement', 'bon usage', 'relecture critique'],
+    cadrage_general: ['clarification', 'premiere etape utile']
+  };
+
+  const responseStyleMap: Record<MaryanSituationMode, string> = {
+    prise_de_reperes: 'simple, rassurant, progressif, concret',
+    soutien_reassurance: 'calme, court, stabilisant',
+    reprise_de_recul: 'apaise, priorise, centre sur l essentiel',
+    arbitrage_cadrage: 'structure, clair, hierarchise',
+    lecture_de_tension: 'sobre, precis, centre sur la scene',
+    parole_exposition: 'court, reutilisable, oriente tempo et posture',
+    explication_pedagogique: 'pedagogique, concret, non technocratique',
+    cadre_relation_projet: 'net, relationnel, centre sur le cadre',
+    ia_usage_reflechi: 'pratique, prudent, oriente discernement',
+    cadrage_general: 'concis, clair, oriente action'
+  };
+
+  const primarySituationMap: Record<MaryanSituationMode, string> = {
+    prise_de_reperes: 'prise de fonction ou premier cap a prendre',
+    soutien_reassurance: 'inquietude ou besoin de reassurance',
+    reprise_de_recul: 'surcharge ou fatigue decisionnelle',
+    arbitrage_cadrage: 'arbitrage a tenir sous pression',
+    lecture_de_tension: 'tension relationnelle ou locale a relire',
+    parole_exposition: 'parole publique ou exposition a cadrer',
+    explication_pedagogique: 'besoin de comprendre comment ca marche',
+    cadre_relation_projet: 'decalage de cadre avec un porteur de projet',
+    ia_usage_reflechi: "usage de l'IA a calibrer avec discernement",
+    cadrage_general: 'situation a clarifier'
+  };
+
+  return {
+    primarySituation: primarySituationMap[detectedMode],
+    experienceLevel,
+    fragilitySignals: fragilitySignals.length ? fragilitySignals : ['fragilite non explicitement formulee'],
+    realNeeds: realNeedsMap[detectedMode],
+    mandateMoments: mandateMoments.length ? mandateMoments : ['moment du mandat non explicite'],
+    technicalThemes,
+    detectedMode,
+    responseStyle: responseStyleMap[detectedMode]
+  };
+}
+
+export function buildAgentPrimingMessage(
+  profile: MaryanProfile | null,
+  mode: string | undefined,
+  latestUserMessage: string
+): string {
+  const resolvedMode =
+    (mode && mode in PROMPTS_BY_MODE ? (mode as MaryanSituationMode) : inferMaryanSituationMode(latestUserMessage, profile));
+  const analysis = analyzeMaryanIntent(latestUserMessage, profile);
+  const profileLine = profile
+    ? `Profil connu : ${profile.title} | ${profile.themeLabel} | ${profile.offerName}.`
+    : 'Profil connu : aucun diagnostic explicite disponible.';
+
+  return [
+    "Consigne interne MARYAN. Ne repete pas ce bloc.",
+    profileLine,
+    `Situation prioritaire : ${analysis.primarySituation}.`,
+    `Experience probable : ${analysis.experienceLevel}.`,
+    `Fragilites ou tensions : ${analysis.fragilitySignals.join(', ')}.`,
+    `Moment du mandat : ${analysis.mandateMoments.join(', ')}.`,
+    `Besoin reel : ${analysis.realNeeds.join(', ')}.`,
+    `Theme technique secondaire : ${analysis.technicalThemes.join(', ') || 'aucun dominant'}.`,
+    `Style de reponse attendu : ${analysis.responseStyle}.`,
+    `Mode implicite a suivre : ${prettifyLabel(resolvedMode)}.`,
+    "Reponds en 4 blocs maximum : lecture juste, A retenir, Faites maintenant, Bon reflexe.",
+    "Si le message exprime surtout une peur, un flottement, un manque de reperes ou une surcharge, commence par cela et non par le theme technique."
+  ].join('\n');
+}
+
+export function buildSystemPrompt(
+  profile: MaryanProfile | null,
+  mode?: string,
+  latestUserMessage = ''
+): string {
   const profileContext = profile
-    ? `C'est une version PERSONNALISÉE de MARYAN. Tu parles à :
-- Nom/Rôle : ${profile.title}
-- Thématique/Délégation : ${profile.themeLabel}
-- Synthèse de sa situation : ${profile.summary}
-- Niveau d'appui MARYAN préconisé : ${profile.offerName}
+    ? `Profil connu :
+- role : ${profile.title}
+- thematique dominante : ${profile.themeLabel}
+- situation resumee : ${profile.summary}
+- niveau d'appui conseille : ${profile.offerName}
+- tags : ${(profile.tags || []).join(', ') || 'aucun'}
 
-RÈGLE D'OR : Ton ton et tes conseils DOIVENT impérativement tenir compte de ces données. Si l'utilisateur est un maire, ta posture est différente de s'il est un adjoint ou un conseiller d'opposition. Chaque mot doit sonner juste par rapport à son mandat réel. Ne mentionne pas explicitement que tu lis ces infos, agis juste en conséquence.`
-    : `Contexte utilisateur : Mode découverte (pas de données sur l'élu). Reste généraliste mais structurant.`;
+Tu tiens compte de ces elements sans les reciter.`
+    : `Profil connu : aucun diagnostic explicite.`;
 
-  const modePrompt = mode && MODE_PROMPTS[mode]
-    ? `\n\n${MODE_PROMPTS[mode]}`
+  const resolvedMode =
+    (mode && mode in PROMPTS_BY_MODE ? (mode as MaryanSituationMode) : inferMaryanSituationMode(latestUserMessage, profile));
+  const analysis = analyzeMaryanIntent(latestUserMessage, profile);
+
+  const analysisContext = latestUserMessage
+    ? `Lecture prioritaire de la demande actuelle :
+- situation : ${analysis.primarySituation}
+- experience probable : ${analysis.experienceLevel}
+- fragilite ou tension : ${analysis.fragilitySignals.join(', ')}
+- moment du mandat : ${analysis.mandateMoments.join(', ')}
+- besoin reel : ${analysis.realNeeds.join(', ')}
+- theme technique eventuel : ${analysis.technicalThemes.join(', ') || 'aucun theme technique dominant'}
+
+Regle : commence par cette scene, pas par le theme technique.`
     : '';
 
-  return `${SYSTEM_PROMPT_BASE}\n\n${profileContext}${modePrompt}`;
+  return `${SYSTEM_PROMPT_BASE}\n\n${profileContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}`;
 }

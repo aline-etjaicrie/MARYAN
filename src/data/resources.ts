@@ -47,7 +47,7 @@ export const maryanResources: MaryanResource[] = [
     actions: [
       "Identifier les leviers réels de votre position.",
       "Ajuster vos attentes à votre place institutionnelle.",
-      "Choisir une manière d’être utile cohérente with votre rôle."
+      "Choisir une manière d’être utile cohérente avec votre rôle."
     ],
     reflex: "La bonne posture ne consiste pas à imiter l’autre camp, mais à habiter lucidement sa place.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition"],
@@ -177,7 +177,7 @@ export const maryanResources: MaryanResource[] = [
   },
   {
     id: "comment-se-prend-une-decision-dans-une-commune",
-    title: "Comment se prend une decision dans une commune",
+    title: "Comment se prend une décision dans une commune",
     slug: "comment-se-prend-une-decision-dans-une-commune",
     pillar: "comprendre",
     format: "guide",
@@ -701,151 +701,188 @@ export const maryanResources: MaryanResource[] = [
     priority: "moyenne"
   },
   {
-    id: "accompagner-projet-citoyen",
+    id: "accompagner-un-projet-citoyen-sans-letouffer-ni-promettre-trop-vite",
     title: "Accompagner un projet citoyen sans l’étouffer ni promettre trop vite",
-    slug: "accompagner-un-projet-citoyen-sans-l-etouffer-ni-promettre-trop-vite",
+    slug: "accompagner-un-projet-citoyen-sans-letouffer-ni-promettre-trop-vite",
     pillar: "agir",
     format: "fiche",
-    promise: "Accueillir l’énergie citoyenne avec sérieux sans créer de faux espoirs.",
-    intro: "Un projet citoyen arrive souvent avec de l’énergie, de la sincérité, une envie d’agir et parfois un vrai bénéfice pour le territoire. C’est une richesse. Mais ce n’est pas parce qu’un projet est sympathique, mobilisateur ou porteur de sens qu’il peut être soutenu immédiatement, tel quel, ou par la collectivité.",
+    promise: "Accueillir une initiative citoyenne avec sérieux, sans casser l’élan ni créer de faux accords.",
+    intro: "Un projet citoyen arrive souvent avec de l’énergie, de la sincérité, une envie d’agir et parfois un vrai bénéfice pour le territoire. C’est une richesse. Mais ce n’est pas parce qu’un projet est sympathique, mobilisateur ou porteur de sens qu’il peut être soutenu immédiatement, tel quel, ou par la collectivité. Le rôle de l’élu n’est pas de refroidir l’initiative. Il n’est pas non plus de valider trop vite pour ne pas décevoir. Il est d’accueillir le projet sérieusement, de clarifier le cadre, et d’éviter les faux accords.",
     understand: [
-      "L’élu doit accueillir sans valider trop vite pour ne pas décevoir.",
-      "Un projet citoyen a besoin de reconnaissance, mais aussi de lisibilité.",
-      "S’il reçoit seulement de l’écoute sans cadre, il finit par se heurter à de la frustration."
+      "Un projet citoyen a souvent besoin à la fois de reconnaissance et de lisibilité.",
+      "L’écoute seule ne suffit pas si le cadre n’est pas explicité.",
+      "Encourager un projet ne signifie pas encore l’engager politiquement ou administrativement."
     ],
     commonTrap: "Confondre écoute, encouragement et engagement réel de la collectivité.",
     actions: [
-      "Reconnaître la valeur sans promettre trop vite.",
-      "Clarifier ce qui relève de l’écoute, du soutien, de l’autorisation ou du financement.",
-      "Dire rapidement ce qui doit être précisé pour un examen sérieux."
+      "Reconnaître la valeur ou l’intérêt du projet sans promettre trop vite.",
+      "Clarifier ce qui relève de l’écoute, du soutien possible, de l’autorisation, du financement ou du partenariat.",
+      "Dire rapidement ce qui doit être précisé pour que le projet puisse être regardé sérieusement."
     ],
     reflex: "Un projet citoyen a besoin d’écoute, mais aussi de cadre. L’un sans l’autre produit vite de la déception.",
-    sensitiveNote: "Si le collectif est déjà mobilisé publiquement, mieux vaut une réponse honnête et structurée qu’une ouverture vague vécue comme une trahison.",
+    sensitiveNote: "Si le collectif est déjà mobilisé publiquement, mieux vaut une réponse honnête et structurée qu’une ouverture vague qui sera ensuite vécue comme une trahison.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
-    diagnosticProfiles: ["gouvernance", "tension_relationnelle", "besoin_methode"],
-    useCases: ["projet_citoyen", "participation", "cadre"],
-    tags: ["projet citoyen", "participation", "cadre", "tempo", "agir"],
-    ctaType: "offre_individuelle",
+    diagnosticProfiles: ["tension_relationnelle", "gouvernance", "besoin_methode", "exposition"],
+    useCases: ["projet_citoyen", "initiative_locale", "collectif_habitants", "relation_partenaire"],
+    tags: [
+      "projet citoyen",
+      "initiative",
+      "collectif",
+      "cadre",
+      "relation partenaires",
+      "écoute",
+      "engagement"
+    ],
+    ctaType: "formation_irl",
     irlPotential: true,
     priority: "haute"
   },
   {
-    id: "accompagner-projet-entreprise",
+    id: "accompagner-un-projet-dentreprise-sans-creer-de-faux-accords",
     title: "Accompagner un projet d’entreprise sans créer de faux accords",
-    slug: "accompagner-un-projet-d-entreprise-sans-creer-de-faux-accords",
+    slug: "accompagner-un-projet-dentreprise-sans-creer-de-faux-accords",
     pillar: "agir",
     format: "fiche",
-    promise: "Gérer le décalage de logiciel entre le temps de l'entreprise et celui de la collectivité.",
-    intro: "Un projet d’entreprise avance souvent avec une logique de délai, de faisabilité, de visibilité et de décision rapide. La collectivité, elle, doit regarder l’intérêt territorial, la cohérence publique, les impacts et l’équité. Le problème n’est pas que l’un ait raison, mais qu’ils n’ont pas le même logiciel du temps, du risque ni de la décision.",
+    promise: "Accueillir un projet économique avec clarté, sans entretenir d’ambiguïté sur le niveau réel d’engagement de la collectivité.",
+    intro: "Un projet d’entreprise avance souvent avec une logique de délai, de faisabilité, de visibilité et de décision rapide. Le porteur de projet veut savoir si c’est possible, dans quels délais, avec quels interlocuteurs et à quelles conditions. La collectivité, elle, doit regarder l’intérêt territorial, la cohérence avec le cadre public, les impacts, l’équité entre acteurs et les conditions réelles de mise en œuvre. Le problème n’est pas que l’un ait raison et l’autre tort. Le problème, c’est qu’ils n’ont pas le même logiciel du temps, du risque ni de la décision.",
     understand: [
-      "L'entreprise veut savoir : possible ? délais ? interlocuteurs ? conditions ?",
-      "La collectivité doit sécuriser l'intérêt général et le cadre légal.",
-      "L'absence de langage commun crée des malentendus stratégiques."
+      "Le porteur de projet économique cherche surtout de la lisibilité et du tempo.",
+      "La collectivité doit arbitrer dans un cadre plus large que la seule faisabilité du projet.",
+      "Une ouverture mal formulée peut être interprétée comme un accord en cours."
     ],
     commonTrap: "Donner des signes d’ouverture trop vagues, que le porteur de projet interprète comme un accord en cours.",
     actions: [
       "Distinguer clairement accueil, instruction, facilitation et décision.",
       "Expliciter les étapes, les délais et les limites.",
-      "Éviter toute ambiguïté sur le niveau réel d’engagement."
+      "Éviter toute ambiguïté sur le niveau réel d’engagement de la collectivité."
     ],
     reflex: "Avec un projet d’entreprise, la clarté vaut mieux qu’une bienveillance floue.",
-    sensitiveNote: "Quand un porteur est pressé, évitez de répondre sous pression. Un cadrage plus lent mais clair évite des erreurs coûteuses.",
+    sensitiveNote: "Quand un porteur de projet est pressé, il faut éviter de répondre sous pression. Une réponse rapide mais imprécise peut coûter plus cher qu’un cadrage un peu plus lent mais clair.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
     experienceLevels: ["intermediaire", "confirme"],
-    diagnosticProfiles: ["gouvernance", "besoin_methode", "arbitrage"],
-    useCases: ["projet_entreprise", "economie", "cadre"],
-    tags: ["projet entreprise", "économie", "cadre", "tempo", "agir"],
-    ctaType: "offre_individuelle",
+    diagnosticProfiles: ["gouvernance", "besoin_methode", "arbitrage", "tension_relationnelle"],
+    useCases: ["projet_entreprise", "developpement_economique", "implantation", "relation_partenaire"],
+    tags: [
+      "projet entreprise",
+      "développement économique",
+      "cadre",
+      "décision",
+      "tempo",
+      "engagement"
+    ],
+    ctaType: "offre_collectivite",
     irlPotential: true,
     priority: "haute"
   },
   {
-    id: "friction-porteur-projet-relire-probleme",
+    id: "quand-ca-frotte-avec-un-porteur-de-projet-relire-le-vrai-probleme",
     title: "Quand ça frotte avec un porteur de projet : relire le vrai problème",
     slug: "quand-ca-frotte-avec-un-porteur-de-projet-relire-le-vrai-probleme",
     pillar: "agir",
-    format: "fiche",
-    promise: "Distinguer le conflit de personne de la friction de méthode ou de tempo.",
-    intro: "Quand la relation se tend, le problème n’est pas toujours le projet lui-même. Souvent, la friction vient d’un décalage de temporalité, d’un flou sur qui décide, ou d’ambiguïtés sur les attentes implicites. Traiter la tension comme un simple problème de caractère fait passer à côté du vrai nœud.",
+    format: "guide",
+    promise: "Mieux lire les frictions avec un porteur de projet avant de les personnaliser ou de les durcir inutilement.",
+    intro: "Quand la relation se tend avec un porteur de projet, le problème n’est pas toujours le projet lui-même. Souvent, la friction vient d’autre chose : un décalage de temporalité, un flou sur qui décide, une ambiguïté sur ce qui a été dit, des attentes implicites, une différence de langage ou de culture, ou un niveau de maturité du projet mal évalué. Si on traite la tension comme un simple problème de caractère ou de bonne volonté, on passe à côté du vrai nœud.",
     understand: [
-      "Le décalage de tempo ou de culture est souvent la vraie cause du frottement.",
-      "L'ambiguïté sur ce qui a été dit nourrit la méfiance.",
-      "Nommer le vrai problème permet de sortir de la personnalisation."
+      "Le conflit apparent masque souvent un décalage de cadre, de temps ou de langage.",
+      "Une tension mal relue se personnalise très vite.",
+      "Revenir aux faits et aux engagements réels permet souvent de dégonfler la friction."
     ],
-    commonTrap: "Personnaliser trop vite le conflit : “ils sont impatients”, “la mairie bloque”.",
+    commonTrap: "Personnaliser trop vite le conflit : “ils sont impatients”, “ils ne comprennent rien”, “la mairie bloque”, “ils veulent forcer”.",
     actions: [
-      "Revenir aux faits, aux étapes et aux engagements pris.",
+      "Revenir aux faits, aux étapes et aux engagements réellement pris.",
       "Distinguer problème de cadre, de tempo, de langage ou de posture.",
-      "Reformuler clairement ce qui est possible et ce qui ne l'est pas."
+      "Reformuler clairement ce qui est possible, ce qui ne l’est pas, et ce qui reste ouvert."
     ],
     reflex: "Avant de gérer la tension, relisez le décalage entre les mondes en présence.",
-    sensitiveNote: "Quand la tension est émotionnelle, remettre du cadre avant de vouloir “réparer la relation”. L’apaisement sans clarté est fragile.",
+    sensitiveNote: "Quand la tension est déjà émotionnelle, mieux vaut remettre du cadre avant de vouloir “réparer la relation”. Sans clarification, l’apaisement reste fragile.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
     experienceLevels: ["intermediaire", "confirme"],
-    diagnosticProfiles: ["tension_relationnelle", "gouvernance", "besoin_methode"],
-    useCases: ["conflit", "porteur_projet", "gestion_de_crise"],
-    tags: ["conflit", "méthode", "relation", "cadre", "agir"],
+    diagnosticProfiles: ["tension_relationnelle", "gouvernance", "exposition", "besoin_methode"],
+    useCases: ["relation_partenaire", "tension", "projet_citoyen", "projet_entreprise"],
+    tags: [
+      "friction",
+      "porteur de projet",
+      "tension",
+      "cadre",
+      "tempo",
+      "langage",
+      "relation"
+    ],
     ctaType: "offre_individuelle",
     irlPotential: true,
     priority: "haute"
   },
   {
-    id: "clarifier-soutien-collectivite",
+    id: "clarifier-ce-que-la-collectivite-peut-soutenir-faciliter-ou-refuser",
     title: "Clarifier ce que la collectivité peut soutenir, faciliter ou refuser",
     slug: "clarifier-ce-que-la-collectivite-peut-soutenir-faciliter-ou-refuser",
     pillar: "agir",
     format: "repere",
-    promise: "Nommer les différents niveaux d'engagement pour éviter les malentendus de degré.",
-    intro: "Beaucoup de malentendus naissent du fait que la collectivité ne dit pas assez clairement à quel niveau elle se situe. Entre écouter, faciliter, soutenir politiquement, financer ou autoriser, il y a des différences majeures. Si ces niveaux ne sont pas clarifiés, chacun projette ce qu’il veut entendre.",
+    promise: "Nommer clairement le niveau d’implication possible de la collectivité pour éviter les malentendus.",
+    intro: "Beaucoup de malentendus naissent du fait que la collectivité ne dit pas assez clairement à quel niveau elle se situe. Or entre écouter un projet, l’orienter, le faciliter, le soutenir politiquement, le financer, l’autoriser ou le porter elle-même, il y a des différences majeures. Si ces niveaux ne sont pas clarifiés rapidement, chacun projette ce qu’il veut entendre.",
     understand: [
-      "Un accueil positif n'est pas un accord administratif automatique.",
-      "Le soutien politique et le soutien financier sont deux leviers distincts.",
-      "Le flou sur le degré d'engagement abîme plus la relation que le refus."
+      "Un accueil positif n’équivaut pas à un soutien politique ou administratif.",
+      "Tous les niveaux d’appui n’engagent pas la collectivité de la même manière.",
+      "Le flou sur le degré d’engagement abîme souvent plus que le refus."
     ],
-    commonTrap: "Laisser penser qu’un accueil positif vaut soutien, ou qu’un soutien relationnel vaut accord politique.",
+    commonTrap: "Laisser penser qu’un accueil positif vaut soutien, ou qu’un soutien relationnel vaut accord politique ou administratif.",
     actions: [
-      "Nommer explicitement le niveau d’implication possible.",
-      "Distinguer l'envisageable, le conditionnel et le prématuré.",
+      "Nommer explicitement le niveau d’implication possible de la collectivité.",
+      "Distinguer ce qui est envisageable, conditionnel, impossible ou prématuré.",
       "Reformuler le cadre à chaque étape importante."
     ],
     reflex: "Ce qui abîme souvent la relation, ce n’est pas le refus. C’est le flou sur le degré réel d’engagement.",
-    sensitiveNote: "En cas d'attente forte, mieux vaut nommer une limite claire que laisser grandir une interprétation erronée.",
+    sensitiveNote: "En cas d’attente forte ou de pression, mieux vaut nommer une limite claire que laisser grandir une interprétation erronée.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
-    diagnosticProfiles: ["gouvernance", "besoin_methode", "arbitrage"],
-    useCases: ["cadre_engagement", "soutien", "relation_partenaires"],
-    tags: ["engagement", "cadre", "relation", "agir"],
-    ctaType: "copilote",
+    diagnosticProfiles: ["besoin_methode", "gouvernance", "tension_relationnelle", "arbitrage"],
+    useCases: ["cadre", "engagement", "projet_citoyen", "projet_entreprise", "relation_partenaire"],
+    tags: [
+      "cadre",
+      "engagement",
+      "soutien",
+      "facilitation",
+      "refus",
+      "collectivité"
+    ],
+    ctaType: "formation_irl",
     irlPotential: true,
-    priority: "moyenne"
+    priority: "haute"
   },
   {
-    id: "relation-porteur-impatient",
+    id: "tenir-une-relation-constructive-avec-un-porteur-de-projet-impatient",
     title: "Tenir une relation constructive avec un porteur de projet impatient",
     slug: "tenir-une-relation-constructive-avec-un-porteur-de-projet-impatient",
     pillar: "agir",
     format: "fiche",
-    promise: "Apaiser l'urgence par la visibilité plutôt qu'en cédant sur le rythme.",
-    intro: "L’impatience d’un porteur de projet n’est pas toujours un problème de comportement. Elle peut traduire un besoin de visibilité, une contrainte économique ou une difficulté à lire le fonctionnement public. Le sujet est de ne pas se laisser contaminer par son rythme pour ne pas répondre dans de mauvaises conditions.",
+    promise: "Préserver une relation utile avec un porteur de projet pressé, sans céder à la précipitation ni au flou.",
+    intro: "L’impatience d’un porteur de projet n’est pas toujours un problème de comportement. Elle peut traduire un besoin de visibilité, une contrainte économique, une peur de l’enlisement, une difficulté à lire le fonctionnement public ou simplement une logique d’action différente. Le sujet n’est pas de céder à cette impatience. Le sujet est de ne pas la laisser dégrader la relation ou pousser la collectivité à répondre dans de mauvaises conditions.",
     understand: [
-      "L'impatience est souvent un signal de manque de repères.",
-      "Répondre sous pression dégrade la qualité de la décision.",
-      "La lisibilité du cadre apaise plus que les promesses d'accélération."
+      "L’impatience signale souvent un besoin de lisibilité, pas seulement une mauvaise posture.",
+      "Répondre dans le rythme de l’autre peut produire plus de flou que de solution.",
+      "Un cadre clair apaise souvent mieux que des promesses rapides."
     ],
     commonTrap: "Se laisser contaminer par le rythme de l’autre, puis répondre trop vite, trop sèchement ou trop flouement.",
     actions: [
-      "Reconnaître la demande de lisibilité sans promettre l'impossible.",
+      "Reconnaître la demande de lisibilité sans promettre ce qu’on ne tient pas.",
       "Poser un cadre de tempo réaliste.",
       "Donner des repères concrets sur les prochaines étapes."
     ],
     reflex: "On n’apaise pas l’impatience en promettant plus. On l’apaise en rendant le cadre plus lisible.",
-    sensitiveNote: "Si l’impatience devient pression publique, évitez la défensive. Revenez à la séquence, aux faits et au cadre.",
+    sensitiveNote: "Si l’impatience se transforme en pression ou en critique publique, il faut éviter la réaction défensive. Revenir à la séquence, aux faits et au cadre est souvent la meilleure manière de reprendre la main.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
     experienceLevels: ["intermediaire", "confirme"],
-    diagnosticProfiles: ["surcharge", "tension_relationnelle", "exposition"],
-    useCases: ["impatience", "tempo", "relation_partenaires"],
-    tags: ["impatience", "tempo", "relation", "cadre", "agir"],
+    diagnosticProfiles: ["tension_relationnelle", "exposition", "gouvernance", "arbitrage"],
+    useCases: ["relation_partenaire", "tempo", "pression", "projet_entreprise", "projet_citoyen"],
+    tags: [
+      "impatience",
+      "tempo",
+      "relation",
+      "cadre",
+      "lisibilité",
+      "porteur de projet"
+    ],
     ctaType: "offre_individuelle",
     irlPotential: true,
     priority: "moyenne"

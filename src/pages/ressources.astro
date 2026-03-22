@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
 import { maryanResources } from '../data/resources';
 import { maryanPaths } from '../data/paths';
+import { maryanSituations } from '../data/situations';
 
 const pillars = [
   { id: 'se_situer', label: 'Se Situer', icon: '📍', description: 'Repérer sa place et son rôle réel dans le mandat.' },
@@ -11,11 +12,8 @@ const pillars = [
   { id: 'se_proteger', label: 'Se Protéger', icon: '🛡️', description: 'Sécuriser sa pratique, sa parole et son endurance.' }
 ];
 
-const getResourcesByPillar = (pillarId: string) => 
+const getResourcesByPillar = (pillarId: string) =>
   maryanResources.filter(r => r.pillar === pillarId);
-
-// All unique use cases for filtering
-const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort();
 
 ---
 
@@ -96,7 +94,32 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
       </div>
     </section>
 
-    <!-- 4. PILLARS CONTENT -->
+    <!-- 4. SITUATIONS FRÉQUENTES -->
+    <section class="section-v3" style="background: var(--bg);">
+      <div class="container">
+        <header class="section-header-v4">
+          <span class="label-v3">Cas d'usage</span>
+          <h2 class="section-title-standard">Situations fréquentes</h2>
+          <p class="section-subtitle-v4">Accédez directement aux ressources par situation concrète.</p>
+        </header>
+
+        <div class="sit-grid">
+          {maryanSituations.map(sit => (
+            <button type="button" class="sit-card card-v3" onclick={`openSituation('${sit.id}')`}>
+              <div class="sit-card-content">
+                <h3 class="sit-title">{sit.title}</h3>
+                <p class="sit-desc">{sit.shortDescription}</p>
+                <div class="sit-footer">
+                  <span class="sit-link">Explorer la situation →</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PILLARS CONTENT -->
     {pillars.map(pillar => (
       <section class="section-v3" id={pillar.id} style="padding-top: 4rem;">
         <div class="container">
@@ -133,28 +156,6 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
       </section>
     ))}
 
-    <!-- 5. SITUATIONS FRÉQUENTES (USE CASES) -->
-    <section class="section-v3" style="background: var(--bg);">
-      <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Filtres</span>
-          <h2 class="section-title-standard">Situations fréquentes</h2>
-        </header>
-
-        <div class="usecases-grid">
-           {allUseCases.map(uc => {
-             const count = maryanResources.filter(r => r.useCases.includes(uc)).length;
-             return (
-               <a href={`#`} class="uc-pill" onclick={`filterByUseCase('${uc}'); return false;`}>
-                 <span class="uc-label">{uc.replace('_',' ')}</span>
-                 <span class="uc-count">{count}</span>
-               </a>
-             );
-           })}
-        </div>
-      </div>
-    </section>
-
     <!-- FINAL CTA -->
     <section class="section-v3">
       <div class="container">
@@ -181,7 +182,15 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
 
   </main>
 
-  <script is:inline define:vars={{ maryanResources, maryanPaths }}>
+  <!-- SITUATION MODAL -->
+  <div id="sitModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button type="button" class="modal-close" onclick="closeSituation()">×</button>
+      <div id="sitModalContent"></div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ maryanResources, maryanPaths, maryanSituations }}>
     // Personalization logic
     function getRecommendedResources(resources, profile, limit = 3) {
       return resources
@@ -248,13 +257,107 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
       }
     }
 
-    window.filterByUseCase = (uc) => {
-       const firstPillar = maryanResources.find(r => r.useCases.includes(uc))?.pillar;
-       if (firstPillar) {
-          const el = document.getElementById(firstPillar);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-       }
+    const ctaContent = {
+      copilote: {
+        label: 'Ouvrir le copilote',
+        href: '/copilote',
+        note: "Besoin d'un premier cadrage rapide sur cette situation ? Le copilote peut vous aider à faire un point."
+      },
+      offre_individuelle: {
+        label: "Découvrir l'offre individuelle",
+        href: '/offres#avancer',
+        note: "Si la situation demande un regard plus ajusté, MARYAN peut orienter vers un appui individuel."
+      },
+      offre_collectivite: {
+        label: "Voir l'offre collectivité",
+        href: '/offres#collectivites',
+        note: "Si le sujet dépasse un besoin individuel, un format collectivité peut être plus cohérent."
+      },
+      formation_irl: {
+        label: 'Découvrir les formations',
+        href: '/methode',
+        note: "Quand le besoin appelle un travail plus structuré, un appui ou une formation en présentiel peut être utile."
+      }
     };
+
+    // Situation Logic
+    window.openSituation = (id) => {
+      const sit = maryanSituations.find(s => s.id === id);
+      if (!sit) return;
+
+      const resources = sit.resourceIds.map(rid => maryanResources.find(r => r.id === rid)).filter(Boolean);
+      const paths = sit.pathIds.map(pid => maryanPaths.find(p => p.id === pid)).filter(Boolean);
+      const cta = ctaContent[sit.ctaType] || ctaContent.copilote;
+
+      const html = `
+        <div class="modal-header">
+          <span class="label-v3">Situation fréquente</span>
+          <h2 class="modal-title">${sit.title}</h2>
+          <p class="modal-intro">${sit.longDescription}</p>
+        </div>
+        
+        <div class="modal-body-grid">
+          <div class="modal-main">
+            <div class="modal-section">
+              <h3 class="modal-sub">Vos priorités :</h3>
+              <ul class="modal-list">
+                ${sit.priorities.map(p => `<li>${p}</li>`).join('')}
+              </ul>
+            </div>
+            
+            <div class="modal-section">
+              <h3 class="modal-sub">Ressources indispensables :</h3>
+              <div class="modal-res-grid">
+                ${resources.map(res => `
+                  <a href="/ressources/${res.slug}" class="modal-res-link">
+                    <span class="mini-format">${res.format}</span>
+                    <span class="mini-title">${res.title}</span>
+                  </a>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+          
+          <aside class="modal-aside">
+            ${paths.length > 0 ? `
+              <div class="modal-section">
+                <h3 class="modal-sub">Parcours lié :</h3>
+                ${paths.map(p => `
+                  <div class="aside-path-card">
+                    <h4>${p.title}</h4>
+                    <p>${p.promise}</p>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+            
+            <div class="modal-section">
+              <h3 class="modal-sub">Appui conseillé :</h3>
+              <div class="cta-mini-box">
+                <span class="cta-label">${sit.ctaType.replace('_', ' ')}</span>
+                <p>${cta.note}</p>
+                <a href="${cta.href}" class="btn-primary-v3 btn-tiny">${cta.label}</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      document.getElementById('sitModalContent').innerHTML = html;
+      document.getElementById('sitModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeSituation = () => {
+      document.getElementById('sitModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+
+    // Close on overlay click
+    document.getElementById('sitModal').onclick = (e) => {
+      if (e.target === document.getElementById('sitModal')) closeSituation();
+    };
+
   </script>
 
 </BaseLayout>
@@ -316,6 +419,62 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
   .pillar-icon-box { width: 48px; height: 48px; background: white; border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
   .pillar-title { font-size: 1.8rem; margin: 0; }
 
+  /* ─── SITUATIONS GRID ─── */
+  .sit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+  .sit-card { 
+    background: white; border: 1px solid var(--border); border-radius: 24px; padding: 2rem; 
+    text-align: left; cursor: pointer; transition: all 0.3s; 
+    display: flex; flex-direction: column; width: 100%;
+  }
+  .sit-card:hover { border-color: var(--neon); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+  .sit-title { font-size: 1.2rem; font-weight: 800; color: var(--deep); margin-bottom: 0.8rem; }
+  .sit-desc { font-size: 0.9rem; opacity: 0.7; line-height: 1.4; margin-bottom: 1.5rem; }
+  .sit-link { font-size: 0.8rem; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay { 
+    position: fixed; inset: 0; background: rgba(10, 25, 47, 0.8); 
+    backdrop-filter: blur(10px); z-index: 1000; 
+    display: flex; align-items: center; justify-content: center; padding: 2rem;
+  }
+  .modal-card { 
+    background: white; width: 100%; max-width: 900px; max-height: 90vh; 
+    border-radius: 32px; position: relative; overflow-y: auto; padding: 4rem;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+  }
+  .modal-close { 
+    position: absolute; top: 1.5rem; right: 1.5rem; 
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: var(--bg); font-size: 1.5rem; cursor: pointer; transition: 0.2s;
+  }
+  .modal-close:hover { background: var(--red); color: white; }
+  
+  .modal-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+  .modal-intro { font-size: 1.1rem; opacity: 0.8; line-height: 1.5; margin-bottom: 3rem; }
+  
+  .modal-body-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 4rem; }
+  .modal-sub { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--red); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
+  .modal-list { list-style: none; padding: 0; margin-bottom: 3rem; }
+  .modal-list li { position: relative; padding-left: 1.5rem; font-size: 1rem; font-weight: 600; margin-bottom: 0.8rem; }
+  .modal-list li::before { content: "✓"; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
+  
+  .modal-res-grid { display: flex; flex-direction: column; gap: 0.8rem; }
+  .modal-res-link { 
+    display: flex; flex-direction: column; padding: 1rem; background: var(--bg); 
+    border-radius: 12px; text-decoration: none; border: 1px solid var(--border); transition: 0.2s;
+  }
+  .modal-res-link:hover { border-color: var(--red); background: white; }
+  .modal-res-link .mini-title { font-weight: 700; color: var(--deep); }
+  
+  .aside-path-card { background: var(--deep); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; }
+  .aside-path-card h4 { font-size: 1.1rem; color: var(--neon); margin-bottom: 0.5rem; }
+  .aside-path-card p { font-size: 0.85rem; opacity: 0.8; line-height: 1.3; }
+
+  .cta-mini-box { background: #E6F3FF; padding: 2rem; border-radius: 20px; }
+  .cta-label { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; color: #0077ED; margin-bottom: 0.5rem; display: block; }
+  .cta-mini-box p { font-size: 0.9rem; color: var(--deep); margin-bottom: 1.5rem; }
+  .btn-tiny { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
+
   /* ─── PATH CARD ─── */
   .path-highlight-card { background: var(--deep); color: #fff; padding: 4rem; border-radius: 40px; border: none; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
   .path-badge { background: var(--neon); color: var(--deep); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 99px; display: inline-block; margin-bottom: 2rem; }
@@ -330,15 +489,8 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
   .path-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .path-mini-card { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 16px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; }
   .path-mini-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
-  .mini-format { font-size: 0.6rem; text-transform: uppercase; opacity: 0.5; font-weight: 800; margin-bottom: 0.5rem; display: block; }
+  .mini-format { font-size: 0.6rem; text-transform: uppercase; opacity: 0.5; font-weight: 800; margin-bottom: 0.3rem; display: block; }
   .path-mini-card h4 { font-size: 1rem; line-height: 1.2; }
-
-  /* ─── USE CASES ─── */
-  .usecases-grid { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: flex-start; }
-  .uc-pill { text-decoration: none; background: white; border: 1px solid var(--border); padding: 0.8rem 1.4rem; border-radius: 99px; display: flex; gap: 0.8rem; align-items: center; transition: all 0.2s; }
-  .uc-pill:hover { border-color: var(--red); transform: translateY(-2px); }
-  .uc-label { font-size: 0.9rem; font-weight: 700; color: var(--deep); text-transform: capitalize; }
-  .uc-count { font-size: 0.7rem; background: var(--bg); color: #99A1A7; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
 
   /* ─── REUSE GRID ─── */
   .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
@@ -366,5 +518,8 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
     .res-grid { grid-template-columns: 1fr; }
     .app-cta-banner { grid-template-columns: 1fr; padding: 3rem; text-align: center; }
     .pwa-mockup { display: none; }
+    .modal-card { padding: 2rem; border-radius: 16px; width: 95%; }
+    .modal-body-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .modal-title { font-size: 1.8rem; }
   }
 </style>

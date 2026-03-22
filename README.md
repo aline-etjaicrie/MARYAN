@@ -51,7 +51,7 @@ npm run dev
 
 ## Copilote réel
 
-Le copilote MARYAN appelle Anthropic via une route serveur Astro : `src/pages/api/chat.ts`.
+Le copilote MARYAN appelle Mistral via une route serveur Astro : `src/pages/api/chat.ts`.
 
 Configuration locale :
 
@@ -62,8 +62,11 @@ cp .env.example .env
 Puis renseigner :
 
 ```bash
-ANTHROPIC_API_KEY=...
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+MISTRAL_API_KEY=...
+MISTRAL_MODEL=mistral-large-latest
+MISTRAL_AGENT_ID=... # optionnel
+STRIPE_SECRET_KEY=...
+PUBLIC_SITE_URL=http://localhost:4321
 ```
 
 En production, les mêmes variables doivent aussi être configurées dans Vercel.

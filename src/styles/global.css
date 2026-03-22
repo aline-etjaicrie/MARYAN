@@ -83,6 +83,111 @@ span.emphasis, em {
   color: white;
 }
 
+.bg-deep,
+.hero-v3-signature,
+.section-v3.dark,
+.site-footer,
+.internal-header-v3.dark,
+.res-hero-bg,
+.path-highlight-card,
+.app-cta-banner,
+.aside-path-card,
+.reflex-card,
+.res-reco-v4 {
+  color: white;
+}
+
+.bg-deep h1,
+.bg-deep h2,
+.bg-deep h3,
+.bg-deep h4,
+.bg-deep p,
+.bg-deep li,
+.bg-deep a,
+.hero-v3-signature h1,
+.hero-v3-signature h2,
+.hero-v3-signature h3,
+.hero-v3-signature h4,
+.hero-v3-signature p,
+.hero-v3-signature a,
+.section-v3.dark h1,
+.section-v3.dark h2,
+.section-v3.dark h3,
+.section-v3.dark h4,
+.section-v3.dark p,
+.section-v3.dark li,
+.section-v3.dark a,
+.site-footer .brand,
+.site-footer .brand-sub,
+.site-footer .footer-credit,
+.site-footer .footer-credit a,
+.site-footer .footer-nav a,
+.site-footer .footer-note,
+.site-footer .footer-kicker,
+.internal-header-v3.dark h1,
+.internal-header-v3.dark p,
+.internal-header-v3.dark a,
+.res-hero-bg h1,
+.res-hero-bg h2,
+.res-hero-bg h3,
+.res-hero-bg p,
+.res-hero-bg a,
+.path-highlight-card h1,
+.path-highlight-card h2,
+.path-highlight-card h3,
+.path-highlight-card h4,
+.path-highlight-card p,
+.path-highlight-card li,
+.path-highlight-card a,
+.app-cta-banner h1,
+.app-cta-banner h2,
+.app-cta-banner h3,
+.app-cta-banner p,
+.app-cta-banner a,
+.aside-path-card h1,
+.aside-path-card h2,
+.aside-path-card h3,
+.aside-path-card h4,
+.aside-path-card p,
+.aside-path-card a,
+.reflex-card h1,
+.reflex-card h2,
+.reflex-card h3,
+.reflex-card p,
+.reflex-card a,
+.res-reco-v4 h1,
+.res-reco-v4 h2,
+.res-reco-v4 h3,
+.res-reco-v4 p,
+.res-reco-v4 li,
+.res-reco-v4 a {
+  color: white !important;
+}
+
+.bg-deep .label-v3,
+.hero-v3-signature .label-v3,
+.section-v3.dark .label-v3,
+.site-footer .footer-kicker,
+.internal-header-v3.dark .label-v3,
+.res-hero-bg .label-v3,
+.path-highlight-card .path-priorities-box h3,
+.path-highlight-card .path-resources-box h3,
+.aside-path-card h4,
+.reflex-card .reflex-label,
+.res-reco-v4 .section-title-v4,
+.bg-deep .text-neon,
+.hero-v3-signature .text-neon,
+.section-v3.dark .text-neon {
+  color: white !important;
+}
+
+.bg-deep .label-v3::before,
+.hero-v3-signature .label-v3::before,
+.section-v3.dark .label-v3::before,
+.internal-header-v3.dark .label-v3::before {
+  background: white !important;
+}
+
 .label-v3 {
   display: inline-block;
   font-size: 0.75rem;
@@ -149,9 +254,9 @@ span.emphasis, em {
 
 .footer-nav { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
 .footer-nav a { color: white; text-decoration: none; font-size: 0.95rem; font-weight: 600; opacity: 0.7; transition: all 0.2s; }
-.footer-nav a:hover { opacity: 1; color: var(--neon); padding-left: 4px; }
+.footer-nav a:hover { opacity: 1; color: white; padding-left: 4px; }
 
-.footer-kicker { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); margin-bottom: 1.5rem; }
+.footer-kicker { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: white; margin-bottom: 1.5rem; }
 .footer-note { font-size: 1rem; line-height: 1.6; opacity: 0.8; }
 
 @media (max-width: 992px) {

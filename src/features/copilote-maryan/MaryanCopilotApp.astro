@@ -1,320 +1,821 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { FREE_LIMIT, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
+import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
 ---
 
 <BaseLayout
   title="Copilote — MARYAN"
-  description="Votre copilote de mandat personnel. Posez vos questions, gérez les situations sensibles."
+  description="Votre copilote de mandat personnel. Posez vos questions, cadrez une decision, preparez une prise de parole."
 >
-  <!-- PWA & MOBILE OPTIMIZATIONS -->
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-
   <style is:global>
-    /* RESET FOOTER/NAV for APP MODE */
-    .site-footer, .site-header:not(.copilot-header) { display: none !important; }
-
-    /* MSG STYLES */
-    .msg { display: flex !important; flex-direction: column !important; margin-bottom: 1.2rem !important; position: relative; }
-    
-    /* USER MSG - iMessage/WhatsApp Style */
-    .msg.user { align-self: flex-end !important; align-items: flex-end !important; max-width: 82% !important; }
-    .msg.user .msg-bubble { 
-      background: #1E2A32 !important; /* Deep Navy */
-      color: #FFFFFF !important; 
-      border-radius: 20px 20px 4px 20px !important;
-      font-weight: 500 !important;
-      font-size: 1.05rem !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-      border: none !important;
-    }
-    .msg.user .msg-sender { display: none !important; }
-
-    /* MARYAN MSG */
-    .msg.assistant { align-self: flex-start !important; align-items: flex-start !important; max-width: 88% !important; padding-top: 0.5rem; }
-    .msg.assistant .msg-bubble { 
-      background: #FFFFFF !important; 
-      color: #1E2A32 !important; 
-      border-radius: 4px 20px 20px 20px !important;
-      font-weight: 400 !important;
-      font-size: 1rem !important;
-      line-height: 1.6 !important;
-      box-shadow: 0 2px 8px rgba(30,42,50,0.05) !important;
-      border: 1px solid #F0F0F0 !important;
-    }
-    .msg.assistant .msg-sender { 
-      font-size: 0.65rem !important; 
-      font-weight: 800 !important; 
-      color: #E63946 !important; 
-      text-transform: uppercase !important; 
-      margin-left: 0.5rem !important;
-      margin-bottom: 0.25rem !important;
+    .site-footer,
+    .site-header {
+      display: none !important;
     }
 
-    .msg-bubble p { margin-bottom: 0.75rem !important; }
-    .msg-bubble p:last-child { margin-bottom: 0 !important; }
+    .hidden {
+      display: none !important;
+    }
 
-    /* TYPING INDICATOR */
-    .typing-indicator { 
-      padding: 0.8rem 1.2rem !important; 
-      background: #fff !important; 
-      border-radius: 20px !important;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
-      display: inline-flex !important;
-      gap: 4px !important;
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
     }
-    .dot { width: 6px; height: 6px; background: #ccc; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-    .dot:nth-child(1) { animation-delay: -0.32s; }
-    .dot:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-    /* PROFILE DRAWER */
-    .profile-drawer {
-      position: fixed; top: 0; left: 0; width: 85%; height: 100%;
-      background: #F8F9FA; z-index: 1000;
-      transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 10px 0 30px rgba(0,0,0,0.1);
-      padding: 2rem 1.5rem; display: flex; flex-direction: column;
+    .msg.user {
+      align-items: flex-end;
+      margin-left: auto;
+      max-width: min(100%, 34rem);
     }
-    .profile-drawer.open { transform: translateX(0); }
-    .drawer-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+
+    .msg.assistant {
+      align-items: flex-start;
+      max-width: min(100%, 42rem);
     }
-    .drawer-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .msg-sender {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--deep);
+      opacity: 0.64;
+      padding-left: 0.25rem;
+    }
+
+    .msg.user .msg-sender {
+      display: none;
+    }
+
+    .msg-bubble {
+      width: 100%;
+      border-radius: 1.35rem;
+      padding: 1rem 1rem 0.95rem;
+      border: 1px solid rgba(10, 25, 47, 0.08);
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(10, 25, 47, 0.05);
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .msg.user .msg-bubble {
+      background: var(--deep);
+      color: #fff;
+      border-color: transparent;
+      border-bottom-right-radius: 0.45rem;
+      box-shadow: 0 14px 28px rgba(10, 25, 47, 0.18);
+    }
+
+    .msg.assistant .msg-bubble {
+      color: var(--ink);
+      border-bottom-left-radius: 0.45rem;
+    }
+
+    .msg-bubble p {
+      margin: 0 0 0.8rem;
+      font-size: 0.98rem;
+    }
+
+    .msg-bubble p:last-child {
+      margin-bottom: 0;
+    }
+
+    .reply-lead {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--deep);
+    }
+
+    .reply-section + .reply-section {
+      margin-top: 0.95rem;
+      padding-top: 0.95rem;
+      border-top: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .reply-section h3 {
+      color: var(--deep);
+      font-size: 0.76rem;
+      line-height: 1.2;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      margin: 0 0 0.65rem;
+    }
+
+    .reply-list {
+      margin: 0;
+      padding-left: 1.15rem;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .reply-list li {
+      margin: 0;
+      padding-left: 0.1rem;
+    }
+
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-height: 3.25rem;
+    }
+
+    .dot {
+      width: 0.42rem;
+      height: 0.42rem;
+      border-radius: 999px;
+      background: rgba(10, 25, 47, 0.32);
+      animation: maryan-bounce 1.2s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes maryan-bounce {
+      0%,
+      80%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.35;
+      }
+
+      40% {
+        transform: translateY(-0.22rem);
+        opacity: 1;
+      }
+    }
+
+    .paywall-card {
+      background: linear-gradient(180deg, rgba(10, 25, 47, 0.98) 0%, rgba(10, 25, 47, 0.92) 100%) !important;
+      color: #fff !important;
+      border-color: transparent !important;
+    }
+
+    .paywall-card p,
+    .paywall-card strong {
+      color: #fff !important;
+    }
+
+    .paywall-cta {
+      width: 100%;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    @media (min-width: 900px) {
+      .msg.user {
+        max-width: 38rem;
+      }
+
+      .msg.assistant {
+        max-width: 44rem;
+      }
+
+      .msg-bubble {
+        padding: 1.05rem 1.2rem 1rem;
+      }
+    }
   </style>
 
   <div class="copilot-app-root" data-maryan-copilot-root data-upgrade-url="/offres" data-endpoint="/api/chat">
-    
-    <!-- DRAWER OVERLAY -->
-    <div id="drawerOverlay" class="drawer-overlay"></div>
+    <div class="drawer-overlay" data-drawer-overlay></div>
 
-    <!-- PROFILE DRAWER (Swipe-able) -->
-    <aside id="profileDrawer" class="profile-drawer">
-      <div class="drawer-header">
-        <span class="label-v3">Votre Profil</span>
-        <button id="closeDrawer" class="close-btn-v3">×</button>
+    <aside class="profile-drawer" data-profile-drawer aria-label="Profil MARYAN">
+      <div class="drawer-top">
+        <div>
+          <p class="drawer-kicker">Votre espace</p>
+          <h2>Profil et niveau d'appui</h2>
+        </div>
+        <button class="drawer-close" type="button" aria-label="Fermer" data-close-drawer>×</button>
       </div>
 
-      <div class="drawer-content">
-        <div id="drawerProfileFilled" class="hidden">
-           <h2 id="drawerProfileName" class="text-deep">—</h2>
-           <p id="drawerProfileSummary" class="text-muted small"></p>
-           <div id="drawerProfileTags" class="tag-cloud"></div>
-           <hr class="sep-v3" />
-           <p class="small text-muted">Votre situation est prise en compte dans chaque réponse de MARYAN.</p>
-        </div>
-        <div id="drawerProfileEmpty">
-           <p class="text-muted">Faites d'abord le diagnostic pour personnaliser vos échanges.</p>
-           <a href="/diagnostic" class="btn-primary-v3" style="width:100%; text-align:center;">Faire le diagnostic</a>
+      <div class="drawer-panel hidden" data-profile-filled>
+        <p class="drawer-status" data-profile-status></p>
+        <h3 class="drawer-name" data-profile-name>—</h3>
+        <p class="drawer-summary" data-profile-summary></p>
+        <div class="drawer-tags" data-profile-tags></div>
+        <div class="drawer-note">
+          MARYAN tient compte de votre profil pour nuancer la pedagogie, le niveau de cadrage et le type d'appui propose.
         </div>
       </div>
 
-      <div class="drawer-footer">
-        <a href="/mon-compte" class="nav-link">Gérer mon abonnement</a>
-        <a href="/offres" class="nav-link">Voir les offres</a>
-        <p class="version-tag">MARYAN v0.9 (Bêta)</p>
+      <div class="drawer-panel" data-profile-empty>
+        <p class="drawer-status">Mode libre actif</p>
+        <div class="drawer-note" set:html={PROFILE_REQUIRED_HTML}></div>
+      </div>
+
+      <div class="drawer-links">
+        <a href="/diagnostic">Faire le diagnostic</a>
+        <a href="/mon-compte">Mon espace MARYAN</a>
+        <a href="/offres">Voir les offres</a>
       </div>
     </aside>
 
-    <!-- MAIN CHAT INTERFACE -->
-    <div class="chat-container">
+    <div class="chat-shell">
       <header class="app-header">
-        <button id="openProfile" class="profile-trigger" aria-label="Menu profil">
-           <div class="avatar-small">👤</div>
+        <button class="profile-trigger" type="button" aria-label="Ouvrir le profil" data-open-drawer>
+          <span class="profile-trigger-icon">M</span>
         </button>
-        <div class="header-center">
+
+        <div class="header-copy">
           <span class="app-title">MARYAN</span>
-          <span class="online-status">Copilote Personnel</span>
+          <span class="app-subtitle">Copilote de mandat</span>
         </div>
-        <div class="header-right">
-           <span class="msg-count-pill" id="headerCounter">5/5</span>
+
+        <div class="header-meta">
+          <span class="mode-pill" data-mode-badge>Version libre</span>
+          <span class="counter-label" data-counter-label>{FREE_LIMIT}/{FREE_LIMIT}</span>
         </div>
       </header>
 
-      <main class="chat-thread" id="chatThread">
-        <div class="messages-container" data-messages>
-           <!-- Starting Message -->
-           <div class="msg assistant">
+      <main class="chat-thread" data-chat-thread>
+        <div class="chat-inner">
+          <section class="intro-card">
+            <p class="intro-kicker">Le bon niveau d'appui, au bon moment</p>
+            <h1>Parlez d'abord de ce que vous vivez.</h1>
+            <p class="intro-text">
+              Decrivez une situation concrete, un stress, un arbitrage, une prise de parole ou un dossier
+              qui vous bloque. MARYAN commence par lire la situation avant de proposer une reponse.
+            </p>
+            <div class="counter-row">
+              <div class="counter-dots" data-counter-dots></div>
+              <span class="counter-caption">Version libre : 5 messages par session</span>
+            </div>
+          </section>
+
+          <div class="messages-container" data-messages>
+            <article class="msg assistant">
               <span class="msg-sender">MARYAN</span>
               <div class="msg-bubble">
-                {WELCOME_PARAGRAPHS.map(p => <p>{p}</p>)}
+                {WELCOME_PARAGRAPHS.map((paragraph) => <p>{paragraph}</p>)}
               </div>
-           </div>
+            </article>
+          </div>
+
+          <section class="suggestions-strip" data-suggestions>
+            <p class="suggestions-title">Pour commencer</p>
+            <div class="suggestions-grid">
+              {SUGGESTIONS.map((suggestion) => (
+                <button type="button" class="suggestion-chip" data-suggestion={suggestion}>
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
 
       <footer class="app-input-bar">
-        <div class="input-container">
-          <button id="micBtn" class="mic-pill" aria-label="Microphone">
-             <svg viewBox="0 0 24 24" class="mic-icon"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path></svg>
+        <div class="input-shell">
+          <button class="mic-btn" type="button" aria-label="Dicter" data-mic-btn>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3Z"></path>
+              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"></path>
+            </svg>
           </button>
-          <textarea 
-            id="userInput" 
-            data-user-input 
-            placeholder="Écrivez ou dictez..." 
-            rows="1"
-          ></textarea>
-          <button id="sendBtn" data-send-btn class="send-pill" aria-label="Envoyer">
-            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+
+          <label class="input-wrap">
+            <span class="sr-only">Votre message</span>
+            <textarea
+              rows="1"
+              data-user-input
+              placeholder="Decrivez votre situation..."
+              aria-label="Votre message a MARYAN"
+            ></textarea>
+          </label>
+
+          <button class="send-btn" type="button" aria-label="Envoyer" data-send-btn>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2Z"></path>
+            </svg>
           </button>
         </div>
-        <div id="inputHint" class="input-hint">Dictez vos notes de réunion ici.</div>
+
+        <p class="input-hint" data-input-hint>Version libre · 5 messages restants</p>
       </footer>
     </div>
   </div>
 
   <script>
     import './client.ts';
-    
-    // UI HANDLERS (Manual triggers for Drawer)
-    const drawer = document.getElementById('profileDrawer');
-    const overlay = document.getElementById('drawerOverlay');
-    const openBtn = document.getElementById('openProfile');
-    const closeBtn = document.getElementById('closeDrawer');
-
-    const toggleDrawer = (open: boolean) => {
-      drawer?.classList.toggle('open', open);
-      overlay?.classList.toggle('active', open);
-      if(open) document.body.style.overflow = 'hidden';
-      else document.body.style.overflow = '';
-    }
-
-    openBtn?.addEventListener('click', () => toggleDrawer(true));
-    closeBtn?.addEventListener('click', () => toggleDrawer(false));
-    overlay?.addEventListener('click', () => toggleDrawer(false));
-
-    // SWIPE GESTURE (L -> R to open)
-    let touchStartX = 0;
-    document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, false);
-    document.addEventListener('touchend', e => {
-      let touchEndX = e.changedTouches[0].screenX;
-      if (touchEndX - touchStartX > 100) toggleDrawer(true); // Swipe Right
-      if (touchStartX - touchEndX > 100) toggleDrawer(false); // Swipe Left
-    }, false);
-
-    // AUTO-RESIZE TEXTAREA
-    const textarea = document.getElementById('userInput') as HTMLTextAreaElement;
-    textarea?.addEventListener('input', () => {
-      textarea.style.height = 'auto';
-      textarea.style.height = (textarea.scrollHeight) + 'px';
-    });
   </script>
 
   <style>
     .copilot-app-root {
-      background: #F4F7F9;
-      height: 100vh;
-      width: 100%;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100dvh;
+      background:
+        radial-gradient(circle at top right, rgba(173, 255, 47, 0.07), transparent 28%),
+        radial-gradient(circle at top left, rgba(230, 57, 70, 0.06), transparent 25%),
+        #f4f6f8;
+      color: var(--ink);
     }
 
-    .chat-container {
-      flex: 1;
+    .chat-shell {
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
-      position: relative;
     }
 
-    /* HEADER */
     .app-header {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(20px);
-      padding: 3.5rem 1.5rem 1rem; /* Safe area for iOS */
-      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      z-index: 100;
-      flex-shrink: 0;
-    }
-    .header-center { text-align: center; }
-    .app-title { display: block; font-weight: 800; font-size: 1rem; letter-spacing: 0.1em; color: var(--deep); }
-    .online-status { font-size: 0.7rem; color: #22C55E; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .online-status::before { content: ""; width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
-
-    .profile-trigger { background: #F0F2F5; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
-    .msg-count-pill { background: var(--deep); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
-
-    /* THREAD */
-    .chat-thread {
-      flex: 1;
-      overflow-y: scroll; /* Force native scroll */
-      -webkit-overflow-scrolling: touch; /* iOS Momentum scroll */
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding-bottom: 7rem; /* Extra padding for sticky input */
-    }
-    .messages-container {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
+      gap: 0.9rem;
+      padding:
+        calc(env(safe-area-inset-top, 0px) + 0.9rem)
+        1rem
+        0.95rem;
+      background: rgba(248, 249, 250, 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(10, 25, 47, 0.08);
     }
 
-    /* INPUT BAR */
-    .app-input-bar {
-      padding: 0.8rem 1rem 2.5rem; /* Safe area for iOS bottom */
-      background: white;
-      border-top: 1px solid #eee;
-    }
-    .input-container {
-      background: #F0F2F5;
-      border-radius: 24px;
-      padding: 0.4rem 0.4rem 0.4rem 1.2rem;
-      display: flex;
-      align-items: flex-end;
-      gap: 0.5rem;
-    }
-    textarea {
-      flex: 1;
-      background: transparent;
+    .profile-trigger {
+      width: 2.8rem;
+      height: 2.8rem;
       border: none;
-      outline: none;
-      padding: 0.6rem 0;
-      font-size: 1rem;
-      max-height: 120px;
-      resize: none;
-      font-family: inherit;
-    }
-    .send-pill {
-      background: var(--deep);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 8px 22px rgba(10, 25, 47, 0.08);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.2s;
+      color: var(--deep);
     }
-    .send-pill:active { transform: scale(0.9); }
-    .send-pill svg { width: 18px; height: 18px; fill: white; transform: rotate(-45deg) translate(2px, -2px); }
 
-    .input-hint { font-size: 0.65rem; text-align: center; color: #999; margin-top: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .profile-trigger-icon {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
 
-    /* MIC STYLES */
-    .mic-pill { background: transparent; border: none; padding: 0.5rem; color: #999; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .mic-icon { width: 22px; height: 22px; fill: currentColor; }
-    .mic-pill.recording { color: var(--accent-red); animation: pulse-red 1.5s infinite; }
-    @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .header-copy {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-    /* DRAWER UTILS */
-    .drawer-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
-    .close-btn-v3 { font-size: 2.5rem; line-height: 1; border: none; background: none; color: #999; margin-top: -10px; }
-    .tag-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-    .sep-v3 { border: none; border-bottom: 1px solid #eee; margin: 2rem 0; }
-    .nav-link { display: block; padding: 1rem 0; border-bottom: 1px solid #eee; color: var(--deep); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
-    .version-tag { margin-top: 2rem; font-size: 0.7rem; color: #ccc; text-align: center; }
+    .app-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: var(--deep);
+    }
+
+    .app-subtitle {
+      font-size: 0.75rem;
+      color: rgba(10, 25, 47, 0.66);
+    }
+
+    .header-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.35rem;
+    }
+
+    .mode-pill,
+    .counter-label {
+      white-space: nowrap;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.36rem 0.72rem;
+    }
+
+    .mode-pill {
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--deep);
+      border: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .counter-label {
+      background: var(--deep);
+      color: #fff;
+    }
+
+    .chat-thread {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 0 8rem;
+    }
+
+    .chat-inner {
+      width: min(100%, 50rem);
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .intro-card {
+      margin: 0.35rem 0 1.2rem;
+      padding: 1.2rem;
+      border-radius: 1.6rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.82));
+      border: 1px solid rgba(10, 25, 47, 0.08);
+      box-shadow: 0 14px 30px rgba(10, 25, 47, 0.05);
+    }
+
+    .intro-kicker {
+      margin: 0 0 0.55rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(10, 25, 47, 0.7);
+    }
+
+    .intro-card h1 {
+      font-size: clamp(1.45rem, 5vw, 2.2rem);
+      line-height: 1.1;
+      margin: 0 0 0.7rem;
+      color: var(--deep);
+    }
+
+    .intro-text {
+      margin: 0;
+      font-size: 0.98rem;
+      color: rgba(30, 42, 50, 0.84);
+    }
+
+    .counter-row {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .counter-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-height: 0.75rem;
+    }
+
+    .counter-dot {
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 999px;
+      background: rgba(10, 25, 47, 0.15);
+    }
+
+    .counter-dot.used {
+      background: var(--deep);
+    }
+
+    .counter-note,
+    .counter-caption {
+      font-size: 0.8rem;
+      color: rgba(10, 25, 47, 0.64);
+    }
+
+    .messages-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .suggestions-strip {
+      margin-top: 1rem;
+      padding-bottom: 0.35rem;
+    }
+
+    .suggestions-title {
+      margin: 0 0 0.8rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(10, 25, 47, 0.58);
+    }
+
+    .suggestions-grid {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .suggestion-chip {
+      appearance: none;
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(10, 25, 47, 0.08);
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--deep);
+      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      font: inherit;
+      font-size: 0.93rem;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    }
+
+    .suggestion-chip:hover,
+    .suggestion-chip:focus-visible {
+      background: #fff;
+      border-color: rgba(10, 25, 47, 0.22);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .app-input-bar {
+      position: sticky;
+      bottom: 0;
+      z-index: 12;
+      padding:
+        0.8rem
+        1rem
+        calc(env(safe-area-inset-bottom, 0px) + 0.9rem);
+      background: linear-gradient(180deg, rgba(244, 246, 248, 0.4) 0%, rgba(244, 246, 248, 0.98) 35%);
+      backdrop-filter: blur(18px);
+    }
+
+    .input-shell {
+      width: min(100%, 50rem);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.6rem;
+      align-items: end;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(10, 25, 47, 0.09);
+      border-radius: 1.45rem;
+      box-shadow: 0 18px 34px rgba(10, 25, 47, 0.08);
+    }
+
+    .mic-btn,
+    .send-btn {
+      width: 2.8rem;
+      height: 2.8rem;
+      border: none;
+      border-radius: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .mic-btn {
+      background: rgba(10, 25, 47, 0.05);
+      color: rgba(10, 25, 47, 0.55);
+    }
+
+    .mic-btn svg,
+    .send-btn svg {
+      width: 1.15rem;
+      height: 1.15rem;
+      fill: currentColor;
+    }
+
+    .mic-btn.recording {
+      color: var(--accent-red);
+      background: rgba(230, 57, 70, 0.1);
+    }
+
+    .send-btn {
+      background: var(--deep);
+      color: #fff;
+    }
+
+    .send-btn:hover,
+    .mic-btn:hover,
+    .send-btn:focus-visible,
+    .mic-btn:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .send-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .input-wrap {
+      display: block;
+      min-width: 0;
+    }
+
+    .input-wrap textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--deep);
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.55;
+      resize: none;
+      max-height: 11rem;
+      min-height: 3rem;
+      outline: none;
+      padding: 0.55rem 0;
+    }
+
+    .input-wrap textarea::placeholder {
+      color: rgba(10, 25, 47, 0.46);
+    }
+
+    .input-hint {
+      width: min(100%, 50rem);
+      margin: 0.55rem auto 0;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(10, 25, 47, 0.62);
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 39;
+      background: rgba(10, 25, 47, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .profile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 40;
+      width: min(24rem, 88vw);
+      height: 100dvh;
+      padding:
+        calc(env(safe-area-inset-top, 0px) + 1rem)
+        1.1rem
+        calc(env(safe-area-inset-bottom, 0px) + 1rem);
+      background: #fff;
+      border-right: 1px solid rgba(10, 25, 47, 0.08);
+      box-shadow: 0 24px 60px rgba(10, 25, 47, 0.16);
+      transform: translateX(-100%);
+      transition: transform 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .profile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .drawer-kicker {
+      margin: 0 0 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: rgba(10, 25, 47, 0.56);
+    }
+
+    .drawer-top h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      color: var(--deep);
+    }
+
+    .drawer-close {
+      border: none;
+      background: transparent;
+      color: rgba(10, 25, 47, 0.44);
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .drawer-panel {
+      padding: 1rem;
+      border-radius: 1.15rem;
+      background: #f7f8fa;
+      border: 1px solid rgba(10, 25, 47, 0.06);
+    }
+
+    .drawer-status {
+      margin: 0 0 0.55rem;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: rgba(10, 25, 47, 0.58);
+    }
+
+    .drawer-name {
+      margin: 0 0 0.55rem;
+      font-size: 1.22rem;
+      color: var(--deep);
+    }
+
+    .drawer-summary {
+      margin: 0 0 0.9rem;
+      color: rgba(30, 42, 50, 0.82);
+      line-height: 1.5;
+    }
+
+    .drawer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .profile-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(10, 25, 47, 0.08);
+      font-size: 0.79rem;
+      color: var(--deep);
+    }
+
+    .drawer-note {
+      margin-top: 0.95rem;
+      padding: 0.95rem;
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: rgba(30, 42, 50, 0.82);
+      line-height: 1.5;
+    }
+
+    .drawer-note :global(a) {
+      color: var(--deep);
+      font-weight: 700;
+    }
+
+    .drawer-links {
+      margin-top: auto;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .drawer-links a {
+      color: var(--deep);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.85rem 0;
+      border-top: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 900px) {
+      .app-header {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+
+      .chat-inner {
+        padding: 0 1.5rem;
+      }
+
+      .intro-card {
+        padding: 1.5rem;
+      }
+
+      .suggestions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .app-input-bar {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+    }
   </style>
 </BaseLayout>

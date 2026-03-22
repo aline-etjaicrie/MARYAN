@@ -46,3 +46,19 @@ export type MaryanPath = {
   ctaType: "copilote" | "offre_individuelle" | "offre_collectivite" | "formation_irl";
   irlPotential: boolean;
 };
+
+export type MaryanSituation = {
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  longDescription: string;
+  diagnosticProfiles: Array<DiagnosticProfile>;
+  targetRoles: Array<"maire" | "adjoint" | "majorite" | "opposition" | "interco">;
+  experienceLevels: Array<"debutant" | "intermediaire" | "confirme">;
+  pillars: Array<"se_situer" | "comprendre" | "agir" | "se_proteger">;
+  resourceIds: string[];
+  pathIds: string[];
+  priorities: string[];
+  ctaType: "copilote" | "offre_individuelle" | "offre_collectivite" | "formation_irl";
+};
