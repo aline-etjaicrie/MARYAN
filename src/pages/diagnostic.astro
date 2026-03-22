@@ -5,28 +5,28 @@ import InternalHeader from '../components/InternalHeader.astro';
 
 <BaseLayout 
   title="Diagnostic — MARYAN" 
-  description="Une analyse précise de votre situation de mandat local.">
+  description="Faites le point sur votre mandat en quelques minutes. Analyse de contexte, tension et exposition.">
   
   <InternalHeader 
-    label="Diagnostic de situation"
-    title="Comprendre votre mandat pour mieux le <span class='emphasis'>piloter</span>."
-    subtitle="En quelques minutes, MARYAN identifie vos points de vigilance et les meilleures solutions d'appui pour votre situation."
+    label="Diagnostic MARYAN"
+    title="Faites le point sur votre mandat en <span class='emphasis'>quelques minutes</span>."
+    subtitle="MARYAN analyse votre contexte, vos points de tension et votre niveau d’exposition pour vous aider à clarifier vos priorités et sécuriser vos décisions."
   />
 
   <main class="diag-app-v3">
 
-    <!-- INTRO -->
+    <!-- HERO D'ENTRÉE -->
     <div id="introSection" class="container container-narrow diag-step active">
       <div class="diag-intro-card card-v3">
-        <p class="diag-kicker">Analyse de situation</p>
+        <p class="diag-kicker">Votre situation d'élu·e</p>
         <ul class="diag-intro-list">
-          <li>✨ <span><strong>Clarté immédiate</strong> sur vos enjeux prioritaires.</span></li>
-          <li>🛡️ <span><strong>Sécurisation</strong> de vos prochaines décisions.</span></li>
-          <li>🎯 <span><strong>Appui ciblé</strong> selon votre municipalité.</span></li>
+          <li>✨ <span><strong>Une lecture claire</strong> de votre situation réelle.</span></li>
+          <li>🛡️ <span><strong>Vos points de vigilance</strong> prioritaires.</span></li>
+          <li>🎯 <span><strong>Un appui adapté</strong> à votre contexte municipal.</span></li>
         </ul>
         <div class="diag-intro-cta">
-          <button class="btn-primary-v3 big" id="startBtn">Démarrer l'analyse</button>
-          <p class="diag-hint">3 minutes · Confidentiel</p>
+          <button class="btn-primary-v3 big" id="startBtn">Lancer le diagnostic</button>
+          <p class="diag-hint">6 questions · 3 minutes · Confidentiel · Sans engagement</p>
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@ import InternalHeader from '../components/InternalHeader.astro';
       <div class="container-narrow">
         <div class="progress-inner-v3">
           <div class="progress-track-v3"><div class="progress-fill-v3" id="progressFill"></div></div>
-          <p id="progressLabel" class="progress-label-v3">Étape 1/6</p>
+          <p id="progressLabel" class="progress-label-v3">Étape 1/5</p>
         </div>
       </div>
     </div>
@@ -44,150 +44,139 @@ import InternalHeader from '../components/InternalHeader.astro';
     <!-- QUESTIONS -->
     <div id="diagSection" class="hidden questions-v3 container-narrow">
 
-      <!-- Q1 : MANDAT -->
+      <!-- Q1 : RÔLE -->
       <div class="diag-step" id="q1-step">
         <div class="q-content-v3">
-          <h2 class="q-label-v3">Quel est votre mandat actuel ?</h2>
+          <h2 class="q-label-v3">Quel est votre rôle aujourd’hui dans la vie politique locale ?</h2>
+          <p class="q-help-v3">Votre rôle influence votre niveau d’exposition, vos marges de manœuvre et la nature des décisions à sécuriser.</p>
           <div class="options-v3">
-            <button class="opt-v3" onclick="pick(this,'q1','maire',1,{institutional:2,exposure:3})">Maire</button>
-            <button class="opt-v3" onclick="pick(this,'q1','adjoint',1,{institutional:1,pressure:1})">Adjoint·e au maire</button>
-            <button class="opt-v3" onclick="pick(this,'q1','conseiller_maj',1,{isolation:1})">Conseiller·e (majorité)</button>
-            <button class="opt-v3" onclick="pick(this,'q1','conseiller_opp',1,{isolation:3,pressure:1,exposure:1})">Conseiller·e (opposition)</button>
-            <button class="opt-v3" onclick="pick(this,'q1','interco',1,{institutional:4,exposure:2})">Présidence ou VP intercommunal</button>
+            <button class="opt-v3" onclick="pick(this,'role','maire',1)">Maire</button>
+            <button class="opt-v3" onclick="pick(this,'role','adjoint',1)">Adjoint·e au maire</button>
+            <button class="opt-v3" onclick="pick(this,'role','conseiller_maj',1)">Conseiller·e de la majorité</button>
+            <button class="opt-v3" onclick="pick(this,'role','conseiller_opp',1)">Conseiller·e d’opposition</button>
+            <button class="opt-v3" onclick="pick(this,'role','interco',1)">Président·e / VP d’intercommunalité</button>
           </div>
         </div>
       </div>
 
-      <!-- Q2 : EXPERIENCE -->
+      <!-- Q2 : ANCIENNETÉ -->
       <div class="diag-step hidden" id="q2-step">
         <div class="q-content-v3">
-          <h2 class="q-label-v3">Depuis quand exercez-vous ce mandat ?</h2>
+          <h2 class="q-label-v3">Depuis combien de temps exercez-vous ce mandat ?</h2>
+          <p class="q-help-v3">Cette information nous aide à ajuster le niveau d’accompagnement.</p>
           <div class="options-v3">
-            <button class="opt-v3" onclick="pick(this,'q2','debut',2,{institutional:4,isolation:3})">Moins de 1 an</button>
-            <button class="opt-v3" onclick="pick(this,'q2','moins3',2,{institutional:2,pressure:1})">Moins de 3 ans</button>
-            <button class="opt-v3" onclick="pick(this,'q2','plus3',2,{institutional:1})">Plus de 3 ans</button>
-            <button class="opt-v3" onclick="pick(this,'q2','plus6',2,{institutional:0})">Plus de 6 ans (réélu·e)</button>
+            <button class="opt-v3" onclick="pick(this,'experience','moins1an',2)">Moins d’un an</button>
+            <button class="opt-v3" onclick="pick(this,'experience','1-3ans',2)">Entre 1 et 3 ans</button>
+            <button class="opt-v3" onclick="pick(this,'experience','3-6ans',2)">Entre 3 et 6 ans</button>
+            <button class="opt-v3" onclick="pick(this,'experience','renouvele',2)">Plus de 6 ans / mandat renouvelé</button>
           </div>
         </div>
       </div>
 
-      <!-- Q3 : URGENCE -->
+      <!-- Q3 : BESOIN PRINCIPAL -->
       <div class="diag-step hidden" id="q3-step">
         <div class="q-content-v3">
-          <h2 class="q-label-v3">Pourquoi sollicitez-vous MARYAN aujourd’hui ?</h2>
+          <h2 class="q-label-v3">Qu’est-ce qui vous amène à faire ce diagnostic ?</h2>
+          <p class="q-help-v3">Nous distinguons ici une urgence ponctuelle d’un besoin d’appui plus structurel.</p>
           <div class="options-v3">
-            <button class="opt-v3" onclick="pick(this,'q3','decision',3,{pressure:3})">Une décision difficile à arbitrer</button>
-            <button class="opt-v3" onclick="pick(this,'q3','tension',3,{pressure:5,exposure:3})">Une situation de conflit ou de tension</button>
-            <button class="opt-v3" onclick="pick(this,'q3','discours',3,{exposure:5})">Une prise de parole sensible</button>
-            <button class="opt-v3" onclick="pick(this,'q3','methode',3,{institutional:3})">Un besoin de méthode sur un dossier</button>
-            <button class="opt-v3" onclick="pick(this,'q3','recul',3,{isolation:3,pressure:2})">Un besoin général de recul</button>
+            <button class="opt-v3" onclick="pick(this,'need','decision',3)">Arbitrer une décision sensible</button>
+            <button class="opt-v3" onclick="pick(this,'need','conflit',3)">Gérer une tension ou un conflit</button>
+            <button class="opt-v3" onclick="pick(this,'need','prise_parole',3)">Préparer une prise de parole ou une séquence politique</button>
+            <button class="opt-v3" onclick="pick(this,'need','methode',3)">Remettre de la méthode sur un dossier complexe</button>
+            <button class="opt-v3" onclick="pick(this,'need','recul',3)">Prendre du recul et clarifier mes priorités</button>
           </div>
         </div>
       </div>
 
-      <!-- Q4 : APPUI -->
+      <!-- Q4 : ENTOURAGE -->
       <div class="diag-step hidden" id="q4-step">
         <div class="q-content-v3">
-          <h2 class="q-label-v3">Comment vous sentez-vous accompagné·e ?</h2>
+          <h2 class="q-label-v3">Dans votre mandat, vous sentez-vous suffisamment entouré·e pour décider sereinement ?</h2>
           <div class="options-v3">
-            <button class="opt-v3" onclick="pick(this,'q4','oui',4,{isolation:0})">J'ai de bons relais (adjoints, cabinet, services)</button>
-            <button class="opt-v3" onclick="pick(this,'q4','moyen',4,{isolation:3,pressure:1})">Pas toujours, c'est variable selon les sujets</button>
-            <button class="opt-v3" onclick="pick(this,'q4','non',4,{isolation:6,pressure:3})">Non, je porte l'essentiel des décisions seul·e</button>
+            <button class="opt-v3" onclick="pick(this,'support','oui',4)">Oui, je peux m’appuyer sur des relais solides</button>
+            <button class="opt-v3" onclick="pick(this,'support','partiel',4)">Cela dépend des sujets et des moments</button>
+            <button class="opt-v3" onclick="pick(this,'support','non',4)">Non, je porte trop souvent les décisions seul·e</button>
           </div>
         </div>
       </div>
 
-      <!-- Q5 : SUJET -->
+      <!-- Q5 : SUJET DU MOMENT -->
       <div class="diag-step hidden" id="q5-step">
         <div class="q-content-v3">
-          <h2 class="q-label-v3">Quel dossier mobilise votre énergie ce semestre ?</h2>
-          <div class="options-v3">
-            <button class="opt-v3" onclick="pick(this,'q5','urbanisme',5,{institutional:4,exposure:2})">Urbanisme, Aménagement, PLU</button>
-            <button class="opt-v3" onclick="pick(this,'q5','securite',5,{pressure:6,exposure:5})">Sécurité, Tranquillité publique</button>
-            <button class="opt-v3" onclick="pick(this,'q5','budget',5,{institutional:6,pressure:3})">Finances, Fiscalité, Budget</button>
-            <button class="opt-v3" onclick="pick(this,'q5','politique',5,{isolation:4,pressure:2})">Gouvernance, Équipe, Majorité</button>
-            <button class="opt-v3" onclick="pick(this,'q5','social',5,{institutional:2,pressure:2,exposure:2})">Scolaire, Social, Solidarité</button>
+          <h2 class="q-label-v3">Quel sujet concentre le plus votre attention en ce moment ?</h2>
+          <div class="options-v3" id="subjectOptions">
+            <button class="opt-v3" onclick="pick(this,'focus','urbanisme',5)">Urbanisme, aménagement, habitat</button>
+            <button class="opt-v3" onclick="pick(this,'focus','budget',5)">Budget, finances, arbitrages</button>
+            <button class="opt-v3" onclick="pick(this,'focus','politique',5)">Gouvernance, majorité, relations politiques</button>
+            <button class="opt-v3" onclick="pick(this,'focus','securite',5)">Sécurité, tranquillité publique, gestion de crise</button>
+            <button class="opt-v3" onclick="pick(this,'focus','social',5)">Écoles, solidarités, services à la population</button>
+            <button class="opt-v3" id="otherBtn" onclick="toggleOther(true)">Autre sujet prioritaire</button>
+          </div>
+          
+          <div id="otherInputWrapper" class="hidden" style="margin-top:1.5rem;">
+            <input type="text" id="otherFocus" placeholder="Décrivez en quelques mots le sujet principal..." class="input-v3" />
+            <button class="btn-primary-v3" style="margin-top:1rem; width:100%;" onclick="pickOther()">Valider →</button>
+            <button class="btn-link-simple" style="margin-top:1rem; display:block; width:100%;" onclick="toggleOther(false)">← Revenir aux choix</button>
           </div>
         </div>
       </div>
 
-      <!-- Q6 : PREFERENCE APPUI -->
-      <div class="diag-step hidden" id="q6-step">
-        <div class="q-content-v3">
-          <h2 class="q-label-v3">Le type d'appui qui vous parle le plus :</h2>
-          <div class="options-v3">
-            <button class="opt-v3" onclick="pick(this,'q6','digital',6,{offer_level:1})">Des outils digitaux pour cadrer seul·e</button>
-            <button class="opt-v3" onclick="pick(this,'q6','mixte',6,{offer_level:2})">Un mix entre outils réactifs et appui humain</button>
-            <button class="opt-v3" onclick="pick(this,'q6','complet',6,{offer_level:3,institutional:4})">Un véritable accompagnement stratégique</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- EMAIL -->
-      <div class="diag-step hidden" id="email-step">
+      <!-- TRANSITION DE CALCUL -->
+      <div class="diag-step hidden" id="calculating-step">
         <div class="q-content-v3 text-center">
-           <h2>Analyse en cours...</h2>
-           <p style="margin-bottom:2rem; opacity:0.7;">Laissez votre email pour recevoir votre synthèse formatée.</p>
-           <div class="email-input-v3">
-              <input type="email" id="emailInput" placeholder="votre@email.fr" />
-              <button class="btn-primary-v3" onclick="showResult()">Recevoir mon profil</button>
-           </div>
-           <button class="btn-skip-v3" onclick="showResult()">Continuer sans email</button>
+           <div class="loader-v3"></div>
+           <h2 class="q-label-v3">Votre diagnostic se prépare</h2>
+           <p style="opacity:0.7;">MARYAN relie votre rôle, votre contexte et vos points de tension pour faire ressortir vos priorités d’action...</p>
         </div>
       </div>
     </div>
 
-    <!-- RÉSULTAT DÉTAILLÉ -->
+    <!-- RESTITUTION FINALE -->
     <div id="resultSection" class="result-v3 hidden container">
        
        <header class="result-header-v3">
-          <span class="label-v3">Résultat de votre diagnostic</span>
-          <h2 id="rTitle" class="emphasis result-title-v3">—</h2>
-          <p id="rSummary" class="intro-v3"></p>
+          <span class="label-v3">Votre lecture de mandat</span>
+          <h2 id="resVigilanceTitle" class="emphasis result-title-v3">—</h2>
+          <p id="resVigilanceText" class="intro-v3"></p>
        </header>
 
        <div class="result-grid-v3">
-          <!-- Carte Vigilance -->
+          <!-- Bloc 2 : Implications -->
           <div class="card-v3">
-             <h3>Points de <span class="emphasis">vigilance</span></h3>
-             <ul id="rNeeds" class="v3-list-dots"></ul>
+             <h3 class="card-kicker">Risques identifiés</h3>
+             <p class="small" style="margin-bottom:1.5rem; opacity:0.6;">Ce que cela peut produire si rien ne change :</p>
+             <ul id="resImplications" class="v3-list-dots"></ul>
           </div>
 
-          <!-- Carte Profil de Stress/Exposition -->
+          <!-- Bloc 3 : Priorités -->
           <div class="card-v3 bg-light">
-             <h3>Niveau d'<span class="emphasis">exposition</span></h3>
-             <div class="exposure-bars-v3">
-                <div class="exp-bar">
-                   <span>Charge institutionnelle</span>
-                   <div class="bar-track"><div id="barInst" class="bar-fill bg-deep"></div></div>
-                </div>
-                <div class="exp-bar">
-                   <span>Visibilité & Risque public</span>
-                   <div class="bar-track"><div id="barExpo" class="bar-fill bg-red"></div></div>
-                </div>
-                <div class="exp-bar">
-                   <span>Isolation de décision</span>
-                   <div class="bar-track"><div id="barIso" class="bar-fill bg-neon"></div></div>
-                </div>
-             </div>
+             <h3 class="card-kicker">Vos priorités immédiates</h3>
+             <ul id="resPriorities" class="v3-list-dots-red"></ul>
           </div>
        </div>
 
-       <!-- PROPOSITION MARYAN -->
+       <!-- Bloc 4 : Appui Recommandé -->
        <div class="reco-box-v3">
           <div class="reco-content-v3">
-             <span class="badge-v3">Recommandation MARYAN</span>
-             <h3 id="offerName" style="font-size:1.8rem; margin:1rem 0;">—</h3>
-             <p id="offerDesc" class="intro-v3 small"></p>
-             <div class="reco-benefits-v3">
-                <span class="pill-v3">Appui 24h/24</span>
-                <span class="pill-v3">Confidentialité totale</span>
-                <span class="pill-v3">Expertise publique</span>
-             </div>
+             <span class="badge-v3">Appui le plus pertinent</span>
+             <h3 id="resAppuiTitle" style="font-size:1.8rem; margin:1rem 0;">—</h3>
+             <p id="resAppuiText" class="intro-v3 small" style="opacity:0.9;"></p>
           </div>
           <div class="reco-cta-v3">
-             <a href="/offres" class="btn-primary-v3 big">DécouvrirMARYAN Plus</a>
-             <a href="/copilote" class="btn-secondary-v3">Accéder au Copilote gratuit</a>
+             <a href="/offres" id="mainCTA" class="btn-primary-v3 big">Découvrir l’appui recommandé</a>
+             <a href="/copilote" class="btn-secondary-v3">Tester le copilote gratuit</a>
+          </div>
+       </div>
+
+       <!-- Bloc 5 : Email (Sauvegarde) -->
+       <div id="emailCaptureBox" class="email-capture-v3">
+          <div class="email-text-v3">
+             <h3>Recevoir votre synthèse complète</h3>
+             <p>Gardez une trace de ce diagnostic pour le relire plus tard ou retrouver vos priorités en un clic.</p>
+          </div>
+          <div class="email-form-v3">
+             <input type="email" id="emailInput" placeholder="vous@collectivite.fr" class="input-v3" />
+             <button class="btn-primary-v3" onclick="submitEmail()">Recevoir</button>
           </div>
        </div>
 
@@ -202,7 +191,7 @@ import InternalHeader from '../components/InternalHeader.astro';
   <style>
     .diag-app-v3 { height: 100vh; overflow: hidden; display: flex; flex-direction: column; background: #FDFBF8; }
     .container { max-width: 1000px; margin: 0 auto; width: 100%; padding: 0 1.5rem; }
-    .container-narrow { max-width: 600px; margin: 0 auto; width: 100%; padding: 0 1.5rem; }
+    .container-narrow { max-width: 620px; margin: 0 auto; width: 100%; padding: 0 1.5rem; }
 
     /* Transitions steps */
     .diag-step {
@@ -212,54 +201,62 @@ import InternalHeader from '../components/InternalHeader.astro';
     }
     .diag-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .diag-step.hidden { display: none; }
-    .questions-v3 { position: relative; flex: 1; min-height: 400px; }
+    .questions-v3 { position: relative; flex: 1; min-height: 480px; }
 
     /* UI Components */
     .progress-wrap-v3 { padding: 1.5rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); }
     .progress-inner-v3 { display: flex; align-items: center; gap: 2rem; }
     .progress-track-v3 { flex: 1; height: 3px; background: #EEE; border-radius: 99px; overflow: hidden; }
     .progress-fill-v3 { height: 100%; background: var(--accent-red); transition: width 0.4s; }
-    .progress-label-v3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; }
+    .progress-label-v3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
 
-    .q-label-v3 { font-size: clamp(1.4rem, 5vw, 2rem); margin-bottom: 2.5rem; color: var(--deep); line-height: 1.1; font-weight: 700; }
-    .options-v3 { display: flex; flex-direction: column; gap: 0.8rem; }
-    .opt-v3 { padding: 1.25rem 1.5rem; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 16px; text-align: left; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .opt-v3:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .q-help-v3 { margin-bottom: 2rem; opacity: 0.6; font-size: 0.95rem; line-height: 1.4; }
+    .q-label-v3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--deep); line-height: 1.2; font-weight: 700; }
+    .options-v3 { display: flex; flex-direction: column; gap: 0.75rem; }
+    .opt-v3 { padding: 1.1rem 1.4rem; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; text-align: left; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .opt-v3:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+
+    .input-v3 { width: 100%; padding: 1rem 1.4rem; border: 1.5px solid #E5E7EB; border-radius: 12px; font-size: 1rem; }
 
     /* Result styles */
     .result-v3 { overflow-y: scroll; padding: 6rem 1.5rem; height: 100vh; background: #FFFDF8; }
-    .result-header-v3 { margin-bottom: 5rem; text-align: center; }
-    .result-title-v3 { font-size: clamp(1.8rem, 6vw, 3.5rem); margin: 1.5rem 0; line-height: 1.1; }
+    .result-header-v3 { margin-bottom: 5rem; max-width: 800px; }
+    .result-title-v3 { font-size: clamp(1.8rem, 5vw, 3rem); margin: 1.5rem 0; line-height: 1.1; }
     .result-grid-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem; }
-    
-    .exposure-bars-v3 { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
-    .exp-bar span { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #888; margin-bottom: 0.5rem; display: block; }
-    .bar-track { height: 6px; background: #F0F2F5; border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; width: 0; transition: width 1.5s ease-out; }
+    .card-kicker { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--accent-red); margin-bottom: 1.5rem; display: block; letter-spacing: 0.05em; }
 
-    .reco-box-v3 { background: var(--deep); color: white; border-radius: 24px; padding: 4rem; display: flex; justify-content: space-between; align-items: center; gap: 4rem; margin: 4rem 0; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+    .reco-box-v3 { background: var(--deep); color: white; border-radius: 24px; padding: 4rem; display: flex; justify-content: space-between; align-items: center; gap: 4rem; margin: 4rem 0; }
     .reco-content-v3 h3 { color: white; }
-    .reco-benefits-v3 { display: flex; gap: 1rem; margin-top: 2rem; }
-    .pill-v3 { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; }
-    .reco-cta-v3 { display: flex; flex-direction: column; gap: 1rem; width: 300px; flex-shrink: 0; }
+    .reco-cta-v3 { display: flex; flex-direction: column; gap: 1rem; min-width: 280px; }
     
-    .bg-light { background: #fff; }
+    .email-capture-v3 { background: #fff; padding: 3rem; border-radius: 20px; border: 1px solid #EEE; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; align-items: center; margin: 4rem 0; }
+    .email-text-v3 h3 { font-size: 1.4rem; margin-bottom: 0.75rem; }
+    .email-text-v3 p { font-size: 0.95rem; opacity: 0.6; margin: 0; }
+    .email-form-v3 { display: flex; gap: 0.5rem; }
+
+    .v3-list-dots-red li { position: relative; padding-left: 1.5rem; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.95rem; }
+    .v3-list-dots-red li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%; }
+
+    /* Loader */
+    .loader-v3 { width: 40px; height: 40px; border: 3px solid #EEE; border-top-color: var(--accent-red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 900px) {
        .result-grid-v3 { grid-template-columns: 1fr; }
-       .reco-box-v3 { flex-direction: column; padding: 2rem; text-align: center; }
-       .reco-cta-v3 { width: 100%; }
+       .reco-box-v3 { flex-direction: column; padding: 2.5rem; text-align: center; gap: 2rem; }
+       .email-capture-v3 { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; text-align: center; }
+       .email-form-v3 { flex-direction: column; }
     }
   </style>
 
   <script is:inline>
-    const S = { inst:0, expo:0, pressure:0, isol:0, level:0, answers: {} };
-    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'email'];
+    const state = { answers: {}, step: 0 };
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
 
     function showStep(id) {
        document.querySelectorAll('.diag-step').forEach(s => {
           s.classList.remove('active');
-          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 400);
+          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
        });
        const target = document.getElementById(id);
        if(target) {
@@ -267,9 +264,11 @@ import InternalHeader from '../components/InternalHeader.astro';
           setTimeout(() => target.classList.add('active'), 50);
        }
        const idx = STEPS.indexOf(id.replace('-step', ''));
-       const pct = (idx / (STEPS.length - 1)) * 100;
-       document.getElementById('progressFill').style.width = pct + '%';
-       if(idx > 0) document.getElementById('progressLabel').textContent = `Étape ${idx}/6`;
+       if(idx > 0) {
+          const pct = (idx / (STEPS.length - 2)) * 100;
+          document.getElementById('progressFill').style.width = Math.min(100, pct) + '%';
+          document.getElementById('progressLabel').textContent = `Étape ${idx}/5`;
+       }
     }
 
     document.getElementById('startBtn').addEventListener('click', () => {
@@ -278,66 +277,100 @@ import InternalHeader from '../components/InternalHeader.astro';
        showStep('q1-step');
     });
 
-    window.pick = (btn, qKey, val, stepIdx, deltas) => {
-       S.answers[qKey] = val;
-       if(deltas) {
-          S.inst += (deltas.institutional || 0);
-          S.expo += (deltas.exposure || 0);
-          S.pressure += (deltas.pressure || 0);
-          S.isol += (deltas.isolation || 0);
-          S.level = Math.max(S.level, deltas.offer_level || 0);
-       }
-       btn.style.borderColor = "var(--deep)";
-       btn.style.background = "#F9FAFB";
-       setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 300);
+    window.toggleOther = (active) => {
+       document.getElementById('subjectOptions').classList.toggle('hidden', active);
+       document.getElementById('otherInputWrapper').classList.toggle('hidden', !active);
     };
 
-    window.showResult = () => {
-       const email = document.getElementById('emailInput').value;
-       localStorage.setItem('user_email', email);
+    window.pick = (btn, key, val, stepIdx) => {
+       state.answers[key] = val;
+       if(stepIdx < 5) {
+          setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350);
+       } else {
+          showStep('calculating-step');
+          setTimeout(generateResult, 1500);
+       }
+    };
 
-       // Expert Profiling Logic
-       let p = {
-          title: "Situation en attente de cadrage professionnel",
-          summary: "Votre situation actuelle appelle un appui de clarification et de mise en sécurité.",
-          needs: ["Clarifier votre posture face à la prise de parole", "Sécuriser vos prochains arbitrages budgétaires", "Seul·e face au risque : trouver les bons relais"],
-          offer: { name: "MARYAN Plus", desc: "La solution complète pour les élus qui ne veulent plus décider seuls face à la pression du mandat." }
+    window.pickOther = () => {
+       const val = document.getElementById('otherFocus').value.trim();
+       if(!val) return;
+       window.pick(null, 'focus', val, 5);
+    };
+
+    function generateResult() {
+       const { role, experience, need, support, focus } = state.answers;
+       
+       // PROFILE GENERATOR OBJECT (11 lines)
+       const profile = {
+          roleId: role,
+          seniority: experience,
+          motive: need,
+          isolationLevel: support === 'non' ? 'high' : (support === 'partiel' ? 'med' : 'low'),
+          riskProfile: (role === 'maire' || role === 'interco' || need === 'tension') ? 'exposed' : 'managing',
+          primaryDomain: focus,
+          needsHuman: (support === 'non' || need === 'conflit' || (experience === 'moins1an' && role === 'maire')),
+          diagnosticId: 'diag_' + Math.random().toString(36).substr(2, 9),
+          timestamp: new Date().toISOString(),
+          context: `${role} (${experience})`,
+          recoLevel: (support === 'non' || need === 'conflit') ? 'Plus' : 'Essential'
        };
 
-       if (S.isol > 6) {
-          p.title = "Alerte : Risque d'isolement décisionnel";
-          p.summary = "Le diagnostic révèle un fort sentiment de solitude dans le mandat, ce qui augmente mécaniquement votre exposition personnelle et votre fatigue décisionnelle.";
-          p.needs = ["Rompre l'isolement stratégique", "Externaliser le cadrage technique", "Renforcer votre autorité républicaine"];
-       } else if (S.expo > 5) {
-          p.title = "Vigilance : Mandat à forte exposition publique";
-          p.summary = "Vos dossiers actuels vous exposent particulièrement. Chaque mot et chaque geste politique doit être calibré pour éviter les faux-pas médiatiques ou institutionnels.";
-          p.needs = ["Prise de parole chirurgicale", "Cadrage des points de vigilance", "Préparation aux situations de crise"];
+       console.log("DIAGNOSTIC COMPLETION:", profile);
+       localStorage.setItem('maryan_profile', JSON.stringify(profile));
+
+       // RENDER RECOVERY LOGIC
+       const res = {
+          vigilanceTitle: "Votre point de vigilance principal : décider trop souvent seul·e",
+          vigilanceText: "Votre diagnostic fait apparaître une exposition élevée et des relais encore fragiles sur les décisions sensibles. Votre enjeu principal n’est pas seulement de gérer les dossiers en cours : c’est de retrouver un cadre d’arbitrage plus serein, plus solide et plus lisible.",
+          implications: [
+             "Apparition d'une fatigue décisionnelle",
+             "Risque d'arbitrages défensifs par manque de recul",
+             "Difficulté à prioriser les urgences politiques",
+             "Exposition accrue sur les sujets sensibles"
+          ],
+          priorities: [
+             "Recréer du recul avant les décisions sensibles",
+             "Sécuriser les dossiers à forte exposition",
+             "Distinguer le politique du technique"
+          ],
+          appuiTitle: "Un accompagnement stratégique sur-mesure",
+          appuiText: "Au vu de votre profil, un simple outil peut vous aider ponctuellement, mais il risque d'être insuffisant dans les moments à forte tension. L'appui le plus utile pour vous est un accompagnement capable de vous aider à cadrer, arbitrer et tenir la décision dans la durée."
+       };
+
+       // Special adjustments based on role/exp
+       if (experience === 'moins1an' && role === 'maire') {
+          res.vigilanceTitle = "Priorité : Maîtriser le tempo du mandat";
+          res.vigilanceText = "En première année de mandat, le risque est de se laisser submerger par les urgences techniques des services. Vous avez besoin de poser votre autorité politique tout en sécurisant vos premiers grands actes administratifs.";
+       }
+       if (support === 'oui') {
+          res.vigilanceTitle = "Enjeu : Optimiser votre force de pilotage";
+          res.vigilanceText = "Vous bénéficiez d'un bon entourage. Votre défi est maintenant de transformer cet appui en une machine de guerre opérationnelle pour vos dossiers les plus complexes sans vous perdre dans le détail.";
+          res.appuiTitle = "MARYAN Copilote (Offre Individuelle)";
+          res.appuiText = "Votre socle est solide. MARYAN peut agir comme un super-conseiller de cabinet disponible 24h/24 pour affiner vos prises de parole et vos arbitrages quotidiens.";
        }
 
-       document.getElementById('rTitle').textContent = p.title;
-       document.getElementById('rSummary').textContent = p.summary;
-       document.getElementById('rNeeds').innerHTML = p.needs.map(n => `<li>${n}</li>`).join('');
-       document.getElementById('offerName').textContent = p.offer.name;
-       document.getElementById('offerDesc').textContent = p.offer.desc;
+       // Update DOM
+       document.getElementById('resVigilanceTitle').textContent = res.vigilanceTitle;
+       document.getElementById('resVigilanceText').textContent = res.vigilanceText;
+       document.getElementById('resImplications').innerHTML = res.implications.map(i => `<li>${i}</li>`).join('');
+       document.getElementById('resPriorities').innerHTML = res.priorities.map(p => `<li>${p}</li>`).join('');
+       document.getElementById('resAppuiTitle').textContent = res.appuiTitle;
+       document.getElementById('resAppuiText').textContent = res.appuiText;
 
-       // Persist to MARYAN APP
-       localStorage.setItem('maryan_profile', JSON.stringify({ 
-          title: p.title, 
-          summary: p.summary, 
-          tags: ["Mandat local"], 
-          plan: "Diagnostic Réalisé" 
-       }));
-
+       // Toggle Views
        document.getElementById('diagSection').classList.add('hidden');
        document.getElementById('progressWrap').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
-
-       // Bar Animations
-       setTimeout(() => {
-          document.getElementById('barInst').style.width = Math.min(100, 20 + S.inst * 5) + '%';
-          document.getElementById('barExpo').style.width = Math.min(100, 15 + S.expo * 7) + '%';
-          document.getElementById('barIso').style.width = Math.min(100, 10 + S.isol * 8) + '%';
-       }, 500);
+       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    window.submitEmail = () => {
+       const email = document.getElementById('emailInput').value.trim();
+       if(!email) return;
+       // Mock send
+       localStorage.setItem('user_email', email);
+       document.getElementById('emailCaptureBox').innerHTML = `<div style="text-align:center;width:100%;"><p style="color:var(--deep);font-weight:700;">✓ Merci, votre synthèse va vous être envoyée.</p></div>`;
+    };
   </script>
 </BaseLayout>
