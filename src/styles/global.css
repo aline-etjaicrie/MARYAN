@@ -59,6 +59,17 @@ span.emphasis, em {
   display: inline-block;
 }
 
+h1 .emphasis,
+h2 .emphasis,
+h3 .emphasis,
+h4 .emphasis,
+h1 em,
+h2 em,
+h3 em,
+h4 em {
+  color: var(--neon) !important;
+}
+
 /* ──────────────────────────────────────────────────────────────────────────
    LAYOUT UTILS
    ────────────────────────────────────────────────────────────────────────── */
@@ -174,11 +185,21 @@ span.emphasis, em {
 .path-highlight-card .path-resources-box h3,
 .aside-path-card h4,
 .reflex-card .reflex-label,
-.res-reco-v4 .section-title-v4,
+.res-reco-v4 .section-title-v4 {
+  color: white !important;
+}
+
 .bg-deep .text-neon,
 .hero-v3-signature .text-neon,
-.section-v3.dark .text-neon {
-  color: white !important;
+.section-v3.dark .text-neon,
+.internal-header-v3.dark .text-neon,
+.res-hero-bg .text-neon,
+.path-highlight-card .text-neon,
+.app-cta-banner .text-neon,
+.aside-path-card .text-neon,
+.reflex-card .text-neon,
+.res-reco-v4 .text-neon {
+  color: var(--neon) !important;
 }
 
 .bg-deep .label-v3::before,
