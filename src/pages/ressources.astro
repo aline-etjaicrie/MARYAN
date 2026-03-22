@@ -522,9 +522,14 @@ const copilotSuggestions = [
           .map(
             (item) => `
               <button type="button" class="priority-situation-card" onclick="openSituation('${item.id}')">
-                <span class="priority-situation-kicker">Situation à relire</span>
-                <strong>${item.title}</strong>
-                <span class="priority-situation-action">Explorer ↗</span>
+                <div class="priority-situation-body">
+                  <h3 class="priority-situation-title">${item.title}</h3>
+                  <p class="priority-situation-text">${item.shortDescription}</p>
+                </div>
+                <div class="priority-situation-footer">
+                  <span class="priority-situation-link">Voir la situation</span>
+                  <span class="priority-situation-arrow">↗</span>
+                </div>
               </button>
             `
           )
@@ -1094,46 +1099,83 @@ const copilotSuggestions = [
   }
 
   .priority-situation-card {
-    display: grid;
-    gap: 0.45rem;
+    display: flex;
+    flex-direction: column;
     text-align: left;
-    padding: 1.2rem 1.25rem;
+    width: 100%;
+    min-height: 100%;
+    padding: 1.5rem;
     border: 1px solid var(--border);
     background: #fff;
     color: var(--deep);
-    border-radius: 1.35rem;
+    border-radius: 1.5rem;
     font: inherit;
     cursor: pointer;
-    transition: all 0.22s ease;
+    transition: all 0.28s ease;
   }
 
   .priority-situation-card:hover,
   .priority-situation-card:focus-visible {
-    border-color: rgba(10, 25, 47, 0.16);
-    transform: translateY(-2px);
+    border-color: var(--neon);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     outline: none;
   }
 
-  .priority-situation-kicker {
-    font-size: 0.66rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.48);
+  .priority-situation-body {
+    display: grid;
+    gap: 0.6rem;
   }
 
-  .priority-situation-card strong {
-    font-size: 1rem;
-    line-height: 1.3;
+  .priority-situation-title {
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.24;
+    font-weight: 800;
     color: var(--deep);
   }
 
-  .priority-situation-action {
-    font-size: 0.76rem;
+  .priority-situation-text {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: #54636c;
+  }
+
+  .priority-situation-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .priority-situation-link {
+    font-size: 0.78rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--red);
+  }
+
+  .priority-situation-arrow {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgba(10, 25, 47, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--deep);
+    transition: all 0.28s ease;
+  }
+
+  .priority-situation-card:hover .priority-situation-arrow,
+  .priority-situation-card:focus-visible .priority-situation-arrow {
+    background: var(--red);
+    color: white;
   }
 
   .recommended-section {
