@@ -17,38 +17,57 @@ import InternalHeader from '../components/InternalHeader.astro';
   <main class="offres-v3">
     
     <!-- HERO SELECTION -->
-    <section class="section-v3 bg-grid-v3">
+    <section class="section-v3 offers-hero-v4">
       <div class="container-narrow text-center">
-         <div class="hero-cta-group">
-            <a href="/copilote" class="btn-primary-v3 big">Essayer gratuitement</a>
-            <a href="#collectivites" class="btn-secondary-v3">Voir les offres collectivités</a>
+         <div class="offers-hero-panel">
+            <p class="hero-note-v4">Choisissez votre point d’entrée : tester le copilote immédiatement, ou équiper une collectivité avec un cadre plus large.</p>
+            <div class="hero-cta-group">
+               <a href="/copilote" class="btn-primary-v3 big">Essayer gratuitement</a>
+               <a href="#collectivites" class="btn-secondary-v3">Voir les offres collectivités</a>
+            </div>
+            <div class="hero-signals-v4">
+               <div class="hero-signal-item">
+                  <strong>Essai libre</strong>
+                  <span>Une première question, tout de suite.</span>
+               </div>
+               <div class="hero-signal-item">
+                  <strong>Usage individuel</strong>
+                  <span>Un copilote personnel pour vos décisions et prises de parole.</span>
+               </div>
+               <div class="hero-signal-item">
+                  <strong>Usage collectif</strong>
+                  <span>Une mise à disposition simple pour vos élu·es et vos équipes.</span>
+               </div>
+            </div>
          </div>
       </div>
     </section>
 
     <!-- CE QUE VOUS TROUVEZ ICI -->
-    <section class="section-v3 no-padding-top">
+    <section class="section-v3 no-padding-top offers-utility-section">
       <div class="container">
-        <div class="info-grid-v3">
-           <div class="info-text">
-              <span class="label-v3">L'utilité</span>
-              <h2>Être élu·e, c’est décider souvent, parfois seul·e, souvent vite.</h2>
-              <p class="intro-v3">MARYAN est là pour ça. Vous posez votre question, vous repartez avec une réponse claire, utile, actionnable.</p>
-           </div>
-           <div class="info-cards">
-              <div class="mini-card-v3">
-                 <span class="card-num">01</span>
-                 <p>Vous devez prendre position ?</p>
-              </div>
-              <div class="mini-card-v3">
-                 <span class="card-num">02</span>
-                 <p>Vous préparez une prise de parole ?</p>
-              </div>
-              <div class="mini-card-v3">
-                 <span class="card-num">03</span>
-                 <p>Vous hésitez entre plusieurs options ?</p>
-              </div>
-           </div>
+        <div class="section-header section-header-left offers-section-head">
+           <span class="label-v3">L'utilité</span>
+           <h2>Être élu·e, c’est décider souvent, parfois seul·e, souvent vite.</h2>
+           <p class="intro-v3">MARYAN vous aide à retrouver un cadre clair avant d’agir, de parler ou d’arbitrer.</p>
+        </div>
+
+        <div class="utility-grid-v4">
+           <article class="utility-card-v4">
+              <span class="utility-num-v4">01</span>
+              <h3>Prendre position</h3>
+              <p>Quand vous devez trancher vite, sans perdre en justesse.</p>
+           </article>
+           <article class="utility-card-v4">
+              <span class="utility-num-v4">02</span>
+              <h3>Préparer une parole</h3>
+              <p>Quand il faut expliquer, cadrer ou tenir une prise de parole sensible.</p>
+           </article>
+           <article class="utility-card-v4">
+              <span class="utility-num-v4">03</span>
+              <h3>Relire une situation</h3>
+              <p>Quand un dossier, une tension ou une décision commencent à vous échapper.</p>
+           </article>
         </div>
       </div>
     </section>
@@ -64,8 +83,10 @@ import InternalHeader from '../components/InternalHeader.astro';
               <div class="plan-price-v3">
                  <span class="amount">29€</span><span class="period">/mois</span>
               </div>
+              <p class="plan-summary-v3">Un copilote personnel pour cadrer une décision, préparer une prise de parole ou retrouver du recul sur un dossier délicat.</p>
            </div>
            <div class="plan-features-v3">
+              <p class="plan-list-label">Ce que vous activez</p>
               <ul class="v3-list-check-neon">
                  <li>Agent conversationnel complet</li>
                  <li>Aide à la décision sur des cas concrets</li>
@@ -176,16 +197,31 @@ import InternalHeader from '../components/InternalHeader.astro';
     <!-- CONCRETEMENT -->
     <section class="section-v3">
        <div class="container">
-          <div class="section-header">
-             <h2>Concrètement</h2>
-             <p class="intro-v3">MARYAN vous aide là où ça compte vraiment.</p>
-          </div>
-          <div class="feature-pills-v3">
-             <span class="pill-v3">Préparer un conseil municipal</span>
-             <span class="pill-v3">Comprendre rapidement un dossier</span>
-             <span class="pill-v3">Arbitrer entre plusieurs options</span>
-             <span class="pill-v3">Gérer une situation sensible</span>
-             <span class="pill-v3">Formuler une prise de parole claire</span>
+       <div class="section-header">
+          <h2>Concrètement</h2>
+          <p class="intro-v3">MARYAN vous aide là où ça compte vraiment.</p>
+        </div>
+          <div class="use-cases-grid-v4">
+             <article class="use-case-card-v4">
+                <span class="use-case-index-v4">01</span>
+                <p>Préparer un conseil municipal</p>
+             </article>
+             <article class="use-case-card-v4">
+                <span class="use-case-index-v4">02</span>
+                <p>Comprendre rapidement un dossier</p>
+             </article>
+             <article class="use-case-card-v4">
+                <span class="use-case-index-v4">03</span>
+                <p>Arbitrer entre plusieurs options</p>
+             </article>
+             <article class="use-case-card-v4">
+                <span class="use-case-index-v4">04</span>
+                <p>Gérer une situation sensible</p>
+             </article>
+             <article class="use-case-card-v4">
+                <span class="use-case-index-v4">05</span>
+                <p>Formuler une prise de parole claire</p>
+             </article>
           </div>
        </div>
     </section>
@@ -206,6 +242,7 @@ import InternalHeader from '../components/InternalHeader.astro';
                 <p>L’objectif n’est pas d’informer, mais de vous aider à décider.</p>
              </div>
           </div>
+          <p class="diff-footnote-v4">MARYAN ne cherche pas seulement à produire du texte. Il aide à tenir un mandat avec plus de clarté.</p>
           <p class="final-motto-v3">Un mandat local, ça ne devrait pas se faire seul. <strong>MARYAN est là pour ça.</strong></p>
        </div>
     </section>
@@ -272,104 +309,633 @@ import InternalHeader from '../components/InternalHeader.astro';
     --yellow: #FACC15;
     --blue: #3B82F6;
     --red: #EF4444;
-  }
-
-  .bg-ivory { background: linear-gradient(180deg, #fbf8f2 0%, #f4efe6 100%); }
-  .text-white { color: white !important; }
-  .text-red { color: var(--accent-red) !important; }
-  .opacity-70 { opacity: 0.7; }
-  .no-padding-top { padding-top: 0; }
-  .no-padding-bottom { padding-bottom: 0; }
-
-  .offres-v3 .info-text h2,
-  .offres-v3 .info-text .intro-v3,
-  .offres-v3 .mini-card-v3,
-  .offres-v3 .mini-card-v3 p,
-  .offres-v3 .price-bubble-v3,
-  .offres-v3 .price-bubble-v3 h3,
-  .offres-v3 .size-label,
-  .offres-v3 .v3-list-dots li,
-  .offres-v3 .custom-note-v3,
-  .offres-v3 .note-content-v3 h3,
-  .offres-v3 .note-content-v3 p,
-  .offres-v3 .section-header h2,
-  .offres-v3 .section-header .intro-v3,
-  .offres-v3 .pill-v3 {
     color: var(--deep);
   }
 
-  /* ─── HERO CTA ─── */
-  .hero-cta-group { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
+  .offres-v3 .section-v3:not(.bg-deep) :where(h1, h2, h3, h4) {
+    color: var(--deep);
+  }
 
-  /* ─── INFO GRID ─── */
-  .info-grid-v3 { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; align-items: center; }
-  .info-cards { display: flex; flex-direction: column; gap: 1rem; }
-  .mini-card-v3 { background: #fff; padding: 1.25rem 1.5rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.04); display: flex; align-items: center; gap: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-  .card-num { font-size: 0.7rem; font-weight: 800; color: var(--accent-red); opacity: 0.5; }
-  .mini-card-v3 p { font-weight: 600; font-size: 0.95rem; margin: 0; }
+  .offres-v3 .section-v3:not(.bg-deep) :where(p, li) {
+    color: #54636c;
+  }
 
-  /* ─── PLAN HERO (INDIVIDUAL) ─── */
-  .plan-hero-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 4rem; }
-  .plan-price-v3 { margin-top: 2rem; }
-  .plan-price-v3 .amount { font-size: 4rem; font-weight: 800; color: var(--neon); }
-  .plan-price-v3 .period { font-size: 1.2rem; opacity: 0.6; }
-  .v3-list-check-neon { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
-  .v3-list-check-neon li { position: relative; padding-left: 2rem; }
-  .v3-list-check-neon li::before { content: '→'; position: absolute; left: 0; color: var(--neon); font-weight: 900; }
-  .plan-footer-text { font-style: italic; opacity: 0.7; font-size: 0.9rem; margin-bottom: 2.5rem; }
-  .plan-buttons-v3 { display: flex; gap: 1rem; }
+  .bg-ivory {
+    background: linear-gradient(180deg, #fbf8f2 0%, #f4efe6 100%);
+  }
 
-  /* ─── PRICING GRID (COLLECTIVITIES) ─── */
-  .pricing-grid-v3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
-  .price-bubble-v3 { background: #fff; padding: 2.5rem 1.5rem; border-radius: 20px; border-top: 4px solid #eee; transition: transform 0.2s; position: relative; }
-  .price-bubble-v3:hover { transform: translateY(-5px); }
-  .dot-v3 { width: 12px; height: 12px; border-radius: 50%; display: block; margin-bottom: 1.5rem; }
-  .pricing-grid-v3 h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-  .size-label { font-size: 0.8rem; font-style: italic; color: #777; margin-bottom: 1rem; min-height: 2.5em; }
-  .price-v3 { font-weight: 800; font-size: 1rem; color: var(--deep); margin-bottom: 1.5rem; }
-  .v3-list-dots { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem; }
-  .v3-list-dots li { position: relative; padding-left: 1.2rem; opacity: 0.8; }
-  .v3-list-dots li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 4px; height: 4px; background: #ccc; border-radius: 50%; }
+  .text-center {
+    text-align: center;
+  }
+
+  .text-white {
+    color: white !important;
+  }
+
+  .text-red {
+    color: var(--accent-red) !important;
+  }
+
+  .opacity-70 {
+    opacity: 0.72;
+  }
+
+  .no-padding-top {
+    padding-top: 0;
+  }
+
+  .no-padding-bottom {
+    padding-bottom: 0;
+  }
+
+  .offres-v3 .section-v3 {
+    padding: 7rem 0;
+  }
+
+  .offres-v3 .section-header {
+    max-width: 50rem;
+    margin: 0 auto 4rem;
+    text-align: center;
+  }
+
+  .offres-v3 .section-header h2 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    margin-bottom: 1rem;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+  }
+
+  .offres-v3 .intro-v3 {
+    color: #54636c;
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .section-header-left {
+    text-align: left !important;
+    max-width: 44rem !important;
+    margin: 0 0 2.75rem !important;
+  }
+
+  .card-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .card-kicker::before {
+    content: "";
+    width: 10px;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .offres-v3 .btn-primary-v3.big {
+    min-width: 15rem;
+  }
+
+  .offers-hero-v4 {
+    padding-top: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .offers-hero-v4::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(circle at center, black, transparent 78%);
+  }
+
+  .offers-hero-v4 .container-narrow {
+    position: relative;
+    z-index: 1;
+  }
+
+  .offers-hero-panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 249, 252, 0.98) 100%);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-radius: 2rem;
+    padding: 2rem 2.2rem 2.15rem;
+    box-shadow: 0 18px 40px rgba(10, 25, 47, 0.05);
+  }
+
+  .hero-note-v4 {
+    margin: 0 auto 1.6rem;
+    max-width: 42rem;
+    color: var(--deep);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .hero-signals-v4 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .hero-signal-item {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1.1rem;
+    background: rgba(10, 25, 47, 0.03);
+    border: 1px solid rgba(10, 25, 47, 0.06);
+    text-align: left;
+  }
+
+  .hero-signal-item strong {
+    font-size: 0.92rem;
+    color: var(--deep);
+  }
+
+  .hero-signal-item span {
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: #54636c;
+  }
+
+  .offers-utility-section {
+    background: linear-gradient(180deg, #fbf8f2 0%, #fffdfa 100%);
+    border-top: 1px solid rgba(10, 25, 47, 0.05);
+  }
+
+  .utility-grid-v4 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+
+  .utility-card-v4 {
+    background: #fff;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-radius: 1.6rem;
+    padding: 1.6rem;
+    box-shadow: 0 14px 32px rgba(10, 25, 47, 0.04);
+  }
+
+  .utility-num-v4 {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.46);
+  }
+
+  .utility-card-v4 h3 {
+    margin: 0 0 0.55rem;
+    font-size: 1.2rem;
+    line-height: 1.18;
+  }
+
+  .utility-card-v4 p {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.55;
+    font-size: 0.96rem;
+  }
+
+  .plan-hero-v3 {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    gap: 2rem;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    padding: 2.2rem;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.08);
+  }
+
+  .plan-header-v3 {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .plan-header-v3 h2 {
+    margin: 0.8rem 0 0.7rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 0.98;
+  }
+
+  .plan-header-v3 .intro-v3 {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1.12rem;
+  }
+
+  .plan-price-v3 {
+    margin: 1.6rem 0 1rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+  }
+
+  .plan-price-v3 .amount {
+    font-size: clamp(3rem, 5vw, 4.8rem);
+    font-weight: 800;
+    color: var(--neon);
+    line-height: 0.95;
+  }
+
+  .plan-price-v3 .period {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .plan-summary-v3 {
+    margin: 0;
+    max-width: 28rem;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.6;
+    font-size: 0.98rem;
+  }
+
+  .plan-features-v3 {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.6rem;
+    padding: 1.6rem;
+  }
+
+  .plan-list-label {
+    margin: 0 0 1rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--neon);
+  }
+
+  .v3-list-check-neon {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .v3-list-check-neon li {
+    position: relative;
+    padding-left: 1.55rem;
+    color: white;
+    line-height: 1.5;
+  }
+
+  .v3-list-check-neon li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--neon);
+    transform: translateY(-50%);
+  }
+
+  .plan-footer-text {
+    margin: 0 0 1.6rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .plan-buttons-v3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .pricing-grid-v3 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .price-bubble-v3 {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    background: #fff;
+    padding: 2rem 1.55rem;
+    border-radius: 1.6rem;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-top: 5px solid #eee;
+    box-shadow: 0 14px 32px rgba(10, 25, 47, 0.04);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .price-bubble-v3:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 38px rgba(10, 25, 47, 0.06);
+  }
+
+  .dot-v3 {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+
+  .pricing-grid-v3 h3 {
+    font-size: 1.12rem;
+    margin: 0 0 0.5rem;
+    line-height: 1.24;
+  }
+
+  .size-label {
+    min-height: 2.6em;
+    margin: 0 0 1rem;
+    color: #6b7680;
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .price-v3 {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--deep);
+    margin: 0 0 1.25rem;
+  }
+
+  .v3-list-dots {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.92rem;
+    margin-top: auto;
+  }
+
+  .v3-list-dots li {
+    position: relative;
+    padding-left: 1rem;
+    color: #54636c;
+    line-height: 1.5;
+  }
+
+  .v3-list-dots li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.68rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(10, 25, 47, 0.24);
+    transform: translateY(-50%);
+  }
 
   .bg-green { background: var(--green); }
   .bg-yellow { background: var(--yellow); }
   .bg-blue { background: var(--blue); }
   .bg-red { background: var(--red); }
-  .border-green { border-color: var(--green); }
-  .border-yellow { border-color: var(--yellow); }
-  .border-blue { border-color: var(--blue); }
-  .border-red { border-color: var(--red); }
+  .border-green { border-top-color: var(--green); }
+  .border-yellow { border-top-color: var(--yellow); }
+  .border-blue { border-top-color: var(--blue); }
+  .border-red { border-top-color: var(--red); }
 
-  /* ─── CUSTOM NOTE ─── */
-  .custom-note-v3 { background: #fff; padding: 2.5rem; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; gap: 4rem; }
-  .note-content-v3 h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .custom-note-v3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    background: #fff;
+    padding: 2rem 2.2rem;
+    border-radius: 1.6rem;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    box-shadow: 0 14px 32px rgba(10, 25, 47, 0.04);
+    margin-top: 0.6rem;
+  }
 
-  /* ─── PROMO BANNER ─── */
-  .promo-banner-v3 { background: var(--accent-red); color: white; border-radius: 24px; padding: 3rem 4rem; display: flex; justify-content: space-between; align-items: center; gap: 4rem; }
-  .badge-v3 { background: rgba(0,0,0,0.2); color: white; padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; margin-bottom: 1rem; display: inline-block; }
-  .promo-text-v3 h2 { color: white; font-size: 2.2rem; margin-bottom: 1rem; }
-  .promo-text-v3 p { color: white; opacity: 0.9; margin: 0; }
+  .note-content-v3 h3 {
+    margin: 0 0 0.7rem;
+    font-size: 1.55rem;
+    line-height: 1.2;
+  }
 
-  /* ─── FEATURES PILLS ─── */
-  .feature-pills-v3 { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 3rem; }
-  .pill-v3 { background: #F0F2F5; color: var(--deep); padding: 0.75rem 1.5rem; border-radius: 999px; font-weight: 600; font-size: 0.9rem; }
+  .note-content-v3 p {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.6;
+    max-width: 40rem;
+  }
 
-  /* ─── WHY NOT CHATGPT ─── */
-  .diff-grid-v3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 4rem 0; }
-  .diff-item { background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-  .final-motto-v3 { font-size: 1.4rem; margin-top: 4rem; opacity: 0.9; font-family: var(--font-accent); font-style: italic; }
+  .promo-banner-v3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    background: linear-gradient(135deg, #e63946 0%, #cb2533 100%);
+    color: white;
+    border-radius: 1.9rem;
+    padding: 2.8rem 3rem;
+    box-shadow: 0 22px 48px rgba(230, 57, 70, 0.18);
+  }
+
+  .badge-v3 {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(10, 25, 47, 0.18);
+    color: white;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .promo-text-v3 h2 {
+    color: white;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+    margin: 0 0 0.85rem;
+    letter-spacing: -0.03em;
+  }
+
+  .promo-text-v3 p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    max-width: 34rem;
+  }
+
+  .use-cases-grid-v4 {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .use-case-card-v4 {
+    background: white;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-radius: 1.4rem;
+    padding: 1.35rem 1.2rem;
+    box-shadow: 0 12px 26px rgba(10, 25, 47, 0.03);
+  }
+
+  .use-case-index-v4 {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(10, 25, 47, 0.42);
+  }
+
+  .use-case-card-v4 p {
+    margin: 0;
+    color: var(--deep);
+    line-height: 1.45;
+    font-weight: 700;
+    font-size: 0.96rem;
+  }
+
+  .diff-grid-v3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin: 3rem 0 2rem;
+  }
+
+  .diff-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.7rem 1.45rem;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .diff-item p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.55;
+  }
+
+  .diff-footnote-v4 {
+    margin: 0 auto 1rem;
+    max-width: 38rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+  }
+
+  .final-motto-v3 {
+    max-width: 34rem;
+    margin: 0 auto;
+    font-size: 1.35rem;
+    line-height: 1.45;
+    color: white;
+    font-family: var(--font-accent);
+    font-style: italic;
+  }
+
+  .offres-cta-v3 {
+    padding: 2.2rem;
+    border-radius: 1.8rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f7f3ec 100%);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    box-shadow: 0 16px 36px rgba(10, 25, 47, 0.04);
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  @media (max-width: 1100px) {
+    .hero-signals-v4,
+    .pricing-grid-v3,
+    .use-cases-grid-v4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .plan-hero-v3 {
+      grid-template-columns: 1fr;
+    }
+  }
 
   @media (max-width: 900px) {
-    .info-grid-v3 { grid-template-columns: 1fr; gap: 2rem; }
-    .plan-hero-v3 { grid-template-columns: 1fr; padding: 2rem; }
-    .pricing-grid-v3 { grid-template-columns: repeat(2, 1fr); }
-    .custom-note-v3 { flex-direction: column; text-align: center; gap: 2rem; }
-    .promo-banner-v3 { flex-direction: column; text-align: center; padding: 2rem; gap: 2rem; }
-    .diff-grid-v3 { grid-template-columns: 1fr; }
+    .offres-v3 .section-v3 {
+      padding: 5rem 0;
+    }
+
+    .hero-cta-group,
+    .plan-buttons-v3,
+    .offres-cta-v3,
+    .custom-note-v3,
+    .promo-banner-v3 {
+      flex-direction: column;
+    }
+
+    .hero-signals-v4,
+    .utility-grid-v4,
+    .pricing-grid-v3,
+    .diff-grid-v3,
+    .use-cases-grid-v4 {
+      grid-template-columns: 1fr;
+    }
+
+    .offers-hero-panel,
+    .plan-hero-v3,
+    .custom-note-v3,
+    .promo-banner-v3 {
+      padding: 1.6rem;
+    }
+
+    .custom-note-v3,
+    .promo-banner-v3,
+    .offres-cta-v3 {
+      text-align: center;
+      align-items: stretch;
+    }
+
+    .hero-cta-group .btn-primary-v3,
+    .hero-cta-group .btn-secondary-v3,
+    .plan-buttons-v3 .btn-primary-v3,
+    .plan-buttons-v3 .btn-secondary-v3,
+    .promo-banner-v3 .btn-primary-v3,
+    .offres-cta-v3 .btn-primary-v3,
+    .offres-cta-v3 .btn-secondary-v3 {
+      width: 100%;
+    }
   }
 
   @media (max-width: 600px) {
-    .pricing-grid-v3 { grid-template-columns: 1fr; }
-    .plan-buttons-v3 { flex-direction: column; }
+    .offres-v3 .section-header h2,
+    .plan-header-v3 h2,
+    .promo-text-v3 h2 {
+      letter-spacing: -0.02em;
+    }
+
+    .hero-note-v4,
+    .offres-v3 .intro-v3,
+    .plan-summary-v3,
+    .promo-text-v3 p,
+    .note-content-v3 p,
+    .diff-item p {
+      font-size: 0.98rem;
+    }
   }
 </style>
