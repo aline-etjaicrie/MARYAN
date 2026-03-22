@@ -1,36 +1,4 @@
-export type DiagnosticProfile =
-  | "mandat_recent"
-  | "arbitrage"
-  | "isolement"
-  | "surcharge"
-  | "exposition"
-  | "tension_relationnelle"
-  | "besoin_methode"
-  | "prise_de_parole"
-  | "gouvernance";
-
-export type MaryanResource = {
-  id: string;
-  title: string;
-  slug: string;
-  pillar: "se_situer" | "comprendre" | "agir" | "se_proteger";
-  format: "fiche" | "guide" | "checklist" | "repere" | "parcours";
-  promise: string;
-  intro: string;
-  understand: string[];
-  commonTrap: string;
-  actions: string[];
-  reflex: string;
-  sensitiveNote?: string;
-  targetRoles: Array<"maire" | "adjoint" | "majorite" | "opposition" | "interco">;
-  experienceLevels: Array<"debutant" | "intermediaire" | "confirme">;
-  diagnosticProfiles: Array<DiagnosticProfile>;
-  useCases: string[];
-  tags: string[];
-  ctaType: "copilote" | "offre_individuelle" | "offre_collectivite" | "formation_irl";
-  irlPotential: boolean;
-  priority: "haute" | "moyenne";
-};
+import type { MaryanResource, DiagnosticProfile } from './types';
 
 export const maryanResources: MaryanResource[] = [
   {
@@ -79,7 +47,7 @@ export const maryanResources: MaryanResource[] = [
     actions: [
       "Identifier les leviers réels de votre position.",
       "Ajuster vos attentes à votre place institutionnelle.",
-      "Choisir une manière d’être utile cohérente avec votre rôle."
+      "Choisir une manière d’être utile cohérente with votre rôle."
     ],
     reflex: "La bonne posture ne consiste pas à imiter l’autre camp, mais à habiter lucidement sa place.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition"],
@@ -369,7 +337,7 @@ export const maryanResources: MaryanResource[] = [
     actions: [
       "Identifier les compétences stratégiques exercées à l’interco.",
       "Comprendre où se prennent réellement les arbitrages.",
-      "Repérer les lieux utiles d'influence et de préparation."
+      "Repérer les lieux utiles d’influence et de préparation."
     ],
     reflex: "L’interco se comprend mieux quand on la lit par ses effets concrets.",
     targetRoles: ["maire", "adjoint", "interco"],
@@ -716,7 +684,7 @@ export const maryanResources: MaryanResource[] = [
       "Être à l’écoute ne signifie pas tout absorber.",
       "Un cadre protège autant la relation que l’élu·e."
     ],
-    commonTrap: "Croire que poser des limites revient à devenir distant·e ou froid·e.",
+    commonTrap: "Croire qu’il faut poser des limites revient à devenir distant·e ou froid·e.",
     actions: [
       "Définir ce qui relève de l’écoute, du suivi et de la décision.",
       "Poser des limites de disponibilité claires.",
@@ -735,8 +703,8 @@ export const maryanResources: MaryanResource[] = [
 ];
 
 export function getRecommendedResources(
-  resources: MaryanResource[],
-  profile: DiagnosticProfile,
+  resources: any[],
+  profile: string,
   limit = 3
 ) {
   return resources
