@@ -5,7 +5,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
 <BaseLayout
   title="Copilote — MARYAN"
-  description="Votre copilote de mandat personnel. Posez vos questions, cadrez une decision, preparez une prise de parole."
+  description="Votre copilote de mandat personnel. Posez vos questions, cadrez une décision, préparez une prise de parole."
 >
   <style is:global>
     .site-footer,
@@ -107,12 +107,47 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       margin: 0;
       padding-left: 1.15rem;
       display: grid;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .reply-list li {
       margin: 0;
       padding-left: 0.1rem;
+    }
+
+    .reply-resource-list {
+      list-style: none;
+      display: grid;
+      gap: 0.8rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .reply-resource-list li {
+      display: grid;
+      gap: 0.22rem;
+      padding: 0.8rem 0.9rem;
+      border-radius: 1rem;
+      background: rgba(10, 25, 47, 0.03);
+      border: 1px solid rgba(10, 25, 47, 0.06);
+    }
+
+    .reply-resource-link {
+      color: var(--deep);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .reply-resource-link:hover,
+    .reply-resource-link:focus-visible {
+      color: var(--accent-red);
+      outline: none;
+    }
+
+    .reply-resource-promise {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: rgba(30, 42, 50, 0.74);
     }
 
     .typing-indicator {
@@ -202,7 +237,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
         <p class="drawer-summary" data-profile-summary></p>
         <div class="drawer-tags" data-profile-tags></div>
         <div class="drawer-note">
-          MARYAN tient compte de votre profil pour nuancer la pedagogie, le niveau de cadrage et le type d'appui propose.
+          MARYAN tient compte de votre profil pour nuancer la pédagogie, le niveau de cadrage et le type d'appui proposé.
         </div>
       </div>
 
@@ -220,9 +255,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
     <div class="chat-shell">
       <header class="app-header">
-        <button class="profile-trigger" type="button" aria-label="Ouvrir le profil" data-open-drawer>
-          <span class="profile-trigger-icon">M</span>
-        </button>
+        <a href="/" class="home-link">← Retour à la home</a>
 
         <div class="header-copy">
           <span class="app-title">MARYAN</span>
@@ -233,6 +266,10 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
           <span class="mode-pill" data-mode-badge>Version libre</span>
           <span class="counter-label" data-counter-label>{FREE_LIMIT}/{FREE_LIMIT}</span>
         </div>
+
+        <button class="profile-trigger" type="button" aria-label="Ouvrir le profil" data-open-drawer>
+          <span class="profile-trigger-icon">M</span>
+        </button>
       </header>
 
       <main class="chat-thread" data-chat-thread>
@@ -241,15 +278,15 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
             <p class="intro-kicker">Le bon niveau d'appui, au bon moment</p>
             <h1>Parlez d'abord de ce que vous vivez.</h1>
             <p class="intro-text">
-              Decrivez une situation concrete, un stress, un arbitrage, une prise de parole ou un dossier
-              qui vous bloque. MARYAN commence par lire la situation avant de proposer une reponse.
+              Décrivez une situation concrète, un stress, un arbitrage, une prise de parole ou un dossier
+              qui vous bloque. MARYAN commence par lire la situation avant de proposer une réponse.
             </p>
             <div class="counter-row">
               <div class="counter-dots" data-counter-dots></div>
               <span class="counter-caption">Version libre : 5 messages par session</span>
             </div>
             <p class="intro-linkline">
-              Pour des reponses plus personnalisees, vous pouvez aussi <a href="/diagnostic">faire le diagnostic</a>.
+              Pour des réponses plus personnalisées, vous pouvez aussi <a href="/diagnostic">faire le diagnostic</a>.
             </p>
           </section>
 
@@ -289,8 +326,8 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
             <textarea
               rows="1"
               data-user-input
-              placeholder="Decrivez votre situation..."
-              aria-label="Votre message a MARYAN"
+              placeholder="Décrivez votre situation..."
+              aria-label="Votre message à MARYAN"
             ></textarea>
           </label>
 
@@ -331,7 +368,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       top: 0;
       z-index: 10;
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto 1fr auto auto;
       align-items: center;
       gap: 0.9rem;
       padding:
@@ -341,6 +378,32 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       background: rgba(248, 249, 250, 0.92);
       backdrop-filter: blur(18px);
       border-bottom: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.8rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--deep);
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(10, 25, 47, 0.08);
+      box-shadow: 0 8px 22px rgba(10, 25, 47, 0.06);
+      white-space: nowrap;
+    }
+
+    .home-link:hover,
+    .home-link:focus-visible {
+      color: #fff;
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      outline: none;
     }
 
     .profile-trigger {
@@ -806,7 +869,8 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       }
 
       .app-header {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.65rem;
       }
 
       .msg.user,
@@ -828,6 +892,34 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
       .intro-text {
         font-size: 0.91rem;
+      }
+
+      .chat-thread {
+        padding: 0.55rem 0 8.5rem;
+      }
+
+      .chat-inner {
+        padding: 0 0.82rem;
+      }
+
+      .app-input-bar {
+        padding-left: 0.82rem;
+        padding-right: 0.82rem;
+      }
+
+      .input-shell {
+        grid-template-columns: 1fr auto;
+        padding: 0.45rem 0.45rem 0.45rem 0.7rem;
+        border-radius: 1.2rem;
+      }
+
+      .mic-btn {
+        display: none;
+      }
+
+      .home-link {
+        padding: 0.38rem 0.72rem;
+        font-size: 0.72rem;
       }
     }
 

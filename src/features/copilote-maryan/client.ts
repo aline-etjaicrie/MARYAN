@@ -12,9 +12,16 @@ type HistoryMessage = {
   content: string;
 };
 
+type SuggestedResource = {
+  title: string;
+  slug: string;
+  promise: string;
+};
+
 type AssistantReply = {
   html: string;
   plainText: string;
+  resources: SuggestedResource[];
 };
 
 type DiagnosticAnswers = Record<string, string>;
@@ -176,7 +183,7 @@ function initCopilot(rootElement: HTMLElement) {
     recognition.onstart = () => {
       isRecording = true;
       micBtn.classList.add('recording');
-      input.placeholder = 'Ecoute en cours...';
+      input.placeholder = 'Écoute en cours...';
     };
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -196,7 +203,7 @@ function initCopilot(rootElement: HTMLElement) {
     const stopRecording = () => {
       isRecording = false;
       micBtn.classList.remove('recording');
-      input.placeholder = 'Decrivez votre situation...';
+      input.placeholder = 'Décrivez votre situation...';
       try {
         recognition.stop();
       } catch {
@@ -228,7 +235,7 @@ function initCopilot(rootElement: HTMLElement) {
       profileFilled.classList.add('hidden');
       profileEmpty.classList.remove('hidden');
       if (profileStatus) {
-        profileStatus.textContent = 'Diagnostic recommande pour personnaliser les reponses';
+        profileStatus.textContent = 'Diagnostic recommandé pour personnaliser les réponses';
       }
       if (modeBadge) {
         modeBadge.textContent = 'Version libre';
@@ -250,12 +257,12 @@ function initCopilot(rootElement: HTMLElement) {
 
     if (profileStatus) {
       profileStatus.textContent = hasPlusAccess(state.userProfile)
-        ? 'Profil reconnu et mode personnalise actif'
-        : 'Profil reconnu : reponses contextualisees, limite gratuite conservee';
+        ? 'Profil reconnu et mode personnalisé actif'
+        : 'Profil reconnu : réponses contextualisées, limite gratuite conservée';
     }
 
     if (modeBadge) {
-      modeBadge.textContent = hasPlusAccess(state.userProfile) ? 'MARYAN Plus' : 'Profil charge';
+      modeBadge.textContent = hasPlusAccess(state.userProfile) ? 'MARYAN Plus' : 'Profil chargé';
     }
   }
 
@@ -264,13 +271,13 @@ function initCopilot(rootElement: HTMLElement) {
     const remaining = Math.max(0, FREE_LIMIT - state.msgCount);
 
     if (headerCounter) {
-      headerCounter.textContent = unlimited ? 'Illimite' : `${remaining}/${FREE_LIMIT}`;
+      headerCounter.textContent = unlimited ? 'Illimité' : `${remaining}/${FREE_LIMIT}`;
     }
 
     if (!counterDots) return;
 
     if (unlimited) {
-      counterDots.innerHTML = '<span class="counter-note">Acces illimite</span>';
+      counterDots.innerHTML = '<span class="counter-note">Accès illimité</span>';
       return;
     }
 
@@ -288,20 +295,20 @@ function initCopilot(rootElement: HTMLElement) {
     sendBtn.disabled = state.isBusy || state.isBlocked || !hasText;
 
     if (state.isBlocked) {
-      input.placeholder = 'Passez a MARYAN Plus pour continuer...';
-      inputHint.textContent = 'Session libre terminee';
+      input.placeholder = 'Passez à MARYAN Plus pour continuer...';
+      inputHint.textContent = 'Session libre terminée';
       return;
     }
 
-    input.placeholder = state.isBusy ? 'MARYAN vous repond...' : 'Decrivez votre situation...';
+    input.placeholder = state.isBusy ? 'MARYAN vous répond...' : 'Décrivez votre situation...';
 
     if (hasPlusAccess(state.userProfile)) {
-      inputHint.textContent = 'Profil personalise · acces illimite';
+      inputHint.textContent = 'Profil personnalisé · accès illimité';
       return;
     }
 
     if (state.userProfile) {
-      inputHint.textContent = `Profil charge · ${Math.max(0, FREE_LIMIT - state.msgCount)} messages libres restants`;
+      inputHint.textContent = `Profil chargé · ${Math.max(0, FREE_LIMIT - state.msgCount)} messages libres restants`;
       return;
     }
 
@@ -396,7 +403,7 @@ function initCopilot(rootElement: HTMLElement) {
     wrapper.className = 'msg assistant';
     wrapper.innerHTML = `
       <span class="msg-sender">MARYAN</span>
-      <div class="msg-bubble typing-indicator" aria-live="polite" aria-label="MARYAN ecrit">
+      <div class="msg-bubble typing-indicator" aria-live="polite" aria-label="MARYAN écrit">
         <span class="dot"></span>
         <span class="dot"></span>
         <span class="dot"></span>
@@ -425,7 +432,7 @@ function initCopilot(rootElement: HTMLElement) {
         <div class="paywall-copy">
           <p>${PAYWALL_HTML}</p>
         </div>
-        <a href="${upgradeUrl}" class="btn-primary-v3 paywall-cta">Decouvrir MARYAN Plus</a>
+        <a href="${upgradeUrl}" class="btn-primary-v3 paywall-cta">Découvrir MARYAN Plus</a>
       </div>
     `;
 
@@ -459,24 +466,30 @@ async function getAssistantReply({
     })
   });
 
-  const data = (await response.json().catch(() => ({}))) as { reply?: string; error?: string };
+  const data = (await response.json().catch(() => ({}))) as {
+    reply?: string;
+    error?: string;
+    resources?: SuggestedResource[];
+  };
 
   if (!response.ok) {
-    throw new Error(data.error || 'Le copilote ne repond pas pour le moment.');
+    throw new Error(data.error || 'Le copilote ne répond pas pour le moment.');
   }
 
-  const reply = data.reply || 'Je n’ai pas pu generer de reponse.';
+  const reply = data.reply || "Je n’ai pas pu générer de réponse.";
+  const resources = Array.isArray(data.resources) ? data.resources.slice(0, 2) : [];
 
   return {
-    html: formatAssistantReply(reply),
-    plainText: reply
+    html: formatAssistantReply(reply, resources),
+    plainText: reply,
+    resources
   };
 }
 
-function formatAssistantReply(text: string): string {
+function formatAssistantReply(text: string, resources: SuggestedResource[] = []): string {
   const cleaned = text.replace(/\r\n/g, '\n').trim();
   if (!cleaned) {
-    return '<p>Je n’ai pas pu formuler une reponse utile pour le moment.</p>';
+    return '<p>Je n’ai pas pu formuler une réponse utile pour le moment.</p>';
   }
 
   const blocks = cleaned
@@ -522,6 +535,9 @@ function formatAssistantReply(text: string): string {
   });
 
   flushSection();
+  if (resources.length) {
+    html.push(renderResourceSuggestions(resources));
+  }
   return html.join('');
 }
 
@@ -535,17 +551,17 @@ function detectSection(block: string): { title: string; remaining: string } | nu
 
   const firstLine = normalizeLabel(lines[0].replace(/[:.]\s*$/, ''));
   const labelMap: Record<string, string> = {
-    'a retenir': 'A retenir',
-    'ce qu il faut comprendre': 'A retenir',
-    'ce que vous devez retenir': 'A retenir',
+    'a retenir': 'À retenir',
+    'ce qu il faut comprendre': 'À retenir',
+    'ce que vous devez retenir': 'À retenir',
     'faites maintenant': 'Faites maintenant',
     'ce que je te conseille maintenant': 'Faites maintenant',
     'ce que je vous conseille maintenant': 'Faites maintenant',
     'concretement': 'Faites maintenant',
-    'bon reflexe': 'Bon reflexe',
-    'le bon reflexe': 'Bon reflexe',
-    'a verifier': 'A verifier',
-    'trame prete a l emploi': "Trame prete a l'emploi"
+    'bon reflexe': 'Bon réflexe',
+    'le bon reflexe': 'Bon réflexe',
+    'a verifier': 'À vérifier',
+    'trame prete a l emploi': "Trame prête à l'emploi"
   };
 
   const title = labelMap[firstLine];
@@ -594,6 +610,23 @@ function renderReplyBlock(block: string): string {
   }
 
   return `<p>${formatInline(trimParagraph(lines.join(' ')))}</p>`;
+}
+
+function renderResourceSuggestions(resources: SuggestedResource[]): string {
+  const items = resources
+    .map(
+      (resource) => `
+        <li>
+          <a class="reply-resource-link" href="/ressources/${encodeURIComponent(resource.slug)}/">${escapeHtml(
+            resource.title
+          )}</a>
+          <span class="reply-resource-promise">${escapeHtml(trimParagraph(resource.promise))}</span>
+        </li>
+      `
+    )
+    .join('');
+
+  return `<section class="reply-section"><h3>Ressources à lire</h3><ul class="reply-resource-list">${items}</ul></section>`;
 }
 
 function isListLine(line: string): boolean {
@@ -653,14 +686,14 @@ function deriveProfileFromDiagnostic(answers: DiagnosticAnswers): MaryanProfile 
 
   const roleMap: Record<string, { title: string; theme: string; themeLabel: string }> = {
     maire: { title: 'Maire', theme: 'gouvernance', themeLabel: 'Gouvernance et arbitrage' },
-    adjoint: { title: 'Adjoint·e municipal·e', theme: 'delegation', themeLabel: 'Delegation et mise en oeuvre' },
-    majorite: { title: 'Elu·e de majorite', theme: 'mandat', themeLabel: 'Conduite du mandat' },
-    opposition: { title: "Elu·e d'opposition", theme: 'positionnement', themeLabel: 'Positionnement politique' },
-    interco: { title: 'Elu·e intercommunal·e', theme: 'coordination', themeLabel: 'Coordination territoriale' }
+    adjoint: { title: 'Adjoint·e municipal·e', theme: 'delegation', themeLabel: 'Délégation et mise en œuvre' },
+    majorite: { title: 'Élu·e de majorité', theme: 'mandat', themeLabel: 'Conduite du mandat' },
+    opposition: { title: "Élu·e d'opposition", theme: 'positionnement', themeLabel: 'Positionnement politique' },
+    interco: { title: 'Élu·e intercommunal·e', theme: 'coordination', themeLabel: 'Coordination territoriale' }
   };
 
   const role = roleMap[answers.role] || {
-    title: 'Elu·e local·e',
+    title: 'Élu·e local·e',
     theme: 'mandat',
     themeLabel: 'Conduite du mandat'
   };
@@ -684,11 +717,11 @@ function deriveProfileFromDiagnostic(answers: DiagnosticAnswers): MaryanProfile 
 
 function buildDiagnosticSummary(answers: DiagnosticAnswers): string {
   if (answers.seniority === 'moins1an' || answers.feeling === 'seul') {
-    return "Vous semblez avoir surtout besoin de reperes stables, de clarte et d'un appui proportionne.";
+    return "Vous semblez avoir surtout besoin de repères stables, de clarté et d'un appui proportionné.";
   }
 
   if (answers.feeling === 'surcharge' || answers.lack === 'priorites') {
-    return "Votre point de tension principal semble etre la surcharge et le besoin de remettre de l'ordre dans les priorites.";
+    return "Votre point de tension principal semble être la surcharge et le besoin de remettre de l'ordre dans les priorités.";
   }
 
   if (answers.tension === 'conflit' || answers.tension === 'exposition') {
@@ -699,13 +732,13 @@ function buildDiagnosticSummary(answers: DiagnosticAnswers): string {
     return "Vous avez probablement besoin d'un cadre plus solide pour arbitrer sans subir le flou.";
   }
 
-  return 'Votre diagnostic fait ressortir un besoin de clarte, de methode et de discernement dans la conduite du mandat.';
+  return 'Votre diagnostic fait ressortir un besoin de clarté, de méthode et de discernement dans la conduite du mandat.';
 }
 
 function buildDiagnosticTags(answers: DiagnosticAnswers): string[] {
   const tags: string[] = [];
 
-  if (answers.seniority === 'moins1an') tags.push('debut de mandat');
+  if (answers.seniority === 'moins1an') tags.push('début de mandat');
   if (answers.feeling === 'seul') tags.push('isolement');
   if (answers.feeling === 'surcharge') tags.push('surcharge');
   if (answers.tension === 'conflit') tags.push('tension');
@@ -725,7 +758,7 @@ function mapOfferName(answers: DiagnosticAnswers): string {
   }
 
   if (answers.role === 'interco' || answers.vigilance === 'impact') {
-    return 'Offre collectivite';
+    return 'Offre collectivité';
   }
 
   if (answers.tension === 'conflit' || answers.tension === 'duree' || answers.lack === 'cadre') {
@@ -750,5 +783,5 @@ function getErrorMessage(error: unknown): string {
     return error.message.trim();
   }
 
-  return 'Souci technique. Reessayez dans un instant.';
+  return 'Souci technique. Réessayez dans un instant.';
 }

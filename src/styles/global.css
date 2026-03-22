@@ -241,6 +241,49 @@ h4 em {
   transform: translateY(-2px);
 }
 
+.bg-deep .btn-secondary-v3,
+.hero-v3-signature .btn-secondary-v3,
+.section-v3.dark .btn-secondary-v3,
+.site-footer .btn-secondary-v3,
+.internal-header-v3.dark .btn-secondary-v3,
+.res-hero-bg .btn-secondary-v3,
+.path-highlight-card .btn-secondary-v3,
+.app-cta-banner .btn-secondary-v3,
+.aside-path-card .btn-secondary-v3,
+.reflex-card .btn-secondary-v3,
+.res-reco-v4 .btn-secondary-v3 {
+  background: white !important;
+  color: var(--deep) !important;
+  border-color: rgba(10, 25, 47, 0.12) !important;
+}
+
+.bg-deep .btn-secondary-v3:hover,
+.bg-deep .btn-secondary-v3:focus-visible,
+.hero-v3-signature .btn-secondary-v3:hover,
+.hero-v3-signature .btn-secondary-v3:focus-visible,
+.section-v3.dark .btn-secondary-v3:hover,
+.section-v3.dark .btn-secondary-v3:focus-visible,
+.site-footer .btn-secondary-v3:hover,
+.site-footer .btn-secondary-v3:focus-visible,
+.internal-header-v3.dark .btn-secondary-v3:hover,
+.internal-header-v3.dark .btn-secondary-v3:focus-visible,
+.res-hero-bg .btn-secondary-v3:hover,
+.res-hero-bg .btn-secondary-v3:focus-visible,
+.path-highlight-card .btn-secondary-v3:hover,
+.path-highlight-card .btn-secondary-v3:focus-visible,
+.app-cta-banner .btn-secondary-v3:hover,
+.app-cta-banner .btn-secondary-v3:focus-visible,
+.aside-path-card .btn-secondary-v3:hover,
+.aside-path-card .btn-secondary-v3:focus-visible,
+.reflex-card .btn-secondary-v3:hover,
+.reflex-card .btn-secondary-v3:focus-visible,
+.res-reco-v4 .btn-secondary-v3:hover,
+.res-reco-v4 .btn-secondary-v3:focus-visible {
+  background: var(--accent-red) !important;
+  color: white !important;
+  border-color: var(--accent-red) !important;
+}
+
 /* Card Premium V3 */
 .card-v3 {
   background: white; border: 1px solid var(--border); border-radius: 32px;
