@@ -37,15 +37,15 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
 
   <main class="ressources-lux">
     
-    <!-- 1. À COMMENCER PAR LÀ (PERSONALIZED RESOURCES) -->
-    <section id="personalizedResources" class="section-v3 hidden">
+    <!-- 1. À COMMENCER PAR LÀ (PERSONALIZED RESOURCES) - DARK THEME -->
+    <section id="personalizedResources" class="section-v3 hidden" style="background: var(--deep); color: white; padding: 6rem 0;">
       <div class="container">
         <header class="section-header-v4">
-          <span class="label-v3">Recommandations</span>
-          <h2 class="section-title-standard">À commencer par là</h2>
-          <p class="section-subtitle-v4">Les 3 ressources prioritaires identifiées pour vous.</p>
+          <span class="label-v3" style="color: var(--neon);">Selon votre dernier diagnostic</span>
+          <h2 class="section-title-standard" style="color: white;">À commencer par là</h2>
+          <p class="section-subtitle-v4" style="color: white; opacity: 0.9;">Les 3 ressources prioritaires identifiées pour vous.</p>
         </header>
-        <div id="recommendedGrid" class="res-grid">
+        <div id="recommendedGrid" class="rec-v4-grid">
           <!-- Filled by JS -->
         </div>
       </div>
@@ -217,17 +217,13 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
       if (recs.length > 0) {
         document.getElementById('personalizedResources').classList.remove('hidden');
         document.getElementById('recommendedGrid').innerHTML = recs.map(res => `
-           <a href="/ressources/${res.slug}" class="res-lux-card card-v3">
-                <div class="card-inner">
-                  <header class="card-top">
-                    <span class="format-tag ${res.format}">${res.format}</span>
-                  </header>
-                  <h3 class="card-title">${res.title}</h3>
-                  <p class="card-promise" style="font-size:0.9rem;">${res.promise}</p>
-                  <footer class="card-meta">
-                    <div class="arrow-circle">→</div>
-                  </footer>
+           <a href="/ressources/${res.slug}" class="rec-lux-card-v4">
+                <div class="rec-bolt">⚡</div>
+                <div class="rec-content">
+                  <h3 class="rec-title-v4">${res.title}</h3>
+                  <p class="rec-promise-v4">${res.promise}</p>
                 </div>
+                <div class="rec-arrow">→</div>
               </a>
         `).join('');
       }
@@ -253,10 +249,6 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
     }
 
     window.filterByUseCase = (uc) => {
-       // Simple implementation: scroll to the first pillar for now or 
-       // filter a specific grid if we had an 'all' grid.
-       // Given the 4 pillar structure, maybe we just highlight the resources?
-       // Let's just scroll to the first pillar that has a resource with this UC.
        const firstPillar = maryanResources.find(r => r.useCases.includes(uc))?.pillar;
        if (firstPillar) {
           const el = document.getElementById(firstPillar);
@@ -293,7 +285,23 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
   /* ─── SECTION HEADERS ─── */
   .section-header-v4 { text-align: left; margin-bottom: 3rem; }
   .section-title-standard { font-size: 2.2rem; font-weight: 800; margin: 0.5rem 0; letter-spacing: -0.02em; }
-  .section-subtitle-v4 { opacity: 0.6; font-size: 1.1rem; }
+  .section-subtitle-v4 { opacity: 0.8; font-size: 1.1rem; }
+
+  /* ─── REC CARDS V4 (DARK) ─── */
+  .rec-v4-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  .rec-lux-card-v4 { 
+    display: flex; gap: 2rem; align-items: center; 
+    padding: 2.5rem; background: rgba(255,255,255,0.03); 
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
+    text-decoration: none; color: white; transition: all 0.3s;
+  }
+  .rec-lux-card-v4:hover { background: rgba(255,255,255,0.07); border-color: var(--neon); transform: translateX(10px); }
+  .rec-bolt { font-size: 1.5rem; color: var(--neon); }
+  .rec-content { flex: 1; }
+  .rec-title-v4 { font-size: 1.4rem; font-weight: 800; color: white; margin-bottom: 0.5rem; }
+  .rec-promise-v4 { font-size: 1rem; color: white; opacity: 0.9; line-height: 1.4; }
+  .rec-arrow { font-size: 1.5rem; opacity: 0.3; transition: all 0.3s; }
+  .rec-lux-card-v4:hover .rec-arrow { opacity: 1; color: var(--neon); }
 
   /* ─── PILLAR NAV ─── */
   .pillar-nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
@@ -309,14 +317,14 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
   .pillar-title { font-size: 1.8rem; margin: 0; }
 
   /* ─── PATH CARD ─── */
-  .path-highlight-card { background: var(--deep); color: white; padding: 4rem; border-radius: 40px; border: none; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+  .path-highlight-card { background: var(--deep); color: #fff; padding: 4rem; border-radius: 40px; border: none; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
   .path-badge { background: var(--neon); color: var(--deep); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 99px; display: inline-block; margin-bottom: 2rem; }
-  .path-title-v4 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1rem; color: white; letter-spacing: -0.02em; }
-  .path-promise-v4 { font-size: 1.3rem; opacity: 0.8; margin-bottom: 3rem; max-width: 600px; line-height: 1.4; }
+  .path-title-v4 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff; letter-spacing: -0.02em; }
+  .path-promise-v4 { font-size: 1.3rem; color: #fff; opacity: 0.95; margin-bottom: 3rem; max-width: 600px; line-height: 1.4; }
   
   .path-priorities-box h3, .path-resources-box h3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
   .res-check-list-small { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; }
-  .res-check-list-small li { display: flex; gap: 0.8rem; align-items: center; font-size: 1.1rem; font-weight: 600; }
+  .res-check-list-small li { display: flex; gap: 0.8rem; align-items: center; font-size: 1.1rem; font-weight: 600; color: #fff; }
   .check-icon-small { color: var(--neon); font-weight: 900; }
 
   .path-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
@@ -352,6 +360,7 @@ const allUseCases = [...new Set(maryanResources.flatMap(r => r.useCases))].sort(
   .mock-line { height: 8px; background: rgba(255,255,255,0.1); border-radius: 99px; }
 
   @media (max-width: 900px) {
+    .rec-lux-card-v4 { flex-direction: column; text-align: center; gap: 1rem; }
     .path-highlight-card { padding: 2.5rem 1.5rem; border-radius: 24px; }
     .path-title-v4 { font-size: 2rem; }
     .res-grid { grid-template-columns: 1fr; }
