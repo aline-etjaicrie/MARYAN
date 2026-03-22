@@ -196,8 +196,9 @@ const copilotSuggestions = [
         </div>
 
         <div class="catalogue-head">
-          <div>
-            <p class="catalogue-kicker">Explorer toutes les ressources</p>
+          <div class="catalogue-copy-wrap">
+            <span class="label-v3">Catalogue</span>
+            <h2 class="catalogue-title">Explorer toutes les ressources</h2>
             <p class="catalogue-copy">
               Le diagnostic sert à orienter, pas à enfermer. Toutes les fiches restent accessibles à tout moment.
             </p>
@@ -1486,33 +1487,47 @@ const copilotSuggestions = [
 
   .catalogue-head {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 1rem;
-    margin: 2rem 0 1.4rem;
+    gap: 1.5rem;
+    margin: 2.5rem 0 1.8rem;
   }
 
-  .catalogue-kicker {
-    margin: 0 0 0.3rem;
-    font-size: 0.78rem;
+  .catalogue-copy-wrap {
+    max-width: 44rem;
+  }
+
+  .catalogue-title {
+    margin: 0.5rem 0 0.7rem;
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.56);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    color: var(--deep);
   }
 
   .catalogue-copy {
     margin: 0;
     color: #54636c;
+    font-size: 1.05rem;
     line-height: 1.55;
-    max-width: 40rem;
   }
 
   .resource-count {
     margin: 0;
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: rgba(10, 25, 47, 0.58);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.6rem;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(10, 25, 47, 0.1);
+    background: rgba(255, 255, 255, 0.86);
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.62);
     white-space: nowrap;
   }
 
