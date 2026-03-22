@@ -365,12 +365,13 @@ import InternalHeader from '../components/InternalHeader.astro';
        const exposureLevel = exposureScore >= 12 ? "très élevé" : (exposureScore >= 7 ? "élevé" : "modéré");
        const supportLevel = supportFragilityScore >= 8 ? "fragile" : (supportFragilityScore >= 4 ? "variable" : "solide");
 
-       // Determine Primary Risk
+       // Determine Primary Risk based on SPEC priority
        let primaryRisk = "dispersion_strategique";
        if (supportFragilityScore >= 8 && exposureScore >= 8) primaryRisk = "isolement_decisionnel";
-       else if (urgencyScore >= 10 && exposureScore >= 10) primaryRisk = "pression_decisionnelle";
+       else if (urgencyScore >= 10 && exposureScore >= 8) primaryRisk = "pression_decisionnelle";
        else if (complexityScore >= 12) primaryRisk = "flou_de_cadrage";
        else if (a.need === 'conflit') primaryRisk = "tension_relationnelle";
+       else primaryRisk = "dispersion_strategique";
 
        // Offer Determination
        let offer = "copilote";
@@ -415,19 +416,47 @@ import InternalHeader from '../components/InternalHeader.astro';
 
        // 2. Summary Generation
        const needLabels = {
-          arbitrage: "sécuriser vos arbitrages",
-          conflit: "gérer un conflit",
-          prise_parole: "calibrer votre parole publique",
-          methode: "retrouver de la méthode",
-          recul: "prendre de la hauteur"
+          arbitrage: "arbitrer une décision sensible",
+          conflit: "gérer une situation de tension ou de conflit",
+          prise_parole: "préparer une prise de parole stratégique",
+          methode: "remettre de la méthode sur un dossier complexe",
+          recul: "prendre du recul et clarifier vos priorités"
        };
-       const summary = `Votre diagnostic fait apparaître un mandat ${p.exposureLevel === "très élevé" ? "à très forte exposition" : "à exposition élevée"}, avec des relais ${p.supportLevel} et un besoin dominant de ${needLabels[a.need] || "clarification"}. Votre enjeu principal aujourd’hui est de sortir d'un mode réactif pour reprendre la main sur le tempo de vos dossiers.`;
+       
+       const summary = `Votre diagnostic fait apparaître un mandat ${p.exposureLevel === "très élevé" ? "à très forte exposition" : "à exposition élevée"}, avec des relais ${p.supportLevel} et un besoin dominant de ${needLabels[a.need] || "clarification"}. Votre enjeu principal aujourd’hui est de ${p.primaryRisk.replace('_', ' ')}.`;
 
        // 3. Lists Logic
        const implicationsMap = {
-          isolement_decisionnel: ["Apparition d'une fatigue décisionnelle réelle", "Risque d'arbitrages défensifs par manque de relais", "Difficulté à hiérarchiser les urgences politiques", "Exposition personnelle accrue sur les sujets sensibles"],
-          flou_de_cadrage: ["Perte de temps sur des allers-retours techniques", "Difficulté à prioriser les grands projets", "Risque de réponses institutionnelles trop fragiles", "Moindre lisibilité de votre action politique"],
-          tension_relationnelle: ["Crispation politique au sein de l'équipe", "Usure personnelle liée à la gestion de l'humain", "Décisions plus coûteuses à porter publiquement", "Risque de séquence médiatique mal maîtrisée"]
+          isolement_decisionnel: [
+             "Apparition d'une fatigue décisionnelle réelle",
+             "Risque d'arbitrages défensifs par manque de relais",
+             "Difficulté à hiérarchiser les urgences politiques",
+             "Exposition personnelle accrue sur les sujets sensibles"
+          ],
+          pression_decisionnelle: [
+             "Prise de décision sous le coup de l'émotion ou de l'urgence",
+             "Risque d'erreur de communication irréversible",
+             "Sentiment de subir l'agenda extérieur",
+             "Fragilisation de l'autorité politique"
+          ],
+          flou_de_cadrage: [
+             "Perte de temps sur des allers-retours techniques",
+             "Difficulté à prioriser les grands projets",
+             "Risque de réponses institutionnelles trop fragiles",
+             "Moindre lisibilité de votre action politique"
+          ],
+          tension_relationnelle: [
+             "Crispation politique au sein de l'équipe",
+             "Usure personnelle liée à la gestion de l'humain",
+             "Décisions plus coûteuses à porter publiquement",
+             "Risque de séquence médiatique mal maîtrisée"
+          ],
+          dispersion_strategique: [
+             "Essoufflement sur des micro-dossiers",
+             "Manque de cap clair pour les services",
+             "Dilution de votre message politique",
+             "Sensation de ne pas avancer sur l'essentiel"
+          ]
        };
        const implications = implicationsMap[p.primaryRisk] || implicationsMap.flou_de_cadrage;
 
