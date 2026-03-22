@@ -189,19 +189,6 @@ h4 em {
   color: white !important;
 }
 
-.bg-deep .text-neon,
-.hero-v3-signature .text-neon,
-.section-v3.dark .text-neon,
-.internal-header-v3.dark .text-neon,
-.res-hero-bg .text-neon,
-.path-highlight-card .text-neon,
-.app-cta-banner .text-neon,
-.aside-path-card .text-neon,
-.reflex-card .text-neon,
-.res-reco-v4 .text-neon {
-  color: var(--neon) !important;
-}
-
 .bg-deep .label-v3::before,
 .hero-v3-signature .label-v3::before,
 .section-v3.dark .label-v3::before,
