@@ -279,15 +279,12 @@ const copilotSuggestions = [
 
         <div class="sit-grid">
           {maryanSituations.map((sit) => (
-            <button type="button" class="sit-card card-v3" onclick={`openSituation('${sit.id}')`}>
+            <button type="button" class="sit-card" onclick={`openSituation('${sit.id}')`}>
               <div class="sit-card-content">
                 <h3 class="sit-title">{sit.title}</h3>
                 <p class="sit-desc">{sit.shortDescription}</p>
-                <div class="sit-footer">
-                  <span class="sit-link">Explorer la situation</span>
-                  <span class="sit-arrow">↗</span>
-                </div>
               </div>
+              <span class="sit-arrow">↗</span>
             </button>
           ))}
         </div>
@@ -852,19 +849,13 @@ const copilotSuggestions = [
         <a href="/ressources/${resource.slug}" class="res-lux-card" data-pillar="${resource.pillar}" data-resource-link data-slug="${resource.slug}">
           <div class="res-card-content">
             <div class="res-card-meta">
-              <span class="res-card-pillar-dot"></span>
               <span class="res-card-kicker">${prettyPillar}</span>
               <span class="res-card-format-badge">${prettyFormat}</span>
             </div>
             <h3 class="res-card-title">${resource.title}</h3>
             <p class="res-card-promise">${resource.promise}</p>
-            <div class="res-card-tags">
-              ${tagList.map((tag) => `<span class="res-card-tag">${tag}</span>`).join('')}
-            </div>
-            <div class="res-card-footer">
-              <span class="res-card-link">Lire →</span>
-            </div>
           </div>
+          <span class="res-card-arrow">→</span>
         </a>
       `;
     }
@@ -1723,12 +1714,6 @@ const copilotSuggestions = [
     margin-top: 2rem;
   }
 
-  .res-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.25rem;
-  }
-
   /* Pillar color palette */
   :root {
     --pillar-se_situer: #3B82F6;
@@ -1737,69 +1722,59 @@ const copilotSuggestions = [
     --pillar-se_proteger: #E63946;
   }
 
+  .res-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(10, 25, 47, 0.04);
+  }
+
   .res-lux-card {
     text-decoration: none;
     background: white;
-    border: 1px solid var(--border);
-    border-left: 4px solid rgba(10, 25, 47, 0.12);
-    border-radius: 14px;
-    transition: all 0.22s ease;
-    height: 100%;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    transition: background 0.15s;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
     width: 100%;
-    padding: 1.5rem 1.5rem 1.5rem 1.25rem;
-    text-align: left;
+    padding: 1rem 1.25rem 1rem 1.1rem;
     color: var(--deep);
   }
+
+  .res-lux-card:last-child { border-bottom: none; }
 
   .res-lux-card[data-pillar="se_situer"]   { border-left-color: var(--pillar-se_situer); }
   .res-lux-card[data-pillar="comprendre"]  { border-left-color: var(--pillar-comprendre); }
   .res-lux-card[data-pillar="agir"]        { border-left-color: var(--pillar-agir); }
   .res-lux-card[data-pillar="se_proteger"] { border-left-color: var(--pillar-se_proteger); }
 
-  .res-lux-card:hover,
-  .res-lux-card:focus-visible {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(10, 25, 47, 0.08);
-    border-color: rgba(10, 25, 47, 0.18);
-    border-left-width: 4px;
-    outline: none;
-  }
+  .res-lux-card:hover { background: #F5F6F8; }
 
   .res-card-content {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    gap: 0;
+    flex: 1;
+    min-width: 0;
   }
 
   .res-card-meta {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.25rem;
   }
-
-  .res-card-pillar-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    flex-shrink: 0;
-    background: rgba(10, 25, 47, 0.2);
-  }
-
-  .res-lux-card[data-pillar="se_situer"]   .res-card-pillar-dot { background: var(--pillar-se_situer); }
-  .res-lux-card[data-pillar="comprendre"]  .res-card-pillar-dot { background: var(--pillar-comprendre); }
-  .res-lux-card[data-pillar="agir"]        .res-card-pillar-dot { background: var(--pillar-agir); }
-  .res-lux-card[data-pillar="se_proteger"] .res-card-pillar-dot { background: var(--pillar-se_proteger); }
 
   .res-card-kicker {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.45);
+    color: rgba(10, 25, 47, 0.4);
   }
 
   .res-lux-card[data-pillar="se_situer"]   .res-card-kicker { color: var(--pillar-se_situer); }
@@ -1808,67 +1783,45 @@ const copilotSuggestions = [
   .res-lux-card[data-pillar="se_proteger"] .res-card-kicker { color: var(--pillar-se_proteger); }
 
   .res-card-format-badge {
-    font-size: 0.66rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.38);
+    color: rgba(10, 25, 47, 0.35);
     background: rgba(10, 25, 47, 0.04);
-    padding: 0.18rem 0.55rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 999px;
   }
 
   .res-card-title {
-    font-size: 1.05rem;
+    font-size: 0.97rem;
     font-weight: 800;
     color: var(--deep);
-    margin: 0 0 0.55rem;
-    line-height: 1.24;
+    margin: 0;
+    line-height: 1.2;
     letter-spacing: -0.01em;
   }
 
   .res-card-promise {
-    font-size: 0.9rem;
-    line-height: 1.55;
+    font-size: 0.83rem;
+    line-height: 1.4;
     color: #54636c;
-    margin: 0 0 1rem;
-    flex: 1;
+    margin: 0.15rem 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
-  .res-card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
+  .res-card-arrow {
+    font-size: 0.95rem;
+    color: rgba(10, 25, 47, 0.28);
+    flex-shrink: 0;
+    transition: color 0.15s, transform 0.15s;
   }
 
-  .res-card-tag {
-    color: rgba(10, 25, 47, 0.55);
-    background: rgba(10, 25, 47, 0.04);
-    font-size: 0.71rem;
-    font-weight: 600;
-    padding: 0.25rem 0.65rem;
-    border-radius: 999px;
-  }
-
-  .res-card-footer {
-    margin-top: auto;
-    padding-top: 0.85rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .res-card-link {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: rgba(10, 25, 47, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    transition: color 0.2s;
-  }
-
-  .res-lux-card:hover .res-card-link,
-  .res-lux-card:focus-visible .res-card-link {
+  .res-lux-card:hover .res-card-arrow {
     color: var(--deep);
+    transform: translateX(3px);
   }
 
   .empty-state {
@@ -2281,8 +2234,7 @@ const copilotSuggestions = [
       justify-content: flex-start;
     }
 
-    .priority-grid,
-    .res-grid {
+    .priority-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -2361,8 +2313,7 @@ const copilotSuggestions = [
     }
 
     .priority-grid,
-    .rec-v4-grid,
-    .res-grid {
+    .rec-v4-grid {
       grid-template-columns: 1fr;
     }
 
