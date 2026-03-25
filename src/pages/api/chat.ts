@@ -309,6 +309,12 @@ function getSuggestedResources(
     }));
 }
 
+// Generic tokens that match too broadly and should not count toward score
+const GENERIC_TOKENS = new Set([
+  'elu', 'elue', 'elus', 'elues', 'mandat', 'commune', 'local', 'politique',
+  'votre', 'vous', 'votre', 'pour', 'dans', 'avec', 'sur', 'une', 'les', 'des'
+]);
+
 // Token overlap score only — a resource scoring 0 here is excluded entirely
 function getTokenScore(resource: MaryanResource, textTokens: Set<string>): number {
   let score = 0;
@@ -319,7 +325,9 @@ function getTokenScore(resource: MaryanResource, textTokens: Set<string>): numbe
     ...resource.useCases
   ];
   for (const candidate of candidates) {
-    const overlaps = tokenize(candidate).filter((t) => textTokens.has(t));
+    const overlaps = tokenize(candidate).filter(
+      (t) => textTokens.has(t) && !GENERIC_TOKENS.has(t)
+    );
     if (overlaps.length) {
       score += Math.min(overlaps.length, candidate === resource.title ? 4 : 3);
     }
