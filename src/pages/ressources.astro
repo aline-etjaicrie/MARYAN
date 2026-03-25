@@ -205,29 +205,32 @@ const copilotSuggestions = [
           </p>
         </header>
 
-        <div class="filter-shell card-v3">
+        <div class="filter-shell">
           <div class="filter-search">
-            <label for="resourceSearch" class="filter-label">Recherche</label>
-            <input id="resourceSearch" type="search" class="search-input" placeholder="Rechercher un sujet, un format, une situation..." />
+            <input id="resourceSearch" type="search" class="search-input" placeholder="Rechercher un sujet, un format, une situation…" />
           </div>
 
-          <div class="filter-grid">
-            <label class="filter-field">
-              <span class="filter-label">Par univers</span>
-              <select id="pillarFilter">
-                {pillars.map((pillar) => <option value={pillar.id}>{pillar.label}</option>)}
-              </select>
-            </label>
+          <div class="filter-pills-section">
+            <span class="filter-label">Univers</span>
+            <div class="filter-pills" id="pillarFilter">
+              {pillars.map((pillar) => (
+                <button type="button" class={`filter-pill${pillar.id === 'all' ? ' active' : ''}`} data-value={pillar.id}>
+                  {pillar.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
+          <div class="filter-selects-row">
             <label class="filter-field">
-              <span class="filter-label">Par situation</span>
+              <span class="filter-label">Situation</span>
               <select id="situationFilter">
                 {situationFilters.map((item) => <option value={item.id}>{item.label}</option>)}
               </select>
             </label>
 
             <label class="filter-field">
-              <span class="filter-label">Par format</span>
+              <span class="filter-label">Format</span>
               <select id="formatFilter">
                 <option value="all">Tous</option>
                 <option value="fiche">Fiches</option>
@@ -240,7 +243,7 @@ const copilotSuggestions = [
             <label class="filter-field">
               <span class="filter-label">Trier par</span>
               <select id="sortFilter">
-                <option value="recommended">Recommandé pour vous</option>
+                <option value="recommended">Recommandé</option>
                 <option value="useful">Les plus utiles</option>
                 <option value="recent">Les plus récentes</option>
                 <option value="consulted">Les plus consultées</option>
@@ -250,13 +253,6 @@ const copilotSuggestions = [
         </div>
 
         <div class="catalogue-head">
-          <div class="catalogue-copy-wrap">
-            <span class="label-v3">Explorer librement</span>
-            <h2 class="catalogue-title">Toutes les ressources</h2>
-            <p class="catalogue-copy">
-              Entrez par un besoin, un thème ou une situation.
-            </p>
-          </div>
           <p id="resourceCount" class="resource-count">—</p>
         </div>
 
@@ -298,14 +294,14 @@ const copilotSuggestions = [
       </div>
     </section>
 
-    <section class="section-v3 copilot-section">
+    <section class="copilot-dark-section">
       <div class="container container-medium">
-        <div class="copilot-card card-v3">
-          <div class="copilot-copy">
-            <span class="label-v3">Poser une question à MARYAN</span>
-            <h2>Vous ne trouvez pas exactement votre cas ?</h2>
-            <p>
-              Si vous ne trouvez pas exactement votre cas, MARYAN peut aussi vous aider à le cadrer directement.
+        <div class="copilot-dark-inner">
+          <div class="copilot-dark-header">
+            <span class="copilot-dark-kicker">Poser une question à MARYAN</span>
+            <h2 class="copilot-dark-title">Vous ne trouvez pas exactement votre cas ?</h2>
+            <p class="copilot-dark-desc">
+              MARYAN peut vous aider à cadrer la situation, poser les bonnes questions et identifier les ressources utiles.
             </p>
           </div>
 
@@ -318,7 +314,7 @@ const copilotSuggestions = [
           </div>
 
           <div class="copilot-actions">
-            <a href="/copilote" class="btn-primary-v3">Ouvrir le copilote</a>
+            <a href="/copilote" class="copilot-dark-btn">Ouvrir le copilote →</a>
           </div>
         </div>
       </div>
@@ -712,10 +708,14 @@ const copilotSuggestions = [
         renderCatalog();
       });
 
-      els.pillarFilter?.addEventListener('change', (event) => {
-        state.pillar = event.currentTarget.value;
-        state.expandedCatalog = false;
-        renderCatalog();
+      document.querySelectorAll('#pillarFilter .filter-pill').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('#pillarFilter .filter-pill').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          state.pillar = btn.dataset.value;
+          state.expandedCatalog = false;
+          renderCatalog();
+        });
       });
 
       els.situationFilter?.addEventListener('change', (event) => {
@@ -750,7 +750,9 @@ const copilotSuggestions = [
         state.expandedCatalog = false;
 
         if (els.resourceSearch) els.resourceSearch.value = '';
-        if (els.pillarFilter) els.pillarFilter.value = 'all';
+        document.querySelectorAll('#pillarFilter .filter-pill').forEach(function(b) { b.classList.remove('active'); });
+        var allPill = document.querySelector('#pillarFilter [data-value="all"]');
+        if (allPill) allPill.classList.add('active');
         if (els.situationFilter) els.situationFilter.value = 'all';
         if (els.formatFilter) els.formatFilter.value = 'all';
         if (els.sortFilter) els.sortFilter.value = 'recommended';
@@ -850,17 +852,20 @@ const copilotSuggestions = [
         .filter(Boolean);
 
       return `
-        <a href="/ressources/${resource.slug}" class="res-lux-card" data-resource-link data-slug="${resource.slug}">
+        <a href="/ressources/${resource.slug}" class="res-lux-card" data-pillar="${resource.pillar}" data-resource-link data-slug="${resource.slug}">
           <div class="res-card-content">
-            <span class="res-card-kicker">${prettyPillar} · ${prettyFormat}</span>
+            <div class="res-card-meta">
+              <span class="res-card-pillar-dot"></span>
+              <span class="res-card-kicker">${prettyPillar}</span>
+              <span class="res-card-format-badge">${prettyFormat}</span>
+            </div>
             <h3 class="res-card-title">${resource.title}</h3>
             <p class="res-card-promise">${resource.promise}</p>
             <div class="res-card-tags">
               ${tagList.map((tag) => `<span class="res-card-tag">${tag}</span>`).join('')}
             </div>
             <div class="res-card-footer">
-              <span class="res-card-link">Lire la fiche</span>
-              <span class="res-card-arrow">↗</span>
+              <span class="res-card-link">Lire →</span>
             </div>
           </div>
         </a>
@@ -1599,84 +1604,125 @@ const copilotSuggestions = [
   }
 
   .explore-section {
-    background: var(--bg);
+    background: #F5F6F8;
   }
 
   .filter-shell {
-    padding: 1.4rem;
+    padding: 1.5rem;
     margin-bottom: 1.6rem;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 249, 252, 0.98) 100%);
-    border-radius: 1.8rem;
-    box-shadow: 0 12px 28px rgba(10, 25, 47, 0.03);
-  }
-
-  .filter-shell:hover {
-    transform: none;
-    border-color: var(--border);
-    box-shadow: 0 12px 28px rgba(10, 25, 47, 0.03);
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(10, 25, 47, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 
   .filter-search {
-    margin-bottom: 1rem;
+    position: relative;
   }
 
-  .filter-grid {
+  .search-input {
+    width: 100%;
+    border: 1.5px solid rgba(10, 25, 47, 0.12);
+    border-radius: 10px;
+    background: #FAFAF8;
+    color: var(--deep);
+    font: inherit;
+    font-size: 0.97rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus {
+    border-color: var(--deep);
+    background: white;
+  }
+
+  .filter-pills-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .filter-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.45);
+  }
+
+  .filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-pill {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(10, 25, 47, 0.12);
+    background: #FAFAF8;
+    color: #54636C;
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+
+  .filter-pill:hover {
+    border-color: var(--deep);
+    color: var(--deep);
+    background: white;
+  }
+
+  .filter-pill.active {
+    background: var(--deep);
+    color: white;
+    border-color: var(--deep);
+  }
+
+  .filter-selects-row {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.9rem;
   }
 
-  .filter-field,
-  .filter-search {
+  .filter-field {
     display: grid;
     gap: 0.45rem;
   }
 
-  .filter-label {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.56);
-  }
-
-  .search-input,
   .filter-field select {
     width: 100%;
-    border: 1px solid rgba(10, 25, 47, 0.12);
-    border-radius: 0.95rem;
-    background: white;
+    border: 1.5px solid rgba(10, 25, 47, 0.12);
+    border-radius: 10px;
+    background: #FAFAF8;
     color: var(--deep);
     font: inherit;
-    padding: 0.85rem 0.95rem;
+    font-size: 0.9rem;
+    padding: 0.7rem 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .filter-field select:focus {
+    border-color: var(--deep);
+    background: white;
   }
 
   .catalogue-head {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1.5rem;
-    margin: 2.5rem 0 1.8rem;
-  }
-
-  .catalogue-copy-wrap {
-    max-width: 44rem;
-  }
-
-  .catalogue-title {
-    margin: 0.5rem 0 0.7rem;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.02;
-    color: var(--deep);
-  }
-
-  .catalogue-copy {
-    margin: 0;
-    color: #54636c;
-    font-size: 1.05rem;
-    line-height: 1.55;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin: 1.5rem 0 1.2rem;
   }
 
   .resource-count {
@@ -1684,16 +1730,15 @@ const copilotSuggestions = [
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.6rem;
-    padding: 0.7rem 1rem;
+    padding: 0.4rem 0.9rem;
     border-radius: 999px;
     border: 1px solid rgba(10, 25, 47, 0.1);
-    background: rgba(255, 255, 255, 0.86);
-    font-size: 0.84rem;
+    background: white;
+    font-size: 0.8rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.62);
+    color: rgba(10, 25, 47, 0.55);
     white-space: nowrap;
   }
 
@@ -1705,30 +1750,45 @@ const copilotSuggestions = [
 
   .res-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* Pillar color palette */
+  :root {
+    --pillar-se_situer: #3B82F6;
+    --pillar-comprendre: #8B5CF6;
+    --pillar-agir: #10B981;
+    --pillar-se_proteger: #E63946;
   }
 
   .res-lux-card {
     text-decoration: none;
     background: white;
     border: 1px solid var(--border);
-    border-radius: 24px;
-    transition: all 0.28s ease;
+    border-left: 4px solid rgba(10, 25, 47, 0.12);
+    border-radius: 14px;
+    transition: all 0.22s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 2rem;
+    padding: 1.5rem 1.5rem 1.5rem 1.25rem;
     text-align: left;
     color: var(--deep);
   }
 
+  .res-lux-card[data-pillar="se_situer"]   { border-left-color: var(--pillar-se_situer); }
+  .res-lux-card[data-pillar="comprendre"]  { border-left-color: var(--pillar-comprendre); }
+  .res-lux-card[data-pillar="agir"]        { border-left-color: var(--pillar-agir); }
+  .res-lux-card[data-pillar="se_proteger"] { border-left-color: var(--pillar-se_proteger); }
+
   .res-lux-card:hover,
   .res-lux-card:focus-visible {
-    border-color: var(--neon);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(10, 25, 47, 0.08);
+    border-color: rgba(10, 25, 47, 0.18);
+    border-left-width: 4px;
     outline: none;
   }
 
@@ -1736,88 +1796,104 @@ const copilotSuggestions = [
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    gap: 0;
   }
 
+  .res-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .res-card-pillar-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    background: rgba(10, 25, 47, 0.2);
+  }
+
+  .res-lux-card[data-pillar="se_situer"]   .res-card-pillar-dot { background: var(--pillar-se_situer); }
+  .res-lux-card[data-pillar="comprendre"]  .res-card-pillar-dot { background: var(--pillar-comprendre); }
+  .res-lux-card[data-pillar="agir"]        .res-card-pillar-dot { background: var(--pillar-agir); }
+  .res-lux-card[data-pillar="se_proteger"] .res-card-pillar-dot { background: var(--pillar-se_proteger); }
+
   .res-card-kicker {
-    display: inline-block;
-    margin-bottom: 0.95rem;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.46);
+    color: rgba(10, 25, 47, 0.45);
+  }
+
+  .res-lux-card[data-pillar="se_situer"]   .res-card-kicker { color: var(--pillar-se_situer); }
+  .res-lux-card[data-pillar="comprendre"]  .res-card-kicker { color: var(--pillar-comprendre); }
+  .res-lux-card[data-pillar="agir"]        .res-card-kicker { color: var(--pillar-agir); }
+  .res-lux-card[data-pillar="se_proteger"] .res-card-kicker { color: var(--pillar-se_proteger); }
+
+  .res-card-format-badge {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(10, 25, 47, 0.38);
+    background: rgba(10, 25, 47, 0.04);
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
   }
 
   .res-card-title {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: var(--deep);
-    margin: 0 0 0.65rem;
+    margin: 0 0 0.55rem;
     line-height: 1.24;
+    letter-spacing: -0.01em;
   }
 
   .res-card-promise {
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.9rem;
+    line-height: 1.55;
     color: #54636c;
-    margin: 0 0 1.2rem;
+    margin: 0 0 1rem;
+    flex: 1;
   }
 
   .res-card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-top: auto;
+    gap: 0.4rem;
     margin-bottom: 1rem;
   }
 
   .res-card-tag {
-    color: rgba(10, 25, 47, 0.68);
+    color: rgba(10, 25, 47, 0.55);
     background: rgba(10, 25, 47, 0.04);
-    font-size: 0.74rem;
-    padding: 0.32rem 0.72rem;
+    font-size: 0.71rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
     border-radius: 999px;
   }
 
   .res-card-footer {
     margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding-top: 1rem;
+    padding-top: 0.85rem;
     border-top: 1px solid var(--border);
   }
 
   .res-card-link {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 800;
-    color: var(--deep);
+    color: rgba(10, 25, 47, 0.5);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .res-card-arrow {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    background: rgba(10, 25, 47, 0.05);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--deep);
-    transition: 0.3s;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
   }
 
   .res-lux-card:hover .res-card-link,
   .res-lux-card:focus-visible .res-card-link {
-    color: var(--red);
-  }
-
-  .res-lux-card:hover .res-card-arrow,
-  .res-lux-card:focus-visible .res-card-arrow {
-    background: var(--red);
-    color: white;
+    color: var(--deep);
   }
 
   .empty-state {
@@ -1912,47 +1988,91 @@ const copilotSuggestions = [
     color: white;
   }
 
-  .copilot-card {
-    padding: 2.4rem;
-    border-radius: 32px;
+  .copilot-dark-section {
+    background: var(--deep);
+    padding: 5rem 0;
   }
 
-  .copilot-copy h2 {
-    margin: 1rem 0 0.8rem;
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
+  .copilot-dark-inner {
+    padding: 0;
   }
 
-  .copilot-copy p {
-    margin: 0;
-    font-size: 1.02rem;
+  .copilot-dark-kicker {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin-bottom: 1rem;
+  }
+
+  .copilot-dark-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: white;
+    margin: 0 0 1rem;
+    line-height: 1.05;
+  }
+
+  .copilot-dark-desc {
+    font-size: 1.05rem;
     line-height: 1.6;
-    color: #54636c;
-    max-width: 42rem;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 48rem;
+    margin: 0 0 2rem;
+  }
+
+  .copilot-dark-header {
+    margin-bottom: 0.5rem;
   }
 
   .copilot-suggestions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
-    margin: 1.6rem 0 2rem;
+    gap: 0.65rem;
+    margin-bottom: 2.5rem;
   }
 
   .copilot-chip {
-    border: 1px solid rgba(10, 25, 47, 0.1);
-    background: rgba(10, 25, 47, 0.03);
-    color: var(--deep);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
     border-radius: 999px;
-    padding: 0.8rem 1rem;
+    padding: 0.65rem 1.1rem;
     font: inherit;
-    font-weight: 700;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     text-align: left;
+    transition: all 0.18s;
   }
 
   .copilot-chip:hover,
   .copilot-chip:focus-visible {
-    background: rgba(10, 25, 47, 0.06);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
     outline: none;
+  }
+
+  .copilot-dark-btn {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    background: var(--neon);
+    color: var(--deep);
+    border-radius: 10px;
+    font-weight: 900;
+    font-size: 1rem;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: all 0.2s;
+  }
+
+  .copilot-dark-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(173, 255, 47, 0.25);
   }
 
   .subtle-support-card {
@@ -2174,7 +2294,7 @@ const copilotSuggestions = [
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .filter-grid {
+    .filter-selects-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -2188,7 +2308,7 @@ const copilotSuggestions = [
     .rec-v4-grid,
     .res-grid,
     .sit-grid,
-    .filter-grid,
+    .filter-selects-row,
     .path-mini-grid,
     .modal-body-grid,
     .subtle-support-card {
@@ -2201,9 +2321,8 @@ const copilotSuggestions = [
     }
 
     .path-highlight-card,
-    .copilot-card,
     .filter-shell {
-      padding: 1.6rem;
+      padding: 1.25rem;
     }
 
     .modal-card {
@@ -2261,13 +2380,11 @@ const copilotSuggestions = [
       padding: 1.1rem;
     }
 
-    .subtle-support-actions,
-    .copilot-suggestions {
+    .subtle-support-actions {
       flex-direction: column;
     }
 
-    .subtle-support-actions .btn-secondary-v3,
-    .copilot-chip {
+    .subtle-support-actions .btn-secondary-v3 {
       width: 100%;
     }
 
