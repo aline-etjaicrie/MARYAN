@@ -2411,6 +2411,42 @@ export const maryanResources: MaryanResource[] = [
     priority: "haute"
   },
 
+  {
+    id: "ordre-protocolaire-qui-citer",
+    title: "Ordre protocolaire : qui citer en premier (et pourquoi)",
+    slug: "ordre-protocolaire-qui-citer",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Respecter l'ordre protocolaire pour éviter les maladresses et tensions inutiles.",
+    intro: "Dans une prise de parole officielle, l'ordre dans lequel tu cites les personnalités n'est jamais neutre. Il reflète la hiérarchie républicaine. Une inversion peut être perçue comme un manque de respect, même si elle est involontaire. Bonne nouvelle : il existe des règles simples à retenir.",
+    understand: [
+      "L'ordre protocolaire repose sur la fonction, pas sur la relation personnelle.",
+      "L'État prime sur les collectivités dans la hiérarchie protocolaire.",
+      "Le territoire qui accueille peut influencer le discours, mais ne renverse pas l'ordre."
+    ],
+    commonTrap: "Citer d'abord les personnes que tu connais ou celles qui t'invitent.",
+    actions: [
+      "Identifier les représentants de l'État présents (préfet, ministre, député, sénateur).",
+      "Classer les élus par niveau : État → région → département → commune.",
+      "Si tu doutes, utiliser la formule safe : \"Mesdames et Messieurs les représentants de l'État, Mesdames et Messieurs les élu·es…\""
+    ],
+    reflex: "En protocole, on respecte la fonction, pas l'affect.",
+    sensitiveNote: "Un mauvais ordre peut être interprété comme un désaveu politique ou institutionnel, même involontaire.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "exposition"],
+    useCases: [
+      "Préparer l'ouverture d'un discours en présence d'élus et de représentants de l'État",
+      "Éviter d'inverser l'ordre lors d'une cérémonie officielle",
+      "Structurer les formules de politesse d'une allocution"
+    ],
+    tags: ["protocole", "ordre", "discours", "cérémonie", "préséance", "allocution", "hommage"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
   // ── LOT 9 : RELATION HABITANTS & RISQUES / ÉTHIQUE ────────────────────────
 
   {
