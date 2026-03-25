@@ -2301,6 +2301,116 @@ export const maryanResources: MaryanResource[] = [
     priority: "haute"
   },
 
+  // ── LOT 8 (suite) : DISCOURS & REGISTRES ────────────────────────────────
+
+  {
+    id: "les-3-types-de-discours-elu",
+    title: "Les 3 types de discours : ne pas parler au mauvais endroit",
+    slug: "les-3-types-de-discours-elu",
+    pillar: "agir",
+    format: "guide",
+    promise: "Adapter son discours au bon registre pour être juste, crédible et efficace.",
+    intro: "Tous les discours d'élu ne se valent pas. Le problème n'est pas de mal parler, mais de parler dans le mauvais registre. Un discours politique dans une cérémonie peut paraître déplacé. Un discours institutionnel face à des habitants peut sembler froid. Savoir identifier le bon type de discours est une compétence clé du mandat.",
+    understand: [
+      "Il existe trois grands types de discours : institutionnel, politique et relationnel.",
+      "Chaque type répond à un objectif différent : représenter, positionner, relier.",
+      "Le mauvais registre crée immédiatement un décalage avec le public."
+    ],
+    commonTrap: "Utiliser le même ton et la même structure dans toutes les situations.",
+    actions: [
+      "Identifier le contexte avant d'écrire : cérémonie, débat ou rencontre habitants.",
+      "Clarifier l'objectif : représenter la fonction, prendre position, ou créer du lien.",
+      "Adapter ton ton, ton niveau de langage et ta structure en conséquence."
+    ],
+    reflex: "Avant de parler, demande-toi : je suis dans quel type de discours — institutionnel, politique ou relationnel ?",
+    sensitiveNote: "Les trois registres peuvent coexister dans un même événement. L'erreur fréquente est de glisser d'un registre à l'autre sans s'en rendre compte.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["prise_de_parole", "exposition"],
+    useCases: [
+      "Préparer un discours de cérémonie (hommage, inauguration, vœux)",
+      "Prendre position publiquement sans être perçu comme hors-sujet",
+      "Parler à des habitants sans créer de distance"
+    ],
+    tags: ["discours", "communication politique", "cérémonie", "prise de parole", "registre", "hommage", "allocution"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "ecrire-discours-elu",
+    title: "Écrire un discours : dire juste, dire clair, dire utile",
+    slug: "ecrire-discours-elu",
+    pillar: "agir",
+    format: "guide",
+    promise: "Construire un discours politique clair, incarné et adapté au contexte.",
+    intro: "Un discours d'élu n'est pas un texte littéraire ni un rapport administratif. Il sert à poser une position, créer du lien et donner du sens. Trop long, trop flou ou trop technique, il perd immédiatement son effet.",
+    understand: [
+      "Un discours sert à faire passer un message, pas à tout dire.",
+      "Le public retient peu de choses : l'essentiel doit être clair.",
+      "Le ton compte autant que le contenu."
+    ],
+    commonTrap: "Vouloir tout dire et produire un discours long et confus.",
+    actions: [
+      "Définir un message principal (une idée forte).",
+      "Structurer en 3 parties simples : contexte / message / ouverture.",
+      "Écrire pour être dit à voix haute, pas pour être lu."
+    ],
+    reflex: "Un bon discours tient en une idée forte.",
+    sensitiveNote: "Un discours mal calibré peut créer un décalage avec le public ou être mal interprété politiquement.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["prise_de_parole"],
+    useCases: [
+      "Écrire un discours de vœux ou d'inauguration",
+      "Préparer une allocution politique sans être confus",
+      "Structurer une prise de position publique"
+    ],
+    tags: ["discours", "prise de parole", "communication", "allocution", "rédaction"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "protocole-elu-les-bases",
+    title: "Le protocole : comprendre les règles sans se crisper",
+    slug: "protocole-elu-les-bases",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Maîtriser les bases du protocole pour éviter les faux pas et rester à l'aise.",
+    intro: "Le protocole peut sembler formel ou secondaire, mais il structure les relations entre élus, institutions et partenaires. Mal maîtrisé, il peut créer des tensions inutiles. Bien compris, il permet de se positionner correctement sans rigidité.",
+    understand: [
+      "Le protocole organise la place de chacun : ordre des prises de parole, préséance, invitations.",
+      "Il est particulièrement important lors des événements publics, cérémonies et rencontres officielles.",
+      "Il ne s'agit pas de rigidité, mais de respect des fonctions et des institutions."
+    ],
+    commonTrap: "Ignorer le protocole ou le considérer comme secondaire.",
+    actions: [
+      "Vérifier l'ordre protocolaire avant un événement (qui parle, dans quel ordre).",
+      "S'appuyer sur les services (cabinet, communication, protocole).",
+      "Observer et s'adapter plutôt que vouloir imposer."
+    ],
+    reflex: "Le protocole évite les malaises invisibles.",
+    sensitiveNote: "Un faux pas protocolaire peut être interprété comme un manque de respect institutionnel, même s'il est involontaire.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "exposition"],
+    useCases: [
+      "Préparer une cérémonie officielle",
+      "Comprendre l'ordre protocolaire lors d'un événement",
+      "Éviter les faux pas lors d'une représentation institutionnelle"
+    ],
+    tags: ["protocole", "cérémonie", "représentation", "préséance", "événement"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
   // ── LOT 9 : RELATION HABITANTS & RISQUES / ÉTHIQUE ────────────────────────
 
   {
