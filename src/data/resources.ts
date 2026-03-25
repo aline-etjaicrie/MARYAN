@@ -2482,6 +2482,42 @@ export const maryanResources: MaryanResource[] = [
     priority: "haute"
   },
 
+  {
+    id: "les-medias-comprendre-et-agir",
+    title: "Les médias : comprendre les règles du jeu sans se faire piéger",
+    slug: "les-medias-comprendre-et-agir",
+    pillar: "agir",
+    format: "guide",
+    promise: "Utiliser les médias comme levier sans perdre la maîtrise de son message.",
+    intro: "Les médias ne sont ni des adversaires ni des alliés. Ils ont leur propre logique : aller vite, capter l'attention, simplifier. Pour un élu, l'enjeu n'est pas de tout contrôler, mais de comprendre ces règles pour éviter les erreurs classiques et faire passer un message clair.",
+    understand: [
+      "Les médias cherchent un angle, pas une explication complète.",
+      "Une interview n'est jamais neutre : elle met en lumière un point précis.",
+      "Ce qui est dit peut être résumé, coupé ou reformulé."
+    ],
+    commonTrap: "Parler comme dans un rapport ou une réunion technique.",
+    actions: [
+      "Définir ton message principal avant toute prise de parole médiatique.",
+      "Anticiper la question qui peut te mettre en difficulté.",
+      "Formuler des phrases courtes, claires et compréhensibles."
+    ],
+    reflex: "Si ton message n'est pas simple, il sera transformé.",
+    sensitiveNote: "Une phrase mal formulée peut être reprise, sortie de son contexte et devenir un sujet en soi.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["prise_de_parole", "exposition"],
+    useCases: [
+      "Préparer une interview presse ou radio",
+      "Éviter de se faire piéger lors d'une prise de parole publique",
+      "Formuler un message clair avant un passage médiatique"
+    ],
+    tags: ["médias", "interview", "communication", "presse", "radio", "message"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
   // ── LOT 9 : RELATION HABITANTS & RISQUES / ÉTHIQUE ────────────────────────
 
   {
