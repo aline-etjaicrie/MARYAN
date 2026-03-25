@@ -1734,7 +1734,6 @@ export const maryanResources: MaryanResource[] = [
     priority: "haute"
   },
 
-  {
   // ── LOT 6 : INSTANCES & FICHE MAIRE ───────────────────────────────────────
 
   {

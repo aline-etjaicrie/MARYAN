@@ -7,7 +7,7 @@ import {
   type MaryanSituationMode
 } from '../../features/copilote-maryan/config';
 import { maryanResources } from '../../data/resources';
-import type { MaryanResource } from '../../data/types';
+import type { DiagnosticProfile, MaryanResource } from '../../data/types';
 
 interface CopilotMessage {
   role: 'user' | 'assistant';
@@ -142,7 +142,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({
       reply,
-      resources: getSuggestedResources(latestUserMessage, profile, resolvedMode)
+      resources: getSuggestedResources(latestUserMessage, profile, resolvedMode),
+      detectedMode: resolvedMode
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;
@@ -265,6 +266,16 @@ function mergeReplyParts(initialReply: string, continuationReply: string): strin
   return `${first}${separator}${second}`.trim();
 }
 
+// Maps situation modes to likely diagnostic profiles for scoring boost
+const MODE_TO_DIAGNOSTIC: Partial<Record<MaryanSituationMode, DiagnosticProfile[]>> = {
+  prise_de_reperes: ['mandat_recent'],
+  reprise_de_recul: ['surcharge'],
+  arbitrage_cadrage: ['arbitrage'],
+  lecture_de_tension: ['tension_relationnelle', 'isolement'],
+  parole_exposition: ['exposition', 'prise_de_parole'],
+  explication_pedagogique: ['besoin_methode', 'gouvernance']
+};
+
 function getSuggestedResources(
   latestUserMessage: string,
   profile: MaryanProfile | null,
@@ -283,16 +294,11 @@ function getSuggestedResources(
   return maryanResources
     .map((resource) => ({
       resource,
-      score: scoreResource(resource, textTokens)
+      score: scoreResource(resource, textTokens, profile, resolvedMode)
     }))
-    .filter(({ score }) => score >= 3)
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      if (a.resource.priority === 'haute' && b.resource.priority !== 'haute') return -1;
-      if (a.resource.priority !== 'haute' && b.resource.priority === 'haute') return 1;
-      return 0;
-    })
-    .slice(0, 2)
+    .filter(({ score }) => score >= 2)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
     .map(({ resource }) => ({
       title: resource.title,
       slug: resource.slug,
@@ -300,9 +306,26 @@ function getSuggestedResources(
     }));
 }
 
-function scoreResource(resource: MaryanResource, textTokens: Set<string>): number {
+function scoreResource(
+  resource: MaryanResource,
+  textTokens: Set<string>,
+  profile: MaryanProfile | null,
+  resolvedMode: MaryanSituationMode
+): number {
   let score = resource.priority === 'haute' ? 1 : 0;
 
+  // Boost if profile's diagnostic key matches the fiche's diagnosticProfiles
+  if (profile?.key && resource.diagnosticProfiles.includes(profile.key as DiagnosticProfile)) {
+    score += 3;
+  }
+
+  // Boost if the detected situation mode maps to a matching diagnostic profile
+  const modeProfiles = MODE_TO_DIAGNOSTIC[resolvedMode] || [];
+  if (modeProfiles.some((p) => resource.diagnosticProfiles.includes(p))) {
+    score += 1;
+  }
+
+  // Token overlap scoring across title, promise, tags, useCases
   const candidates = [
     resource.title,
     resource.promise,
