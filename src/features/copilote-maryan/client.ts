@@ -74,23 +74,27 @@ function initCopilot(rootElement: HTMLElement) {
     isBlocked: false,
     paywallShown: false,
     isLoggedIn: false,
+    hasPaidPlan: false,
     history: [] as HistoryMessage[],
     userProfile: loadProfile()
   };
 
-  // Check Supabase session — unlocks unlimited access for logged-in users
+  // Check Supabase session — grants unlimited access only if user metadata has plan = "plus"
   if (_supabase) {
     _supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         state.isLoggedIn = true;
-        // If paywall was already shown before session loaded, undo it
-        if (state.isBlocked) {
-          state.isBlocked = false;
-          state.paywallShown = false;
+        const metaPlan = (session.user.user_metadata?.plan || session.user.app_metadata?.plan || '') as string;
+        if (metaPlan === 'plus' || metaPlan === 'admin') {
+          state.hasPaidPlan = true;
+          if (state.isBlocked) {
+            state.isBlocked = false;
+            state.paywallShown = false;
+          }
+          if (modeBadge) modeBadge.textContent = 'MARYAN · Accès illimité';
         }
         renderCounter();
         syncInputUi();
-        if (modeBadge) modeBadge.textContent = 'MARYAN · Accès illimité';
       }
     });
   }
@@ -711,7 +715,7 @@ function hasPlusAccess(profile: MaryanProfile | null): boolean {
 }
 
 function hasUnlimitedAccess(): boolean {
-  return state.isLoggedIn || hasPlusAccess(state.userProfile);
+  return state.hasPaidPlan || hasPlusAccess(state.userProfile);
 }
 
 function isValidProfile(value: Partial<MaryanProfile> | null | undefined): value is MaryanProfile {
