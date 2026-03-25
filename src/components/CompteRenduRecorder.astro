@@ -1,0 +1,661 @@
+---
+// Composant pour créer un CR par enregistrement/dictée
+// Génère un plan de CR à partir des propos enregistrés
+---
+
+<div class="cr-recording-widget">
+  <!-- STEP 1: ENREGISTREMENT -->
+  <div id="recordingStep" class="cr-step active">
+    <h3>Créer un CR par dictée</h3>
+    <p class="cr-step-desc">Enregistrez vos propos pendant la réunion. MARYAN structurera automatiquement votre compte rendu.</p>
+
+    <div class="recording-controls">
+      <div class="recording-meta">
+        <input 
+          id="recordingTitle" 
+          type="text" 
+          placeholder="Titre de la réunion (ex: Conseil du 25/03/2026)"
+          class="recording-input"
+        />
+        <select id="recordingType" class="recording-input">
+          <option value="">Type de réunion</option>
+          <option value="reunion_conseil">Réunion de conseil</option>
+          <option value="reunion_interne">Réunion interne</option>
+          <option value="reunion_citoyenne">Réunion citoyenne</option>
+          <option value="reunion_bureau">Réunion de bureau</option>
+        </select>
+      </div>
+
+      <div class="recording-audio">
+        <button id="recordBtn" class="btn-record">
+          <span class="record-icon">⚫</span>
+          Démarrer l'enregistrement
+        </button>
+        <button id="stopBtn" class="btn-record stop" style="display: none;">
+          <span class="record-icon">⏹️</span>
+          Arrêter
+        </button>
+        <div id="recordingTime" class="recording-time">00:00</div>
+      </div>
+
+      <div id="transcriptionArea" class="transcription-area" style="display: none;">
+        <label>Transcription en temps réel</label>
+        <div id="transcriptionText" class="transcription-text"></div>
+        <p class="transcription-note">Basée sur la reconnaissance vocale (Web Speech API)</p>
+      </div>
+
+      <textarea 
+        id="recordingNotes" 
+        placeholder="Ou tapez vos notes directement..."
+        class="recording-textarea"
+        rows="8"
+      ></textarea>
+
+      <div class="recording-actions">
+        <button id="generatePlanBtn" class="btn-primary-record">
+          📋 Générer le plan automatiquement
+        </button>
+        <button id="skipToPlanBtn" class="btn-secondary-record">
+          ➜ Créer le plan manuellement
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: GÉNÉRATION PLAN -->
+  <div id="planStep" class="cr-step" style="display: none;">
+    <h3>Plan de votre compte rendu</h3>
+    <p class="cr-step-desc">MARYAN a structuré vos propos. Éditez et validez avant de sauvegarder.</p>
+
+    <div class="plan-generator">
+      <div id="planLoading" class="plan-loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>MARYAN analyse vos propos et génère le plan...</p>
+      </div>
+
+      <div id="generatedPlan" class="generated-plan" style="display: none;">
+        <div class="plan-section">
+          <h4>📌 Points clés identifiés</h4>
+          <ul id="keyPointsList" class="plan-list"></ul>
+        </div>
+
+        <div class="plan-section">
+          <h4>⚡ Actions à suivre</h4>
+          <ul id="actionsList" class="plan-list"></ul>
+        </div>
+
+        <div class="plan-section">
+          <h4>🏷️ Thèmes détectés</h4>
+          <div id="themesList" class="plan-tags"></div>
+        </div>
+
+        <div class="plan-section">
+          <h4>📝 Contenu structuré du CR</h4>
+          <div id="structuredContent" class="structured-content" contenteditable="true"></div>
+        </div>
+      </div>
+
+      <div class="plan-actions">
+        <button id="saveCRBtn" class="btn-primary-record">✅ Sauvegarder ce CR</button>
+        <button id="editManuallyBtn" class="btn-secondary-record">✏️ Éditer manuellement</button>
+        <button id="backToRecordingBtn" class="btn-secondary-record">← Recommencer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cr-recording-widget {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .cr-step {
+    display: none;
+    padding: 2rem;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 10px;
+  }
+
+  .cr-step.active {
+    display: block;
+  }
+
+  .cr-step h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--deep);
+    font-size: 1.3rem;
+  }
+
+  .cr-step-desc {
+    color: #999;
+    margin: 0 0 2rem 0;
+    font-size: 0.95rem;
+  }
+
+  /* Recording Controls */
+  .recording-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .recording-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .recording-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+
+  .recording-audio {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fff8f0, #fffcf8);
+    border: 2px solid rgba(217, 59, 59, 0.2);
+    border-radius: 10px;
+  }
+
+  .btn-record {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+  }
+
+  .btn-record:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+
+  .btn-record.stop {
+    background: #d93b3b;
+  }
+
+  .record-icon {
+    font-size: 1.2rem;
+    display: inline-block;
+    animation: pulse 1s infinite;
+  }
+
+  .btn-record.stop .record-icon {
+    animation: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .recording-time {
+    font-weight: 700;
+    color: var(--red);
+    font-size: 1.2rem;
+    min-width: 60px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .transcription-area {
+    padding: 1rem;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 6px;
+  }
+
+  .transcription-area label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: var(--deep);
+  }
+
+  .transcription-text {
+    min-height: 80px;
+    padding: 0.75rem;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    line-height: 1.6;
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .transcription-note {
+    font-size: 0.8rem;
+    color: #999;
+    margin: 0;
+  }
+
+  .recording-textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+  }
+
+  .recording-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary-record,
+  .btn-secondary-record {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary-record {
+    background: var(--neon);
+    color: white;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .btn-primary-record:hover {
+    opacity: 0.85;
+  }
+
+  .btn-secondary-record {
+    background: white;
+    border: 1px solid #eee;
+    color: var(--text);
+  }
+
+  .btn-secondary-record:hover {
+    border-color: var(--text);
+    background: #f9f9f9;
+  }
+
+  /* Plan Generation */
+  .plan-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1.5rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f0f0f0;
+    border-top-color: var(--neon);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .generated-plan {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .plan-section {
+    padding: 1.5rem;
+    background: #fafafa;
+    border-radius: 8px;
+    border-left: 4px solid var(--neon);
+  }
+
+  .plan-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--deep);
+    font-size: 1rem;
+  }
+
+  .plan-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .plan-list li {
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .plan-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .plan-tag {
+    background: white;
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .structured-content {
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    min-height: 200px;
+    line-height: 1.8;
+    color: #333;
+    outline: none;
+  }
+
+  .structured-content:focus {
+    border-color: var(--neon);
+    box-shadow: 0 0 0 3px rgba(57, 255, 110, 0.1);
+  }
+
+  .plan-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .recording-audio {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-record {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .recording-meta {
+      flex-direction: column;
+    }
+
+    .recording-input {
+      min-width: 100%;
+    }
+
+    .recording-actions {
+      flex-direction: column;
+    }
+
+    .btn-primary-record,
+    .btn-secondary-record {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  let mediaRecorder: MediaRecorder | null = null;
+  let audioChunks: Blob[] = [];
+  let recordingTimer: number | null = null;
+  let recordingSeconds = 0;
+
+  const recordBtn = document.getElementById('recordBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const recordingTime = document.getElementById('recordingTime');
+  const transcriptionArea = document.getElementById('transcriptionArea');
+  const transcriptionText = document.getElementById('transcriptionText');
+  const recordingNotes = document.getElementById('recordingNotes');
+  const generatePlanBtn = document.getElementById('generatePlanBtn');
+  const skipToPlanBtn = document.getElementById('skipToPlanBtn');
+
+  const recordingStep = document.getElementById('recordingStep');
+  const planStep = document.getElementById('planStep');
+
+  // START RECORDING
+  recordBtn?.addEventListener('click', async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        audioChunks.push(e.data);
+      };
+
+      mediaRecorder.start();
+      recordBtn!.style.display = 'none';
+      stopBtn!.style.display = 'inline-flex';
+      transcriptionArea!.style.display = 'block';
+
+      // Start transcription
+      startTranscription();
+
+      // Timer
+      recordingSeconds = 0;
+      recordingTimer = window.setInterval(() => {
+        recordingSeconds++;
+        const mins = Math.floor(recordingSeconds / 60);
+        const secs = recordingSeconds % 60;
+        recordingTime!.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }, 1000);
+    } catch (err) {
+      alert('Accès au microphone refusé. Veuillez autoriser l\'accès.');
+      console.error(err);
+    }
+  });
+
+  // STOP RECORDING
+  stopBtn?.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      recordBtn!.style.display = 'inline-flex';
+      stopBtn!.style.display = 'none';
+
+      if (recordingTimer) clearInterval(recordingTimer);
+
+      // Store audio and notes
+      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      localStorage.setItem('maryan_last_recording_url', audioUrl);
+    }
+  });
+
+  // SPEECH RECOGNITION (Web Speech API)
+  function startTranscription() {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+      transcriptionText!.innerHTML = '❌ Reconnaissance vocale non supportée sur ce navigateur.';
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'fr-FR';
+
+    let interimTranscript = '';
+
+    recognition.onstart = () => {
+      transcriptionText!.innerHTML = '🎤 Écoute en cours...';
+    };
+
+    recognition.onresult = (event: any) => {
+      interimTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          recordingNotes!.value += transcript + ' ';
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+      transcriptionText!.innerHTML = (recordingNotes!.value + interimTranscript).replace(/\n/g, '<br>');
+    };
+
+    recognition.onerror = (event: any) => {
+      transcriptionText!.innerHTML = '⚠️ Erreur de reconnaissance vocale. Continuez à dicter...';
+    };
+
+    recognition.start();
+  }
+
+  // GENERATE PLAN
+  generatePlanBtn?.addEventListener('click', async () => {
+    const notes = recordingNotes!.value.trim();
+    const title = (document.getElementById('recordingTitle') as HTMLInputElement).value;
+    const type = (document.getElementById('recordingType') as HTMLSelectElement).value;
+
+    if (!notes) {
+      alert('Veuillez enregistrer ou entrer des notes.');
+      return;
+    }
+
+    // Show loading
+    recordingStep!.style.display = 'none';
+    planStep!.style.display = 'block';
+    const planLoading = document.getElementById('planLoading');
+    const generatedPlan = document.getElementById('generatedPlan');
+    planLoading!.style.display = 'flex';
+    generatedPlan!.style.display = 'none';
+
+    // Simulate IA prompt to generate plan
+    setTimeout(() => {
+      generatePlanFromNotes(notes, title, type);
+      planLoading!.style.display = 'none';
+      generatedPlan!.style.display = 'block';
+    }, 2000);
+  });
+
+  // SKIP TO PLAN
+  skipToPlanBtn?.addEventListener('click', () => {
+    recordingStep!.style.display = 'none';
+    planStep!.style.display = 'block';
+    const generatedPlan = document.getElementById('generatedPlan');
+    generatedPlan!.style.display = 'block';
+  });
+
+  function generatePlanFromNotes(notes: string, title: string, type: string) {
+    // Simulate IA parsing - in production, call API with prompt
+    const keyPoints = [
+      '📌 Ouverture et ordre du jour',
+      '📌 Points approuvés sans débat',
+      '📌 Points de débat majeur',
+      '📌 Décisions prises',
+      '📌 Clôture et prochaines étapes'
+    ];
+
+    const actions = [
+      'Transmettre le CR au conseil',
+      'Planifier le suivi',
+      'Relancer les responsables'
+    ];
+
+    const themes = ['gouvernance', 'budget', 'projet', 'personnel'];
+
+    // Build structured content
+    const content = `
+<h4>${title}</h4>
+<p><strong>Type:</strong> ${type}</p>
+<p><strong>Date:</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+
+<h5>Points abordés</h5>
+<p>${notes.substring(0, 300)}...</p>
+
+<h5>Actions à suivre</h5>
+<ul>
+  ${actions.map(a => `<li>${a}</li>`).join('')}
+</ul>
+    `.trim();
+
+    // Fill plan
+    const keyPointsList = document.getElementById('keyPointsList');
+    keyPointsList!.innerHTML = keyPoints.map(p => `<li>${p}</li>`).join('');
+
+    const actionsList = document.getElementById('actionsList');
+    actionsList!.innerHTML = actions.map(a => `<li>${a}</li>`).join('');
+
+    const themesList = document.getElementById('themesList');
+    themesList!.innerHTML = themes.map(t => `<span class="plan-tag">${t}</span>`).join('');
+
+    const structuredContent = document.getElementById('structuredContent');
+    structuredContent!.innerHTML = content;
+  }
+
+  // SAVE CR
+  const saveCRBtn = document.getElementById('saveCRBtn');
+  saveCRBtn?.addEventListener('click', () => {
+    const title = (document.getElementById('recordingTitle') as HTMLInputElement).value;
+    const type = (document.getElementById('recordingType') as HTMLSelectElement).value;
+    const content = (document.getElementById('structuredContent') as HTMLDivElement).innerText;
+
+    if (!title) {
+      alert('Veuillez donner un titre au CR.');
+      return;
+    }
+
+    const cr = {
+      id: Date.now(),
+      title,
+      type,
+      date: new Date().toLocaleDateString('fr-FR'),
+      dateReunion: new Date().toLocaleDateString('fr-FR'),
+      content,
+      participants: [],
+      followUp: [],
+      tags: ['auto-généré'],
+      archived: false
+    };
+
+    const crs = JSON.parse(localStorage.getItem('maryan_comptes_rendus') || '[]');
+    crs.push(cr);
+    localStorage.setItem('maryan_comptes_rendus', JSON.stringify(crs));
+
+    alert('✅ Compte rendu sauvegardé!');
+    location.reload();
+  });
+
+  // BACK TO RECORDING
+  const backToRecordingBtn = document.getElementById('backToRecordingBtn');
+  backToRecordingBtn?.addEventListener('click', () => {
+    recordingStep!.style.display = 'block';
+    planStep!.style.display = 'none';
+  });
+
+  // EDIT MANUALLY
+  const editManuallyBtn = document.getElementById('editManuallyBtn');
+  editManuallyBtn?.addEventListener('click', () => {
+    const content = (document.getElementById('structuredContent') as HTMLDivElement).innerText;
+    (document.getElementById('recordingNotes') as HTMLTextAreaElement).value = content;
+    recordingStep!.style.display = 'block';
+    planStep!.style.display = 'none';
+  });
+</script>

@@ -1,0 +1,357 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Préparer une délibération en conseil municipal — MARYAN"
+  description="Suis-je prêt·e à porter cette délibération ? Évaluez votre niveau de préparation avant le conseil municipal.">
+
+  <main class="diag-v1-launch">
+
+    <div id="introSection" class="diag-step-v4 active">
+      <div class="container-narrow text-center">
+        <p class="diag-kicker-v4">Test thématique · Abonné·e</p>
+        <h1 class="diag-title-v4">Préparer une délibération en conseil municipal.</h1>
+        <p class="diag-lead-v4">Avant le vote, avant le débat — est-ce que vous tenez vraiment ce dossier ? Ce test évalue votre niveau de préparation réelle : la clarté du sens, la maîtrise des chiffres, et votre capacité à traverser les objections sans perdre la salle.</p>
+
+        <div class="diag-benefits-v4">
+          <div class="benefit-item">📋 <span>Votre niveau de préparation réelle</span></div>
+          <div class="benefit-item">🔎 <span>Les 2 points à consolider avant le conseil</span></div>
+          <div class="benefit-item">🗳️ <span>Ce qui fait passer une délibération sans accroc</span></div>
+        </div>
+
+        <div class="diag-actions-v4">
+          <button class="btn-primary-v4 big" id="startBtn">Lancer le test</button>
+          <p class="diag-hint-v4">5 questions · ~3 minutes · Non obligatoire</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="questionsContainer" class="hidden">
+      <nav class="diag-nav-v4">
+        <div class="container-narrow">
+          <div class="nav-inner-v4">
+            <button class="back-link-v4" onclick="history.back()">← Retour</button>
+            <div class="stepper-v4">
+              <p id="stepLabel" class="step-label-v4">Question 1 sur 5</p>
+              <div class="progress-track-v4"><div id="progressFill" class="progress-fill-v4"></div></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-narrow questions-layout-v4">
+
+        <div class="diag-step-v4 hidden" id="q1-step">
+          <h2 class="q-label-v4">Pouvez-vous expliquer en deux phrases pourquoi cette délibération est portée maintenant, et ce qu'elle change concrètement ?</h2>
+          <p class="q-help-v4">Pas le descriptif réglementaire — la raison politique et l'effet concret pour la commune.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'sens','oui_clair',1)">Oui — je l'ai formulé clairement et je suis à l'aise pour l'expliquer</button>
+            <button class="opt-v4" onclick="pick(this,'sens','a_peu_pres',1)">À peu près — j'ai une idée mais ça reste un peu flou dans ma tête</button>
+            <button class="opt-v4" onclick="pick(this,'sens','flou',1)">Pas vraiment — je connais le contenu mais pas bien l'angle à défendre</button>
+            <button class="opt-v4" onclick="pick(this,'sens','non',1)">Non — je n'ai pas encore réfléchi à comment la présenter</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q2-step">
+          <h2 class="q-label-v4">Avez-vous anticipé les objections les plus probables — de l'opposition, mais aussi de vos propres allié·es ?</h2>
+          <p class="q-help-v4">Les dossiers ne coulent pas à cause de l'opposition. Ils coulent à cause des hésitations dans la majorité.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'opposition','toutes_anticipees',2)">Oui — j'ai listé les principales et j'ai une réponse pour chacune</button>
+            <button class="opt-v4" onclick="pick(this,'opposition','principales',2)">Oui — côté opposition surtout, moins du côté de la majorité</button>
+            <button class="opt-v4" onclick="pick(this,'opposition','peu',2)">Un peu — j'ai une idée générale mais sans l'avoir vraiment travaillé</button>
+            <button class="opt-v4" onclick="pick(this,'opposition','non',2)">Non — je verrai bien ce qui se passe en séance</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q3-step">
+          <h2 class="q-label-v4">Sur les éléments chiffrés ou réglementaires de cette délibération — vous êtes…</h2>
+          <p class="q-help-v4">Coût, source de financement, base légale, calendrier. Ces points reviennent toujours en séance.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'chiffres','maitrise',3)">À l'aise — je maîtrise les chiffres et je peux les défendre sans mes notes</button>
+            <button class="opt-v4" onclick="pick(this,'chiffres','partiellement',3)">Partiellement — je connais les grandes lignes, pas tous les détails</button>
+            <button class="opt-v4" onclick="pick(this,'chiffres','peu',3)">Peu à l'aise — je m'appuierai sur le document ou les services</button>
+            <button class="opt-v4" onclick="pick(this,'chiffres','pas_du_tout',3)">Pas du tout — je connais mal le dossier technique</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q4-step">
+          <h2 class="q-label-v4">Sur le vote — quelle est votre lecture de la majorité aujourd'hui ?</h2>
+          <p class="q-help-v4">Est-ce que vous savez qui vote quoi — y compris les hésitants dans votre camp ?</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'majorite','sure',4)">Je suis sûr·e de la majorité — j'ai fait le tour des élus qui comptent</button>
+            <button class="opt-v4" onclick="pick(this,'majorite','probable',4)">Probable mais pas certain·e — il reste un ou deux élus dont je ne suis pas sûr·e</button>
+            <button class="opt-v4" onclick="pick(this,'majorite','incertaine',4)">Incertaine — je ne sais pas vraiment comment ça va tomber</button>
+            <button class="opt-v4" onclick="pick(this,'majorite','pas_reflechi',4)">Je n'ai pas encore réfléchi à ça</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q5-step">
+          <h2 class="q-label-v4">Si le débat s'enlise ou monte en température — comment gérez-vous la clôture ?</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'cloture','prepare',5)">J'ai une formule de clôture prête — je sais comment reprendre la main sans froisser</button>
+            <button class="opt-v4" onclick="pick(this,'cloture','peut_etre',5)">Je pense m'en sortir — j'improviserai sur le moment</button>
+            <button class="opt-v4" onclick="pick(this,'cloture','pas_sur',5)">Pas vraiment — je risque de laisser le débat s'étirer</button>
+            <button class="opt-v4" onclick="pick(this,'cloture','non',5)">Non — je ne sais pas comment couper court sans créer de tension</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden text-center" id="calculating-step" style="padding: 4rem 0;">
+           <div class="loader-v4"></div>
+           <h2 class="q-label-v4">Votre niveau de préparation s'évalue</h2>
+           <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN analyse votre clarté de sens, votre maîtrise du dossier et votre lecture de la majorité.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="resultSection" class="diag-result-v4 hidden">
+       <div class="container-narrow">
+
+          <header class="res-header-v4">
+             <span class="label-v4">Votre préparation à la délibération</span>
+             <h2 id="resNiveauTitle" class="res-title-v4">—</h2>
+          </header>
+
+          <div class="res-body-v4">
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">1. Où vous en êtes vraiment</h3>
+                <p id="resNiveauText" class="res-text-v4"></p>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">2. Ce qui est solide</h3>
+                <div class="vigilance-card-v4">
+                   <p id="resSolidText"></p>
+                </div>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">3. Les 2 points à consolider avant le conseil</h3>
+                <ul id="resPointsList" class="res-list-v4"></ul>
+             </section>
+
+             <section class="res-reco-v4">
+                <h3 class="section-title-v4">4. Ce que vous pouvez faire maintenant</h3>
+                <p id="resActionText" class="res-text-v4" style="margin-bottom:2rem;"></p>
+                <div id="resCTA" class="res-actions-v4"></div>
+             </section>
+
+             <section class="res-email-v4" id="emailBox">
+                <h3>Recevoir cette lecture</h3>
+                <p>Gardez-la sous la main pour la relire avant la séance — ou la partager avec l'élu·e qui co-porte le dossier.</p>
+                <div class="email-input-v4">
+                   <input type="email" id="emailInput" placeholder="vous@collectivite.fr" />
+                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
+                </div>
+             </section>
+
+             <footer class="res-footer-v4 text-center">
+                <p>Une délibération qui passe sans accroc, ça se prépare — pas seulement sur le fond, mais sur la salle.</p>
+                <a href="/tests" class="btn-link-v4">Voir les autres tests</a>
+             </footer>
+
+          </div>
+       </div>
+    </div>
+
+  </main>
+
+  <style>
+    :root { --deep: #0A192F; --neon: #ADFF2F; --red: #E63946; --bg: #F8F9FA; --border: rgba(10, 25, 47, 0.08); }
+    .diag-v1-launch { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .container-narrow { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
+    .diag-step-v4 { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .diag-step-v4.active { display: block; opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+    #introSection { padding: 8vh 0; }
+    .diag-kicker-v4 { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .diag-title-v4 { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .diag-lead-v4 { font-size: 1.25rem; line-height: 1.5; opacity: 0.8; margin-bottom: 3rem; }
+    .diag-benefits-v4 { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; text-align: left; max-width: 440px; margin-inline: auto; }
+    .benefit-item { display: flex; align-items: center; gap: 1rem; font-weight: 600; font-size: 1.1rem; }
+    .diag-hint-v4 { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+    .diag-nav-v4 { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .nav-inner-v4 { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .back-link-v4 { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .back-link-v4:hover { opacity: 1; }
+    .stepper-v4 { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .step-label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .progress-track-v4 { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .progress-fill-v4 { height: 100%; background: var(--red); width: 20%; transition: width 0.4s ease; }
+    .questions-layout-v4 { padding-bottom: 5rem; }
+    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .q-help-v4 { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+    .options-v4 { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-v4 { padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px; text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s; line-height: 1.3; }
+    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .opt-v4.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+    .diag-result-v4 { padding: 6rem 0; background: #FFFDF8; }
+    .res-header-v4 { margin-bottom: 4rem; }
+    .label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); display: block; margin-bottom: 1rem; }
+    .res-title-v4 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; }
+    .res-section-v4 { margin-bottom: 4rem; }
+    .section-title-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 1.5rem; }
+    .res-text-v4 { font-size: 1.2rem; line-height: 1.6; color: #333; }
+    .vigilance-card-v4 { background: #fff; border: 1.5px solid var(--deep); padding: 2.5rem; border-radius: 20px; font-size: 1.3rem; font-weight: 700; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    .res-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .res-list-v4 li { position: relative; padding-left: 2rem; font-size: 1.15rem; font-weight: 600; color: #444; }
+    .res-list-v4 li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+    .res-reco-v4 { background: var(--deep); color: #fff; padding: 4rem; border-radius: 32px; margin: 5rem 0; }
+    .res-reco-v4 .section-title-v4 { color: var(--neon); }
+    .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
+    .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
+    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
+    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
+    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
+    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
+    .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
+    .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .btn-primary-v4.big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    .btn-secondary-v4 { background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.2); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+    .btn-secondary-v4:hover { background: rgba(255,255,255,0.2); }
+    .btn-link-v4 { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; }
+    .btn-link-v4:hover { opacity: 1; }
+    .res-footer-v4 { padding-top: 2rem; }
+    .res-footer-v4 p { opacity: 0.5; font-size: 1rem; margin-bottom: 1.5rem; font-style: italic; }
+    .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) {
+      #introSection { padding-top: 5vh; }
+      .diag-title-v4 { font-size: 2.4rem; }
+      .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
+      .email-input-v4 { flex-direction: column; }
+      .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
+      .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; }
+    }
+  </style>
+
+  <script is:inline>
+    const state = { answers: {}, step: 0 };
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
+
+    function showStep(id) {
+       document.querySelectorAll('.diag-step-v4').forEach(s => {
+          s.classList.remove('active');
+          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
+       });
+       const target = document.getElementById(id);
+       if(target) { target.classList.remove('hidden'); setTimeout(() => target.classList.add('active'), 50); }
+       const idx = STEPS.indexOf(id.replace('-step', ''));
+       if(idx > 0 && idx < 6) {
+          document.getElementById('stepLabel').innerText = `Question ${idx} sur 5`;
+          document.getElementById('progressFill').style.width = (idx / 5) * 100 + '%';
+       }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+       document.getElementById('introSection').classList.add('hidden');
+       document.getElementById('questionsContainer').classList.remove('hidden');
+       showStep('q1-step');
+    });
+
+    window.pick = (btn, key, val, stepIdx) => {
+       state.answers[key] = val;
+       btn.closest('.diag-step-v4').querySelectorAll('.opt-v4').forEach(o => o.classList.remove('selected'));
+       btn.classList.add('selected');
+       if(stepIdx < 5) { setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350); }
+       else { showStep('calculating-step'); setTimeout(processTest, 1500); }
+    };
+
+    function processTest() {
+       const a = state.answers;
+       let score = 0;
+
+       // sens (max 3)
+       if (a.sens === 'oui_clair') score += 3;
+       else if (a.sens === 'a_peu_pres') score += 1;
+
+       // opposition (max 3)
+       if (a.opposition === 'toutes_anticipees') score += 3;
+       else if (a.opposition === 'principales') score += 2;
+       else if (a.opposition === 'peu') score += 1;
+
+       // chiffres (max 3)
+       if (a.chiffres === 'maitrise') score += 3;
+       else if (a.chiffres === 'partiellement') score += 1;
+
+       // majorite (max 2)
+       if (a.majorite === 'sure') score += 2;
+       else if (a.majorite === 'probable') score += 1;
+
+       // cloture (max 1)
+       if (a.cloture === 'prepare') score += 1;
+
+       // score max = 12
+       let niveau = score >= 9 ? 'pret' : score >= 5 ? 'partiel' : 'fragile';
+
+       const pointsCoince = [];
+       if (['flou', 'non'].includes(a.sens))
+          pointsCoince.push("Formuler en deux phrases le sens politique de cette délibération — pourquoi maintenant, pour qui, avec quel effet concret. Si vous ne pouvez pas le faire sans vos notes, la salle le sentira.");
+       if (['peu', 'non'].includes(a.opposition))
+          pointsCoince.push("Lister les 3 objections les plus probables — côté opposition ET dans votre majorité — et préparer une réponse courte pour chacune. Les dossiers ne calent pas à cause de l'adversaire, mais à cause des hésitations dans le camp.");
+       if (['peu', 'pas_du_tout'].includes(a.chiffres))
+          pointsCoince.push("Reprendre les éléments chiffrés clés avec les services avant la séance : coût, financement, base légale, calendrier. Vous n'avez pas à tout savoir, mais vous devez pouvoir répondre aux trois premières questions sans chercher dans vos documents.");
+       if (['incertaine', 'pas_reflechi'].includes(a.majorite))
+          pointsCoince.push("Faire un tour rapide des élus hésitants de votre majorité avant la séance — un appel, un message. Une majorité incertaine se gère avant le vote, pas pendant le débat.");
+       if (['pas_sur', 'non'].includes(a.cloture))
+          pointsCoince.push("Préparer une formule de clôture courte pour reprendre la main si le débat s'enlise : quelque chose de neutre qui ferme sans froisser, et qui ramène vers le vote.");
+
+       const deuxPoints = pointsCoince.slice(0, 2);
+       if (deuxPoints.length === 0) {
+          deuxPoints.push("Faire une dernière relecture du dossier à voix haute comme si vous l'expliquiez à quelqu'un qui ne le connaît pas — ça révèle toujours une ou deux zones que vous pensiez maîtriser");
+          deuxPoints.push("Vous poser la question : 'Qu'est-ce qui pourrait bloquer le vote dans la dernière heure ?' — et avoir une réponse prête");
+       }
+
+       const niveaux = {
+          pret: {
+             title: "Vous tenez ce dossier.",
+             description: "Votre préparation est solide. Vous savez pourquoi vous portez cette délibération, vous avez anticipé les objections, et vous maîtrisez les chiffres. Le travail qui reste, c'est moins de contenu que de posture : rester calme si le débat monte, et ne pas sur-expliquer ce qui est déjà acquis.",
+             solid: "Votre clarté de sens et votre anticipation des objections sont vos vraies forces. Ce sont elles qui font passer les délibérations difficiles — pas l'argument le mieux construit, mais la posture qui ne chancelle pas."
+          },
+          partiel: {
+             title: "Presque — mais pas encore.",
+             description: "Vous avez des bases solides, mais il reste quelques zones floues qui pourraient vous coûter en séance. Ce qui fait passer une délibération, c'est rarement la qualité du dossier. C'est la clarté du porteur, et sa capacité à ne pas se laisser déstabiliser par des objections qu'il aurait pu anticiper.",
+             solid: "Vous avez déjà une compréhension du dossier et une idée des positions en présence. C'est la base. Ce qui reste à construire, c'est la précision — sur le sens politique, sur les points de résistance, et sur la majorité."
+          },
+          fragile: {
+             title: "Pas encore prêt·e.",
+             description: "Vous portez ce dossier sans filet suffisant. Ce n'est pas un jugement sur votre compétence — c'est une lecture de préparation. Si vous allez en séance dans cet état, vous risquez d'improviser sur des points que vous auriez pu anticiper, et de perdre la salle sur des questions évitables.",
+             solid: "Vous êtes conscient·e de vos zones de fragilité — c'est déjà utile. Ce que vous avez à construire maintenant : le sens en deux phrases, et les réponses aux 3 objections les plus prévisibles. Le reste peut attendre."
+          }
+       };
+
+       const actionTexts = {
+          pret: "Avant la séance : relisez votre formulation du sens une dernière fois. Puis posez-vous la question de votre 'ligne rouge' : jusqu'où vous pouvez ajuster la délibération, et à partir de quand vous tenez sans négocier. Le reste, vous l'avez.",
+          partiel: "Prenez 45 minutes ce soir pour travailler les points ci-dessus. Ce n'est pas une révision de fond — c'est un travail de posture et de préparation des échanges. Vous serez dans un état très différent demain.",
+          fragile: "Si le calendrier le permet, demandez un report ou un passage en commission avant le vote. Sinon : concentrez-vous sur une seule chose ce soir — formuler le sens en deux phrases et lister les 3 objections. Une délibération portée avec clarté passe mieux qu'une délibération techniquement parfaite mais mal défendue."
+       };
+
+       const n = niveaux[niveau];
+       document.getElementById('resNiveauTitle').textContent = n.title;
+       document.getElementById('resNiveauText').textContent = n.description;
+       document.getElementById('resSolidText').textContent = n.solid;
+       document.getElementById('resPointsList').innerHTML = deuxPoints.map(p => `<li>${p}</li>`).join('');
+       document.getElementById('resActionText').textContent = actionTexts[niveau];
+       document.getElementById('resCTA').innerHTML = `
+         <a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Préparer ça avec le copilote</a>
+         <a href="/tests" class="btn-secondary-v4">Voir les autres tests</a>
+         <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir cette lecture</button>
+       `;
+
+       localStorage.setItem('maryan_test_deliberation', JSON.stringify({ answers: a, niveau, title: n.title, date: new Date().toLocaleDateString('fr-FR') }));
+       document.getElementById('questionsContainer').classList.add('hidden');
+       document.getElementById('resultSection').classList.remove('hidden');
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.submitEmail = () => {
+       const email = document.getElementById('emailInput').value.trim();
+       if(!email) return;
+       localStorage.setItem('user_email', email);
+       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre lecture vous attend sur ${email}.</p>`;
+    };
+  </script>
+</BaseLayout>

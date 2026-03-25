@@ -1,0 +1,341 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Préparer une prise de parole difficile — MARYAN"
+  description="Suis-je prêt·e à tenir ma position ? Un test pour évaluer votre niveau de préparation avant une prise de parole exposée.">
+
+  <main class="diag-v1-launch">
+
+    <div id="introSection" class="diag-step-v4 active">
+      <div class="container-narrow text-center">
+        <p class="diag-kicker-v4">Test thématique · Abonné·e</p>
+        <h1 class="diag-title-v4">Préparer une prise de parole difficile.</h1>
+        <p class="diag-lead-v4">Conseil municipal, réunion publique, prise de position sensible… Ce test évalue votre niveau de préparation réelle — pas ce que vous savez du dossier, mais votre capacité à tenir sous pression.</p>
+
+        <div class="diag-benefits-v4">
+          <div class="benefit-item">🎙️ <span>Votre niveau de préparation réelle</span></div>
+          <div class="benefit-item">🔎 <span>Les 2 points à consolider avant d'y aller</span></div>
+          <div class="benefit-item">🧱 <span>Ce qui fait tenir une position sous pression</span></div>
+        </div>
+
+        <div class="diag-actions-v4">
+          <button class="btn-primary-v4 big" id="startBtn">Lancer le test</button>
+          <p class="diag-hint-v4">5 questions · ~3 minutes · Non obligatoire</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="questionsContainer" class="hidden">
+      <nav class="diag-nav-v4">
+        <div class="container-narrow">
+          <div class="nav-inner-v4">
+            <button class="back-link-v4" onclick="history.back()">← Retour</button>
+            <div class="stepper-v4">
+              <p id="stepLabel" class="step-label-v4">Question 1 sur 5</p>
+              <div class="progress-track-v4"><div id="progressFill" class="progress-fill-v4"></div></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-narrow questions-layout-v4">
+
+        <div class="diag-step-v4 hidden" id="q1-step">
+          <h2 class="q-label-v4">Si quelqu'un vous demandait en une phrase ce que vous allez dire — vous pourriez le formuler clairement ?</h2>
+          <p class="q-help-v4">Pas le sujet, pas le dossier — le message que vous voulez que les gens retiennent.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'message','oui_clair',1)">Oui, je l'ai formulé et je m'y tiens</button>
+            <button class="opt-v4" onclick="pick(this,'message','a_peu_pres',1)">À peu près — mais ça reste un peu flou dans ma tête</button>
+            <button class="opt-v4" onclick="pick(this,'message','non_complexe',1)">Non — le sujet est trop complexe pour une seule phrase</button>
+            <button class="opt-v4" onclick="pick(this,'message','non_pas_reflechi',1)">Non — je n'ai pas encore vraiment réfléchi à ça</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q2-step">
+          <h2 class="q-label-v4">Avez-vous anticipé les objections les plus probables ?</h2>
+          <p class="q-help-v4">Les arguments que l'opposition, un élu·e gênant·e ou un habitant remonté va vous sortir.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'objections','oui_prepares',2)">Oui — je les ai listées et j'ai une réponse pour chacune</button>
+            <button class="opt-v4" onclick="pick(this,'objections','oui_principales',2)">Oui — les principales, pas toutes</button>
+            <button class="opt-v4" onclick="pick(this,'objections','vaguement',2)">Vaguement — j'ai une idée mais sans l'avoir vraiment travaillé</button>
+            <button class="opt-v4" onclick="pick(this,'objections','non',2)">Non — je verrai bien ce qui se passe</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q3-step">
+          <h2 class="q-label-v4">Si quelqu'un vous attaque frontalement ou vous met en difficulté publiquement, vous…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'pression','tiens',3)">Tenez votre position sans broncher</button>
+            <button class="opt-v4" onclick="pick(this,'pression','reformule',3)">Reformulez pour désamorcer sans reculer</button>
+            <button class="opt-v4" onclick="pick(this,'pression','ajuste',3)">Ajustez votre position si l'argument vous semble valide</button>
+            <button class="opt-v4" onclick="pick(this,'pression','decroche',3)">Décrochez souvent — vous perdez le fil sous la pression</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q4-step">
+          <h2 class="q-label-v4">Sur le timing de cette prise de parole — vous êtes…</h2>
+          <p class="q-help-v4">Est-ce le bon moment pour dire ça, à ces personnes, dans ce format ?</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'tempo','choisi',4)">Convaincu·e que c'est le bon moment — vous l'avez choisi</button>
+            <button class="opt-v4" onclick="pick(this,'tempo','contraint',4)">Contraint·e par les circonstances — vous n'avez pas vraiment choisi</button>
+            <button class="opt-v4" onclick="pick(this,'tempo','doute',4)">Pas certain·e — vous vous demandez si ce n'est pas trop tôt ou trop tard</button>
+            <button class="opt-v4" onclick="pick(this,'tempo','subi',4)">En réaction — vous répondez à quelque chose, pas en initiative</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q5-step">
+          <h2 class="q-label-v4">Après cette prise de parole, ce qui vous inquiète le plus c'est…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'apres','mauvaise_reception',5)">Être mal compris·e ou déformé·e</button>
+            <button class="opt-v4" onclick="pick(this,'apres','attaque',5)">Être attaqué·e sans pouvoir répondre correctement</button>
+            <button class="opt-v4" onclick="pick(this,'apres','position',5)">Avoir dit quelque chose que je ne pourrai pas tenir</button>
+            <button class="opt-v4" onclick="pick(this,'apres','rien',5)">Pas grand-chose — je suis assez serein·e</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden text-center" id="calculating-step" style="padding: 4rem 0;">
+           <div class="loader-v4"></div>
+           <h2 class="q-label-v4">Votre niveau de préparation s'évalue</h2>
+           <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN analyse votre clarté de message, votre solidité sous pression et votre maîtrise du tempo.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="resultSection" class="diag-result-v4 hidden">
+       <div class="container-narrow">
+
+          <header class="res-header-v4">
+             <span class="label-v4">Votre préparation à la prise de parole</span>
+             <h2 id="resNiveauTitle" class="res-title-v4">—</h2>
+          </header>
+
+          <div class="res-body-v4">
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">1. Où vous en êtes vraiment</h3>
+                <p id="resNiveauText" class="res-text-v4"></p>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">2. Ce qui est solide</h3>
+                <div class="vigilance-card-v4">
+                   <p id="resSolidText"></p>
+                </div>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">3. Les 2 points à consolider avant d'y aller</h3>
+                <ul id="resPointsList" class="res-list-v4"></ul>
+             </section>
+
+             <section class="res-reco-v4">
+                <h3 class="section-title-v4">4. Ce que vous pouvez faire maintenant</h3>
+                <p id="resActionText" class="res-text-v4" style="margin-bottom:2rem;"></p>
+                <div id="resCTA" class="res-actions-v4"></div>
+             </section>
+
+             <section class="res-email-v4" id="emailBox">
+                <h3>Recevoir cette lecture</h3>
+                <p>Gardez-la sous la main pour la relire la veille — ou la partager avec quelqu'un qui vous prépare.</p>
+                <div class="email-input-v4">
+                   <input type="email" id="emailInput" placeholder="vous@collectivite.fr" />
+                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
+                </div>
+             </section>
+
+             <footer class="res-footer-v4 text-center">
+                <p>Ce n'est pas le dossier qui fait tenir une position. C'est la clarté sur ce qu'on veut dire.</p>
+                <a href="/tests" class="btn-link-v4">Voir les autres tests</a>
+             </footer>
+
+          </div>
+       </div>
+    </div>
+
+  </main>
+
+  <style>
+    :root { --deep: #0A192F; --neon: #ADFF2F; --red: #E63946; --bg: #F8F9FA; --border: rgba(10, 25, 47, 0.08); }
+    .diag-v1-launch { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .container-narrow { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
+    .diag-step-v4 { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .diag-step-v4.active { display: block; opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+    #introSection { padding: 8vh 0; }
+    .diag-kicker-v4 { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .diag-title-v4 { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .diag-lead-v4 { font-size: 1.25rem; line-height: 1.5; opacity: 0.8; margin-bottom: 3rem; }
+    .diag-benefits-v4 { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; text-align: left; max-width: 440px; margin-inline: auto; }
+    .benefit-item { display: flex; align-items: center; gap: 1rem; font-weight: 600; font-size: 1.1rem; }
+    .diag-hint-v4 { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+    .diag-nav-v4 { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .nav-inner-v4 { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .back-link-v4 { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .back-link-v4:hover { opacity: 1; }
+    .stepper-v4 { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .step-label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .progress-track-v4 { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .progress-fill-v4 { height: 100%; background: var(--red); width: 20%; transition: width 0.4s ease; }
+    .questions-layout-v4 { padding-bottom: 5rem; }
+    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .q-help-v4 { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+    .options-v4 { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-v4 { padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px; text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s; line-height: 1.3; }
+    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .opt-v4.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+    .diag-result-v4 { padding: 6rem 0; background: #FFFDF8; }
+    .res-title-v4 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4rem; }
+    .res-section-v4 { margin-bottom: 4rem; }
+    .section-title-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 1.5rem; }
+    .res-text-v4 { font-size: 1.2rem; line-height: 1.6; color: #333; }
+    .vigilance-card-v4 { background: #fff; border: 1.5px solid var(--deep); padding: 2.5rem; border-radius: 20px; font-size: 1.3rem; font-weight: 700; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    .res-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .res-list-v4 li { position: relative; padding-left: 2rem; font-size: 1.15rem; font-weight: 600; color: #444; }
+    .res-list-v4 li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+    .res-reco-v4 { background: var(--deep); color: #fff; padding: 4rem; border-radius: 32px; margin: 5rem 0; }
+    .res-reco-v4 .section-title-v4 { color: var(--neon); }
+    .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
+    .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
+    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
+    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
+    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
+    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
+    .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
+    .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .btn-primary-v4.big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    .btn-secondary-v4 { background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.2); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+    .btn-secondary-v4:hover { background: rgba(255,255,255,0.2); }
+    .btn-link-v4 { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; }
+    .btn-link-v4:hover { opacity: 1; }
+    .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) {
+      #introSection { padding-top: 5vh; }
+      .diag-title-v4 { font-size: 2.4rem; }
+      .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
+      .email-input-v4 { flex-direction: column; }
+      .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
+      .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; }
+    }
+  </style>
+
+  <script is:inline>
+    const state = { answers: {}, step: 0 };
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
+
+    function showStep(id) {
+       document.querySelectorAll('.diag-step-v4').forEach(s => {
+          s.classList.remove('active');
+          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
+       });
+       const target = document.getElementById(id);
+       if(target) { target.classList.remove('hidden'); setTimeout(() => target.classList.add('active'), 50); }
+       const idx = STEPS.indexOf(id.replace('-step', ''));
+       if(idx > 0 && idx < 6) {
+          document.getElementById('stepLabel').innerText = `Question ${idx} sur 5`;
+          document.getElementById('progressFill').style.width = (idx / 5) * 100 + '%';
+       }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+       document.getElementById('introSection').classList.add('hidden');
+       document.getElementById('questionsContainer').classList.remove('hidden');
+       showStep('q1-step');
+    });
+
+    window.pick = (btn, key, val, stepIdx) => {
+       state.answers[key] = val;
+       btn.closest('.diag-step-v4').querySelectorAll('.opt-v4').forEach(o => o.classList.remove('selected'));
+       btn.classList.add('selected');
+       if(stepIdx < 5) { setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350); }
+       else { showStep('calculating-step'); setTimeout(processTest, 1500); }
+    };
+
+    function processTest() {
+       const a = state.answers;
+       let score = 0;
+
+       if (a.message === 'oui_clair') score += 3;
+       else if (a.message === 'a_peu_pres') score += 1;
+       if (a.objections === 'oui_prepares') score += 3;
+       else if (a.objections === 'oui_principales') score += 2;
+       else if (a.objections === 'vaguement') score += 1;
+       if (a.pression === 'tiens' || a.pression === 'reformule') score += 2;
+       else if (a.pression === 'ajuste') score += 1;
+       if (a.tempo === 'choisi') score += 2;
+       else if (a.tempo === 'contraint') score += 1;
+
+       let niveau = score >= 8 ? 'solide' : score >= 4 ? 'partiel' : 'fragile';
+
+       const pointsAConsolider = [];
+       if (['a_peu_pres','non_complexe','non_pas_reflechi'].includes(a.message))
+          pointsAConsolider.push("Formuler votre message en une phrase avant d'entrer dans la salle — si vous ne pouvez pas, votre position n'est pas encore assez claire pour être défendue");
+       if (['vaguement','non'].includes(a.objections))
+          pointsAConsolider.push("Lister les 3 objections les plus probables et préparer une réponse courte pour chacune — pas pour avoir raison, mais pour ne pas être déstabilisé·e");
+       if (a.pression === 'decroche')
+          pointsAConsolider.push("Préparer une phrase de réancrage pour quand vous perdez le fil sous pression : quelque chose de simple et vrai que vous pouvez dire même en étant déstabilisé·e");
+       if (['doute','subi'].includes(a.tempo))
+          pointsAConsolider.push("Clarifier si vous choisissez ce moment ou si vous le subissez — et si vous le subissez, réfléchir à ce que vous pouvez encore contrôler dans le format ou l'angle");
+       if (a.apres === 'position')
+          pointsAConsolider.push("Vérifier que ce que vous allez dire est tenable dans la durée — une position qu'on ne peut pas tenir vaut mieux ne pas la prendre publiquement");
+
+       const deuxPoints = pointsAConsolider.slice(0, 2);
+       if (deuxPoints.length === 0) {
+          deuxPoints.push("Prendre 10 minutes la veille pour relire vos réponses aux objections principales à voix haute");
+          deuxPoints.push("Définir à l'avance votre 'ligne rouge' : jusqu'où vous pouvez ajuster, et à partir de quand vous tenez sans négocier");
+       }
+
+       const niveaux = {
+          solide: {
+             title: "Vous êtes prêt·e.",
+             description: "Votre préparation est solide. Vous avez un message clair, vous avez anticipé les objections, et vous avez une posture sous pression. Il ne s'agit pas de tout réviser — il s'agit de ne pas vous laisser déstabiliser par ce que vous n'aviez pas prévu.",
+             solid: "Votre clarté de message et votre anticipation des objections sont vos vraies forces ici. Ce sont elles qui vous permettront de tenir quand la pression monte — pas le fait d'avoir raison sur le fond."
+          },
+          partiel: {
+             title: "Presque — mais pas encore.",
+             description: "Vous avez des bases solides, mais il reste quelques zones floues qui pourraient vous coûter sous pression. Ce qui fait tenir une prise de parole difficile, c'est rarement l'argument le plus fort. C'est la clarté sur ce qu'on veut dire, et la capacité à ne pas décrocher quand l'adversaire pousse.",
+             solid: "Vous avez déjà une idée de ce que vous voulez dire et une certaine solidité face à la pression. C'est la base. Ce qui reste à construire, c'est la précision."
+          },
+          fragile: {
+             title: "Pas encore prêt·e.",
+             description: "Vous entrez dans cette prise de parole sans filet suffisant. Ce n'est pas un jugement sur votre compétence — c'est une lecture de préparation. Si vous y allez maintenant, vous risquez d'improviser sur des points que vous auriez pu anticiper.",
+             solid: "Vous êtes conscient·e de vos zones de fragilité — c'est déjà utile. Ce que vous avez à construire maintenant : un message en une phrase, et les réponses aux 3 objections les plus prévisibles."
+          }
+       };
+
+       const actionTexts = {
+          solide: "Avant d'y aller : relisez votre message principal à voix haute une fois. Puis posez-vous la question de votre 'ligne rouge' — jusqu'où vous pouvez bouger, et à partir de quand vous tenez sans négocier. Le reste, vous l'avez.",
+          partiel: "Prenez 30 minutes ce soir pour travailler les points ci-dessus. Ce n'est pas une révision du dossier — c'est un travail de posture. Formuler, anticiper, ancrer. Vous serez dans un état très différent demain matin.",
+          fragile: "Si le temps le permet, reportez ou demandez un format plus court. Sinon : concentrez-vous sur une seule chose — formuler votre message en une phrase. Une position claire et assumée tient mieux qu'une position complexe et floue."
+       };
+
+       const n = niveaux[niveau];
+       document.getElementById('resNiveauTitle').textContent = n.title;
+       document.getElementById('resNiveauText').textContent = n.description;
+       document.getElementById('resSolidText').textContent = n.solid;
+       document.getElementById('resPointsList').innerHTML = deuxPoints.map(p => `<li>${p}</li>`).join('');
+       document.getElementById('resActionText').textContent = actionTexts[niveau];
+       document.getElementById('resCTA').innerHTML = `
+         <a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Préparer ça avec le copilote</a>
+         <a href="/tests" class="btn-secondary-v4">Voir les autres tests</a>
+         <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir cette lecture</button>
+       `;
+
+       localStorage.setItem('maryan_test_parole', JSON.stringify({ answers: a, niveau, title: n.title, date: new Date().toLocaleDateString('fr-FR') }));
+       document.getElementById('questionsContainer').classList.add('hidden');
+       document.getElementById('resultSection').classList.remove('hidden');
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.submitEmail = () => {
+       const email = document.getElementById('emailInput').value.trim();
+       if(!email) return;
+       localStorage.setItem('user_email', email);
+       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre lecture vous attend sur ${email}.</p>`;
+    };
+  </script>
+</BaseLayout>

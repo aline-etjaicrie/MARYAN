@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const tests = [
+  {
+    slug: 'style-decision',
+    title: 'Mon style de décision',
+    desc: 'Comment décidez-vous vraiment ? Repérez votre profil décisionnel et vos angles morts.',
+    duration: '~3 min',
+    benefits: ['Profil décisionnel', 'Forces et angles morts', '2 ajustements concrets'],
+    storageKey: 'maryan_test_decision',
+    available: true
+  },
+  {
+    slug: 'posture-conflit',
+    title: 'Ma posture face au conflit',
+    desc: 'Comment traversez-vous les tensions ? Repérez votre mode dominant et ce qu\'il vous coûte.',
+    duration: '~3 min',
+    benefits: ['Mode de gestion des conflits', 'Signaux d\'alerte', 'Ce qui vous aiderait'],
+    storageKey: 'maryan_test_conflit',
+    available: true
+  },
+  {
+    slug: 'prise-de-parole',
+    title: 'Préparer une prise de parole difficile',
+    desc: 'Suis-je prêt·e à tenir ma position ? Évaluez votre niveau de préparation réelle avant une prise de parole exposée.',
+    duration: '~3 min',
+    benefits: ['Niveau de préparation réelle', 'Les 2 points à consolider', 'Ce qui fait tenir sous pression'],
+    storageKey: 'maryan_test_parole',
+    available: true
+  },
+  {
+    slug: 'travail-equipe',
+    title: 'Mon rapport au travail en équipe',
+    desc: 'Comment vous positionnez-vous dans un collectif ? Repérez votre profil d\'équipe et ce qu\'il vous coûte.',
+    duration: '~3 min',
+    benefits: ['Profil d\'équipe dominant', 'Ce que ça coûte aux autres', 'Ce qui vous aiderait'],
+    storageKey: 'maryan_test_equipe',
+    available: true
+  },
+  {
+    slug: 'deliberation',
+    title: 'Préparer une délibération en conseil municipal',
+    desc: 'Suis-je prêt·e à porter ce dossier ? Évaluez votre niveau de préparation avant le vote.',
+    duration: '~3 min',
+    benefits: ['Niveau de préparation réelle', 'Les 2 points à consolider', 'Ce qui fait passer une délibération'],
+    storageKey: 'maryan_test_deliberation',
+    available: true
+  }
+];
+---
+
+<BaseLayout
+  title="Mes tests — MARYAN"
+  description="5 tests thématiques pour mieux vous connaître en tant qu'élu·e. Profils actionnables, pas de bonne réponse.">
+
+  <main class="tests-hub">
+    <div class="hub-header">
+      <div class="container-hub">
+        <p class="hub-kicker">Tests thématiques · Abonné·e</p>
+        <h1 class="hub-title">Vous connaître pour mieux agir.</h1>
+        <p class="hub-lead">Cinq tests courts sur vos réflexes, vos postures et vos angles morts dans le mandat. Pas de bonne réponse — une lecture utile.</p>
+      </div>
+    </div>
+
+    <div class="container-hub">
+      <div id="testsGrid" class="tests-grid">
+        {tests.map((test, i) => (
+          <div class={`test-card ${!test.available ? 'coming-soon' : ''}`} data-storage-key={test.storageKey || ''}>
+            <div class="test-card-inner">
+              <div class="test-meta">
+                <span class="test-num">0{i + 1}</span>
+                {test.available
+                  ? <span class="test-badge available">Disponible</span>
+                  : <span class="test-badge soon">Bientôt</span>
+                }
+              </div>
+              <h2 class="test-title">{test.title}</h2>
+              <p class="test-desc">{test.desc}</p>
+              <ul class="test-benefits">
+                {test.benefits.map(b => <li>{b}</li>)}
+              </ul>
+              <div class="test-footer">
+                <span class="test-duration">{test.duration} · 5 questions</span>
+                {test.available && test.slug
+                  ? <a href={`/tests/${test.slug}`} class="btn-test">Faire le test →</a>
+                  : <span class="btn-test disabled">En cours de création</span>
+                }
+              </div>
+              {test.available && (
+                <div class="test-result-indicator" data-key={test.storageKey || ''} style="display:none;">
+                  <span class="result-dot"></span>
+                  <span class="result-label">Déjà fait — <a href={test.slug ? `/tests/${test.slug}` : '#'}>Refaire</a></span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="hub-footer">
+        <a href="/mon-compte?tab=tests" class="back-link">← Retour au dashboard</a>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    :root { --deep: #0A192F; --red: #E63946; --neon: #ADFF2F; --bg: #F8F9FA; }
+    .tests-hub { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+
+    .hub-header { padding: 6rem 0 4rem; background: var(--deep); color: #fff; }
+    .container-hub { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+    .hub-kicker { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--neon); margin-bottom: 1.5rem; }
+    .hub-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .hub-lead { font-size: 1.2rem; opacity: 0.7; line-height: 1.6; max-width: 560px; }
+
+    .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem; padding: 4rem 0 2rem; }
+
+    .test-card { border-radius: 20px; overflow: hidden; transition: transform 0.2s; }
+    .test-card:hover { transform: translateY(-3px); }
+    .test-card.coming-soon { opacity: 0.6; }
+    .test-card-inner { background: white; padding: 2rem; border-radius: 20px; border: 1.5px solid rgba(10,25,47,0.08); height: 100%; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+
+    .test-meta { display: flex; align-items: center; justify-content: space-between; }
+    .test-num { font-size: 0.75rem; font-weight: 800; color: #ccc; letter-spacing: 0.05em; }
+    .test-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.3rem 0.7rem; border-radius: 99px; }
+    .test-badge.available { background: rgba(173,255,47,0.15); color: #3a7d00; }
+    .test-badge.soon { background: #f5f5f5; color: #999; }
+
+    .test-title { font-size: 1.25rem; font-weight: 800; line-height: 1.2; margin: 0; }
+    .test-desc { font-size: 0.95rem; color: #666; line-height: 1.6; margin: 0; flex: 1; }
+
+    .test-benefits { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+    .test-benefits li { font-size: 0.85rem; color: #888; padding-left: 1.2rem; position: relative; }
+    .test-benefits li::before { content: "·"; position: absolute; left: 0; color: var(--red); font-weight: 800; font-size: 1.2rem; line-height: 1; }
+
+    .test-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid #f0f0f0; margin-top: auto; }
+    .test-duration { font-size: 0.8rem; color: #bbb; font-weight: 600; }
+    .btn-test { font-size: 0.9rem; font-weight: 800; color: var(--deep); text-decoration: none; }
+    .btn-test:hover { color: var(--red); }
+    .btn-test.disabled { color: #ccc; cursor: default; }
+
+    .test-result-indicator { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.8rem; background: rgba(173,255,47,0.1); border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #3a7d00; }
+    .result-dot { width: 8px; height: 8px; background: #3a7d00; border-radius: 50%; flex-shrink: 0; }
+    .result-label a { color: #3a7d00; }
+
+    .hub-footer { padding: 2rem 0 5rem; }
+    .back-link { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; font-size: 0.9rem; }
+    .back-link:hover { opacity: 1; }
+
+    @media (max-width: 600px) {
+      .hub-header { padding: 4rem 0 3rem; }
+      .tests-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script is:inline>
+    // Marquer les tests déjà faits
+    document.querySelectorAll('.test-result-indicator').forEach(el => {
+      const key = el.getAttribute('data-key');
+      if(key && localStorage.getItem(key)) {
+        el.style.display = 'flex';
+      }
+    });
+  </script>
+</BaseLayout>

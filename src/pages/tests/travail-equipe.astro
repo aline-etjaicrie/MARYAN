@@ -1,0 +1,356 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Mon rapport au travail en équipe — MARYAN"
+  description="Comment vous positionnez-vous quand vous devez avancer avec les autres ? Un test pour mieux comprendre votre façon de travailler en collectif.">
+
+  <main class="diag-v1-launch">
+
+    <div id="introSection" class="diag-step-v4 active">
+      <div class="container-narrow text-center">
+        <p class="diag-kicker-v4">Test thématique · Abonné·e</p>
+        <h1 class="diag-title-v4">Mon rapport au travail en équipe.</h1>
+        <p class="diag-lead-v4">Majorité, services, partenaires, pairs… Même sans équipe constituée, un mandat se porte rarement seul·e. Ce test explore comment vous vous positionnez quand vous devez avancer avec les autres — et ce que ça vous coûte ou vous apporte.</p>
+
+        <div class="diag-benefits-v4">
+          <div class="benefit-item">🤝 <span>Votre posture en collectif</span></div>
+          <div class="benefit-item">🔦 <span>Ce qui freine votre efficacité avec les autres</span></div>
+          <div class="benefit-item">🛠️ <span>Ce qui changerait quelque chose concrètement</span></div>
+        </div>
+
+        <div class="diag-actions-v4">
+          <button class="btn-primary-v4 big" id="startBtn">Lancer le test</button>
+          <p class="diag-hint-v4">5 questions · ~3 minutes · Non obligatoire</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="questionsContainer" class="hidden">
+      <nav class="diag-nav-v4">
+        <div class="container-narrow">
+          <div class="nav-inner-v4">
+            <button class="back-link-v4" onclick="history.back()">← Retour</button>
+            <div class="stepper-v4">
+              <p id="stepLabel" class="step-label-v4">Question 1 sur 5</p>
+              <div class="progress-track-v4"><div id="progressFill" class="progress-fill-v4"></div></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-narrow questions-layout-v4">
+
+        <div class="diag-step-v4 hidden" id="q1-step">
+          <h2 class="q-label-v4">Quand vous devez avancer sur un dossier avec d'autres personnes, votre réflexe naturel c'est…</h2>
+          <p class="q-help-v4">Pas ce que vous voudriez faire — ce que vous faites dans la plupart des situations.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'posture','pilote',1)">Prendre le lead et coordonner</button>
+            <button class="opt-v4" onclick="pick(this,'posture','contribue',1)">Contribuer sur votre périmètre sans chercher à tout piloter</button>
+            <button class="opt-v4" onclick="pick(this,'posture','observe',1)">Observer d'abord pour comprendre qui fait quoi</button>
+            <button class="opt-v4" onclick="pick(this,'posture','seul',1)">Avancer seul·e autant que possible pour aller plus vite</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q2-step">
+          <h2 class="q-label-v4">Dans le travail collectif, ce qui vous coûte le plus d'énergie c'est…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'cout','aligner',2)">Aligner tout le monde avant d'avancer</button>
+            <button class="opt-v4" onclick="pick(this,'cout','deleguer',2)">Déléguer sans perdre la main sur la qualité</button>
+            <button class="opt-v4" onclick="pick(this,'cout','dependance',2)">Dépendre des autres pour avancer sur mes propres dossiers</button>
+            <button class="opt-v4" onclick="pick(this,'cout','visibilite',2)">Ne pas toujours savoir ce que font les autres</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q3-step">
+          <h2 class="q-label-v4">Quand quelque chose coince dans un travail collectif, vous faites quoi en premier ?</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'coince','nomme',3)">Vous nommez le problème directement avec les personnes concernées</button>
+            <button class="opt-v4" onclick="pick(this,'coince','contourne',3)">Vous trouvez un moyen de contourner pour ne pas bloquer</button>
+            <button class="opt-v4" onclick="pick(this,'coince','absorbe',3)">Vous prenez sur vous pour débloquer la situation</button>
+            <button class="opt-v4" onclick="pick(this,'coince','attend',3)">Vous attendez que ça se décoince d'une façon ou d'une autre</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q4-step">
+          <h2 class="q-label-v4">Dans votre mandat, ce qui manque le plus dans votre façon de travailler avec les autres c'est…</h2>
+          <p class="q-help-v4">La chose que vous n'avez pas encore trouvé comment bien faire.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'manque','confiance',4)">Des personnes en qui j'ai vraiment confiance pour porter des sujets à ma place</button>
+            <button class="opt-v4" onclick="pick(this,'manque','cadre',4)">Un cadre clair sur qui fait quoi et jusqu'où</button>
+            <button class="opt-v4" onclick="pick(this,'manque','temps',4)">Le temps de vraiment travailler avec les autres plutôt qu'en parallèle</button>
+            <button class="opt-v4" onclick="pick(this,'manque','lacher',4)">La capacité à lâcher des sujets sans avoir l'impression de perdre la main</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q5-step">
+          <h2 class="q-label-v4">En ce moment, dans votre rapport aux autres acteurs de votre mandat, vous vous sentez plutôt…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'sentiment','bien_entoure',5)">Bien entouré·e et efficace collectivement</button>
+            <button class="opt-v4" onclick="pick(this,'sentiment','seul_porteur',5)">Seul·e à vraiment porter les choses</button>
+            <button class="opt-v4" onclick="pick(this,'sentiment','friction',5)">En friction régulière avec les personnes avec qui je dois avancer</button>
+            <button class="opt-v4" onclick="pick(this,'sentiment','flou',5)">Dans le flou sur qui fait quoi et comment ça devrait fonctionner</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden text-center" id="calculating-step" style="padding: 4rem 0;">
+           <div class="loader-v4"></div>
+           <h2 class="q-label-v4">Votre profil collectif se construit</h2>
+           <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN relie votre posture, ce qui vous coûte et ce qui vous manque pour faire une lecture utile.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="resultSection" class="diag-result-v4 hidden">
+       <div class="container-narrow">
+
+          <header class="res-header-v4">
+             <span class="label-v4">Votre rapport au travail collectif</span>
+             <h2 id="resProfilTitle" class="res-title-v4">—</h2>
+          </header>
+
+          <div class="res-body-v4">
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">1. Comment vous fonctionnez avec les autres</h3>
+                <p id="resProfilText" class="res-text-v4"></p>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">2. Ce que ça vous apporte</h3>
+                <div class="vigilance-card-v4">
+                   <p id="resForceText"></p>
+                </div>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">3. Ce qui freine votre efficacité collective</h3>
+                <ul id="resFreinsList" class="res-list-v4"></ul>
+             </section>
+
+             <section class="res-reco-v4">
+                <h3 class="section-title-v4">4. Ce qui changerait quelque chose</h3>
+                <p id="resChangeText" class="res-text-v4" style="margin-bottom:2rem;"></p>
+                <div id="resCTA" class="res-actions-v4"></div>
+             </section>
+
+             <section class="res-email-v4" id="emailBox">
+                <h3>Recevoir ce profil</h3>
+                <p>Pour y revenir, le partager avec un pair ou le comparer dans quelques mois.</p>
+                <div class="email-input-v4">
+                   <input type="email" id="emailInput" placeholder="vous@collectivite.fr" />
+                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
+                </div>
+             </section>
+
+             <footer class="res-footer-v4 text-center">
+                <p>Un mandat efficace n'est pas un mandat solitaire. C'est un mandat bien articulé.</p>
+                <a href="/tests" class="btn-link-v4">Voir les autres tests</a>
+             </footer>
+
+          </div>
+       </div>
+    </div>
+
+  </main>
+
+  <style>
+    :root { --deep: #0A192F; --neon: #ADFF2F; --red: #E63946; --bg: #F8F9FA; --border: rgba(10, 25, 47, 0.08); }
+    .diag-v1-launch { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .container-narrow { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
+    .diag-step-v4 { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .diag-step-v4.active { display: block; opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+    #introSection { padding: 8vh 0; }
+    .diag-kicker-v4 { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .diag-title-v4 { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .diag-lead-v4 { font-size: 1.25rem; line-height: 1.5; opacity: 0.8; margin-bottom: 3rem; }
+    .diag-benefits-v4 { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; text-align: left; max-width: 440px; margin-inline: auto; }
+    .benefit-item { display: flex; align-items: center; gap: 1rem; font-weight: 600; font-size: 1.1rem; }
+    .diag-hint-v4 { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+    .diag-nav-v4 { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .nav-inner-v4 { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .back-link-v4 { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .back-link-v4:hover { opacity: 1; }
+    .stepper-v4 { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .step-label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .progress-track-v4 { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .progress-fill-v4 { height: 100%; background: var(--red); width: 20%; transition: width 0.4s ease; }
+    .questions-layout-v4 { padding-bottom: 5rem; }
+    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .q-help-v4 { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+    .options-v4 { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-v4 { padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px; text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s; line-height: 1.3; }
+    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .opt-v4.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+    .diag-result-v4 { padding: 6rem 0; background: #FFFDF8; }
+    .res-title-v4 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4rem; }
+    .res-section-v4 { margin-bottom: 4rem; }
+    .section-title-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 1.5rem; }
+    .res-text-v4 { font-size: 1.2rem; line-height: 1.6; color: #333; }
+    .vigilance-card-v4 { background: #fff; border: 1.5px solid var(--deep); padding: 2.5rem; border-radius: 20px; font-size: 1.3rem; font-weight: 700; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    .res-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .res-list-v4 li { position: relative; padding-left: 2rem; font-size: 1.15rem; font-weight: 600; color: #444; }
+    .res-list-v4 li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+    .res-reco-v4 { background: var(--deep); color: #fff; padding: 4rem; border-radius: 32px; margin: 5rem 0; }
+    .res-reco-v4 .section-title-v4 { color: var(--neon); }
+    .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
+    .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
+    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
+    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
+    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
+    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
+    .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
+    .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .btn-primary-v4.big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    .btn-secondary-v4 { background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.2); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+    .btn-secondary-v4:hover { background: rgba(255,255,255,0.2); }
+    .btn-link-v4 { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; }
+    .btn-link-v4:hover { opacity: 1; }
+    .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) {
+      #introSection { padding-top: 5vh; }
+      .diag-title-v4 { font-size: 2.4rem; }
+      .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
+      .email-input-v4 { flex-direction: column; }
+      .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
+      .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; }
+    }
+  </style>
+
+  <script is:inline>
+    const state = { answers: {}, step: 0 };
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
+
+    function showStep(id) {
+       document.querySelectorAll('.diag-step-v4').forEach(s => {
+          s.classList.remove('active');
+          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
+       });
+       const target = document.getElementById(id);
+       if(target) { target.classList.remove('hidden'); setTimeout(() => target.classList.add('active'), 50); }
+       const idx = STEPS.indexOf(id.replace('-step', ''));
+       if(idx > 0 && idx < 6) {
+          document.getElementById('stepLabel').innerText = `Question ${idx} sur 5`;
+          document.getElementById('progressFill').style.width = (idx / 5) * 100 + '%';
+       }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+       document.getElementById('introSection').classList.add('hidden');
+       document.getElementById('questionsContainer').classList.remove('hidden');
+       showStep('q1-step');
+    });
+
+    window.pick = (btn, key, val, stepIdx) => {
+       state.answers[key] = val;
+       btn.closest('.diag-step-v4').querySelectorAll('.opt-v4').forEach(o => o.classList.remove('selected'));
+       btn.classList.add('selected');
+       if(stepIdx < 5) { setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350); }
+       else { showStep('calculating-step'); setTimeout(processTest, 1500); }
+    };
+
+    function processTest() {
+       const a = state.answers;
+       let score = { pilote: 0, collaborateur: 0, porteur: 0, flottant: 0 };
+
+       if (a.posture === 'pilote') score.pilote += 3;
+       if (a.posture === 'contribue') score.collaborateur += 3;
+       if (a.posture === 'observe') score.flottant += 2;
+       if (a.posture === 'seul') score.pilote += 2;
+       if (a.cout === 'aligner') score.pilote += 2;
+       if (a.cout === 'deleguer') score.pilote += 1;
+       if (a.cout === 'dependance') score.pilote += 2;
+       if (a.cout === 'visibilite') score.flottant += 2;
+       if (a.coince === 'nomme') score.collaborateur += 2;
+       if (a.coince === 'contourne') score.flottant += 2;
+       if (a.coince === 'absorbe') score.porteur += 3;
+       if (a.coince === 'attend') score.flottant += 1;
+       if (a.manque === 'confiance') score.pilote += 1;
+       if (a.manque === 'cadre') score.flottant += 2;
+       if (a.manque === 'temps') score.collaborateur += 1;
+       if (a.manque === 'lacher') score.pilote += 2;
+       if (a.sentiment === 'bien_entoure') score.collaborateur += 2;
+       if (a.sentiment === 'seul_porteur') score.porteur += 3;
+       if (a.sentiment === 'friction') score.pilote += 1;
+       if (a.sentiment === 'flou') score.flottant += 2;
+
+       const maxProfil = Object.entries(score).sort((x,y) => y[1]-x[1])[0][0];
+
+       const profils = {
+          pilote: {
+             title: "Le pilote qui avance seul.",
+             description: "Votre réflexe naturel est de prendre les commandes — et souvent d'avancer par vous-même plutôt que d'attendre les autres. C'est efficace sur les sujets que vous maîtrisez, mais ça crée deux angles morts : vous portez plus que votre part, et les autres ne s'approprient pas vraiment ce que vous faites.",
+             force: "Vous avancez. Là où d'autres s'enlisent dans des réunions de coordination sans fin, vous produisez des résultats concrets. Cette capacité à faire avancer les choses est réelle et précieuse dans un mandat.",
+             freins: [
+                "Vous concentrez trop de charge sur vous, ce qui crée de la fragilité si vous êtes absent·e ou débordé·e",
+                "Les autres ne s'approprient pas vraiment les dossiers — ce qui rend la mise en œuvre plus difficile",
+                "Votre efficacité solo peut être perçue comme un manque de confiance envers votre entourage"
+             ],
+             change: "Identifier un dossier en cours et choisir délibérément de le porter avec quelqu'un — pas pour aller plus vite, mais pour tester votre capacité à lâcher une partie du contrôle. Le collectif efficace commence par des petits transferts de confiance."
+          },
+          collaborateur: {
+             title: "Le·la collaborateur·rice structuré·e.",
+             description: "Vous savez avancer avec les autres. Vous contribuez sans chercher à tout contrôler, vous nommez les problèmes quand ça coince, et vous fonctionnez bien dans les collectifs où les rôles sont clairs. Votre limite est souvent ailleurs : dans les collectifs mal organisés ou sans cadre, vous perdez en efficacité.",
+             force: "Vous êtes un·e acteur·rice collectif·ve fiable. Les autres peuvent compter sur vous pour faire votre part sans déborder sur la leur — ce qui est plus rare qu'il n'y paraît dans un mandat.",
+             freins: [
+                "Vous êtes dépendant·e de la qualité de l'organisation collective — quand le cadre est flou, vous fonctionnez moins bien",
+                "Vous pouvez sous-estimer les situations où il faudrait prendre le lead plutôt qu'attendre que quelqu'un le fasse",
+                "Votre capacité à contribuer peut vous rendre invisible sur des sujets où vous auriez intérêt à être plus visible"
+             ],
+             change: "Dans les collectifs où vous évoluez, identifier les situations où personne ne prend le lead — et vous demander si c'est votre rôle de le faire. Le collectif efficace ne s'auto-organise pas toujours. Parfois il a besoin que quelqu'un nomme ce qui manque."
+          },
+          porteur: {
+             title: "Le·la porteur·se silencieux·se.",
+             description: "Vous absorbez. Quand ça coince, vous prenez sur vous pour débloquer. Quand quelqu'un ne fait pas sa part, vous compensez. C'est souvent invisible — et c'est ce qui rend cette posture épuisante sur la durée.",
+             force: "Vous tenez les choses ensemble. Dans un mandat où les frictions sont fréquentes et les ressources limitées, votre capacité à absorber et à débloquer évite des paralysies qui coûteraient plus cher.",
+             freins: [
+                "Vous accumulez sans que les autres le voient — ce qui crée une fatigue invisible et des frustrations qui finissent par sortir",
+                "En compensant toujours, vous évitez que les problèmes collectifs soient vraiment réglés",
+                "Vous risquez de créer une dépendance des autres à votre capacité d'absorption"
+             ],
+             change: "Choisir une situation que vous portez seul·e en ce moment et la rendre visible — pas pour vous plaindre, mais pour que les responsabilités soient redistribuées. Le collectif qui fonctionne n'est pas celui où quelqu'un absorbe tout. C'est celui où la charge est lisible et partagée."
+          },
+          flottant: {
+             title: "Le·la flottant·e collectif·ve.",
+             description: "Vous évoluez dans des collectifs où les rôles ne sont pas clairs, où vous ne savez pas toujours qui fait quoi, et où vous avez du mal à trouver votre place ou votre levier d'action. Ce n'est pas nécessairement un problème de posture — c'est souvent un problème de cadre.",
+             force: "Vous observez avant d'agir — ce qui vous évite des erreurs de positionnement que d'autres font en allant trop vite. Cette capacité à prendre le temps de comprendre le terrain est utile dans des contextes politiques complexes.",
+             freins: [
+                "L'absence de cadre clair vous coûte de l'énergie et de l'efficacité sur des sujets où vous pourriez aller plus vite",
+                "Vous attendez parfois que le cadre se pose tout seul — ce qui n'arrive pas souvent dans un mandat",
+                "Votre discrétion dans le collectif peut être mal interprétée par les autres"
+             ],
+             change: "Identifier un collectif où vous évoluez en ce moment et poser explicitement la question du cadre : qui décide quoi, jusqu'où, et comment on fait remonter les problèmes ? Ce n'est pas une réunion de plus — c'est le travail qui rend tous les autres possibles."
+          }
+       };
+
+       const p = profils[maxProfil];
+       document.getElementById('resProfilTitle').textContent = p.title;
+       document.getElementById('resProfilText').textContent = p.description;
+       document.getElementById('resForceText').textContent = p.force;
+       document.getElementById('resFreinsList').innerHTML = p.freins.map(f => `<li>${f}</li>`).join('');
+       document.getElementById('resChangeText').textContent = p.change;
+       document.getElementById('resCTA').innerHTML = `
+         <a href="/copilote" class="btn-primary-v4 big" style="background:#ADFF2F; color:#0A192F;">Travailler ça avec le copilote</a>
+         <a href="/tests" class="btn-secondary-v4">Voir les autres tests</a>
+         <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir mon profil</button>
+       `;
+
+       localStorage.setItem('maryan_test_equipe', JSON.stringify({ answers: a, profil: maxProfil, title: p.title, date: new Date().toLocaleDateString('fr-FR') }));
+       document.getElementById('questionsContainer').classList.add('hidden');
+       document.getElementById('resultSection').classList.remove('hidden');
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.submitEmail = () => {
+       const email = document.getElementById('emailInput').value.trim();
+       if(!email) return;
+       localStorage.setItem('user_email', email);
+       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0A192F;">✓ C'est envoyé.</h3><p>Votre profil vous attend sur ${email}.</p>`;
+    };
+  </script>
+</BaseLayout>
