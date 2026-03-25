@@ -79,6 +79,10 @@ function initCopilot(rootElement: HTMLElement) {
     userProfile: loadProfile()
   };
 
+  function hasUnlimitedAccess(): boolean {
+    return state.hasPaidPlan || hasPlusAccess(state.userProfile);
+  }
+
   // Check Supabase session — grants unlimited access only if user metadata has plan = "plus"
   if (_supabase) {
     _supabase.auth.getSession().then(({ data: { session } }) => {
@@ -712,10 +716,6 @@ function hasPlusAccess(profile: MaryanProfile | null): boolean {
   if (!profile) return false;
   const plan = normalizeLabel(profile.plan || '');
   return plan.includes('plus');
-}
-
-function hasUnlimitedAccess(): boolean {
-  return state.hasPaidPlan || hasPlusAccess(state.userProfile);
 }
 
 function isValidProfile(value: Partial<MaryanProfile> | null | undefined): value is MaryanProfile {
