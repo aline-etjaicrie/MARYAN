@@ -256,6 +256,91 @@ export const maryanPaths: MaryanPath[] = [
   }
 ];
 
+// ── PARCOURS EXPRESS — entrée situationnelle ──────────────────────────────────
+
+export const parcoursExpress = [
+  {
+    id: "je-viens-detre-elu",
+    color: "#E8B84B",
+    emoji: "🟡",
+    accroche: "Tu viens d'être élu·e ? Voici ce que personne ne t'explique.",
+    title: "Je viens d'être élu·e",
+    actions: ["Comprendre mon rôle", "Éviter les erreurs de début de mandat"],
+    cta: "Décris ta situation, je t'aide à y voir clair",
+    resourceIds: [
+      "trouver-sa-place-dans-le-mandat",
+      "conseiller-municipal-pouvoir-reel",
+      "majorite-opposition-ce-que-ca-change-vraiment",
+      "elus-administration-qui-fait-quoi",
+      "ne-pas-confondre-visibilite-et-pouvoir-reel"
+    ]
+  },
+  {
+    id: "je-dois-decider",
+    color: "#4B8DE8",
+    emoji: "🔵",
+    accroche: "Tu dois décider ? Voici comment éviter de te planter.",
+    title: "Je dois décider",
+    actions: ["Tester ma décision", "Identifier les risques"],
+    cta: "Explique ta décision, je t'aide à la sécuriser",
+    resourceIds: [
+      "comment-se-prend-une-decision-dans-une-commune",
+      "arbitrer-une-decision-sensible",
+      "faire-passer-une-deliberation",
+      "budget-communal-qui-decide-vraiment",
+      "conflit-dinteret-elu"
+    ]
+  },
+  {
+    id: "je-suis-en-difficulte",
+    color: "#E63946",
+    emoji: "🔴",
+    accroche: "Ça coince ? On va démêler ça.",
+    title: "Je suis en difficulté",
+    actions: ["Comprendre ce qui bloque", "Trouver une sortie"],
+    cta: "Raconte-moi ce qui se passe",
+    resourceIds: [
+      "projet-bloque-sans-raison",
+      "administration-qui-freine",
+      "seul-contre-tous-reunion",
+      "maire-bloque-dossier",
+      "repondre-critique-publique"
+    ]
+  },
+  {
+    id: "je-dois-parler",
+    color: "#3DBE6C",
+    emoji: "🟢",
+    accroche: "Tu dois prendre la parole ? Ne te rate pas.",
+    title: "Je dois parler / m'exposer",
+    actions: ["Structurer mon message", "Préparer une situation sensible"],
+    cta: "Dis-moi ce que tu dois dire",
+    resourceIds: [
+      "preparer-prise-de-parole-politique",
+      "reunion-publique-utile",
+      "repondre-critique-publique",
+      "gerer-situation-sensible",
+      "crise-mediatique"
+    ]
+  },
+  {
+    id: "je-veux-comprendre",
+    color: "#9B59B6",
+    emoji: "🟣",
+    accroche: "Tu veux comprendre comment ça marche vraiment ?",
+    title: "Je veux comprendre",
+    actions: ["Comprendre mon territoire", "Comprendre une décision"],
+    cta: "Pose ta question",
+    resourceIds: [
+      "qui-decide-quoi-dans-la-collectivite",
+      "le-conseil-municipal-a-quoi-il-sert-vraiment",
+      "conseil-de-paris-role-et-fonctionnement",
+      "plm-comprendre-le-systeme-apres-la-reforme-2026",
+      "intercommunalite-ce-qu-il-faut-comprendre-sans-s-y-perdre"
+    ]
+  }
+];
+
 export function getRecommendedPaths(
   paths: MaryanPath[],
   profile: DiagnosticProfile,

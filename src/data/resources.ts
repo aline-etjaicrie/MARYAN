@@ -22,6 +22,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Ne cherchez pas à paraître déjà installé·e. Cherchez d’abord à devenir juste dans votre place.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire"],
     diagnosticProfiles: ["mandat_recent", "isolement", "surcharge"],
     useCases: ["prise_de_fonction", "posture", "repères"],
@@ -51,6 +52,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "La bonne posture ne consiste pas à imiter l’autre camp, mais à habiter lucidement sa place.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["mandat_recent", "gouvernance", "exposition"],
     useCases: ["majorite", "opposition", "positionnement"],
@@ -80,6 +82,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Plus les rôles sont clairs, moins les relations s’usent inutilement.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["mandat_recent", "tension_relationnelle", "gouvernance"],
     useCases: ["relations_internes", "services", "gouvernance"],
@@ -109,6 +112,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Être partout n’est pas une stratégie. Être utile au bon endroit, si.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["exposition", "surcharge"],
     useCases: ["positionnement", "visibilite", "posture"],
@@ -138,6 +142,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Une posture solide se construit. Elle ne se mime pas.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire"],
     diagnosticProfiles: ["mandat_recent", "isolement", "exposition"],
     useCases: ["legitimite", "prise_de_fonction", "posture"],
@@ -167,6 +172,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Votre énergie est une ressource politique. Protégez-la.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["surcharge", "exposition"],
     useCases: ["priorisation", "agenda", "dispersion"],
@@ -196,6 +202,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Avant de trancher, demandez toujours : où en est vraiment le sujet ?",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire"],
     diagnosticProfiles: ["besoin_methode", "arbitrage", "mandat_recent"],
     useCases: ["decision", "dossier", "circuit_de_decision"],
@@ -209,29 +216,30 @@ export const maryanResources: MaryanResource[] = [
     title: "Le conseil municipal : à quoi il sert vraiment",
     slug: "le-conseil-municipal-a-quoi-il-sert-vraiment",
     pillar: "comprendre",
-    format: "fiche",
-    promise: "Rendre lisible la fonction réelle du conseil municipal, au-delà du rituel.",
-    intro: "Le conseil municipal est à la fois un lieu de délibération, de validation, de mise en scène démocratique et de visibilité politique. Il ne sert pas seulement à voter : il sert aussi à rendre les décisions lisibles et assumées.",
+    format: "guide",
+    promise: "Comprendre le rôle réel du conseil municipal — ce qu’il décide, ce qu’il valide, et ce qui se joue vraiment en séance.",
+    intro: "Le conseil municipal est l’organe délibérant de la commune. Il vote les décisions, mais ne les construit pas seul : entre l’idée politique et le vote, il y a un enchaînement de préparation, d’arbitrage et de mise en forme que les services et l’exécutif pilotent largement en amont. Comprendre ça, c’est ne plus être surpris par ce qui se joue — ou ne se joue pas — en séance.",
     understand: [
-      "Le conseil a une fonction formelle, démocratique et politique.",
-      "Ce qui s’y joue dépasse souvent le vote lui-même.",
-      "Mieux comprendre son rôle permet de mieux s’y préparer."
+      "Le conseil vote les délibérations, mais la décision réelle a souvent été prise bien avant la séance.",
+      "Les décisions sont préparées par les services, arbitrées par l’exécutif, et validées en commission avant d’être votées.",
+      "La séance a aussi une fonction politique et démocratique : rendre les décisions lisibles, assumées, et publiquement défendues."
     ],
-    commonTrap: "Réduire le conseil municipal à une simple formalité technique.",
+    commonTrap: "Croire que tout se joue en séance — ou au contraire réduire le conseil à une formalité sans enjeu.",
     actions: [
-      "Identifier ce qui s’y joue politiquement.",
-      "Préparer les points sensibles en amont.",
-      "Faire du conseil un moment lisible, pas seulement une obligation."
+      "Préparer les dossiers en amont et lire les délibérations avant séance.",
+      "Identifier ce qui est vraiment ouvert au débat et ce qui est déjà arbitré.",
+      "Faire du conseil un moment de lisibilité politique, pas seulement d’obligation procédurale."
     ],
-    reflex: "Un conseil bien tenu est aussi un moment de lisibilité politique.",
-    targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    reflex: "Le conseil valide plus qu’il ne fabrique — mais il rend la décision publique et assumée.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire"],
     diagnosticProfiles: ["mandat_recent", "prise_de_parole", "gouvernance"],
-    useCases: ["conseil_municipal", "deliberation", "preparation"],
+    useCases: ["institution", "deliberation", "preparation"],
     tags: ["conseil municipal", "délibération", "préparation"],
     ctaType: "copilote",
     irlPotential: true,
-    priority: "moyenne"
+    priority: "haute"
   },
   {
     id: "lire-un-budget-local-sans-etre-specialiste",
@@ -254,6 +262,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Le bon niveau de lecture n’est pas l’expertise comptable. C’est la compréhension des choix.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["besoin_methode", "arbitrage"],
     useCases: ["budget", "finances", "arbitrage"],
@@ -283,6 +292,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Avant de juger un blocage, vérifiez qui a vraiment la main.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire"],
     diagnosticProfiles: ["besoin_methode", "tension_relationnelle", "gouvernance"],
     useCases: ["competences", "responsabilites", "decision"],
@@ -312,6 +322,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Un dossier lent n’est pas forcément un dossier bloqué. Il est souvent un dossier mal relu.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["surcharge", "besoin_methode", "arbitrage"],
     useCases: ["dossier", "pilotage", "blocage"],
@@ -341,6 +352,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "L’interco se comprend mieux quand on la lit par ses effets concrets.",
     targetRoles: ["maire", "adjoint", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["gouvernance", "besoin_methode"],
     useCases: ["intercommunalite", "gouvernance", "competences"],
@@ -370,6 +382,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Une bonne décision n’est pas une décision prise vite. C’est une décision tenue.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["arbitrage", "exposition", "isolement"],
     useCases: ["decision", "arbitrage", "situation_sensible"],
@@ -399,6 +412,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Avant de parler, demandez-vous : qu’est-ce qui doit être compris, pas seulement entendu ?",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["prise_de_parole", "exposition", "tension_relationnelle"],
     useCases: ["prise_de_parole", "communication", "situation_sensible"],
@@ -428,6 +442,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Un projet tient mieux quand on annonce ce qu’on peut réellement porter.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire"],
     diagnosticProfiles: ["arbitrage", "mandat_recent", "exposition"],
     useCases: ["projet", "annonce", "pilotage"],
@@ -457,6 +472,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Le bon ordre d’action ne se lit pas dans le volume de pression.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["surcharge", "arbitrage", "exposition"],
     useCases: ["priorisation", "agenda", "pression"],
@@ -487,6 +503,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Quand un sujet vous échappe, revenez d’abord à son cadre.",
     sensitiveNote: "Si le dossier est déjà exposé publiquement, recadrez d’abord en interne avant de reprendre la parole à l’extérieur.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["besoin_methode", "arbitrage", "surcharge"],
     useCases: ["dossier", "cadrage", "pilotage"],
@@ -517,6 +534,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Avant de répondre à la tension, nommez sa vraie nature.",
     sensitiveNote: "Si la tension est déjà sortie du cercle interne, commencez par réduire l’exposition avant de rouvrir le fond.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "gouvernance", "exposition"],
     useCases: ["conflit", "majorite", "executif"],
@@ -546,6 +564,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Une position solide n’est pas une position raide.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["exposition", "prise_de_parole", "tension_relationnelle"],
     useCases: ["positionnement", "parole", "posture"],
@@ -575,6 +594,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Une décision juste peut devenir fragile si elle est mal portée.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["exposition", "surcharge", "arbitrage"],
     useCases: ["prevention", "tempo", "risque_politique"],
@@ -604,6 +624,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Un non bien posé protège souvent mieux la relation qu’un oui flou.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "exposition", "surcharge"],
     useCases: ["refus", "relation", "arbitrage"],
@@ -633,6 +654,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Quand tout semble devoir être décidé tout de suite, c’est souvent le moment où il faut recréer du recul.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["surcharge", "isolement", "arbitrage"],
     useCases: ["fatigue", "decision", "endurance"],
@@ -663,6 +685,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Tout ne mérite pas une réaction immédiate. Mais ce qui mérite une réponse mérite une réponse tenue.",
     sensitiveNote: "En cas d’exposition publique, relisez toujours le tempo avant le ton.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "exposition", "prise_de_parole"],
     useCases: ["situation_sensible", "reponse", "crise"],
@@ -692,6 +715,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "La bonne proximité ne vous vide pas. Elle vous relie sans vous dissoudre.",
     targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["surcharge", "isolement", "exposition"],
     useCases: ["proximite", "sollicitations", "limites"],
@@ -722,6 +746,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Un projet citoyen a besoin d’écoute, mais aussi de cadre. L’un sans l’autre produit vite de la déception.",
     sensitiveNote: "Si le collectif est déjà mobilisé publiquement, mieux vaut une réponse honnête et structurée qu’une ouverture vague qui sera ensuite vécue comme une trahison.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "gouvernance", "besoin_methode", "exposition"],
     useCases: ["projet_citoyen", "initiative_locale", "collectif_habitants", "relation_partenaire"],
@@ -760,6 +785,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Avec un projet d’entreprise, la clarté vaut mieux qu’une bienveillance floue.",
     sensitiveNote: "Quand un porteur de projet est pressé, il faut éviter de répondre sous pression. Une réponse rapide mais imprécise peut coûter plus cher qu’un cadrage un peu plus lent mais clair.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["gouvernance", "besoin_methode", "arbitrage", "tension_relationnelle"],
     useCases: ["projet_entreprise", "developpement_economique", "implantation", "relation_partenaire"],
@@ -797,6 +823,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Avant de gérer la tension, relisez le décalage entre les mondes en présence.",
     sensitiveNote: "Quand la tension est déjà émotionnelle, mieux vaut remettre du cadre avant de vouloir “réparer la relation”. Sans clarification, l’apaisement reste fragile.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "gouvernance", "exposition", "besoin_methode"],
     useCases: ["relation_partenaire", "tension", "projet_citoyen", "projet_entreprise"],
@@ -835,6 +862,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Ce qui abîme souvent la relation, ce n’est pas le refus. C’est le flou sur le degré réel d’engagement.",
     sensitiveNote: "En cas d’attente forte ou de pression, mieux vaut nommer une limite claire que laisser grandir une interprétation erronée.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["besoin_methode", "gouvernance", "tension_relationnelle", "arbitrage"],
     useCases: ["cadre", "engagement", "projet_citoyen", "projet_entreprise", "relation_partenaire"],
@@ -872,6 +900,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "On n’apaise pas l’impatience en promettant plus. On l’apaise en rendant le cadre plus lisible.",
     sensitiveNote: "Si l’impatience se transforme en pression ou en critique publique, il faut éviter la réaction défensive. Revenir à la séquence, aux faits et au cadre est souvent la meilleure manière de reprendre la main.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "exposition", "gouvernance", "arbitrage"],
     useCases: ["relation_partenaire", "tempo", "pression", "projet_entreprise", "projet_citoyen"],
@@ -909,6 +938,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "La qualité d’une démarche participative dépend d’abord de la clarté de son cadre.",
     sensitiveNote: "Plus le sujet est exposé ou conflictuel, plus le cadre doit être formulé sans ambiguïté dès l’ouverture.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["gouvernance", "tension_relationnelle", "besoin_methode", "exposition"],
     useCases: ["participation", "reunion_publique", "concertation", "cadre"],
@@ -945,6 +975,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "Nommer juste, c’est déjà éviter une partie des malentendus.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["besoin_methode", "gouvernance", "tension_relationnelle"],
     useCases: ["participation", "concertation", "co_construction", "communication_publique"],
@@ -982,6 +1013,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Une marge de discussion limitée mais assumée vaut mieux qu’une ouverture fictive.",
     sensitiveNote: "Sur des sujets déjà polarisés, toute ambiguïté sur le niveau réel d’ouverture sera relue comme une manipulation.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["gouvernance", "exposition", "tension_relationnelle", "arbitrage"],
     useCases: ["participation", "projet_expose", "reunion_publique", "communication_publique"],
@@ -1019,6 +1051,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Une réunion utile n’est pas une réunion où tout sort. C’est une réunion où quelque chose devient plus clair.",
     sensitiveNote: "Si le sujet est conflictuel, prévoir le cadre de parole et le mode d’animation avant de communiquer sur la réunion.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "gouvernance", "exposition"],
     useCases: ["reunion_publique", "participation", "tension_locale", "animation"],
@@ -1055,6 +1088,7 @@ export const maryanResources: MaryanResource[] = [
     ],
     reflex: "La participation ne se juge pas seulement à l’écoute. Elle se juge à la manière dont on rend compte ensuite.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["gouvernance", "tension_relationnelle", "besoin_methode"],
     useCases: ["participation", "restitution", "suite_de_demarche", "habitants"],
@@ -1092,6 +1126,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Dans une réunion tendue, il ne s’agit pas seulement de calmer. Il s’agit de redonner une forme au désaccord.",
     sensitiveNote: "Si la colère est très forte, l’enjeu n’est pas de sauver la réunion à tout prix. Parfois, il vaut mieux resserrer, reformuler, différer un point ou changer de format plutôt que laisser la situation s’abîmer davantage.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["tension_relationnelle", "exposition", "gouvernance"],
     useCases: ["participation", "reunion_publique", "tension_locale", "cadre"],
@@ -1132,6 +1167,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Co-construire n’efface pas la responsabilité politique. Cela oblige à l’exercer plus clairement.",
     sensitiveNote: "Sur un sujet exposé, il vaut mieux assumer le niveau réel d’ouverture que laisser croire à une horizontalité totale qu’aucune décision publique ne pourra tenir ensuite.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["gouvernance", "besoin_methode", "tension_relationnelle", "exposition"],
     useCases: ["participation", "co_construction", "arbitrage", "cadre"],
@@ -1170,6 +1206,7 @@ export const maryanResources: MaryanResource[] = [
     reflex: "Le cadre de participation n’est pas un détail logistique. C’est le cœur de la confiance.",
     sensitiveNote: "Plus le sujet est conflictuel, plus il faut réduire les ambiguïtés au minimum. Quand le cadre est flou, chacun projette sa propre promesse et la déception arrive vite.",
     targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    institutionContexts: ["commune"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     diagnosticProfiles: ["besoin_methode", "gouvernance", "tension_relationnelle", "exposition"],
     useCases: ["participation", "concertation", "cadre", "habitants"],
@@ -1185,6 +1222,1243 @@ export const maryanResources: MaryanResource[] = [
       "restitution"
     ],
     ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 2 : FICHES INSTITUTIONNELLES ──────────────────────────────────────
+
+  {
+    id: "budget-communal-qui-decide-vraiment",
+    title: "Budget communal : qui décide vraiment et à quel moment",
+    slug: "budget-communal-qui-decide-vraiment",
+    pillar: "comprendre",
+    format: "guide",
+    promise: "Comprendre comment se construit un budget communal, qui l'arbitre réellement et à quel moment un élu peut encore peser.",
+    intro: "Dans une commune de droit commun, le budget est l'acte politique central. Il permet de traduire un projet de mandat en décisions concrètes : dépenses de fonctionnement, investissements, subventions, recrutements, priorités de service public. Le conseil municipal vote le budget, mais il ne le fabrique pas seul. Entre l'idée d'un projet et son inscription budgétaire, il y a une chaîne de préparation, de chiffrage, de hiérarchisation et d'arbitrage dans laquelle l'exécutif et l'administration jouent un rôle décisif.",
+    understand: [
+      "Le conseil municipal vote le budget, mais la préparation budgétaire est pilotée en amont par le maire, les adjoints concernés, la direction générale et les services.",
+      "Le vrai pouvoir budgétaire ne se joue pas seulement en séance : il se joue surtout pendant la phase de cadrage, de chiffrage et d'arbitrage.",
+      "Un conseiller municipal peut peser politiquement sur les priorités, mais il ne pilote pas seul la machine budgétaire s'il n'est pas dans l'exécutif."
+    ],
+    commonTrap: "Croire que tout se joue au moment du vote du budget, alors que les marges de manœuvre sont souvent déjà très réduites à ce stade.",
+    actions: [
+      "Identifier très tôt les priorités que tu veux voir entrer dans le budget communal.",
+      "Demander un chiffrage sérieux du projet avant de le défendre politiquement.",
+      "Distinguer ce qui relève d'une dépense nouvelle, d'un redéploiement ou d'un financement externe."
+    ],
+    reflex: "En budget communal, le vote compte ; l'arbitrage amont compte davantage.",
+    sensitiveNote: "Un projet politiquement populaire peut rester hors budget s'il n'a pas été travaillé assez tôt avec les services ou s'il entre en concurrence avec d'autres priorités du mandat.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "arbitrage", "besoin_methode", "gouvernance"],
+    useCases: ["budget", "arbitrage", "gouvernance"],
+    tags: ["budget communal", "conseil municipal", "arbitrage", "commune"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "budget-intercommunal-comprendre-ou-se-joue-le-pouvoir",
+    title: "Budget intercommunal : comprendre où se joue le pouvoir",
+    slug: "budget-intercommunal-comprendre-ou-se-joue-le-pouvoir",
+    pillar: "comprendre",
+    format: "guide",
+    promise: "Comprendre ce que finance réellement l'intercommunalité et comment un élu peut peser dans le budget d'un EPCI.",
+    intro: "Le budget intercommunal est souvent moins visible que le budget communal, alors même qu'il finance des compétences lourdes : développement économique, aménagement, mobilité, déchets, eau, habitat ou urbanisme selon les cas. C'est un budget stratégique, mais plus indirect dans son fonctionnement. Le pouvoir y est souvent plus concentré autour de l'exécutif intercommunal, des vice-présidences, du bureau et des directions. Pour un élu, la clé est donc moins la visibilité publique que la capacité à entrer dans le bon circuit de décision.",
+    understand: [
+      "L'intercommunalité finance les compétences qu'elle exerce effectivement, pas l'ensemble des sujets du territoire.",
+      "Le budget intercommunal est voté par le conseil communautaire ou métropolitain, mais il est préparé dans un circuit plus resserré que dans beaucoup de communes.",
+      "Le pouvoir réel y dépend souvent de la place occupée dans l'exécutif, dans les commissions et dans la relation au président ou aux vice-présidences."
+    ],
+    commonTrap: "Porter une demande au seul niveau communal alors que la compétence et donc le financement relèvent déjà de l'intercommunalité.",
+    actions: [
+      "Vérifier d'abord si le sujet relève bien d'une compétence intercommunale.",
+      "Identifier la vice-présidence, la commission et la direction qui structurent le sujet.",
+      "Construire une stratégie d'influence adaptée au circuit intercommunal plutôt qu'une simple demande politique générale."
+    ],
+    reflex: "À l'interco, la bonne porte d'entrée compte presque autant que le fond du projet.",
+    sensitiveNote: "Un élu communal peut être exposé localement sur un dossier qu'il ne maîtrise pas budgétairement. Clarifier le bon niveau de décision protège autant qu'il éclaire.",
+    targetRoles: ["interco", "conseiller_communautaire", "vice_president_interco", "maire", "adjoint", "majorite", "opposition"],
+    institutionContexts: ["intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "isolement", "besoin_methode"],
+    useCases: ["budget", "intercommunalite", "gouvernance"],
+    tags: ["budget intercommunal", "EPCI", "conseiller communautaire", "compétences"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "plm-comprendre-le-systeme-apres-la-reforme-2026",
+    title: "PLM : comprendre le système après la réforme 2026",
+    slug: "plm-comprendre-le-systeme-apres-la-reforme-2026",
+    pillar: "comprendre",
+    format: "guide",
+    promise: "Comprendre ce que change réellement le régime PLM pour Paris, Lyon et Marseille, et ce que la réforme 2026 modifie dans la lecture des mandats.",
+    intro: "Le régime PLM organise un fonctionnement spécifique pour Paris, Lyon et Marseille. Dans ces trois villes, il faut distinguer le niveau central de la ville et le niveau des arrondissements. La réforme applicable à partir des municipales de 2026 clarifie ce paysage en séparant l'élection du niveau central et celle du niveau d'arrondissement. Cela rend les mandats plus lisibles, mais ne change pas un point fondamental : les arrondissements restent des niveaux politiques de proximité, sans autonomie équivalente à celle d'une commune de plein exercice.",
+    understand: [
+      "Le régime PLM ne produit pas des communes internes autonomes : les arrondissements ont des compétences limitées et un pouvoir décisionnel encadré.",
+      "Depuis 2026, les mandats du niveau central et ceux du niveau d'arrondissement sont politiquement mieux distingués.",
+      "La proximité électorale en PLM ne coïncide pas toujours avec le pouvoir réel : beaucoup de visibilité locale, mais un centre qui continue à trancher."
+    ],
+    commonTrap: "Parler d'un arrondissement PLM comme d'une commune classique, avec un budget, des compétences et une autonomie comparables.",
+    actions: [
+      "Toujours distinguer le niveau central et le niveau d'arrondissement avant de qualifier un mandat ou une stratégie.",
+      "Vérifier si le sujet relève du conseil central, de l'exécutif central ou seulement du conseil d'arrondissement.",
+      "Adapter la posture politique au régime réel : proximité locale d'un côté, pouvoir central de l'autre."
+    ],
+    reflex: "En PLM, la proximité est locale ; le pouvoir réel reste largement central.",
+    sensitiveNote: "La réforme rend les mandats plus clairs pour les électeurs, mais elle peut aussi accroître la tension entre attente locale et capacité réelle d'agir.",
+    targetRoles: ["maire_arrondissement", "adjoint_arrondissement", "conseiller_arrondissement", "conseiller_paris", "conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["plm", "paris"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "prise_de_parole", "besoin_methode"],
+    useCases: ["institution", "posture", "gouvernance"],
+    tags: ["PLM", "Paris", "Lyon", "Marseille", "réforme 2026"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "maire-de-secteur-a-marseille-role-pouvoir-limites",
+    title: "Maire de secteur à Marseille : rôle, pouvoir, limites",
+    slug: "maire-de-secteur-a-marseille-role-pouvoir-limites",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre ce qu'est un maire de secteur à Marseille, ce qu'il peut réellement faire et où s'arrêtent ses pouvoirs.",
+    intro: "Marseille a une singularité supplémentaire dans le régime PLM : ses arrondissements sont regroupés en secteurs. Le maire de secteur est donc une figure locale très visible, souvent fortement identifiée par les habitants. Mais cette visibilité ne doit pas faire illusion. Le maire de secteur n'est pas un maire de commune de plein exercice. Il agit dans un cadre limité, entre ancrage territorial, gestion de proximité, expression politique locale et négociation avec la mairie centrale ou d'autres niveaux institutionnels.",
+    understand: [
+      "Le maire de secteur incarne politiquement un territoire local, mais il n'exerce pas l'ensemble des compétences du maire de Marseille.",
+      "Son pouvoir réel repose à la fois sur le conseil de secteur, sur sa capacité d'animation politique locale et sur sa faculté à peser sur le centre.",
+      "À Marseille, la lecture des responsabilités est souvent brouillée par l'empilement entre secteur, mairie centrale et métropole."
+    ],
+    commonTrap: "Laisser croire qu'un maire de secteur dispose des mêmes moyens d'action qu'un maire de commune autonome.",
+    actions: [
+      "Qualifier clairement les sujets : ce qui relève du secteur, de la mairie centrale ou de la métropole.",
+      "Utiliser le secteur pour documenter les besoins, construire une légitimité locale et peser politiquement.",
+      "Ne pas promettre seul ce qui dépend juridiquement ou budgétairement d'un autre niveau."
+    ],
+    reflex: "À Marseille, le maire de secteur incarne le territoire ; il ne concentre pas tous les pouvoirs.",
+    sensitiveNote: "Le mandat expose fortement, car les habitants identifient un responsable local visible même lorsque la décision finale se prend ailleurs.",
+    targetRoles: ["maire_de_secteur", "adjoint_arrondissement", "conseiller_arrondissement", "conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["plm"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "exposition", "gouvernance", "besoin_methode"],
+    useCases: ["posture", "marseille", "gouvernance"],
+    tags: ["Marseille", "maire de secteur", "PLM", "secteur"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 3 : FICHES PAR MANDAT ─────────────────────────────────────────────
+
+  {
+    id: "conseiller-municipal-pouvoir-reel",
+    title: "Conseiller municipal : pouvoir réel et marges d'action",
+    slug: "conseiller-municipal-pouvoir-reel",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre ce qu'un conseiller municipal peut réellement faire et comment exister dans le mandat.",
+    intro: "Le conseiller municipal est souvent perçu comme un rôle secondaire. En réalité, il est au cœur du fonctionnement démocratique local, mais avec des marges d'action très variables selon sa position dans la majorité ou l'opposition. Son pouvoir n'est pas exécutif, mais il peut devenir stratégique s'il comprend les bons leviers : information, réseau, commission, prise de parole.",
+    understand: [
+      "Le conseiller municipal participe aux délibérations mais ne pilote pas l'exécutif s'il n'a pas de délégation.",
+      "Son influence dépend fortement de sa position : majorité, opposition, proximité avec le maire ou les adjoints.",
+      "Le travail en commission et en amont des conseils est souvent plus déterminant que la séance elle-même."
+    ],
+    commonTrap: "Attendre le conseil municipal pour exister politiquement.",
+    actions: [
+      "S'investir dans les commissions pour accéder à l'information et peser en amont.",
+      "Identifier un ou deux sujets sur lesquels devenir référent.",
+      "Construire des relations avec les services et les élus exécutifs."
+    ],
+    reflex: "Un conseiller efficace travaille avant la séance, pas seulement pendant.",
+    targetRoles: ["conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "isolement", "besoin_methode"],
+    useCases: ["posture", "gouvernance"],
+    tags: ["conseiller municipal", "mandat", "posture"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "adjoint-au-maire-exercer-une-delegation",
+    title: "Adjoint au maire : exercer une délégation efficacement",
+    slug: "adjoint-au-maire-exercer-une-delegation",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Comprendre comment piloter une délégation sans se perdre entre politique et administration.",
+    intro: "Être adjoint, c'est être à la frontière entre décision politique et mise en œuvre administrative. Une délégation ne se résume pas à un portefeuille : c'est un espace de pilotage, de négociation et d'arbitrage. La difficulté n'est pas d'avoir des idées, mais de les rendre faisables dans un cadre contraint.",
+    understand: [
+      "Une délégation s'exerce toujours en lien étroit avec les services et la direction générale.",
+      "Le pouvoir d'un adjoint dépend autant de sa relation avec le maire que de sa maîtrise des dossiers.",
+      "Un adjoint arbitre en permanence entre priorités politiques, contraintes budgétaires et faisabilité technique."
+    ],
+    commonTrap: "Vouloir décider seul sans embarquer les services et sans sécuriser politiquement.",
+    actions: [
+      "Clarifier rapidement le périmètre réel de ta délégation.",
+      "Mettre en place un point régulier avec les services.",
+      "Hiérarchiser tes priorités pour éviter la dispersion."
+    ],
+    reflex: "Une délégation se pilote, elle ne s'improvise pas.",
+    targetRoles: ["adjoint", "majorite"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["surcharge", "arbitrage", "gouvernance"],
+    useCases: ["pilotage", "decision"],
+    tags: ["adjoint", "delegation", "pilotage"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conseiller-de-paris-role-et-pouvoir",
+    title: "Conseiller de Paris : rôle, pouvoir et stratégie",
+    slug: "conseiller-de-paris-role-et-pouvoir",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre le rôle spécifique d'un conseiller de Paris et ses leviers d'action réels.",
+    intro: "Le conseiller de Paris est un élu du niveau central, avec un pouvoir de décision réel. Il vote le budget, les politiques publiques et les grandes orientations de la Ville. Mais ce pouvoir est collectif et structuré : il s'exerce dans un cadre politique, en lien avec un groupe, un exécutif et une administration très organisée.",
+    understand: [
+      "Le Conseil de Paris est le lieu de décision centrale, avec des compétences étendues.",
+      "Le pouvoir d'un conseiller dépend de son groupe politique et de sa place dans l'exécutif.",
+      "La majorité des arbitrages se fait avant les séances, dans les circuits internes."
+    ],
+    commonTrap: "Se concentrer uniquement sur la séance publique sans travailler les circuits en amont.",
+    actions: [
+      "S'impliquer dans les commissions et groupes politiques.",
+      "Travailler avec les directions et cabinets en amont.",
+      "Construire des alliances sur les dossiers."
+    ],
+    reflex: "À Paris, la décision se prépare avant d'être votée.",
+    targetRoles: ["conseiller_paris", "majorite", "opposition"],
+    institutionContexts: ["paris", "plm"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "arbitrage"],
+    useCases: ["decision", "strategie"],
+    tags: ["Conseil de Paris", "délibération", "pouvoir"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conseiller-arrondissement-posture",
+    title: "Conseiller d'arrondissement : exister sans pouvoir direct",
+    slug: "conseiller-arrondissement-posture",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre comment agir efficacement en conseil d'arrondissement malgré des compétences limitées.",
+    intro: "Le conseiller d'arrondissement est un élu de proximité, mais avec un pouvoir décisionnel limité. Son rôle est souvent mal compris, y compris par les habitants. Il ne décide pas des grandes politiques publiques, mais il peut influencer, alerter, relayer et construire des dynamiques locales.",
+    understand: [
+      "Le conseil d'arrondissement a un rôle consultatif et de gestion locale limitée.",
+      "Le pouvoir réel est centralisé au niveau de la Ville.",
+      "Le rôle du conseiller est d'alimenter, influencer et relayer."
+    ],
+    commonTrap: "Faire croire qu'on peut décider localement ce qui dépend du niveau central.",
+    actions: [
+      "Utiliser les vœux pour mettre des sujets à l'agenda.",
+      "Construire un lien fort avec les habitants.",
+      "Faire remonter les sujets vers les bons interlocuteurs."
+    ],
+    reflex: "En arrondissement, tu influences plus que tu ne décides.",
+    targetRoles: ["conseiller_arrondissement", "majorite", "opposition"],
+    institutionContexts: ["plm", "paris"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "prise_de_parole"],
+    useCases: ["posture", "territoire"],
+    tags: ["arrondissement", "proximité", "PLM"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conseiller-communautaire-pouvoir",
+    title: "Conseiller communautaire : comprendre son vrai levier",
+    slug: "conseiller-communautaire-pouvoir",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre le rôle réel d'un conseiller communautaire et comment peser à l'intercommunalité.",
+    intro: "Le conseiller communautaire intervient sur des compétences stratégiques, mais dans un système moins lisible et plus éloigné des habitants. Son pouvoir dépend fortement des circuits internes, de l'exécutif intercommunal et de sa capacité à s'y insérer.",
+    understand: [
+      "L'intercommunalité gère des compétences majeures.",
+      "Le pouvoir est souvent concentré dans l'exécutif.",
+      "La visibilité politique y est plus faible mais l'impact réel plus fort."
+    ],
+    commonTrap: "Sous-estimer l'intercommunalité ou la traiter comme un mandat secondaire.",
+    actions: [
+      "Identifier les compétences intercommunales clés.",
+      "Repérer les vice-présidents et circuits décisionnels.",
+      "Articuler action communale et intercommunale."
+    ],
+    reflex: "À l'interco, moins visible ne veut pas dire moins puissant.",
+    targetRoles: ["conseiller_communautaire", "interco", "majorite", "opposition"],
+    institutionContexts: ["intercommunalite"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["isolement", "gouvernance"],
+    useCases: ["posture", "interco"],
+    tags: ["intercommunalité", "EPCI", "mandat"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "vice-president-interco-pilotage",
+    title: "Vice-président d'intercommunalité : piloter une compétence",
+    slug: "vice-president-interco-pilotage",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Comprendre comment exercer une responsabilité exécutive à l'échelle intercommunale.",
+    intro: "Le vice-président d'intercommunalité est un élu exécutif, avec un pouvoir réel sur des politiques structurantes. Mais ce pouvoir est partagé, négocié et encadré par l'équilibre politique de l'EPCI. Il nécessite une capacité à piloter à distance, coordonner et arbitrer.",
+    understand: [
+      "Le vice-président porte une compétence stratégique.",
+      "Le pouvoir est collectif et dépend du président.",
+      "Le pilotage repose sur les directions et les services intercommunaux."
+    ],
+    commonTrap: "Penser pouvoir agir seul sans composer avec l'équilibre politique.",
+    actions: [
+      "Clarifier ton périmètre de délégation.",
+      "Structurer ta relation avec les services.",
+      "Construire des alliances politiques."
+    ],
+    reflex: "À l'interco, le pouvoir s'exerce en réseau.",
+    targetRoles: ["vice_president_interco", "interco"],
+    institutionContexts: ["intercommunalite"],
+    experienceLevels: ["confirme"],
+    diagnosticProfiles: ["gouvernance", "arbitrage"],
+    useCases: ["pilotage", "decision"],
+    tags: ["intercommunalité", "exécutif", "pilotage"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 4 : AGIR — LES GESTES CLÉS DU MANDAT ─────────────────────────────
+
+  {
+    id: "faire-adopter-un-voeu",
+    title: "Faire adopter un vœu : utilité réelle et stratégie",
+    slug: "faire-adopter-un-voeu",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Utiliser un vœu comme levier politique sans le confondre avec une décision.",
+    intro: "Le vœu est un outil fréquent dans les collectivités, notamment à Paris. Il permet d'exprimer une position, de mettre un sujet à l'agenda ou de créer un rapport de force. Mais il n'a pas de portée juridique contraignante. Son efficacité dépend donc de la stratégie politique qui l'accompagne.",
+    understand: [
+      "Un vœu n'est pas une décision, mais un signal politique.",
+      "Il sert à mettre un sujet à l'agenda ou à interpeller l'exécutif.",
+      "Son impact dépend de sa reprise en délibération ou en action concrète."
+    ],
+    commonTrap: "Croire qu'un vœu adopté suffit à faire avancer un projet.",
+    actions: [
+      "Utiliser le vœu pour ouvrir un sujet ou créer un rapport de force.",
+      "Travailler en parallèle avec les services ou l'exécutif.",
+      "Préparer une suite : délibération, budget ou action."
+    ],
+    reflex: "Un vœu ouvre une porte, il ne fait pas passer le projet.",
+    targetRoles: ["conseiller_municipal", "conseiller_arrondissement", "conseiller_paris", "opposition", "majorite"],
+    institutionContexts: ["commune", "paris", "plm"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["prise_de_parole", "besoin_methode"],
+    useCases: ["decision", "expression"],
+    tags: ["voeu", "conseil", "politique"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "faire-passer-une-deliberation",
+    title: "Faire passer une délibération : le vrai circuit",
+    slug: "faire-passer-une-deliberation",
+    pillar: "agir",
+    format: "guide",
+    promise: "Comprendre les étapes réelles pour transformer une idée en décision votée.",
+    intro: "Une délibération n'est jamais le fruit d'un simple vote. Elle est construite en amont, dans un enchaînement précis : travail avec les services, arbitrages politiques, validation en commission. Le vote final ne fait qu'acter un processus déjà largement sécurisé.",
+    understand: [
+      "Le travail principal se fait avant la séance.",
+      "L'administration construit et sécurise la délibération.",
+      "Les arbitrages politiques interviennent en amont."
+    ],
+    commonTrap: "Arriver en séance avec une idée non travaillée.",
+    actions: [
+      "Clarifier l'objectif exact de la délibération.",
+      "Associer la direction compétente dès le départ.",
+      "Sécuriser un soutien politique avant le passage en commission."
+    ],
+    reflex: "Une délibération se gagne avant d'être votée.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris", "interco"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["arbitrage", "besoin_methode"],
+    useCases: ["decision", "projet"],
+    tags: ["délibération", "vote", "décision"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "administration-qui-freine",
+    title: "Quand l'administration freine : comprendre et débloquer",
+    slug: "administration-qui-freine",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Débloquer un dossier sans casser la relation avec les services.",
+    intro: "Tous les élus vivent cette situation : un projet qui semble bloqué par l'administration. Mais ce frein est rarement politique. Il est souvent technique, juridique, budgétaire ou organisationnel. Comprendre la nature du blocage est la clé pour avancer.",
+    understand: [
+      "Un refus administratif est souvent un problème de faisabilité.",
+      "Les services sécurisent juridiquement et techniquement.",
+      "Le blocage est souvent un signal, pas une opposition."
+    ],
+    commonTrap: "Transformer un problème technique en conflit politique.",
+    actions: [
+      "Demander explicitement les raisons du blocage.",
+      "Identifier ce qui est négociable ou non.",
+      "Reformuler le projet pour le rendre faisable."
+    ],
+    reflex: "Un blocage administratif est souvent une information, pas un refus.",
+    targetRoles: ["adjoint", "maire", "majorite"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "gouvernance"],
+    useCases: ["administration", "projet"],
+    tags: ["administration", "blocage", "services"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "faire-remonter-sujet-executif",
+    title: "Faire remonter un sujet à l'exécutif efficacement",
+    slug: "faire-remonter-sujet-executif",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Faire remonter un sujet sans le perdre dans les circuits internes.",
+    intro: "Un sujet local ne devient jamais une priorité par lui-même. Il doit être formulé, qualifié, porté et relayé dans les bons circuits. La manière dont tu fais remonter un sujet est souvent plus importante que le sujet lui-même.",
+    understand: [
+      "Un sujet doit être reformulé pour devenir une priorité politique.",
+      "Le circuit de remontée dépend du contexte : cabinet, adjoint, direction.",
+      "Un sujet mal cadré disparaît rapidement."
+    ],
+    commonTrap: "Faire remonter une demande brute sans cadrage.",
+    actions: [
+      "Formuler clairement le problème et la solution.",
+      "Identifier le bon interlocuteur.",
+      "Accompagner la demande d'éléments concrets (coût, impact, urgence)."
+    ],
+    reflex: "Un bon sujet mal formulé ne remonte pas.",
+    targetRoles: ["conseiller_municipal", "conseiller_arrondissement", "majorite"],
+    institutionContexts: ["commune", "paris", "plm"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["isolement", "besoin_methode"],
+    useCases: ["decision", "strategie"],
+    tags: ["exécutif", "remontée", "dossier"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 5 : STRUCTURE DU POUVOIR & INSTANCES ──────────────────────────────
+
+  {
+    id: "les-lieux-du-pouvoir-local",
+    title: "Les lieux du pouvoir local : officiels et officieux",
+    slug: "les-lieux-du-pouvoir-local",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Identifier où se prennent réellement les décisions dans une collectivité.",
+    intro: "Les décisions ne se prennent pas uniquement en séance. Elles se construisent dans plusieurs lieux : commissions, réunions internes, cabinets, relations avec l'administration. Comprendre ces espaces permet de mieux agir.",
+    understand: [
+      "Le conseil vote, mais ne décide pas toujours seul.",
+      "Les commissions sont des lieux clés de préparation.",
+      "Les arbitrages politiques se font souvent en amont."
+    ],
+    commonTrap: "Croire que tout se joue en séance publique.",
+    actions: [
+      "Identifier les lieux informels de décision.",
+      "S'impliquer en commission.",
+      "Travailler les circuits internes."
+    ],
+    reflex: "Le pouvoir ne se voit pas toujours là où il s'affiche.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["gouvernance"],
+    useCases: ["decision"],
+    tags: ["pouvoir", "organisation"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "les-commissions-a-quoi-ca-sert",
+    title: "Les commissions : à quoi ça sert vraiment",
+    slug: "les-commissions-a-quoi-ca-sert",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Utiliser les commissions comme levier d'influence réel.",
+    intro: "Les commissions sont souvent perçues comme secondaires. En réalité, elles sont au cœur du fonctionnement politique local. C'est là que les dossiers sont présentés, discutés, ajustés et parfois arbitrés.",
+    understand: [
+      "Les commissions préparent les décisions.",
+      "Elles permettent d'accéder à l'information en amont.",
+      "Elles sont un lieu d'influence discret mais réel."
+    ],
+    commonTrap: "Négliger les commissions au profit des séances.",
+    actions: [
+      "Participer activement aux commissions.",
+      "Poser des questions en amont.",
+      "Identifier les points sensibles."
+    ],
+    reflex: "Si tu n'es pas en commission, tu arrives trop tard.",
+    targetRoles: ["conseiller_municipal", "adjoint", "interco"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent"],
+    useCases: ["decision"],
+    tags: ["commission", "décision"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+  // ── LOT 6 : INSTANCES & FICHE MAIRE ───────────────────────────────────────
+
+  {
+    id: "conseil-de-paris-role-et-fonctionnement",
+    title: "Le Conseil de Paris : rôle, pouvoir et fonctionnement réel",
+    slug: "conseil-de-paris-role-et-fonctionnement",
+    pillar: "comprendre",
+    format: "guide",
+    promise: "Comprendre comment fonctionne réellement le Conseil de Paris et où se prennent les décisions.",
+    intro: "Le Conseil de Paris est à la fois un conseil municipal et un conseil départemental. Il vote les politiques publiques, le budget et les grandes orientations de la Ville. Mais comme dans toute grande collectivité, la séance publique n'est que la partie visible d'un processus de décision largement construit en amont.",
+    understand: [
+      "Le Conseil de Paris vote les décisions mais ne les construit pas seul.",
+      "Les délibérations sont préparées par les directions et les cabinets.",
+      "Les arbitrages politiques ont lieu avant la séance, notamment en commission et en groupe."
+    ],
+    commonTrap: "Penser que la décision se joue pendant la séance publique.",
+    actions: [
+      "Travailler les dossiers en amont avec les directions et cabinets.",
+      "S'impliquer dans les commissions et groupes politiques.",
+      "Identifier les moments clés d'arbitrage avant le vote."
+    ],
+    reflex: "À Paris, la décision est prise avant d'être votée.",
+    targetRoles: ["conseiller_paris", "adjoint", "maire", "majorite", "opposition"],
+    institutionContexts: ["paris", "plm"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "arbitrage"],
+    useCases: ["decision", "institution"],
+    tags: ["Conseil de Paris", "délibération", "budget"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conseil-arrondissement-role-reel",
+    title: "Le conseil d'arrondissement : rôle réel et limites",
+    slug: "conseil-arrondissement-role-reel",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comprendre à quoi sert un conseil d'arrondissement et comment l'utiliser efficacement.",
+    intro: "Le conseil d'arrondissement est une instance de proximité dans les villes PLM. Il traite des sujets locaux, donne des avis et peut adopter des vœux. Mais il ne dispose pas du même pouvoir qu'un conseil municipal central.",
+    understand: [
+      "Le conseil d'arrondissement a un rôle local et souvent consultatif.",
+      "Il ne décide pas des grandes politiques publiques.",
+      "Il est un levier d'influence et de mise à l'agenda."
+    ],
+    commonTrap: "Présenter comme acquis ce qui n'est qu'un avis ou un vœu.",
+    actions: [
+      "Utiliser le conseil pour structurer un sujet local.",
+      "Relayer les demandes vers le niveau central.",
+      "S'appuyer sur les vœux pour peser politiquement."
+    ],
+    reflex: "Le conseil d'arrondissement influence plus qu'il ne décide.",
+    targetRoles: ["conseiller_arrondissement", "adjoint_arrondissement", "maire_arrondissement"],
+    institutionContexts: ["plm", "paris"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent"],
+    useCases: ["institution", "territoire"],
+    tags: ["arrondissement", "PLM", "proximité"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conseil-de-secteur-marseille",
+    title: "Conseil de secteur à Marseille : fonctionnement et réalité",
+    slug: "conseil-de-secteur-marseille",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comprendre le rôle du conseil de secteur à Marseille et ses limites réelles.",
+    intro: "À Marseille, les arrondissements sont regroupés en secteurs. Le conseil de secteur fonctionne comme une instance locale importante, mais il ne dispose pas des mêmes compétences que le conseil municipal central. Il est à la fois un lieu de débat, de gestion de proximité et d'expression politique.",
+    understand: [
+      "Le conseil de secteur traite les affaires locales du territoire.",
+      "Il ne dispose pas de l'ensemble des compétences municipales.",
+      "Son rôle est à la fois politique, territorial et consultatif."
+    ],
+    commonTrap: "Confondre conseil de secteur et conseil municipal.",
+    actions: [
+      "Utiliser le conseil pour structurer une demande locale.",
+      "Identifier les sujets qui doivent remonter à la mairie centrale.",
+      "S'appuyer sur la légitimité territoriale du secteur."
+    ],
+    reflex: "Le secteur structure le territoire, mais ne décide pas tout.",
+    targetRoles: ["maire_de_secteur", "conseiller_arrondissement", "adjoint_arrondissement"],
+    institutionContexts: ["plm"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent"],
+    useCases: ["institution", "marseille"],
+    tags: ["Marseille", "secteur", "PLM"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conseil-arrondissement-lyon",
+    title: "Conseil d'arrondissement à Lyon : rôle et fonctionnement",
+    slug: "conseil-arrondissement-lyon",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comprendre le rôle spécifique des arrondissements à Lyon.",
+    intro: "À Lyon, comme à Paris, les arrondissements disposent d'un conseil. Ils jouent un rôle important dans la vie locale, mais restent limités dans leurs compétences par rapport au conseil municipal central.",
+    understand: [
+      "Les arrondissements gèrent des sujets de proximité.",
+      "Le pouvoir décisionnel reste au niveau central.",
+      "Ils permettent un ancrage territorial fort."
+    ],
+    commonTrap: "Attendre du conseil d'arrondissement des décisions qu'il ne peut pas prendre.",
+    actions: [
+      "S'appuyer sur l'arrondissement pour capter les besoins locaux.",
+      "Relayer les sujets au conseil municipal.",
+      "Utiliser l'arrondissement comme levier politique."
+    ],
+    reflex: "À Lyon, l'arrondissement capte ; la ville décide.",
+    targetRoles: ["conseiller_arrondissement", "maire_arrondissement"],
+    institutionContexts: ["plm"],
+    experienceLevels: ["debutant"],
+    diagnosticProfiles: ["mandat_recent"],
+    useCases: ["territoire"],
+    tags: ["Lyon", "arrondissement"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "etre-maire-exercer-la-fonction",
+    title: "Être maire : exercer réellement la fonction",
+    slug: "etre-maire-exercer-la-fonction",
+    pillar: "se_situer",
+    format: "guide",
+    promise: "Comprendre ce que signifie vraiment exercer la fonction de maire au quotidien.",
+    intro: "Être maire, ce n'est pas seulement diriger une équipe ou porter un projet politique. C'est incarner une fonction, arbitrer en permanence, décider sous contrainte et assumer des responsabilités multiples : politiques, administratives, humaines et symboliques.",
+    understand: [
+      "Le maire est à la fois exécutif, décideur et représentant de la collectivité.",
+      "Il arbitre en permanence entre contraintes politiques, budgétaires et administratives.",
+      "Son pouvoir est réel mais dépend de sa capacité à structurer son équipe et ses priorités."
+    ],
+    commonTrap: "Vouloir tout gérer soi-même et s'épuiser.",
+    actions: [
+      "Structurer une équipe solide (adjoints, direction générale).",
+      "Hiérarchiser les priorités du mandat.",
+      "Accepter de déléguer et de trancher."
+    ],
+    reflex: "Être maire, c'est décider, pas tout faire.",
+    sensitiveNote: "Le maire est exposé en permanence : toute décision engage politiquement et personnellement.",
+    targetRoles: ["maire"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["surcharge", "gouvernance", "exposition"],
+    useCases: ["posture", "decision"],
+    tags: ["maire", "leadership", "décision"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 7 : SITUATIONS POLITIQUES RÉELLES ─────────────────────────────────
+
+  {
+    id: "opposition-comment-peser",
+    title: "Être dans l'opposition : comment peser réellement",
+    slug: "opposition-comment-peser",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Trouver des leviers d'influence en opposition, sans accès direct à l'exécutif.",
+    intro: "Être dans l'opposition ne signifie pas être inutile. Mais cela implique de changer de logique : tu n'es pas dans la décision directe, tu es dans l'influence. Les élu·es qui pèsent en opposition sont ceux qui maîtrisent les bons leviers : information, mise à l'agenda, alliances, pression politique et médiatisation.",
+    understand: [
+      "L'opposition ne décide pas, mais peut influencer.",
+      "Le pouvoir passe par la capacité à structurer un débat ou créer un rapport de force.",
+      "Les sujets bien documentés peuvent obliger la majorité à réagir."
+    ],
+    commonTrap: "Se limiter à la critique sans proposer d'alternative crédible.",
+    actions: [
+      "Travailler des dossiers solides et documentés.",
+      "Utiliser les vœux, amendements et prises de parole.",
+      "Construire des alliances ponctuelles, y compris avec la majorité."
+    ],
+    reflex: "En opposition, tu n'imposes pas : tu rends incontournable.",
+    targetRoles: ["opposition", "conseiller_municipal", "conseiller_paris", "conseiller_communautaire"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["isolement", "prise_de_parole"],
+    useCases: ["strategie", "positionnement"],
+    tags: ["opposition", "influence", "politique"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "maire-bloque-dossier",
+    title: "Quand le maire bloque ton dossier",
+    slug: "maire-bloque-dossier",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Débloquer une situation sans se griller politiquement.",
+    intro: "Un dossier bloqué par le maire est une situation fréquente, notamment pour les adjoints ou élus de majorité. Le blocage peut être politique, budgétaire ou stratégique. L'enjeu est de comprendre la vraie raison et d'adapter ta posture.",
+    understand: [
+      "Un blocage est rarement arbitraire : il répond à une logique.",
+      "Le rapport au maire structure ton pouvoir réel.",
+      "Un affrontement frontal est rarement efficace."
+    ],
+    commonTrap: "Forcer le passage ou contester frontalement.",
+    actions: [
+      "Identifier la vraie raison du blocage.",
+      "Reformuler le projet pour le rendre acceptable.",
+      "Chercher des appuis internes ou un autre angle."
+    ],
+    reflex: "Un dossier bloqué n'est pas mort, il est mal positionné.",
+    targetRoles: ["adjoint", "majorite"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["tension_relationnelle", "gouvernance"],
+    useCases: ["blocage", "decision"],
+    tags: ["maire", "blocage", "dossier"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "adjoint-sans-moyens",
+    title: "Adjoint sans moyens : comment agir quand même",
+    slug: "adjoint-sans-moyens",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Exercer une délégation même avec peu de budget ou de ressources.",
+    intro: "Beaucoup d'adjoints se retrouvent avec une délégation mais peu de moyens. Cela peut créer frustration et perte de sens. Pourtant, il existe des leviers pour agir autrement : influence, coordination, expérimentation.",
+    understand: [
+      "Le pouvoir d'un adjoint ne se limite pas au budget.",
+      "L'influence passe aussi par les services et les projets.",
+      "Un petit levier bien utilisé peut produire des effets."
+    ],
+    commonTrap: "Attendre des moyens avant d'agir.",
+    actions: [
+      "Identifier des actions à faible coût.",
+      "Mobiliser les services et partenaires.",
+      "Tester des initiatives à petite échelle."
+    ],
+    reflex: "Moins de moyens oblige à être plus stratégique.",
+    targetRoles: ["adjoint", "majorite"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["surcharge", "gouvernance"],
+    useCases: ["pilotage"],
+    tags: ["adjoint", "moyens", "frustration"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "seul-contre-tous-reunion",
+    title: "Quand tu es seul contre tous en réunion",
+    slug: "seul-contre-tous-reunion",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Tenir une position sans se griller ni se mettre en difficulté.",
+    intro: "Il arrive souvent de se retrouver isolé en réunion, face à une majorité d'élus ou de services qui ne partagent pas ta position. L'enjeu n'est pas de gagner immédiatement, mais de tenir une posture utile.",
+    understand: [
+      "Être minoritaire ne signifie pas être illégitime.",
+      "Le rapport de force n'est pas figé.",
+      "La manière de s'exprimer compte autant que le fond."
+    ],
+    commonTrap: "Se crisper ou attaquer frontalement.",
+    actions: [
+      "Reformuler calmement ta position.",
+      "Poser des questions plutôt que s'opposer frontalement.",
+      "Garder une porte ouverte pour la suite."
+    ],
+    reflex: "Tenir dans la durée vaut mieux que gagner un moment.",
+    targetRoles: ["adjoint", "conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["tension_relationnelle", "exposition"],
+    useCases: ["reunion", "posture"],
+    tags: ["réunion", "tension", "posture"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "projet-bloque-sans-raison",
+    title: "Projet bloqué : comprendre et débloquer",
+    slug: "projet-bloque-sans-raison",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Identifier les causes réelles d'un blocage et relancer le projet.",
+    intro: "Un projet qui n'avance pas est rarement bloqué \"sans raison\". Le blocage peut être politique, administratif, budgétaire ou stratégique. Le problème est souvent mal identifié.",
+    understand: [
+      "Un blocage cache toujours une contrainte.",
+      "Le problème n'est pas toujours celui que tu crois.",
+      "Un projet peut être mal cadré ou mal positionné."
+    ],
+    commonTrap: "Insister sans comprendre le blocage.",
+    actions: [
+      "Identifier la nature du blocage.",
+      "Reformuler le projet.",
+      "Trouver un autre point d'entrée."
+    ],
+    reflex: "Un projet bloqué est un projet mal aligné.",
+    targetRoles: ["adjoint", "maire", "majorite"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["arbitrage", "besoin_methode"],
+    useCases: ["projet"],
+    tags: ["blocage", "projet"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "majorite-sans-pouvoir",
+    title: "Être dans la majorité sans vraiment décider",
+    slug: "majorite-sans-pouvoir",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre comment exister politiquement sans être dans l'exécutif.",
+    intro: "Être dans la majorité ne signifie pas avoir du pouvoir. Beaucoup d'élus se retrouvent dans une position intermédiaire : ils soutiennent l'exécutif sans en faire partie. Leur marge d'action dépend de leur capacité à trouver leur place.",
+    understand: [
+      "La majorité n'est pas homogène.",
+      "Le pouvoir est concentré dans l'exécutif.",
+      "L'influence reste possible."
+    ],
+    commonTrap: "Attendre d'être sollicité pour agir.",
+    actions: [
+      "Se positionner sur des sujets précis.",
+      "Créer un lien avec les adjoints.",
+      "Proposer des contributions concrètes."
+    ],
+    reflex: "Même sans décider, tu peux peser.",
+    targetRoles: ["majorite", "conseiller_municipal"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["isolement"],
+    useCases: ["posture"],
+    tags: ["majorité", "pouvoir"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 8 : PRISE DE PAROLE & COMMUNICATION POLITIQUE ────────────────────
+
+  {
+    id: "preparer-prise-de-parole-politique",
+    title: "Préparer une prise de parole politique efficace",
+    slug: "preparer-prise-de-parole-politique",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Structurer une prise de parole claire, crédible et utile politiquement.",
+    intro: "Une prise de parole politique ne sert pas seulement à dire quelque chose. Elle sert à clarifier une position, créer de la confiance et orienter une situation. Une parole floue fragilise, une parole claire engage.",
+    understand: [
+      "Une prise de parole sert d'abord à poser une position.",
+      "Le fond compte, mais la clarté encore plus.",
+      "Une parole engage politiquement, même quand elle se veut prudente."
+    ],
+    commonTrap: "Parler pour remplir un temps ou éviter un silence.",
+    actions: [
+      "Définir ton message principal en une phrase.",
+      "Identifier ce que tu veux que les gens retiennent.",
+      "Adapter ton discours au contexte et au public."
+    ],
+    reflex: "Si tu ne sais pas ce que tu veux dire, ne parle pas encore.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["prise_de_parole"],
+    useCases: ["communication"],
+    tags: ["prise de parole", "discours"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "prise-de-parole-reunion",
+    title: "Prendre la parole en réunion sans se griller",
+    slug: "prise-de-parole-reunion",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Intervenir de manière utile sans se mettre en difficulté.",
+    intro: "En réunion, la parole est un outil de positionnement. Trop parler affaiblit, ne pas parler invisibilise. L'enjeu est de trouver le bon moment, le bon angle et le bon niveau d'engagement.",
+    understand: [
+      "Une prise de parole est toujours interprétée politiquement.",
+      "Le timing est aussi important que le contenu.",
+      "Dire peu mais juste vaut mieux que parler beaucoup."
+    ],
+    commonTrap: "Intervenir systématiquement pour exister.",
+    actions: [
+      "Attendre le bon moment pour intervenir.",
+      "Poser une question plutôt qu'imposer une position.",
+      "Conclure avec un point clair."
+    ],
+    reflex: "En réunion, chaque mot compte.",
+    targetRoles: ["adjoint", "conseiller_municipal", "majorite", "opposition"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["prise_de_parole", "tension_relationnelle"],
+    useCases: ["reunion"],
+    tags: ["réunion", "posture"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "reunion-publique-utile",
+    title: "Faire une réunion publique utile (pas juste défoulatoire)",
+    slug: "reunion-publique-utile",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Transformer une réunion publique en moment utile plutôt qu'en défouloir.",
+    intro: "Une réunion publique est un moment à haut risque : attentes fortes, tensions possibles, émotion. Mal préparée, elle devient un lieu de défoulement. Bien cadrée, elle peut produire de la clarté et de la confiance.",
+    understand: [
+      "Une réunion publique est d'abord un espace de projection et d'attentes.",
+      "Les participants ne viennent pas tous pour la même chose.",
+      "Le cadre posé au départ détermine la suite."
+    ],
+    commonTrap: "Ouvrir la parole sans cadrage.",
+    actions: [
+      "Dire clairement ce qui est ouvert ou non à discussion.",
+      "Structurer les temps de parole.",
+      "Clore avec des éléments concrets."
+    ],
+    reflex: "Une réunion publique se cadre avant de s'animer.",
+    targetRoles: ["maire", "adjoint"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["exposition"],
+    useCases: ["participation"],
+    tags: ["réunion publique"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "repondre-critique-publique",
+    title: "Répondre à une critique sans s'enfermer",
+    slug: "repondre-critique-publique",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Répondre à une critique sans surréagir ni se fragiliser.",
+    intro: "Une critique publique peut vite devenir un piège. Répondre trop vite ou trop fort peut amplifier le problème. Ne pas répondre peut donner l'impression de fuir. L'enjeu est de garder la maîtrise.",
+    understand: [
+      "Toute critique n'appelle pas une réponse immédiate.",
+      "Répondre, c'est cadrer le débat.",
+      "Le ton est aussi important que le fond."
+    ],
+    commonTrap: "Réagir à chaud.",
+    actions: [
+      "Prendre du recul avant de répondre.",
+      "Répondre sur le fond, pas sur la personne.",
+      "Recentrer sur les faits."
+    ],
+    reflex: "Ne réponds pas à l'émotion par de l'émotion.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["exposition"],
+    useCases: ["communication"],
+    tags: ["critique", "communication"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 8 (suite) : GESTION DE CRISE ─────────────────────────────────────
+
+  {
+    id: "gerer-situation-sensible",
+    title: "Gérer une situation sensible sans surréagir",
+    slug: "gerer-situation-sensible",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Garder la maîtrise dans une situation tendue.",
+    intro: "Une situation sensible peut rapidement dégénérer si elle est mal gérée. L'enjeu est de ne pas ajouter de tension à la tension, tout en assumant une position claire.",
+    understand: [
+      "Une situation sensible est souvent émotionnelle.",
+      "La réaction de l'élu structure la suite.",
+      "Le silence peut être stratégique."
+    ],
+    commonTrap: "Réagir trop vite.",
+    actions: [
+      "Analyser la situation avant de parler.",
+      "Limiter les prises de parole.",
+      "Coordonner avec les équipes."
+    ],
+    reflex: "En situation sensible, moins mais mieux.",
+    targetRoles: ["maire", "adjoint"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["exposition"],
+    useCases: ["crise"],
+    tags: ["crise", "tension"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "crise-mediatique",
+    title: "Gérer une crise médiatique",
+    slug: "crise-mediatique",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Limiter les dégâts et reprendre la main dans une crise médiatique.",
+    intro: "Une crise médiatique amplifie tout : erreurs, tensions, contradictions. Elle impose un rythme qui n'est pas celui de l'action publique. L'objectif n'est pas de tout contrôler, mais de garder un cap.",
+    understand: [
+      "Une crise médiatique déforme la réalité.",
+      "Le silence total est rarement viable.",
+      "La cohérence est plus importante que la perfection."
+    ],
+    commonTrap: "Changer de position sous pression.",
+    actions: [
+      "Définir une ligne claire.",
+      "Limiter les porte-parole.",
+      "Répéter le message."
+    ],
+    reflex: "En crise, la cohérence protège.",
+    targetRoles: ["maire", "adjoint"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["confirme"],
+    diagnosticProfiles: ["exposition"],
+    useCases: ["crise"],
+    tags: ["média", "crise"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "situation-echappe",
+    title: "Quand une situation t'échappe",
+    slug: "situation-echappe",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Reprendre la main quand tu perds le contrôle.",
+    intro: "Certaines situations échappent : conflit, polémique, projet qui dérape. L'enjeu n'est pas de tout reprendre immédiatement, mais de stabiliser.",
+    understand: [
+      "Perdre le contrôle est normal.",
+      "La panique aggrave la situation.",
+      "Reprendre la main prend du temps."
+    ],
+    commonTrap: "Vouloir tout régler immédiatement.",
+    actions: [
+      "Stabiliser la situation.",
+      "Réduire les prises de parole.",
+      "Reprendre progressivement le contrôle."
+    ],
+    reflex: "D'abord stabiliser, ensuite agir.",
+    targetRoles: ["maire", "adjoint"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["exposition", "tension_relationnelle"],
+    useCases: ["crise"],
+    tags: ["crise"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ── LOT 9 : RELATION HABITANTS & RISQUES / ÉTHIQUE ────────────────────────
+
+  {
+    id: "tenir-permanence-elu",
+    title: "Tenir une permanence d'élu : écouter sans promettre",
+    slug: "tenir-permanence-elu",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Gérer une permanence efficacement sans s'engager au-delà de ses capacités.",
+    intro: "La permanence d'élu est un moment clé du mandat : contact direct avec les habitants, remontée des problèmes, attentes fortes. Mais c'est aussi un espace à risque, où la pression individuelle peut pousser à promettre trop vite ou à s'engager sur des sujets hors de portée.",
+    understand: [
+      "Une permanence sert à écouter, orienter et clarifier, pas à tout résoudre.",
+      "Beaucoup de demandes relèvent d'autres institutions ou de procédures encadrées.",
+      "L'élu est souvent perçu comme capable d'agir sur tout, ce qui crée un décalage avec la réalité."
+    ],
+    commonTrap: "Dire oui pour apaiser la situation, sans vérifier la faisabilité.",
+    actions: [
+      "Clarifier dès le départ ton rôle et tes limites.",
+      "Reformuler la demande pour vérifier la compréhension.",
+      "Orienter vers le bon service ou dispositif."
+    ],
+    reflex: "Écouter ne veut pas dire promettre.",
+    sensitiveNote: "Une promesse non tenue fragilise durablement la relation avec l'habitant et peut se retourner politiquement.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_arrondissement"],
+    institutionContexts: ["commune", "paris", "plm"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "exposition"],
+    useCases: ["habitants", "relation"],
+    tags: ["permanence", "habitants", "écoute"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "demande-logement-elu",
+    title: "Demande de logement : ce que tu peux faire (et ne pas faire)",
+    slug: "demande-logement-elu",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Répondre à une demande de logement sans créer de faux espoirs ni prendre de risques.",
+    intro: "Les demandes de logement sont parmi les plus sensibles en permanence. Elles mêlent urgence sociale, attente forte et sentiment d'injustice. L'élu est souvent perçu comme décisionnaire, alors que les attributions sont encadrées par des règles strictes.",
+    understand: [
+      "L'attribution des logements est encadrée par des procédures et des commissions.",
+      "L'élu peut orienter, appuyer, suivre, mais ne décide pas seul.",
+      "Les situations individuelles sont souvent complexes et déjà connues des services."
+    ],
+    commonTrap: "Laisser entendre qu'on peut obtenir un logement rapidement.",
+    actions: [
+      "Expliquer clairement le fonctionnement des attributions.",
+      "Vérifier la situation administrative du demandeur.",
+      "Orienter vers les services compétents et suivre si nécessaire."
+    ],
+    reflex: "Tu peux accompagner, pas attribuer.",
+    sensitiveNote: "Toute intervention perçue comme un favoritisme expose à des risques juridiques et politiques.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["exposition", "tension_relationnelle"],
+    useCases: ["habitants", "logement"],
+    tags: ["logement", "demande", "social"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "conflit-dinteret-elu",
+    title: "Conflit d'intérêts : identifier et éviter les situations à risque",
+    slug: "conflit-dinteret-elu",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Reconnaître un conflit d'intérêts et adopter la bonne posture.",
+    intro: "Le conflit d'intérêts ne suppose pas une faute. Il apparaît dès qu'un intérêt personnel peut interférer avec l'exercice impartial du mandat. Ce sont des situations fréquentes, souvent mal identifiées, mais potentiellement très exposantes.",
+    understand: [
+      "Le conflit d'intérêts peut être réel, potentiel ou apparent.",
+      "Il ne dépend pas seulement de l'intention, mais de la situation.",
+      "La perception extérieure compte autant que la réalité."
+    ],
+    commonTrap: "Penser qu'il n'y a pas de problème tant qu'il n'y a pas d'intention frauduleuse.",
+    actions: [
+      "Identifier les situations à risque en amont.",
+      "Se déporter des décisions concernées.",
+      "Demander conseil en cas de doute."
+    ],
+    reflex: "Le doute suffit à créer un risque.",
+    sensitiveNote: "Un conflit d'intérêts mal géré peut entraîner des conséquences juridiques, politiques et médiatiques.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "gouvernance"],
+    useCases: ["ethique", "decision"],
+    tags: ["conflit d'intérêt", "éthique"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "favoritisme-corruption-elu",
+    title: "Favoritisme, corruption : où sont les lignes rouges",
+    slug: "favoritisme-corruption-elu",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Identifier les comportements à risque et éviter les dérives.",
+    intro: "Dans l'exercice d'un mandat, certaines situations peuvent rapidement devenir risquées : attribution de subventions, marchés publics, demandes individuelles. Même sans intention frauduleuse, des pratiques peuvent être qualifiées de favoritisme ou exposer à des soupçons.",
+    understand: [
+      "Le favoritisme concerne l'attribution injustifiée d'un avantage.",
+      "Les règles sont strictes sur les marchés publics et les subventions.",
+      "Le risque est autant juridique que réputationnel."
+    ],
+    commonTrap: "Rendre service sans mesurer les conséquences.",
+    actions: [
+      "Respecter les procédures et les règles formelles.",
+      "Éviter toute intervention informelle dans un processus encadré.",
+      "Tracer les décisions et échanges importants."
+    ],
+    reflex: "Ce qui n'est pas traçable devient risqué.",
+    sensitiveNote: "Les infractions liées au favoritisme et à la corruption sont pénalement sanctionnées et fortement médiatisées.",
+    targetRoles: ["maire", "adjoint", "interco"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition"],
+    useCases: ["ethique"],
+    tags: ["corruption", "favoritisme"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "refuser-service-sensible",
+    title: "Refuser une demande sans créer de conflit",
+    slug: "refuser-service-sensible",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Dire non clairement sans abîmer la relation.",
+    intro: "Certaines demandes mettent l'élu en difficulté : pressions, attentes fortes, situations personnelles. Dire oui expose, dire non peut créer du conflit. L'enjeu est de refuser de manière claire et justifiée.",
+    understand: [
+      "Refuser fait partie du mandat.",
+      "Le refus peut être accepté s'il est expliqué.",
+      "La clarté protège plus que l'ambiguïté."
+    ],
+    commonTrap: "Dire oui pour éviter un malaise.",
+    actions: [
+      "Expliquer les règles et contraintes.",
+      "Proposer une alternative si possible.",
+      "Assumer le refus sans ambiguïté."
+    ],
+    reflex: "Un non clair vaut mieux qu'un oui fragile.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal"],
+    institutionContexts: ["commune", "paris"],
+    experienceLevels: ["intermediaire"],
+    diagnosticProfiles: ["tension_relationnelle"],
+    useCases: ["relation"],
+    tags: ["refus", "demande"],
+    ctaType: "copilote",
     irlPotential: true,
     priority: "haute"
   }

@@ -9,6 +9,29 @@ export type DiagnosticProfile =
   | "prise_de_parole"
   | "gouvernance";
 
+export type TargetRole =
+  | "maire"
+  | "adjoint"
+  | "conseiller_municipal"
+  | "majorite"
+  | "opposition"
+  | "maire_arrondissement"
+  | "adjoint_arrondissement"
+  | "conseiller_arrondissement"
+  | "conseiller_paris"
+  | "interco"
+  | "conseiller_communautaire"
+  | "vice_president_interco"
+  | "president_epci"
+  | "elu_metropolitain"
+  | "maire_de_secteur";
+
+export type InstitutionContext =
+  | "commune"
+  | "paris"
+  | "plm"
+  | "intercommunalite";
+
 export type MaryanResource = {
   id: string;
   title: string;
@@ -22,7 +45,8 @@ export type MaryanResource = {
   actions: string[];
   reflex: string;
   sensitiveNote?: string;
-  targetRoles: Array<"maire" | "adjoint" | "majorite" | "opposition" | "interco">;
+  targetRoles: Array<TargetRole>;
+  institutionContexts?: Array<InstitutionContext>;
   experienceLevels: Array<"debutant" | "intermediaire" | "confirme">;
   diagnosticProfiles: Array<DiagnosticProfile>;
   useCases: string[];
@@ -39,7 +63,7 @@ export type MaryanPath = {
   promise: string;
   description: string;
   diagnosticProfiles: Array<DiagnosticProfile>;
-  targetRoles: Array<"maire" | "adjoint" | "majorite" | "opposition" | "interco">;
+  targetRoles: Array<TargetRole>;
   experienceLevels: Array<"debutant" | "intermediaire" | "confirme">;
   priorities: string[];
   resourceIds: string[];
@@ -54,7 +78,7 @@ export type MaryanSituation = {
   shortDescription: string;
   longDescription: string;
   diagnosticProfiles: Array<DiagnosticProfile>;
-  targetRoles: Array<"maire" | "adjoint" | "majorite" | "opposition" | "interco">;
+  targetRoles: Array<TargetRole>;
   experienceLevels: Array<"debutant" | "intermediaire" | "confirme">;
   pillars: Array<"se_situer" | "comprendre" | "agir" | "se_proteger">;
   resourceIds: string[];

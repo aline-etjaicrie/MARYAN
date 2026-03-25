@@ -20,6 +20,7 @@ import Layout from '../layouts/BaseLayout.astro';
           <a href="/offres">Offres</a>
           <a href="/diagnostic">Diagnostic</a>
           <a href="/copilote" class="desktop-copilot-link">Copilote</a>
+          <a href="/mon-compte" class="nav-login-btn">Se connecter</a>
         </div>
         <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
         <div class="hero-brand-wrap">
@@ -200,6 +201,13 @@ import Layout from '../layouts/BaseLayout.astro';
       text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; 
     }
     .top-nav-v3 a:hover { color: white; opacity: 1; }
+    .nav-login-btn {
+      border: 1.5px solid rgba(255,255,255,0.35) !important;
+      padding: 0.35rem 0.9rem !important;
+      border-radius: 99px !important;
+      opacity: 1 !important;
+    }
+    .nav-login-btn:hover { border-color: white !important; background: rgba(255,255,255,0.08); }
     .desktop-copilot-link,
     .desktop-copilot-cta { display: inline-flex; }
 

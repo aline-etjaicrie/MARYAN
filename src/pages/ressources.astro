@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
 import { maryanResources } from '../data/resources';
-import { maryanPaths } from '../data/paths';
+import { maryanPaths, parcoursExpress } from '../data/paths';
 import { maryanSituations } from '../data/situations';
 
 const pillars = [
@@ -58,6 +58,60 @@ const copilotSuggestions = [
   </div>
 
   <main class="resources-main">
+
+    <!-- ══ ENTRÉE SITUATIONNELLE ══ -->
+    <section class="parcours-express-section">
+      <div class="container container-medium">
+        <div class="pe-header">
+          <span class="label-v3">Où en êtes-vous ?</span>
+          <h2>Votre situation en ce moment</h2>
+          <p class="pe-lead">Choisissez ce qui vous correspond — MARYAN vous oriente vers les ressources utiles et ouvre une conversation.</p>
+        </div>
+        <div class="pe-grid">
+          {parcoursExpress.map(p => (
+            <button
+              class="pe-card"
+              style={`--pe-color: ${p.color};`}
+              onclick={`toggleParcours('${p.id}')`}
+              data-id={p.id}
+            >
+              <span class="pe-title">{p.title}</span>
+              <span class="pe-accroche">{p.accroche}</span>
+              <span class="pe-arrow">→</span>
+            </button>
+          ))}
+        </div>
+
+        {parcoursExpress.map(p => {
+          const fiches = maryanResources.filter(r => p.resourceIds.includes(r.id));
+          return (
+            <div class="pe-detail hidden" id={`pe-${p.id}`} style={`--pe-color: ${p.color};`}>
+              <div class="pe-detail-inner">
+                <p class="pe-detail-accroche">{p.accroche}</p>
+                <div class="pe-fiches">
+                  {fiches.map(f => (
+                    <a href={`/ressources/${f.slug}`} class="pe-fiche-card">
+                      <span class="pe-fiche-pillar">{f.pillar.replace('_', ' ')}</span>
+                      <span class="pe-fiche-title">{f.title}</span>
+                      <span class="pe-fiche-promise">{f.promise}</span>
+                    </a>
+                  ))}
+                </div>
+                <div class="pe-actions">
+                  {p.actions.map(a => (
+                    <a href={`/copilote?q=${encodeURIComponent(a)}`} class="pe-action-btn">{a} →</a>
+                  ))}
+                  <a href={`/copilote?q=${encodeURIComponent(p.cta)}`} class="pe-cta-btn">
+                    💬 {p.cta}
+                  </a>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
     <section id="diagnosticHelper" class="section-v3 hidden">
       <div class="container container-medium">
         <div class="diagnostic-helper-card card-v3">
@@ -295,6 +349,25 @@ const copilotSuggestions = [
       <div id="sitModalContent"></div>
     </div>
   </div>
+
+  <script is:inline>
+    function toggleParcours(id) {
+      const allDetails = document.querySelectorAll('.pe-detail');
+      const allCards = document.querySelectorAll('.pe-card');
+      const detail = document.getElementById('pe-' + id);
+      const card = document.querySelector('[data-id="' + id + '"]');
+      const isOpen = !detail.classList.contains('hidden');
+
+      allDetails.forEach(d => d.classList.add('hidden'));
+      allCards.forEach(c => c.classList.remove('active'));
+
+      if (!isOpen) {
+        detail.classList.remove('hidden');
+        card.classList.add('active');
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  </script>
 
   <script
     is:inline
@@ -2201,5 +2274,96 @@ const copilotSuggestions = [
     .priority-situation-cta {
       width: 100%;
     }
+  }
+
+  /* ── PARCOURS EXPRESS ── */
+  .parcours-express-section { padding: 5rem 0 3rem; background: var(--bg); }
+  .pe-header { text-align: center; margin-bottom: 3rem; }
+  .pe-header h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin: 0.75rem 0; color: var(--deep); }
+  .pe-lead { font-size: 1.05rem; opacity: 0.65; max-width: 540px; margin: 0 auto; line-height: 1.6; }
+
+  .pe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+
+  .pe-card {
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 1.75rem 1.5rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    position: relative;
+    overflow: hidden;
+  }
+  .pe-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--pe-color);
+    border-radius: 20px 20px 0 0;
+  }
+  .pe-card:hover, .pe-card.active {
+    border-color: var(--pe-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .pe-card.active { background: #FAFBFF; }
+  .pe-title { font-size: 1rem; font-weight: 800; color: var(--deep); line-height: 1.2; }
+  .pe-accroche { font-size: 0.82rem; color: #666; line-height: 1.4; flex: 1; }
+  .pe-arrow { font-size: 1rem; color: var(--pe-color); font-weight: 800; margin-top: auto; }
+
+  .pe-detail { margin-bottom: 3rem; }
+  .pe-detail-inner {
+    background: white;
+    border-radius: 24px;
+    border: 2px solid var(--pe-color);
+    padding: 2.5rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  }
+  .pe-detail-accroche { font-size: 1.2rem; font-weight: 700; color: var(--deep); margin-bottom: 2rem; }
+  .pe-fiches { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .pe-fiche-card {
+    background: var(--bg);
+    border: 1.5px solid rgba(10,25,47,0.08);
+    border-radius: 16px;
+    padding: 1.25rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    transition: all 0.2s;
+  }
+  .pe-fiche-card:hover { border-color: var(--pe-color); background: white; transform: translateY(-2px); }
+  .pe-fiche-pillar { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--pe-color); }
+  .pe-fiche-title { font-size: 0.95rem; font-weight: 800; color: var(--deep); line-height: 1.2; }
+  .pe-fiche-promise { font-size: 0.82rem; color: #666; line-height: 1.4; }
+
+  .pe-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; padding-top: 1.5rem; border-top: 1px solid rgba(10,25,47,0.07); }
+  .pe-action-btn {
+    font-size: 0.9rem; font-weight: 700; color: var(--deep);
+    text-decoration: none; border-bottom: 2px solid var(--pe-color);
+    padding-bottom: 2px; transition: opacity 0.2s;
+  }
+  .pe-action-btn:hover { opacity: 0.7; }
+  .pe-cta-btn {
+    margin-left: auto;
+    background: var(--deep); color: white;
+    padding: 0.8rem 1.6rem; border-radius: 12px;
+    font-size: 0.9rem; font-weight: 800;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .pe-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+  @media (max-width: 700px) {
+    .pe-grid { grid-template-columns: 1fr 1fr; }
+    .pe-cta-btn { margin-left: 0; width: 100%; text-align: center; }
+  }
+  @media (max-width: 420px) {
+    .pe-grid { grid-template-columns: 1fr; }
   }
 </style>
