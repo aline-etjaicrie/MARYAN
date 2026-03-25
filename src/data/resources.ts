@@ -2447,6 +2447,41 @@ export const maryanResources: MaryanResource[] = [
     priority: "haute"
   },
 
+  {
+    id: "generer-intro-protocolaire",
+    title: "Générer une introduction protocolaire",
+    slug: "generer-intro-protocolaire",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Trouver rapidement la bonne formule d'ouverture pour une prise de parole officielle.",
+    intro: "L'introduction d'un discours donne immédiatement le ton. Une bonne intro respecte le protocole, installe la posture juste et sécurise la prise de parole dès les premiers mots.",
+    understand: [
+      "L'ordre d'appel repose sur la fonction, pas sur l'affect.",
+      "Une intro doit être orale, fluide et crédible.",
+      "En cas de doute, une formule englobante protège."
+    ],
+    commonTrap: "Improviser l'introduction à la dernière minute.",
+    actions: [
+      "Lister les personnes présentes et leurs fonctions avant d'écrire.",
+      "Identifier le type d'événement (inauguration, cérémonie, réunion publique).",
+      "Préparer une version sobre de secours : \"Mesdames et Messieurs les représentants de l'État, Mesdames et Messieurs les élu·es…\""
+    ],
+    reflex: "Une intro bien posée sécurise tout le discours.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "conseiller_paris"],
+    institutionContexts: ["commune", "paris", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["prise_de_parole", "exposition"],
+    useCases: [
+      "Générer une intro protocolaire pour une inauguration",
+      "Préparer l'ouverture d'un discours avec des personnalités présentes",
+      "Trouver la formule juste quand on ne connaît pas bien le protocole"
+    ],
+    tags: ["protocole", "discours", "introduction", "allocution", "premiers mots", "ordre protocolaire"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
   // ── LOT 9 : RELATION HABITANTS & RISQUES / ÉTHIQUE ────────────────────────
 
   {
