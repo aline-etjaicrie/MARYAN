@@ -1,0 +1,360 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Connexion — MARYAN"
+  description="Connectez-vous à votre espace MARYAN.">
+
+  <main class="login-page">
+    <div class="login-wrap">
+
+      <div class="login-brand">
+        <a href="/" class="brand-link">MARYAN</a>
+        <p class="brand-sub">Votre copilote de mandat</p>
+      </div>
+
+      <div class="login-card">
+        <h1 id="formTitle">Se connecter</h1>
+        <p id="formSub" class="form-sub">Accédez à votre espace personnel.</p>
+
+        <div id="formError" class="form-error" style="display:none;"></div>
+        <div id="formSuccess" class="form-success" style="display:none;"></div>
+
+        <form id="authForm" novalidate>
+          <div class="field-group">
+            <label for="email">Adresse email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="vous@example.fr"
+              autocomplete="email"
+              required
+            />
+          </div>
+
+          <div class="field-group">
+            <label for="password">Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+
+          <div id="confirmGroup" class="field-group" style="display:none;">
+            <label for="confirm">Confirmer le mot de passe</label>
+            <input
+              type="password"
+              id="confirm"
+              name="confirm"
+              placeholder="••••••••"
+              autocomplete="new-password"
+            />
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-submit">
+            <span id="btnLabel">Se connecter</span>
+            <span id="btnLoader" style="display:none;">Chargement…</span>
+          </button>
+        </form>
+
+        <p class="mode-toggle">
+          <span id="toggleLabel">Pas encore de compte ?</span>
+          <button id="modeToggle" type="button" class="btn-text">Créer un compte</button>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  // Graceful degradation if env vars not yet set
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    const err = document.getElementById('formError')!;
+    err.textContent = 'Connexion non configurée. Variables Supabase manquantes.';
+    err.style.display = 'block';
+    (document.getElementById('submitBtn') as HTMLButtonElement).disabled = true;
+  } else {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // If already logged in, go straight to dashboard
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) window.location.href = '/mon-compte';
+    });
+
+    let isSignup = false;
+
+    const form = document.getElementById('authForm') as HTMLFormElement;
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const passwordInput = document.getElementById('password') as HTMLInputElement;
+    const confirmInput = document.getElementById('confirm') as HTMLInputElement;
+    const confirmGroup = document.getElementById('confirmGroup') as HTMLDivElement;
+    const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+    const btnLabel = document.getElementById('btnLabel')!;
+    const btnLoader = document.getElementById('btnLoader')!;
+    const formError = document.getElementById('formError')!;
+    const formSuccess = document.getElementById('formSuccess')!;
+    const formTitle = document.getElementById('formTitle')!;
+    const formSub = document.getElementById('formSub')!;
+    const toggleLabel = document.getElementById('toggleLabel')!;
+    const modeToggle = document.getElementById('modeToggle') as HTMLButtonElement;
+
+    modeToggle.addEventListener('click', () => {
+      isSignup = !isSignup;
+      formError.style.display = 'none';
+      formSuccess.style.display = 'none';
+
+      if (isSignup) {
+        formTitle.textContent = 'Créer un compte';
+        formSub.textContent = 'Rejoignez MARYAN et accédez à votre espace de mandat.';
+        btnLabel.textContent = 'Créer mon compte';
+        toggleLabel.textContent = 'Déjà un compte ?';
+        modeToggle.textContent = 'Se connecter';
+        confirmGroup.style.display = 'block';
+        passwordInput.setAttribute('autocomplete', 'new-password');
+      } else {
+        formTitle.textContent = 'Se connecter';
+        formSub.textContent = 'Accédez à votre espace personnel.';
+        btnLabel.textContent = 'Se connecter';
+        toggleLabel.textContent = 'Pas encore de compte ?';
+        modeToggle.textContent = 'Créer un compte';
+        confirmGroup.style.display = 'none';
+        passwordInput.setAttribute('autocomplete', 'current-password');
+      }
+    });
+
+    function showError(msg: string) {
+      formError.textContent = msg;
+      formError.style.display = 'block';
+      formSuccess.style.display = 'none';
+    }
+
+    function showSuccess(msg: string) {
+      formSuccess.textContent = msg;
+      formSuccess.style.display = 'block';
+      formError.style.display = 'none';
+    }
+
+    function setLoading(loading: boolean) {
+      submitBtn.disabled = loading;
+      btnLabel.style.display = loading ? 'none' : 'inline';
+      btnLoader.style.display = loading ? 'inline' : 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formError.style.display = 'none';
+      formSuccess.style.display = 'none';
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showError('Email et mot de passe requis.');
+        return;
+      }
+
+      if (isSignup) {
+        const confirm = confirmInput.value;
+        if (password !== confirm) {
+          showError('Les mots de passe ne correspondent pas.');
+          return;
+        }
+        if (password.length < 8) {
+          showError('Le mot de passe doit comporter au moins 8 caractères.');
+          return;
+        }
+
+        setLoading(true);
+        const { error } = await supabase.auth.signUp({ email, password });
+        setLoading(false);
+
+        if (error) {
+          showError(error.message);
+        } else {
+          showSuccess('Compte créé. Vérifiez votre boîte mail pour confirmer, ou connectez-vous directement si la confirmation est désactivée.');
+        }
+      } else {
+        setLoading(true);
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        setLoading(false);
+
+        if (error) {
+          showError('Email ou mot de passe incorrect.');
+        } else if (data.session) {
+          window.location.href = '/mon-compte';
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .login-page {
+    min-height: 100vh;
+    background: var(--deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .login-wrap {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .login-brand {
+    text-align: center;
+  }
+
+  .brand-link {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--neon);
+    text-decoration: none;
+  }
+
+  .brand-sub {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.4rem;
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem 2.5rem;
+  }
+
+  .login-card h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-sub {
+    font-size: 0.95rem;
+    color: #54636C;
+    margin-bottom: 2rem;
+  }
+
+  .form-error {
+    background: #FFF0F0;
+    border: 1px solid #FFCDD2;
+    color: #C62828;
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-success {
+    background: #F0FFF4;
+    border: 1px solid #A5D6A7;
+    color: #2E7D32;
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .field-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #54636C;
+  }
+
+  .field-group input {
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--deep);
+    background: #FAFAF8;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .field-group input:focus {
+    border-color: var(--deep);
+    background: white;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: var(--deep);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-submit:hover:not(:disabled) {
+    background: #0d2140;
+    transform: translateY(-1px);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .mode-toggle {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #54636C;
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .btn-text {
+    background: none;
+    border: none;
+    color: var(--deep);
+    font-weight: 700;
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    margin-left: 0.3rem;
+  }
+
+  .btn-text:hover {
+    color: var(--accent-red);
+  }
+</style>
