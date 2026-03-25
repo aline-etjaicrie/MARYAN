@@ -1,0 +1,526 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Premiers mots — MARYAN"
+  description="Générez en quelques secondes une introduction protocolaire correcte et prête à prononcer.">
+
+  <main class="pm-page">
+
+    <header class="pm-header">
+      <a href="/ressources" class="pm-back">← Bibliothèque</a>
+      <div class="pm-header-inner">
+        <span class="pm-kicker">Outil MARYAN</span>
+        <h1>Premiers mots</h1>
+        <p class="pm-subtitle">
+          Renseignez le contexte, obtenez immédiatement l'ordre protocolaire et une introduction prête à prononcer.
+        </p>
+      </div>
+    </header>
+
+    <div class="pm-body">
+
+      <!-- FORM -->
+      <section class="pm-form-wrap">
+        <form id="pmForm" class="pm-form" novalidate>
+
+          <div class="pm-field">
+            <label for="speaker">Qui prend la parole ?</label>
+            <input
+              type="text"
+              id="speaker"
+              placeholder="Ex : Adjointe à la culture, Maire du 18e…"
+              required
+            />
+          </div>
+
+          <div class="pm-field">
+            <label for="event">Quel est l'événement ?</label>
+            <input
+              type="text"
+              id="event"
+              placeholder="Ex : Inauguration, Cérémonie des vœux, Remise de prix…"
+            />
+          </div>
+
+          <div class="pm-field">
+            <label for="attendees">
+              Qui est présent ?
+              <span class="pm-field-hint">Listez les fonctions, avec noms si connus</span>
+            </label>
+            <textarea
+              id="attendees"
+              rows="4"
+              placeholder="Ex : Préfet, Députée Anne Martin, Maire Pierre Dumont, Présidente de l'association Demain 18e, habitants…"
+              required
+            ></textarea>
+          </div>
+
+          <div class="pm-field">
+            <label>Ton souhaité</label>
+            <div class="pm-tone-group">
+              <label class="pm-tone-pill">
+                <input type="radio" name="tone" value="sobre" checked />
+                <span>Sobre</span>
+              </label>
+              <label class="pm-tone-pill">
+                <input type="radio" name="tone" value="chaleureux" />
+                <span>Chaleureux</span>
+              </label>
+              <label class="pm-tone-pill">
+                <input type="radio" name="tone" value="solennel" />
+                <span>Solennel</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="pmError" class="pm-error" style="display:none;"></div>
+
+          <button type="submit" id="pmBtn" class="pm-submit">
+            <span id="pmBtnLabel">Générer mon introduction</span>
+            <span id="pmBtnLoader" style="display:none;">Génération en cours…</span>
+          </button>
+
+        </form>
+      </section>
+
+      <!-- RESULTS -->
+      <section id="pmResults" class="pm-results" style="display:none;" aria-live="polite">
+
+        <div class="pm-result-block pm-block-ordre">
+          <div class="pm-block-header">
+            <span class="pm-block-label">Ordre conseillé</span>
+            <button class="pm-copy-btn" data-copy="ordre" title="Copier">Copier</button>
+          </div>
+          <pre id="pmOrdre" class="pm-block-content"></pre>
+        </div>
+
+        <div class="pm-result-block pm-block-intro">
+          <div class="pm-block-header">
+            <span class="pm-block-label">Introduction prête à dire</span>
+            <button class="pm-copy-btn" data-copy="intro" title="Copier">Copier</button>
+          </div>
+          <pre id="pmIntro" class="pm-block-content"></pre>
+        </div>
+
+        <div class="pm-result-block pm-block-variante">
+          <div class="pm-block-header">
+            <span class="pm-block-label">Variante sobre (si doute)</span>
+            <button class="pm-copy-btn" data-copy="variante" title="Copier">Copier</button>
+          </div>
+          <pre id="pmVariante" class="pm-block-content"></pre>
+        </div>
+
+        <div class="pm-actions">
+          <button id="pmReset" class="pm-reset-btn">Nouvelle génération</button>
+          <a href="/copilote" class="pm-copilote-link">Écrire le discours complet avec MARYAN →</a>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('pmForm') as HTMLFormElement;
+  const btn = document.getElementById('pmBtn') as HTMLButtonElement;
+  const btnLabel = document.getElementById('pmBtnLabel')!;
+  const btnLoader = document.getElementById('pmBtnLoader')!;
+  const errorEl = document.getElementById('pmError')!;
+  const results = document.getElementById('pmResults') as HTMLElement;
+  const resetBtn = document.getElementById('pmReset') as HTMLButtonElement;
+
+  function setLoading(on: boolean) {
+    btn.disabled = on;
+    btnLabel.style.display = on ? 'none' : 'inline';
+    btnLoader.style.display = on ? 'inline' : 'none';
+  }
+
+  function showError(msg: string) {
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.style.display = 'none';
+    results.style.display = 'none';
+
+    const speaker = (document.getElementById('speaker') as HTMLInputElement).value.trim();
+    const event = (document.getElementById('event') as HTMLInputElement).value.trim();
+    const attendees = (document.getElementById('attendees') as HTMLTextAreaElement).value.trim();
+    const tone = (document.querySelector('input[name="tone"]:checked') as HTMLInputElement)?.value || 'sobre';
+
+    if (!speaker || !attendees) {
+      showError('Merci de renseigner au minimum "Qui prend la parole" et "Qui est présent".');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/protocole', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ speaker, event, attendees, tone })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        showError(data.error || 'Une erreur est survenue. Réessayez.');
+        return;
+      }
+
+      (document.getElementById('pmOrdre') as HTMLPreElement).textContent = data.ordre || '';
+      (document.getElementById('pmIntro') as HTMLPreElement).textContent = data.intro || '';
+      (document.getElementById('pmVariante') as HTMLPreElement).textContent = data.variante || '';
+
+      results.style.display = 'block';
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {
+      showError('Erreur de connexion. Vérifiez votre connexion et réessayez.');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  // Copy buttons
+  document.querySelectorAll<HTMLButtonElement>('.pm-copy-btn').forEach((copyBtn) => {
+    copyBtn.addEventListener('click', () => {
+      const target = copyBtn.dataset.copy;
+      const el = document.getElementById(`pm${target ? target.charAt(0).toUpperCase() + target.slice(1) : ''}`);
+      if (!el) return;
+      navigator.clipboard.writeText(el.textContent || '').then(() => {
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = 'Copié ✓';
+        setTimeout(() => { copyBtn.textContent = orig; }, 1800);
+      });
+    });
+  });
+
+  resetBtn.addEventListener('click', () => {
+    results.style.display = 'none';
+    form.reset();
+    (document.querySelector('input[name="tone"][value="sobre"]') as HTMLInputElement).checked = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<style>
+  .pm-page {
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  .pm-header {
+    background: var(--deep);
+    padding: 2rem 2rem 3rem;
+    position: relative;
+  }
+
+  .pm-back {
+    display: inline-block;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .pm-back:hover { color: var(--neon); }
+
+  .pm-header-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pm-kicker {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin-bottom: 0.75rem;
+  }
+
+  .pm-header h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: white;
+    margin-bottom: 1rem;
+    line-height: 1.05;
+  }
+
+  .pm-subtitle {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .pm-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  /* FORM */
+  .pm-form-wrap {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(10,25,47,0.07);
+    border: 1px solid var(--border);
+  }
+
+  .pm-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .pm-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pm-field label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #54636C;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .pm-field-hint {
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #999;
+    opacity: 0.8;
+  }
+
+  .pm-field input,
+  .pm-field textarea {
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.97rem;
+    font-family: inherit;
+    color: var(--deep);
+    background: #FAFAF8;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+
+  .pm-field input:focus,
+  .pm-field textarea:focus {
+    border-color: var(--deep);
+    background: white;
+  }
+
+  .pm-tone-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .pm-tone-pill {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .pm-tone-pill input[type="radio"] {
+    display: none;
+  }
+
+  .pm-tone-pill span {
+    display: inline-block;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #54636C;
+    background: #FAFAF8;
+    transition: all 0.18s;
+    cursor: pointer;
+  }
+
+  .pm-tone-pill input:checked + span {
+    background: var(--deep);
+    color: white;
+    border-color: var(--deep);
+  }
+
+  .pm-tone-pill:hover span {
+    border-color: var(--deep);
+    color: var(--deep);
+  }
+
+  .pm-error {
+    background: #FFF0F0;
+    border: 1px solid #FFCDD2;
+    color: #C62828;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .pm-submit {
+    width: 100%;
+    padding: 1.05rem;
+    background: var(--deep);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.25rem;
+  }
+
+  .pm-submit:hover:not(:disabled) {
+    background: #0d2140;
+    transform: translateY(-1px);
+  }
+
+  .pm-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* RESULTS */
+  .pm-results {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .pm-result-block {
+    background: white;
+    border-radius: 14px;
+    padding: 1.75rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(10,25,47,0.05);
+  }
+
+  .pm-block-ordre { border-top: 3px solid var(--deep); }
+  .pm-block-intro { border-top: 3px solid var(--accent-red); }
+  .pm-block-variante { border-top: 3px solid #54636C; }
+
+  .pm-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .pm-block-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #54636C;
+  }
+
+  .pm-copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #54636C;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .pm-copy-btn:hover {
+    background: var(--deep);
+    color: white;
+    border-color: var(--deep);
+  }
+
+  .pm-block-content {
+    font-family: inherit;
+    font-size: 0.97rem;
+    line-height: 1.75;
+    color: var(--deep);
+    white-space: pre-wrap;
+    margin: 0;
+  }
+
+  .pm-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 0 0;
+  }
+
+  .pm-reset-btn {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #54636C;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .pm-reset-btn:hover {
+    border-color: var(--deep);
+    color: var(--deep);
+  }
+
+  .pm-copilote-link {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--accent-red);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent-red);
+    padding-bottom: 1px;
+    transition: opacity 0.2s;
+  }
+
+  .pm-copilote-link:hover { opacity: 0.75; }
+
+  @media (max-width: 600px) {
+    .pm-header { padding: 1.5rem 1rem 2.5rem; }
+    .pm-body { padding: 2rem 1rem 5rem; }
+    .pm-form-wrap { padding: 1.75rem 1.25rem; }
+    .pm-result-block { padding: 1.25rem; }
+    .pm-actions { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+</BaseLayout>
