@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js';
 import {
   FREE_LIMIT,
   PAYWALL_HTML,
@@ -6,6 +7,10 @@ import {
   type MaryanProfile,
   type MaryanSituationMode
 } from './config';
+
+const _supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string;
+const _supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+const _supabase = _supabaseUrl && _supabaseKey ? createClient(_supabaseUrl, _supabaseKey) : null;
 
 type HistoryMessage = {
   role: 'user' | 'assistant';
@@ -68,9 +73,27 @@ function initCopilot(rootElement: HTMLElement) {
     isBusy: false,
     isBlocked: false,
     paywallShown: false,
+    isLoggedIn: false,
     history: [] as HistoryMessage[],
     userProfile: loadProfile()
   };
+
+  // Check Supabase session — unlocks unlimited access for logged-in users
+  if (_supabase) {
+    _supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        state.isLoggedIn = true;
+        // If paywall was already shown before session loaded, undo it
+        if (state.isBlocked) {
+          state.isBlocked = false;
+          state.paywallShown = false;
+        }
+        renderCounter();
+        syncInputUi();
+        if (modeBadge) modeBadge.textContent = 'MARYAN · Accès illimité';
+      }
+    });
+  }
 
   renderProfile();
   renderCounter();
@@ -275,18 +298,18 @@ function initCopilot(rootElement: HTMLElement) {
     }
 
     if (profileStatus) {
-      profileStatus.textContent = hasPlusAccess(state.userProfile)
+      profileStatus.textContent = hasUnlimitedAccess()
         ? 'Profil reconnu et mode personnalisé actif'
         : 'Profil reconnu : réponses contextualisées, limite gratuite conservée';
     }
 
     if (modeBadge) {
-      modeBadge.textContent = hasPlusAccess(state.userProfile) ? 'MARYAN Plus' : 'Profil chargé';
+      modeBadge.textContent = hasUnlimitedAccess() ? 'MARYAN Plus' : 'Profil chargé';
     }
   }
 
   function renderCounter() {
-    const unlimited = hasPlusAccess(state.userProfile);
+    const unlimited = hasUnlimitedAccess();
     const remaining = Math.max(0, FREE_LIMIT - state.msgCount);
 
     if (headerCounter) {
@@ -321,7 +344,7 @@ function initCopilot(rootElement: HTMLElement) {
 
     input.placeholder = state.isBusy ? 'MARYAN vous répond...' : 'Décrivez votre situation...';
 
-    if (hasPlusAccess(state.userProfile)) {
+    if (hasUnlimitedAccess()) {
       inputHint.textContent = 'Profil personnalisé · accès illimité';
       return;
     }
@@ -349,7 +372,7 @@ function initCopilot(rootElement: HTMLElement) {
 
     if (!text || state.isBusy) return;
 
-    if (!hasPlusAccess(state.userProfile) && state.msgCount >= FREE_LIMIT) {
+    if (!hasUnlimitedAccess() && state.msgCount >= FREE_LIMIT) {
       showPaywall();
       return;
     }
@@ -361,7 +384,7 @@ function initCopilot(rootElement: HTMLElement) {
     state.history.push({ role: 'user', content: text });
     toggleSuggestions();
 
-    if (!hasPlusAccess(state.userProfile)) {
+    if (!hasUnlimitedAccess()) {
       state.msgCount += 1;
       renderCounter();
     }
@@ -384,7 +407,7 @@ function initCopilot(rootElement: HTMLElement) {
       addMessage('assistant', reply.html, true);
       state.history.push({ role: 'assistant', content: reply.plainText });
 
-      if (!hasPlusAccess(state.userProfile) && state.msgCount >= FREE_LIMIT) {
+      if (!hasUnlimitedAccess() && state.msgCount >= FREE_LIMIT) {
         showPaywall();
       }
     } catch (error) {
@@ -685,6 +708,10 @@ function hasPlusAccess(profile: MaryanProfile | null): boolean {
   if (!profile) return false;
   const plan = normalizeLabel(profile.plan || '');
   return plan.includes('plus');
+}
+
+function hasUnlimitedAccess(): boolean {
+  return state.isLoggedIn || hasPlusAccess(state.userProfile);
 }
 
 function isValidProfile(value: Partial<MaryanProfile> | null | undefined): value is MaryanProfile {
