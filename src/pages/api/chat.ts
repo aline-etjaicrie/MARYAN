@@ -292,11 +292,14 @@ function getSuggestedResources(
   const textTokens = new Set(tokenize(corpus));
 
   return maryanResources
-    .map((resource) => ({
-      resource,
-      score: scoreResource(resource, textTokens, profile, resolvedMode)
-    }))
-    .filter(({ score }) => score >= 2)
+    .map((resource) => {
+      const tokenScore = getTokenScore(resource, textTokens);
+      const totalScore = tokenScore > 0
+        ? tokenScore + getMetaScore(resource, profile, resolvedMode)
+        : 0;
+      return { resource, score: totalScore };
+    })
+    .filter(({ score }) => score >= 3)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
     .map(({ resource }) => ({
@@ -306,41 +309,38 @@ function getSuggestedResources(
     }));
 }
 
-function scoreResource(
-  resource: MaryanResource,
-  textTokens: Set<string>,
-  profile: MaryanProfile | null,
-  resolvedMode: MaryanSituationMode
-): number {
-  let score = resource.priority === 'haute' ? 1 : 0;
-
-  // Boost if profile's diagnostic key matches the fiche's diagnosticProfiles
-  if (profile?.key && resource.diagnosticProfiles.includes(profile.key as DiagnosticProfile)) {
-    score += 3;
-  }
-
-  // Boost if the detected situation mode maps to a matching diagnostic profile
-  const modeProfiles = MODE_TO_DIAGNOSTIC[resolvedMode] || [];
-  if (modeProfiles.some((p) => resource.diagnosticProfiles.includes(p))) {
-    score += 1;
-  }
-
-  // Token overlap scoring across title, promise, tags, useCases
+// Token overlap score only — a resource scoring 0 here is excluded entirely
+function getTokenScore(resource: MaryanResource, textTokens: Set<string>): number {
+  let score = 0;
   const candidates = [
     resource.title,
     resource.promise,
     ...resource.tags,
     ...resource.useCases
   ];
-
   for (const candidate of candidates) {
-    const candidateTokens = tokenize(candidate);
-    const overlaps = candidateTokens.filter((token) => textTokens.has(token));
-    if (!overlaps.length) continue;
-
-    score += Math.min(overlaps.length, candidate === resource.title ? 4 : 3);
+    const overlaps = tokenize(candidate).filter((t) => textTokens.has(t));
+    if (overlaps.length) {
+      score += Math.min(overlaps.length, candidate === resource.title ? 4 : 3);
+    }
   }
+  return score;
+}
 
+// Metadata boosts — only applied on top of a non-zero token score
+function getMetaScore(
+  resource: MaryanResource,
+  profile: MaryanProfile | null,
+  resolvedMode: MaryanSituationMode
+): number {
+  let score = resource.priority === 'haute' ? 1 : 0;
+  if (profile?.key && resource.diagnosticProfiles.includes(profile.key as DiagnosticProfile)) {
+    score += 3;
+  }
+  const modeProfiles = MODE_TO_DIAGNOSTIC[resolvedMode] || [];
+  if (modeProfiles.some((p) => resource.diagnosticProfiles.includes(p))) {
+    score += 1;
+  }
   return score;
 }
 
