@@ -3,11 +3,11 @@ import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://maryan.vercel.app',
-  output: 'static',
+  output: 'hybrid',
   adapter: vercel({
     webAnalytics: {
       enabled: true,
     },
-    edge: true
+    edgeMiddleware: true,
   })
 });
