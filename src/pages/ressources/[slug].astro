@@ -1,15 +1,74 @@
 ---
+// Cette page est rendue côté SERVEUR — le contenu protégé
+// n'est JAMAIS envoyé au navigateur si l'utilisateur n'est pas abonné.
+export const prerender = false;
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { maryanResources } from '../../data/resources';
 
-export async function getStaticPaths() {
-  return maryanResources.map((res) => ({
-    params: { slug: res.slug },
-    props: { res },
-  }));
+const { slug } = Astro.params;
+const res = maryanResources.find((r) => r.slug === slug);
+
+if (!res) {
+  return Astro.redirect('/ressources');
 }
 
-const { res } = Astro.props;
+// ─── VÉRIFICATION ABONNEMENT CÔTÉ SERVEUR ───
+// On lit le cookie Supabase pour savoir si l'utilisateur est connecté et abonné.
+// Si non abonné → on n'envoie pas le contenu protégé du tout.
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+let hasAccess = false;
+
+if (supabaseUrl && supabaseKey) {
+  try {
+    // Récupérer le token depuis les cookies de la requête
+    const cookieHeader = Astro.request.headers.get('cookie') || '';
+    
+    // Supabase stocke le token dans un cookie nommé "sb-<ref>-auth-token"
+    // On extrait la ref depuis l'URL Supabase
+    const supabaseRef = supabaseUrl.replace('https://', '').split('.')[0];
+    const cookieName = `sb-${supabaseRef}-auth-token`;
+    
+    // Parser les cookies manuellement
+    const cookies = Object.fromEntries(
+      cookieHeader.split(';').map(c => {
+        const [key, ...val] = c.trim().split('=');
+        return [key, decodeURIComponent(val.join('='))];
+      })
+    );
+    
+    const rawToken = cookies[cookieName];
+    
+    if (rawToken) {
+      const tokenData = JSON.parse(rawToken);
+      const accessToken = tokenData?.access_token;
+      
+      if (accessToken) {
+        // Vérifier le token auprès de Supabase
+        const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'apikey': supabaseKey,
+          }
+        });
+        
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          const plan = userData?.user_metadata?.plan;
+          hasAccess = plan === 'plus' || plan === 'admin';
+        }
+      }
+    }
+  } catch (e) {
+    // En cas d'erreur → pas d'accès par sécurité
+    hasAccess = false;
+  }
+}
+
+// ─── FIN VÉRIFICATION ───
 
 const pillarLabels = {
   se_situer: "Se Situer",
@@ -54,7 +113,7 @@ const cta = ctaContent[res.ctaType];
   
   <article class="resource-detail-v4">
     
-    <!-- HEADER -->
+    <!-- HEADER — visible par tous -->
     <header class="res-page-header">
       <div class="container-narrow">
         <a href="/ressources" class="back-link-v4">← Bibliothèque</a>
@@ -68,84 +127,108 @@ const cta = ctaContent[res.ctaType];
     </header>
 
     <div class="container-narrow">
-      
-      <!-- INTRO -->
+
+      <!-- INTRO — visible par tous -->
       <section class="res-main-section">
         <div class="intro-box">
           <p>{res.intro}</p>
         </div>
       </section>
 
-      <!-- UNDERSTAND -->
-      <section class="res-main-section">
-        <h2 class="sub-title-v4">Ce qu'il faut bien comprendre</h2>
-        <ul class="res-check-list">
-          {res.understand.map(item => (
-            <li>
-              <span class="check-icon">✓</span>
-              <p>{item}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {hasAccess ? (
+        /* ══════════════════════════════════════════
+           CONTENU COMPLET — abonnés uniquement
+           Jamais envoyé au navigateur si pas abonné
+           ══════════════════════════════════════════ */
+        <>
+          <section class="res-main-section">
+            <h2 class="sub-title-v4">Ce qu'il faut bien comprendre</h2>
+            <ul class="res-check-list">
+              {res.understand.map(item => (
+                <li>
+                  <span class="check-icon">✓</span>
+                  <p>{item}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-      <!-- COMMON TRAP -->
-      <section class="res-main-section">
-        <div class="trap-box">
-          <div class="trap-icon">⚠️</div>
-          <div class="trap-content">
-            <h3>Le piège classique</h3>
-            <p>{res.commonTrap}</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ACTIONS -->
-      <section class="res-main-section">
-        <h2 class="sub-title-v4">Ce que vous pouvez faire</h2>
-        <div class="actions-steps">
-          {res.actions.map((action, idx) => (
-            <div class="step-item">
-              <span class="step-num">{idx + 1}</span>
-              <p>{action}</p>
+          <section class="res-main-section">
+            <div class="trap-box">
+              <div class="trap-icon">⚠️</div>
+              <div class="trap-content">
+                <h3>Le piège classique</h3>
+                <p>{res.commonTrap}</p>
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
 
-      <!-- REFLEX -->
-      <section class="res-main-section">
-        <div class="reflex-card">
-          <span class="reflex-label">Le Réflexe MARYAN</span>
-          <p class="reflex-text">“ {res.reflex} ”</p>
-        </div>
-      </section>
+          <section class="res-main-section">
+            <h2 class="sub-title-v4">Ce que vous pouvez faire</h2>
+            <div class="actions-steps">
+              {res.actions.map((action, idx) => (
+                <div class="step-item">
+                  <span class="step-num">{idx + 1}</span>
+                  <p>{action}</p>
+                </div>
+              ))}
+            </div>
+          </section>
 
-      {res.sensitiveNote && (
-        <section class="res-main-section">
-          <div class="note-box">
-            <p><strong>Note :</strong> {res.sensitiveNote}</p>
+          <section class="res-main-section">
+            <div class="reflex-card">
+              <span class="reflex-label">Le Réflexe MARYAN</span>
+              <p class="reflex-text">" {res.reflex} "</p>
+            </div>
+          </section>
+
+          {res.sensitiveNote && (
+            <section class="res-main-section">
+              <div class="note-box">
+                <p><strong>Note :</strong> {res.sensitiveNote}</p>
+              </div>
+            </section>
+          )}
+
+          <footer class="res-page-footer">
+            <div class="tags-container">
+              {res.tags.map(tag => <span class="res-tag">#{tag}</span>)}
+            </div>
+          </footer>
+
+          <section class="res-cta-block card-v3">
+            <div class="cta-inner">
+              <div class="cta-info">
+                <h3>{cta.title}</h3>
+                <p>{cta.desc}</p>
+              </div>
+              <a href={cta.link} class="btn-primary-v4">{cta.label}</a>
+            </div>
+          </section>
+        </>
+      ) : (
+        /* ══════════════════════════════════════════
+           PAYWALL — non abonnés
+           Le contenu protégé n'existe pas dans ce HTML
+           ══════════════════════════════════════════ */
+        <div class="paywall-block">
+          <div class="paywall-inner">
+            <div class="paywall-icon">🔒</div>
+            <h2>Contenu réservé aux abonné·es</h2>
+            <p>
+              Cette fiche complète — les points de vigilance, les actions concrètes
+              et le Réflexe MARYAN — est accessible avec l'abonnement Plus.
+            </p>
+            <div class="paywall-actions">
+              <a href="/offres" class="btn-primary-v4">Voir les offres</a>
+              <a href="/login" class="btn-secondary-v4">Se connecter</a>
+            </div>
+            <p class="paywall-note">
+              Déjà abonné·e ? <a href="/login">Connectez-vous</a> pour accéder à la fiche.
+            </p>
           </div>
-        </section>
+        </div>
       )}
-
-      <!-- RELATED / USE CASES -->
-      <footer class="res-page-footer">
-        <div class="tags-container">
-          {res.tags.map(tag => <span class="res-tag">#{tag}</span>)}
-        </div>
-      </footer>
-
-      <!-- CTA BLOCK -->
-      <section class="res-cta-block card-v3">
-        <div class="cta-inner">
-          <div class="cta-info">
-            <h3>{cta.title}</h3>
-            <p>{cta.desc}</p>
-          </div>
-          <a href={cta.link} class="btn-primary-v4">{cta.label}</a>
-        </div>
-      </section>
 
     </div>
   </article>
@@ -179,7 +262,6 @@ const cta = ctaContent[res.ctaType];
   /* ─── SECTIONS ─── */
   .res-main-section { margin-bottom: 4rem; }
   .sub-title-v4 { font-size: 1.5rem; font-weight: 800; margin-bottom: 2rem; color: var(--deep); }
-  
   .intro-box { font-size: 1.25rem; line-height: 1.6; color: var(--deep); opacity: 0.85; }
 
   .res-check-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1.5rem; }
@@ -200,7 +282,7 @@ const cta = ctaContent[res.ctaType];
   .reflex-card { background: var(--deep); color: white; padding: 3.5rem; border-radius: 32px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
   .reflex-label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); letter-spacing: 0.2em; margin-bottom: 1.5rem; }
   .reflex-text { font-size: 1.8rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
-  .reflex-card::after { content: "“"; position: absolute; top: -20px; left: 20px; font-size: 10rem; opacity: 0.05; font-family: serif; }
+  .reflex-card::after { content: "\201C"; position: absolute; top: -20px; left: 20px; font-size: 10rem; opacity: 0.05; font-family: serif; }
 
   .note-box { font-size: 1rem; opacity: 0.6; font-style: italic; border-left: 3px solid var(--border); padding-left: 1.5rem; }
 
@@ -213,10 +295,22 @@ const cta = ctaContent[res.ctaType];
   .cta-inner { display: flex; justify-content: space-between; align-items: center; gap: 3rem; }
   .cta-info h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
   .cta-info p { opacity: 0.6; font-size: 1rem; }
-  
-  /* REUSE BUTTON FROM DIAG */
+
+  /* ─── PAYWALL ─── */
+  .paywall-block { display: flex; justify-content: center; margin: 2rem 0 6rem; }
+  .paywall-inner { background: white; border: 2px solid var(--deep); border-radius: 32px; padding: 4rem 3rem; text-align: center; max-width: 520px; width: 100%; }
+  .paywall-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
+  .paywall-inner h2 { font-size: 1.6rem; font-weight: 900; color: var(--deep); margin-bottom: 1rem; }
+  .paywall-inner > p { font-size: 1.05rem; color: #54636C; line-height: 1.5; margin-bottom: 2.5rem; }
+  .paywall-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .paywall-note { font-size: 0.85rem; color: #99A1A7; }
+  .paywall-note a { color: var(--deep); font-weight: 700; }
+
+  /* ─── BOUTONS ─── */
   .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
   .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .btn-secondary-v4 { background: transparent; color: var(--deep); border: 2px solid var(--deep); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
+  .btn-secondary-v4:hover { background: var(--deep); color: white; }
 
   @media (max-width: 800px) {
     .cta-inner { flex-direction: column; text-align: center; gap: 2rem; }
@@ -224,5 +318,6 @@ const cta = ctaContent[res.ctaType];
     .res-page-title { font-size: 2.3rem; }
     .reflex-card { padding: 2.5rem 1.5rem; }
     .reflex-text { font-size: 1.4rem; }
+    .paywall-inner { padding: 3rem 1.5rem; }
   }
 </style>
