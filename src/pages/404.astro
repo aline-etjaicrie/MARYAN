@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page introuvable — MARYAN"
+  description="Cette page n'existe pas. Retournez à l'accueil ou faites le diagnostic.">
+
+  <main class="page-404">
+    <div class="content">
+
+      <div class="label">Erreur 404</div>
+
+      <h1>Cette page n'existe pas.</h1>
+
+      <p class="message">
+        Même les élus les mieux préparés se perdent parfois dans les méandres administratifs.
+        Ce n'est pas la page que vous cherchiez — mais on peut vous remettre sur la bonne voie.
+      </p>
+
+      <div class="actions">
+        <a href="/" class="btn-primary">Retour à l'accueil</a>
+        <a href="/diagnostic" class="btn-secondary">Faire le diagnostic</a>
+      </div>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<style>
+  .page-404 {
+    min-height: 100vh;
+    background: var(--deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+  }
+
+  .content {
+    max-width: 560px;
+    text-align: center;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .message {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 3rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 0.85rem 1.75rem;
+    background: var(--neon);
+    color: var(--deep);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: 0.85rem 1.75rem;
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+  }
+
+  .btn-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
+  }
+</style>
