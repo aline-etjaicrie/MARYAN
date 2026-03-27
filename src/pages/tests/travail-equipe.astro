@@ -353,4 +353,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
        document.getElementById('emailBox').innerHTML = `<h3 style="color:#0A192F;">✓ C'est envoyé.</h3><p>Votre profil vous attend sur ${email}.</p>`;
     };
   </script>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    const sb = createClient(
+      import.meta.env.PUBLIC_SUPABASE_URL as string,
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string
+    );
+    sb.auth.getSession().then(({ data: { session } }) => {
+      const plan = session?.user?.user_metadata?.plan;
+      if (plan !== 'plus' && plan !== 'admin') {
+        window.location.href = '/offres?message=abonne';
+      }
+    });
+  </script>
 </BaseLayout>

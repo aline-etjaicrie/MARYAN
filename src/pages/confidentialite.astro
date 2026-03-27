@@ -1,0 +1,217 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Politique de confidentialité — MARYAN"
+  description="Politique de confidentialité de MARYAN. Comment vos données sont collectées, utilisées et protégées.">
+
+  <main class="legal-page">
+    <div class="container-narrow">
+
+      <a href="/" class="back-link">← Accueil</a>
+
+      <h1>Politique de confidentialité</h1>
+      <p class="last-updated">Dernière mise à jour : mars 2026</p>
+
+      <section class="legal-section">
+        <h2>Responsable du traitement</h2>
+        <p>
+          <strong>Et j'ai crié</strong>, représentée par Aline Weber.<br />
+          Email de contact : <a href="mailto:contact@etjaicrie.com">contact@etjaicrie.com</a>
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Données collectées</h2>
+        <ul>
+          <li>
+            <strong>Formulaire de contact</strong> : prénom, nom, email institutionnel, mandat, taille de collectivité,
+            objet de la demande, message.
+          </li>
+          <li>
+            <strong>Compte abonné</strong> : adresse email, mot de passe (chiffré), étiquette politique (optionnelle),
+            plan d'abonnement — via Supabase Auth.
+          </li>
+          <li>
+            <strong>Copilote IA</strong> : les messages envoyés au copilote sont transmis à Mistral AI pour générer
+            une réponse. Ils ne sont pas conservés dans nos bases de données.
+          </li>
+          <li>
+            <strong>Diagnostic</strong> : les réponses au diagnostic sont stockées localement dans votre navigateur
+            (localStorage). Elles ne sont pas transmises à nos serveurs.
+          </li>
+          <li>
+            <strong>Paiement</strong> : les données de paiement sont traitées exclusivement par Stripe.
+            MARYAN ne stocke aucune donnée bancaire.
+          </li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Finalités du traitement</h2>
+        <ul>
+          <li>Répondre aux demandes envoyées via le formulaire de contact</li>
+          <li>Gérer les accès à l'espace abonné et aux fonctionnalités premium</li>
+          <li>Générer des réponses IA via le copilote (transmission à Mistral AI)</li>
+          <li>Traiter les paiements et gérer les abonnements (via Stripe)</li>
+          <li>Envoyer des communications liées au service (si consentement)</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Durées de conservation</h2>
+        <ul>
+          <li><strong>Formulaire de contact</strong> : 12 mois à compter de la demande</li>
+          <li><strong>Compte abonné</strong> : durée de l'abonnement + 12 mois après résiliation</li>
+          <li><strong>Copilote</strong> : les messages ne sont pas conservés par MARYAN</li>
+          <li><strong>Diagnostic</strong> : stockage local uniquement, effacé avec les données du navigateur</li>
+          <li><strong>Données de paiement</strong> : 5 ans (obligation légale comptable), gérées par Stripe</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Sous-traitants</h2>
+        <ul>
+          <li><strong>Vercel Inc.</strong> (États-Unis) — hébergement de l'application</li>
+          <li><strong>Supabase</strong> (Union Européenne) — authentification et base de données</li>
+          <li><strong>Mistral AI</strong> (France) — moteur IA du copilote</li>
+          <li><strong>Stripe</strong> (États-Unis) — traitement des paiements</li>
+        </ul>
+        <p>
+          Les transferts hors UE sont encadrés par les garanties appropriées (clauses contractuelles types ou
+          équivalents). Stripe et Vercel sont certifiés dans le cadre du Data Privacy Framework.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Vos droits (RGPD)</h2>
+        <p>Conformément au Règlement (UE) 2016/679, vous disposez des droits suivants :</p>
+        <ul>
+          <li><strong>Droit d'accès</strong> : connaître les données que nous détenons sur vous</li>
+          <li><strong>Droit de rectification</strong> : corriger des données inexactes</li>
+          <li><strong>Droit à l'effacement</strong> : demander la suppression de vos données</li>
+          <li><strong>Droit à la portabilité</strong> : recevoir vos données dans un format structuré</li>
+          <li><strong>Droit d'opposition</strong> : vous opposer à certains traitements</li>
+        </ul>
+        <p>
+          Pour exercer ces droits : <a href="mailto:contact@etjaicrie.com">contact@etjaicrie.com</a>.
+          Vous pouvez également introduire une réclamation auprès de la
+          <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Cookies</h2>
+        <p>
+          Ce site utilise uniquement des cookies techniques nécessaires au fonctionnement (session
+          d'authentification Supabase). <strong>Aucun cookie publicitaire, de profilage ou de tracking
+          tiers n'est utilisé.</strong>
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Sécurité</h2>
+        <ul>
+          <li>Toutes les communications sont chiffrées via HTTPS</li>
+          <li>Les mots de passe sont chiffrés (bcrypt) par Supabase</li>
+          <li>L'accès aux données est limité aux personnes habilitées</li>
+          <li>Les tokens d'authentification expirent automatiquement</li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<style>
+  .legal-page {
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 0 8rem;
+  }
+
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: var(--deep);
+    opacity: 0.4;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-bottom: 3rem;
+    transition: opacity 0.2s;
+  }
+
+  .back-link:hover { opacity: 1; }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    color: var(--deep);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .last-updated {
+    font-size: 0.85rem;
+    color: var(--deep);
+    opacity: 0.4;
+    margin-bottom: 3rem;
+  }
+
+  .legal-section {
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legal-section:last-child {
+    border-bottom: none;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--deep);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--deep);
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--deep);
+    opacity: 0.85;
+  }
+
+  a {
+    color: var(--deep);
+    font-weight: 700;
+  }
+
+  a:hover { opacity: 0.7; }
+</style>

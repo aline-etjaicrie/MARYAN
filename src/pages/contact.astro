@@ -75,7 +75,7 @@ import InternalHeader from '../components/InternalHeader.astro';
 
           <div class="form-footer-v3">
             <button type="submit" class="btn-primary-v3 big" id="submitBtn">Envoyer ma demande</button>
-            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par l'équipe MARYAN pour répondre à votre demande. Confidentialité garantie.</p>
+            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par Et j'ai crié pour répondre à votre demande. <a href="/confidentialite">Politique de confidentialité</a></p>
           </div>
         </form>
       </div>
@@ -120,6 +120,7 @@ import InternalHeader from '../components/InternalHeader.astro';
 
     .form-footer-v3 { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; margin-top: 1rem; }
     .form-consent-v3 { font-size: 0.8rem; opacity: 0.5; text-align: center; max-width: 400px; line-height: 1.4; }
+    .form-consent-v3 a { color: var(--deep); font-weight: 700; }
 
     /* Success State */
     .success-box-v3 { padding: 5rem 3rem; background: #fff; border: 2px solid var(--neon); }
