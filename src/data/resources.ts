@@ -2677,6 +2677,465 @@ export const maryanResources: MaryanResource[] = [
     ctaType: "copilote",
     irlPotential: true,
     priority: "haute"
+  },
+
+  // ─── PILIER agir ─────────────────────────────────────────────────────────
+
+  {
+    id: "ecrire-courrier-officiel-sans-se-pieger",
+    title: "Écrire un courrier officiel sans se piéger",
+    slug: "ecrire-courrier-officiel-sans-se-pieger",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Rédiger des courriers officiels qui protègent l'élu·e sans fermer les portes.",
+    intro: "Un courrier officiel engage la collectivité et vous expose personnellement. Ce qu'on écrit reste — les mots mal choisis peuvent alimenter un recours, fragiliser une relation institutionnelle ou être sortis de leur contexte. Mais un bon courrier, structuré avec méthode, protège autant qu'il avance.",
+    understand: [
+      "La forme d'un courrier officiel a une valeur juridique : ton, formule de politesse, objet et signature engagent la collectivité.",
+      "Il existe une différence nette entre un courrier qui informe, un courrier qui promet et un courrier qui engage la commune — les conséquences ne sont pas les mêmes.",
+      "La signature engage : un adjoint délégué peut signer dans son périmètre, mais pas au-delà — vérifier la délégation avant d'apposer son nom.",
+      "Un courrier envoyé sans relecture est un courrier qui peut se retourner contre vous six mois plus tard."
+    ],
+    commonTrap: "Répondre trop vite à une demande sensible par écrit, en promettant ce qui n'est pas encore acquis ou en prenant position sur un sujet non arbitré — parce qu'on veut « montrer qu'on est réactif ».",
+    actions: [
+      "Distinguer systématiquement le type de courrier : information, accusé de réception, promesse, refus, prise de position — chacun appelle une rédaction différente.",
+      "Vérifier que votre délégation vous autorise à signer ce type de courrier avant de l'envoyer.",
+      "Relire le courrier avec cette question : si ce texte se retrouve dans un dossier de recours ou dans la presse, m'aide-t-il ou me nuit-il ?",
+      "Éviter toute promesse de résultat — préférer l'engagement de process ('nous examinerons', 'nous transmettrons') à l'engagement de résultat ('nous ferons')."
+    ],
+    reflex: "Avant d'envoyer, posez-vous une seule question : est-ce que je tiens ce que ce courrier laisse entendre ?",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "besoin_methode", "exposition"],
+    useCases: ["courrier", "communication_officielle", "protection_juridique"],
+    tags: ["courrier", "rédaction", "protection", "délégation", "juridique"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "prendre-la-parole-en-conseil",
+    title: "Prendre la parole en conseil sans perdre le fil",
+    slug: "prendre-la-parole-en-conseil",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Intervenir en séance de manière ciblée, efficace et mémorable.",
+    intro: "Prendre la parole en conseil municipal n'est pas la même chose que parler en public. Les codes sont spécifiques : il y a un ordre du jour, des enjeux politiques, des regards qui jugent, et un micro qui transforme tout. Savoir quand parler, pourquoi parler et comment parler fait toute la différence.",
+    understand: [
+      "La parole en conseil est politique avant d'être rhétorique — ce que vous dites est lu comme un signal autant que comme un argument.",
+      "Moins d'interventions, mieux ciblées, produisent plus d'effet qu'une présence verbale systématique.",
+      "La préparation écrite améliore l'oral : noter ses 3 points clés avant la séance réduit le risque de se perdre sous pression."
+    ],
+    commonTrap: "Improviser sur un sujet complexe ou répondre à chaud à une provocation en séance — les deux produisent des erreurs dont on ne se remet pas facilement, et qui alimentent les récits adverses.",
+    actions: [
+      "Préparer chaque intervention à l'écrit avant la séance : 3 points maximum, une conclusion nette.",
+      "Identifier précisément l'objectif de votre intervention — informer, questionner, s'opposer, proposer — et ne pas en changer en cours de route.",
+      "Conclure toujours sur une question précise ou une position ferme, jamais sur une hésitation.",
+      "Laisser passer une provocation plutôt que d'y répondre dans l'improvisation : la patience est une arme en séance."
+    ],
+    reflex: "Préparez 3 points, n'en dites que 2. Le troisième reste votre filet de sécurité.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["prise_de_parole", "exposition", "mandat_recent"],
+    useCases: ["conseil_municipal", "prise_de_parole", "posture_politique"],
+    tags: ["conseil municipal", "prise de parole", "intervention", "préparation"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "gerer-administre-agressif",
+    title: "Gérer un administré agressif en permanence",
+    slug: "gerer-administre-agressif",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Tenir une permanence d'élu·e même face à l'hostilité, sans se mettre en danger ni céder.",
+    intro: "La permanence est un espace de service public exposé. Les élus y reçoivent parfois des personnes en grande détresse, en colère, ou qui cherchent un responsable à qui reprocher leur situation. Savoir tenir cet espace sans se laisser déstabiliser ni escalader la situation est une compétence que personne n'enseigne vraiment — et que beaucoup d'élus acquièrent à leurs dépens.",
+    understand: [
+      "L'agressivité est souvent une détresse déguisée : comprendre ce qui est derrière la colère change la façon d'y répondre.",
+      "Votre rôle est d'orienter et d'écouter, pas de résoudre l'irrésoluble — fixer mentalement cette limite protège l'échange.",
+      "La posture physique et verbale conditionne l'issue : rester calme, parler lentement et ne pas se lever brusquement réduit l'escalade."
+    ],
+    commonTrap: "Vouloir 'calmer' en cédant sur des promesses impossibles — cela crée un problème plus grave au prochain rendez-vous et installe un rapport de force défavorable.",
+    actions: [
+      "Nommer calmement ce que vous observez : 'Je vois que cette situation vous affecte, je vais vous écouter' — sans valider la forme agressive.",
+      "Ne jamais promettre sous pression : 'Je vais examiner la situation et vous recontacter sous X jours' est toujours préférable à un oui improvisé.",
+      "Interrompre la permanence si la sécurité physique est en cause — avoir un protocole clair (collègue disponible, numéro à appeler) et ne pas hésiter à l'activer.",
+      "Documenter les incidents graves par écrit après la permanence, en cas de besoin ultérieur."
+    ],
+    reflex: "Vous pouvez entendre la colère sans la porter. Ce n'est pas votre faute personnelle si le système a failli avant vous.",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "majorite"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "tension_relationnelle", "surcharge"],
+    useCases: ["permanence", "relation_habitant", "gestion_conflit"],
+    tags: ["permanence", "administré", "conflit", "posture", "sécurité"],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "refuser-demande-sans-creer-ennemi",
+    title: "Refuser une demande sans créer d'ennemi",
+    slug: "refuser-demande-sans-creer-ennemi",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Dire non à un administré, un partenaire ou un collègue sans abîmer la relation.",
+    intro: "Les élus reçoivent constamment des demandes auxquelles ils ne peuvent pas — ou ne doivent pas — répondre favorablement. Savoir refuser est une des compétences les plus stratégiques du mandat. Un refus bien posé maintient la relation. Un refus mal posé crée un ennemi.",
+    understand: [
+      "Un refus n'est pas un abandon — c'est un acte politique qui mérite d'être expliqué, pas esquivé.",
+      "Expliquer le 'pourquoi institutionnel' (règlement, compétence, budget) réduit la frustration personnelle et déplace la responsabilité vers le cadre.",
+      "Il existe des alternatives au oui et au non directs : orienter vers un autre service, proposer un accompagnement partiel, suggérer un délai."
+    ],
+    commonTrap: "Remettre à plus tard une décision négative en espérant que la situation se règle seule — elle empire presque toujours, et le demandeur se sent trompé.",
+    actions: [
+      "Formuler le refus clairement et rapidement, sans laisser traîner une ambiguïté qui nourrit de faux espoirs.",
+      "Expliquer le cadre réglementaire ou institutionnel qui s'impose — 'je ne peux pas' est plus recevable que 'je ne veux pas'.",
+      "Proposer systématiquement une alternative ou une orientation : vers qui se tourner, quelle démarche essayer.",
+      "Formuler en première personne institutionnelle ('la collectivité ne peut pas'), pas personnelle ('je refuse')."
+    ],
+    reflex: "Un refus clair et bienveillant est plus respectueux qu'un oui mou qui ne se concrétise jamais.",
+    targetRoles: ["maire", "adjoint", "majorite", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "tension_relationnelle", "surcharge"],
+    useCases: ["relation_habitant", "gestion_demande", "communication"],
+    tags: ["refus", "demande", "relation", "communication", "posture"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "deleguer-sans-perdre-le-controle",
+    title: "Déléguer sans perdre le contrôle",
+    slug: "deleguer-sans-perdre-le-controle",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Confier des responsabilités à des élus ou agents tout en gardant la lisibilité sur ce qui avance.",
+    intro: "Déléguer est indispensable dès qu'un mandat prend de l'ampleur. Mais déléguer sans cadre, c'est s'exposer à des surprises — politiques, administratives ou relationnelles. La bonne délégation n'est pas un abandon : c'est un transfert organisé de responsabilité, avec un fil de retour.",
+    understand: [
+      "Déléguer ne signifie pas se dessaisir de la responsabilité politique finale — vous restez l'élu responsable devant les habitants.",
+      "Les modalités de compte-rendu doivent être définies dès le départ, pas découvertes lors du premier problème.",
+      "Déléguer à quelqu'un qui n'est pas prêt ou suffisamment outillé coûte plus cher que de faire soi-même — en temps comme en dégâts."
+    ],
+    commonTrap: "Déléguer et considérer que c'est 'réglé' jusqu'au prochain problème — sans circuit de remontée d'information clair, les surprises s'accumulent.",
+    actions: [
+      "Définir précisément le périmètre délégué : ce qui relève de l'autonomie du délégataire et ce qui nécessite votre validation.",
+      "Fixer un rythme de point régulier (hebdomadaire ou bimensuel) et s'y tenir — pas seulement en cas de problème.",
+      "Clarifier à l'avance comment et quand vous serez alerté en cas de difficulté : ne pas attendre que les problèmes vous arrivent filtrés.",
+      "Distinguer délégation de signature (acte administratif précis) et délégation de pilotage (mission large) — les deux appellent des cadres différents."
+    ],
+    reflex: "Ce que vous déléguez reste sous votre responsabilité politique. Déléguer bien, c'est rester informé sans micro-manager.",
+    targetRoles: ["maire", "adjoint"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["intermediaire", "confirme"],
+    diagnosticProfiles: ["surcharge", "gouvernance", "arbitrage"],
+    useCases: ["délégation", "organisation", "pilotage", "équipe"],
+    tags: ["délégation", "contrôle", "organisation", "management", "responsabilité"],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ─── PILIER se_proteger ──────────────────────────────────────────────────
+
+  {
+    id: "conflit-interets-comprendre-eviter",
+    title: "Conflit d'intérêts : ce que c'est vraiment et comment l'éviter",
+    slug: "conflit-interets-comprendre-eviter",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Comprendre les situations à risque et adopter les bons réflexes de protection avant que le problème ne surgisse.",
+    intro: "Le conflit d'intérêts est l'une des causes de mise en cause pénale les plus fréquentes chez les élus locaux — souvent sans intention frauduleuse. La loi est stricte : un intérêt même indirect peut suffire. Comprendre les situations à risque avant qu'elles se présentent, c'est la meilleure protection qui existe.",
+    understand: [
+      "Le conflit d'intérêts peut être indirect : un intérêt de votre conjoint, d'un membre de votre famille, d'une association dans laquelle vous êtes impliqué suffit.",
+      "L'obligation de déport (abstention et sortie de séance) s'applique dès le doute — c'est une protection, pas une admission de faute.",
+      "La HATVP, le référent déontologue communal et le préfet sont des ressources disponibles pour vous aider à trancher les cas douteux.",
+      "Les terrains les plus sensibles : marchés publics, autorisations d'urbanisme, subventions aux associations."
+    ],
+    commonTrap: "Penser que l'intention compte plus que la situation légale — en droit, un intérêt involontaire engage autant qu'un intérêt délibéré. 'Je ne savais pas' ne protège pas.",
+    actions: [
+      "Recenser vos intérêts lors de la prise de mandat : associations où vous êtes membre ou dirigeant, entreprises familiales, biens immobiliers susceptibles d'être concernés.",
+      "Systématiser l'abstention et la sortie de séance dès qu'un de vos intérêts est en jeu, même indirect — avant la délibération, pas pendant.",
+      "Consulter le référent déontologue en cas de doute — sans attendre et sans honte : c'est exactement pour ça qu'il existe.",
+      "Faire noter formellement votre déport dans le procès-verbal de séance."
+    ],
+    reflex: "En cas de doute, sortez de la salle et faites-le noter. Le déport est une protection, pas un aveu.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "exposition"],
+    useCases: ["conflit_interets", "déontologie", "protection_juridique"],
+    tags: ["conflit d'intérêts", "déport", "déontologie", "HATVP", "protection"],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "menaces-sur-elu-que-faire",
+    title: "Que faire si on me menace en tant qu'élu·e",
+    slug: "menaces-sur-elu-que-faire",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Connaître les protections légales et les bons réflexes si vous faites l'objet de menaces ou de harcèlement.",
+    intro: "Les menaces envers les élus locaux ont fortement augmenté — insultes en permanence, harcèlement en ligne, menaces directes. Un élu est citoyen avant d'être une figure publique, mais il bénéficie de protections spécifiques que la plupart ne connaissent pas. Ne pas agir laisse le terrain libre à l'intimidation et peut aggraver la situation.",
+    understand: [
+      "L'outrage à élu et les menaces envers un dépositaire de l'autorité publique sont des infractions pénales — pas de simples incivilités.",
+      "La protection fonctionnelle peut être accordée par la commune pour couvrir les frais de défense en cas de mise en cause liée au mandat.",
+      "Garder des traces (captures d'écran horodatées, courriers, témoins) est décisif pour toute action judiciaire — les preuves se perdent vite."
+    ],
+    commonTrap: "Minimiser les menaces en espérant que ça passe — l'impunité perçue est un facteur d'escalade, et le signalement tardif affaiblit juridiquement votre dossier.",
+    actions: [
+      "Conserver toutes les preuves sans délai : captures d'écran avec date et heure, courriers, messages — stocker en lieu sûr et en doublon.",
+      "Déposer plainte sans attendre, même pour des menaces qui semblent légères — la plainte crée un dossier et un historique.",
+      "Solliciter formellement la protection fonctionnelle auprès de votre commune par courrier recommandé dès que les faits sont liés à votre mandat.",
+      "Prévenir votre association d'élus départementale ou régionale — elles disposent souvent d'un soutien juridique et d'une veille sur les situations similaires."
+    ],
+    reflex: "Vous n'avez pas à subir. Chaque menace documentée et signalée est une menace moins susceptible de se répéter.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "tension_relationnelle", "isolement"],
+    useCases: ["menaces", "protection", "harcèlement", "sécurité"],
+    tags: ["menaces", "protection fonctionnelle", "plainte", "sécurité", "harcèlement"],
+    ctaType: "offre_individuelle",
+    irlPotential: false,
+    priority: "haute"
+  },
+
+  {
+    id: "reseaux-sociaux-elu-ce-quon-peut-dire",
+    title: "Réseaux sociaux : ce qu'un élu peut et ne peut pas dire",
+    slug: "reseaux-sociaux-elu-ce-quon-peut-dire",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Utiliser les réseaux sociaux sans exposer la collectivité ni vous fragiliser personnellement.",
+    intro: "Un élu qui poste, commente ou partage parle toujours en son nom — et parfois au nom de sa fonction. Les réseaux sociaux ne sont pas une zone franche. Ce qui se dit en public engage. Mais ils sont aussi un outil légitime de communication politique. La clé : distinguer ce qui relève de l'expression personnelle et ce qui engage la collectivité.",
+    understand: [
+      "La liberté d'expression politique des élus est large, mais pas absolue : les propos diffamatoires, injurieux ou discriminatoires restent punissables, quel que soit le support.",
+      "Un élu ne peut pas révéler des informations confidentielles obtenues dans le cadre de son mandat (délibérations non publiques, données personnelles, informations sensibles).",
+      "Les prises de position publiques d'un adjoint peuvent être interprétées comme des positions de la municipalité — la confusion est fréquente et peut créer des tensions internes."
+    ],
+    commonTrap: "Répondre impulsivement à une provocation en ligne — les captures d'écran circulent sans contexte, très vite, et une réponse maladroite dure plus longtemps que l'attaque initiale.",
+    actions: [
+      "Séparer clairement votre profil personnel et votre communication d'élu : avoir deux comptes distincts ou labelliser explicitement chaque publication.",
+      "Ne jamais commenter publiquement une délibération avant qu'elle soit adoptée et publique.",
+      "Répondre aux attaques avec du factuel documenté, pas de l'émotion — ou ne pas répondre du tout si la réponse amplifierait la diffusion.",
+      "Consulter un collègue ou l'élu en charge de la communication avant de publier sur des sujets sensibles."
+    ],
+    reflex: "Sur les réseaux, la règle est simple : ne postez rien que vous ne seriez pas à l'aise de lire dans un article de presse.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "prise_de_parole", "mandat_recent"],
+    useCases: ["réseaux_sociaux", "communication", "protection", "exposition"],
+    tags: ["réseaux sociaux", "communication", "diffamation", "liberté d'expression", "protection"],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+
+  {
+    id: "prise-illegale-interets-risque-concret",
+    title: "La prise illégale d'intérêts — comprendre le risque concret",
+    slug: "prise-illegale-interets-risque-concret",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Identifier les situations qui exposent pénalement et savoir comment s'en prémunir avant qu'il ne soit trop tard.",
+    intro: "La prise illégale d'intérêts (article 432-12 du Code pénal) est l'infraction la plus fréquemment invoquée contre les élus locaux. Elle ne suppose ni corruption ni enrichissement personnel — juste une surveillance ou une influence sur un acte qui concerne un intérêt personnel. La méconnaissance de cette infraction est l'une des premières causes de mise en cause.",
+    understand: [
+      "La prise illégale d'intérêts ne nécessite pas d'intention ni de bénéfice concret — le simple fait d'avoir un intérêt et d'avoir participé à la décision suffit.",
+      "Les terrains les plus sensibles : marchés publics, permis de construire, subventions aux associations, ventes de biens communaux.",
+      "La complicité est aussi punissable : un élu qui 'laisse faire' sans se déporter alors qu'il est au courant d'un conflit peut être mis en cause."
+    ],
+    commonTrap: "Penser que 'tout le monde fait pareil' ou que c'est 'dans la norme locale' — la prise illégale d'intérêts est une infraction objective, pas une appréciation de l'intention.",
+    actions: [
+      "Identifier avant chaque délibération si vous avez un intérêt, même indirect, dans le dossier présenté.",
+      "Vous déporter systématiquement des votes qui concernent vos intérêts professionnels, immobiliers, associatifs ou familiaux — sans attendre qu'on vous le demande.",
+      "Faire noter formellement votre déport dans le procès-verbal : 'M./Mme X, ayant un intérêt dans ce dossier, a quitté la salle avant le vote'.",
+      "En cas de doute sur votre situation, consulter le référent déontologue avant la séance, pas après."
+    ],
+    reflex: "Si vous hésitez à vous déporter, c'est probablement que vous devriez le faire. Le doute est votre signal d'alerte.",
+    targetRoles: ["maire", "adjoint", "majorite", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "exposition"],
+    useCases: ["prise_illegale", "conflit_interets", "protection_pénale"],
+    tags: ["prise illégale d'intérêts", "pénal", "déport", "marchés publics", "protection"],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "quand-consulter-avocat-elu",
+    title: "Quand consulter un avocat — et lequel",
+    slug: "quand-consulter-avocat-elu",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Savoir identifier les situations qui nécessitent un avocat et choisir le bon interlocuteur.",
+    intro: "Beaucoup d'élus sous-estiment le moment où ils auraient besoin d'une consultation juridique. D'autres sur-estiment la protection automatique dont ils bénéficient. Un avocat spécialisé en droit public local n'est pas réservé aux situations de crise — c'est aussi un outil de prévention. Le problème est de savoir quand, et surtout lequel.",
+    understand: [
+      "L'élu bénéficie de la protection fonctionnelle pour les faits liés à sa fonction — mais sous conditions, et avec un délai : il faut la solliciter formellement.",
+      "L'avocat choisi par la commune pour défendre la collectivité peut avoir des intérêts divergents des vôtres dans certaines situations — il représente l'institution, pas vous.",
+      "Certaines situations nécessitent un avocat pénaliste spécialisé en droit public, d'autres un spécialiste des marchés publics ou de l'urbanisme — le généraliste ne suffit pas toujours."
+    ],
+    commonTrap: "Confier sa défense personnelle à l'avocat habituel de la commune, qui représente en réalité les intérêts de l'institution — intérêts qui peuvent diverger des vôtres en cas de conflit.",
+    actions: [
+      "Identifier avant toute mise en cause le cabinet droit public local de votre département : cherchez les recommandations de votre association d'élus.",
+      "Distinguer consultation pour la collectivité (prise en charge par la commune) et défense personnelle (protection fonctionnelle ou frais propres).",
+      "Ne pas attendre une convocation formelle pour consulter — les phases de signalement, d'enquête préliminaire ou de pré-instruction sont les moments où la consultation préventive est la plus utile.",
+      "Demander à votre commune d'activer la protection fonctionnelle dès les premiers signaux — le délai de délibération peut prendre plusieurs semaines."
+    ],
+    reflex: "Un avocat consulté avant la crise coûte moins cher qu'un avocat consulté pendant.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "gouvernance", "mandat_recent"],
+    useCases: ["protection_juridique", "avocat", "mise_en_cause"],
+    tags: ["avocat", "protection fonctionnelle", "droit public", "défense", "pénal"],
+    ctaType: "offre_individuelle",
+    irlPotential: false,
+    priority: "haute"
+  },
+
+  // ─── PILIER se_situer ────────────────────────────────────────────────────
+
+  {
+    id: "premier-conseil-municipal-erreurs",
+    title: "Premier conseil municipal : les 3 erreurs à ne pas faire",
+    slug: "premier-conseil-municipal-erreurs",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Aborder votre premier conseil municipal avec la posture juste, sans brûler les étapes ni se faire remarquer pour les mauvaises raisons.",
+    intro: "Le premier conseil municipal est un moment fondateur. Ce que vous faites — et surtout ce que vous ne faites pas — dans les premières séances conditionne votre réputation pour une longue période. Les erreurs de posture en début de mandat sont difficiles à effacer. La bonne nouvelle : elles sont toutes évitables.",
+    understand: [
+      "La première impression est politique autant que personnelle : les élus expérimentés vous évaluent dès la première séance.",
+      "Le conseil municipal a ses propres codes non écrits que personne ne vous explique — les apprendre en observant vaut mieux que de les découvrir en les violant.",
+      "Observer avant d'agir est une forme d'intelligence stratégique, pas de passivité : les élus qui écoutent d'abord parlent avec plus d'autorité ensuite."
+    ],
+    commonTrap: "Vouloir s'imposer d'emblée en prenant la parole sur tout — les élus expérimentés observent immédiatement les nouveaux arrivants et jugent rapidement ceux qui parlent avant de comprendre.",
+    actions: [
+      "Préparer la séance en lisant intégralement l'ordre du jour, les rapports et les délibérations annexées — avant la réunion.",
+      "Identifier qui parle sur quoi dans chaque groupe et quel est le rôle de chaque intervenant, avant d'intervenir vous-même.",
+      "Choisir une seule intervention ciblée et préparée plutôt que plusieurs interventions dispersées.",
+      "Ne pas répondre à une provocation lors de la première séance — laisser passer, noter, répondre ensuite si nécessaire."
+    ],
+    reflex: "Au premier conseil, la qualité de votre écoute est plus visible que la quantité de vos interventions.",
+    targetRoles: ["majorite", "opposition", "conseiller_municipal", "adjoint"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant"],
+    diagnosticProfiles: ["mandat_recent", "prise_de_parole", "isolement"],
+    useCases: ["premier_conseil", "prise_de_fonction", "posture"],
+    tags: ["premier conseil", "prise de fonction", "posture", "erreurs", "début de mandat"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "role-majorite-vs-opposition",
+    title: "Comprendre son rôle dans la majorité vs dans l'opposition",
+    slug: "role-majorite-vs-opposition",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Calibrer sa posture selon la position occupée dans le jeu institutionnel local.",
+    intro: "Être dans la majorité ou dans l'opposition, c'est exercer deux mandats très différents. Les leviers ne sont pas les mêmes, les obligations non plus. Beaucoup d'élus de majorité se comportent comme s'ils étaient dans l'opposition, et beaucoup d'élus d'opposition se comportent comme s'ils gouvernaient. Les deux postures nuisent à leur propre efficacité.",
+    understand: [
+      "La majorité a une responsabilité de cohérence et de résultat — exprimer ses désaccords en public fragilise l'ensemble de l'équipe, pas seulement la décision contestée.",
+      "L'opposition a une responsabilité de vigilance et de proposition — sans responsabilité d'exécution, ce qui lui donne une liberté critique que la majorité n'a pas.",
+      "Les deux positions offrent des marges de manœuvre réelles et distinctes : comprendre les siennes évite de les gaspiller à imiter l'autre camp."
+    ],
+    commonTrap: "Penser que la position décide de tout — des élus d'opposition ont plus d'impact que des élus de majorité en choisissant mieux leurs batailles et leurs alliés.",
+    actions: [
+      "Si vous êtes en majorité : gérer vos désaccords en interne avant toute déclaration publique, et choisir le bon moment pour les remonter.",
+      "Si vous êtes en opposition : construire des propositions alternatives documentées plutôt que de simplement critiquer — la proposition crée une obligation de réponse.",
+      "Dans les deux cas : identifier vos deux ou trois sujets prioritaires sur lesquels être visible et cohérent.",
+      "Éviter de calquer votre posture sur celle d'un élu national — les enjeux locaux appellent des registres différents."
+    ],
+    reflex: "Votre position dans l'assemblée définit vos règles du jeu, pas vos résultats. Les résultats dépendent de la façon dont vous jouez.",
+    targetRoles: ["majorite", "opposition", "adjoint", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "exposition"],
+    useCases: ["majorité", "opposition", "positionnement", "posture_politique"],
+    tags: ["majorité", "opposition", "posture", "rôle", "mandat"],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  {
+    id: "ce-que-le-maire-peut-demander",
+    title: "Ce que le maire peut me demander — et ce qu'il ne peut pas",
+    slug: "ce-que-le-maire-peut-demander",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre les limites légales et politiques de ce que le maire peut exiger d'un élu.",
+    intro: "Le maire a des pouvoirs étendus, mais il n'est pas le supérieur hiérarchique de ses conseillers. La confusion entre autorité politique et autorité administrative est fréquente et source de tensions. Un adjoint ou un conseiller qui connaît ses droits peut exercer son mandat avec assurance, sans crainte d'abus — et sans se laisser marginaliser.",
+    understand: [
+      "Le maire peut déléguer des missions à un adjoint, mais ne peut pas imposer le contenu d'un vote à un conseiller municipal.",
+      "Un élu conserve sa liberté de vote en séance — même dans la majorité : voter contre une délibération n'est pas une faute.",
+      "La délégation de signature est un acte précis, limité au périmètre défini — pas un blanc-seing donnant tous les pouvoirs de l'exécutif."
+    ],
+    commonTrap: "Confondre loyauté politique et obéissance inconditionnelle — la première est une valeur qui renforce la confiance, la seconde peut vous exposer à des situations d'irrégularité dont vous serez tenu responsable.",
+    actions: [
+      "Connaître les textes qui définissent vos droits en tant que conseiller municipal (Code général des collectivités territoriales, art. L2121 et suivants).",
+      "Exiger par écrit toute délégation ou mission formelle — pas de délégation verbale dont vous seriez le seul à porter la responsabilité.",
+      "Ne jamais exécuter un ordre verbal qui vous met en position d'irrégularité ou qui dépasse votre périmètre de délégation.",
+      "En cas de pression illégitime, demander formellement une instruction écrite — la demande écrite règle souvent le problème."
+    ],
+    reflex: "Le maire gère l'exécutif. Il ne peut pas décider de votre vote ni de votre parole en séance.",
+    targetRoles: ["adjoint", "majorite", "conseiller_municipal"],
+    institutionContexts: ["commune"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "isolement"],
+    useCases: ["droits_elu", "relation_maire", "délégation", "vote_libre"],
+    tags: ["maire", "délégation", "droits de l'élu", "vote", "hiérarchie"],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
+  },
+
+  // ─── PILIER comprendre ────────────────────────────────────────────────────
+
+  {
+    id: "interco-gerer-relations-communes-epci",
+    title: "Intercommunalité : gérer les relations entre communes membres sans se marcher sur les pieds",
+    slug: "interco-gerer-relations-communes-epci",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comprendre la logique intercommunale pour coopérer sans se diluer ni sacrifier les intérêts de votre commune.",
+    intro: "Siéger dans une instance intercommunale, c'est représenter sa commune dans un espace où d'autres communes ont aussi des intérêts — parfois convergents, parfois contradictoires. Les logiques de coopération et de compétition coexistent. Comprendre la structure de gouvernance, les ressorts des alliances et les points de friction courants permet d'être réellement utile à sa commune sans inutilement froisser les voisins.",
+    understand: [
+      "L'EPCI décide sur les compétences transférées — une fois la compétence transférée, votre commune ne peut plus y intervenir seule, et le conseil communautaire est souverain.",
+      "Les conseillers communautaires représentent leur commune mais sont censés voter l'intérêt du territoire commun — cette tension est structurelle et permanente.",
+      "Les rapports de force au sein de l'EPCI sont souvent liés à la taille des communes et à leurs contributions fiscales : les grandes communes pèsent plus, mais les petites font les majorités.",
+      "Les doublons et les tensions naissent souvent d'une mauvaise lecture de qui fait quoi : la commune, l'EPCI, le syndicat mixte — les périmètres se chevauchent fréquemment."
+    ],
+    commonTrap: "Traiter le conseil communautaire comme une réunion de maires qui défendent chacun leur pré — la logique institutionnelle est celle d'un territoire partagé, et s'y opposer systématiquement marginalise votre commune.",
+    actions: [
+      "Cartographier précisément les compétences transférées à l'EPCI et celles restant à votre commune — avant toute prise de position publique.",
+      "Identifier les conseillers communautaires des autres communes avec qui vous avez des intérêts géographiques, politiques ou sectoriels communs — les alliances se construisent entre les séances.",
+      "Construire vos positions communes avec d'autres élus avant les séances plénières, pas pendant : les interventions improvisées affaiblissent les positions.",
+      "Utiliser les commissions thématiques de l'EPCI comme espace de construction de relations de confiance avec les autres communes membres."
+    ],
+    reflex: "Défendre les intérêts de votre commune à l'EPCI ne passe pas par l'opposition systématique — mais par la coalition intelligente.",
+    targetRoles: ["maire", "adjoint", "interco", "conseiller_communautaire", "vice_president_interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["gouvernance", "mandat_recent", "besoin_methode"],
+    useCases: ["intercommunalité", "EPCI", "gouvernance", "coopération_territoriale"],
+    tags: ["intercommunalité", "EPCI", "compétences", "coopération", "gouvernance territoriale"],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
   }
 ];
 
