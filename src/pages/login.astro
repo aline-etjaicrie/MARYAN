@@ -57,6 +57,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             />
           </div>
 
+          <div id="politicalLabelGroup" class="field-group" style="display:none;">
+            <label for="politicalLabel">Étiquette politique</label>
+            <select id="politicalLabel" name="politicalLabel">
+              <option value="">— Choisir (optionnel) —</option>
+              <option value="sans_etiquette">Sans étiquette</option>
+              <option value="gauche">Gauche</option>
+              <option value="centre_gauche">Centre-gauche</option>
+              <option value="centre">Centre</option>
+              <option value="centre_droit">Centre-droit</option>
+              <option value="droite">Droite</option>
+              <option value="ecologiste">Écologiste</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+
           <button type="submit" id="submitBtn" class="btn-submit">
             <span id="btnLabel">Se connecter</span>
             <span id="btnLoader" style="display:none;">Chargement…</span>
@@ -101,6 +116,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const passwordInput = document.getElementById('password') as HTMLInputElement;
     const confirmInput = document.getElementById('confirm') as HTMLInputElement;
     const confirmGroup = document.getElementById('confirmGroup') as HTMLDivElement;
+    const politicalLabelSelect = document.getElementById('politicalLabel') as HTMLSelectElement;
+    const politicalLabelGroup = document.getElementById('politicalLabelGroup') as HTMLDivElement;
     const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
     const btnLabel = document.getElementById('btnLabel')!;
     const btnLoader = document.getElementById('btnLoader')!;
@@ -123,6 +140,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         toggleLabel.textContent = 'Déjà un compte ?';
         modeToggle.textContent = 'Se connecter';
         confirmGroup.style.display = 'block';
+        politicalLabelGroup.style.display = 'block';
         passwordInput.setAttribute('autocomplete', 'new-password');
       } else {
         formTitle.textContent = 'Se connecter';
@@ -131,6 +149,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         toggleLabel.textContent = 'Pas encore de compte ?';
         modeToggle.textContent = 'Créer un compte';
         confirmGroup.style.display = 'none';
+        politicalLabelGroup.style.display = 'none';
         passwordInput.setAttribute('autocomplete', 'current-password');
       }
     });
@@ -177,8 +196,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           return;
         }
 
+        const politicalLabel = politicalLabelSelect.value || null;
         setLoading(true);
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { political_label: politicalLabel },
+          },
+        });
         setLoading(false);
 
         if (error) {
@@ -303,9 +329,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     outline: none;
   }
 
-  .field-group input:focus {
+  .field-group input:focus,
+  .field-group select:focus {
     border-color: var(--deep);
     background: white;
+  }
+
+  .field-group select {
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--deep);
+    background: #FAFAF8;
+    transition: border-color 0.2s;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230A192F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
   }
 
   .btn-submit {

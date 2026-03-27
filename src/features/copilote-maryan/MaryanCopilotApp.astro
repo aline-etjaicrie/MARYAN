@@ -313,6 +313,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       </main>
 
       <footer class="app-input-bar">
+        <p class="privacy-notice">Pour votre confidentialité, évitez de mentionner des noms de personnes ou des informations permettant d'identifier des tiers.</p>
         <div class="input-shell">
           <button class="mic-btn" type="button" aria-label="Dicter" data-mic-btn>
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -706,6 +707,18 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
     .input-wrap textarea::placeholder {
       color: rgba(10, 25, 47, 0.46);
+    }
+
+    .privacy-notice {
+      width: min(100%, 50rem);
+      margin: 0 auto 0.55rem;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: rgba(10, 25, 47, 0.55);
+      background: rgba(10, 25, 47, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
     }
 
     .input-hint {

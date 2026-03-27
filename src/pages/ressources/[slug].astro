@@ -48,13 +48,13 @@ const ctaContent = {
 const cta = ctaContent[res.ctaType];
 ---
 
-<BaseLayout 
-  title={`${res.title} — Fiche MARYAN`} 
+<BaseLayout
+  title={`${res.title} — Fiche MARYAN`}
   description={res.promise}>
-  
-  <article class="resource-detail-v4">
-    
-    <!-- HEADER -->
+
+  <article class="resource-detail-v4" data-slug={res.slug}>
+
+    <!-- HEADER (public) -->
     <header class="res-page-header">
       <div class="container-narrow">
         <a href="/ressources" class="back-link-v4">← Bibliothèque</a>
@@ -68,73 +68,79 @@ const cta = ctaContent[res.ctaType];
     </header>
 
     <div class="container-narrow">
-      
-      <!-- INTRO -->
+
+      <!-- INTRO (public) -->
       <section class="res-main-section">
         <div class="intro-box">
           <p>{res.intro}</p>
         </div>
       </section>
 
-      <!-- UNDERSTAND -->
-      <section class="res-main-section">
-        <h2 class="sub-title-v4">Ce qu'il faut bien comprendre</h2>
-        <ul class="res-check-list">
-          {res.understand.map(item => (
-            <li>
-              <span class="check-icon">✓</span>
-              <p>{item}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <!-- PROTECTED CONTENT -->
+      <div id="protected-content">
 
-      <!-- COMMON TRAP -->
-      <section class="res-main-section">
-        <div class="trap-box">
-          <div class="trap-icon">⚠️</div>
-          <div class="trap-content">
-            <h3>Le piège classique</h3>
-            <p>{res.commonTrap}</p>
+        <!-- SPINNER -->
+        <div id="content-spinner" class="spinner-wrap" aria-label="Vérification en cours…">
+          <span class="spinner"></span>
+        </div>
+
+        <!-- PAYWALL BANNER (hidden by default) -->
+        <div id="paywall-banner" class="paywall-banner" style="display:none;">
+          <div class="paywall-inner">
+            <p class="paywall-lock">🔒</p>
+            <h2>Contenu réservé aux abonnés</h2>
+            <p>Cette fiche complète (analyse, pièges, actions, réflexe) est accessible avec l'offre <strong>MARYAN Plus</strong>.</p>
+            <div class="paywall-actions">
+              <a href="/offres" class="btn-paywall-primary">Voir les offres</a>
+              <a href="/login" class="btn-paywall-secondary">Se connecter</a>
+            </div>
           </div>
         </div>
-      </section>
 
-      <!-- ACTIONS -->
-      <section class="res-main-section">
-        <h2 class="sub-title-v4">Ce que vous pouvez faire</h2>
-        <div class="actions-steps">
-          {res.actions.map((action, idx) => (
-            <div class="step-item">
-              <span class="step-num">{idx + 1}</span>
-              <p>{action}</p>
+        <!-- UNDERSTAND (injected) -->
+        <section id="section-understand" class="res-main-section" style="display:none;">
+          <h2 class="sub-title-v4">Ce qu'il faut bien comprendre</h2>
+          <ul id="list-understand" class="res-check-list"></ul>
+        </section>
+
+        <!-- COMMON TRAP (injected) -->
+        <section id="section-trap" class="res-main-section" style="display:none;">
+          <div class="trap-box">
+            <div class="trap-icon">⚠️</div>
+            <div class="trap-content">
+              <h3>Le piège classique</h3>
+              <p id="text-trap"></p>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- REFLEX -->
-      <section class="res-main-section">
-        <div class="reflex-card">
-          <span class="reflex-label">Le Réflexe MARYAN</span>
-          <p class="reflex-text">“ {res.reflex} ”</p>
-        </div>
-      </section>
-
-      {res.sensitiveNote && (
-        <section class="res-main-section">
-          <div class="note-box">
-            <p><strong>Note :</strong> {res.sensitiveNote}</p>
           </div>
         </section>
-      )}
 
-      <!-- RELATED / USE CASES -->
-      <footer class="res-page-footer">
-        <div class="tags-container">
-          {res.tags.map(tag => <span class="res-tag">#{tag}</span>)}
-        </div>
-      </footer>
+        <!-- ACTIONS (injected) -->
+        <section id="section-actions" class="res-main-section" style="display:none;">
+          <h2 class="sub-title-v4">Ce que vous pouvez faire</h2>
+          <div id="list-actions" class="actions-steps"></div>
+        </section>
+
+        <!-- REFLEX (injected) -->
+        <section id="section-reflex" class="res-main-section" style="display:none;">
+          <div class="reflex-card">
+            <span class="reflex-label">Le Réflexe MARYAN</span>
+            <p id="text-reflex" class="reflex-text"></p>
+          </div>
+        </section>
+
+        <!-- SENSITIVE NOTE (injected) -->
+        <section id="section-note" class="res-main-section" style="display:none;">
+          <div class="note-box">
+            <p><strong>Note :</strong> <span id="text-note"></span></p>
+          </div>
+        </section>
+
+        <!-- TAGS (injected) -->
+        <footer id="section-tags" class="res-page-footer" style="display:none;">
+          <div id="list-tags" class="tags-container"></div>
+        </footer>
+
+      </div>
 
       <!-- CTA BLOCK -->
       <section class="res-cta-block card-v3">
@@ -152,6 +158,96 @@ const cta = ctaContent[res.ctaType];
 
 </BaseLayout>
 
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  const slug = (document.querySelector('[data-slug]') as HTMLElement)?.dataset.slug ?? '';
+
+  async function loadProtectedContent() {
+    const spinner = document.getElementById('content-spinner')!;
+    const paywall = document.getElementById('paywall-banner')!;
+
+    function showPaywall() {
+      spinner.style.display = 'none';
+      paywall.style.display = 'block';
+    }
+
+    function showContent(data: {
+      understand: string[];
+      commonTrap: string;
+      actions: string[];
+      reflex: string;
+      sensitiveNote?: string | null;
+      tags: string[];
+    }) {
+      spinner.style.display = 'none';
+
+      // understand
+      const listUnderstand = document.getElementById('list-understand')!;
+      listUnderstand.innerHTML = data.understand
+        .map(item => `<li><span class="check-icon">✓</span><p>${item}</p></li>`)
+        .join('');
+      document.getElementById('section-understand')!.style.display = 'block';
+
+      // trap
+      document.getElementById('text-trap')!.textContent = data.commonTrap;
+      document.getElementById('section-trap')!.style.display = 'block';
+
+      // actions
+      const listActions = document.getElementById('list-actions')!;
+      listActions.innerHTML = data.actions
+        .map((action, idx) => `<div class="step-item"><span class="step-num">${idx + 1}</span><p>${action}</p></div>`)
+        .join('');
+      document.getElementById('section-actions')!.style.display = 'block';
+
+      // reflex
+      document.getElementById('text-reflex')!.textContent = `" ${data.reflex} "`;
+      document.getElementById('section-reflex')!.style.display = 'block';
+
+      // sensitive note
+      if (data.sensitiveNote) {
+        document.getElementById('text-note')!.textContent = data.sensitiveNote;
+        document.getElementById('section-note')!.style.display = 'block';
+      }
+
+      // tags
+      const listTags = document.getElementById('list-tags')!;
+      listTags.innerHTML = data.tags.map(tag => `<span class="res-tag">#${tag}</span>`).join('');
+      document.getElementById('section-tags')!.style.display = 'block';
+    }
+
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      showPaywall();
+      return;
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      showPaywall();
+      return;
+    }
+
+    const token = session.access_token;
+    const res = await fetch(`/api/fiche?slug=${encodeURIComponent(slug)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      showContent(data);
+    } else {
+      showPaywall();
+    }
+  }
+
+  loadProtectedContent();
+</script>
+
 <style>
   :root {
     --deep: #0A192F;
@@ -168,18 +264,18 @@ const cta = ctaContent[res.ctaType];
   .res-page-header { background: white; padding: 6rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 4rem; }
   .back-link-v4 { display: inline-block; text-decoration: none; color: var(--deep); opacity: 0.4; font-weight: 700; font-size: 0.9rem; margin-bottom: 2.5rem; transition: opacity 0.2s; }
   .back-link-v4:hover { opacity: 1; }
-  
+
   .header-meta { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
   .pillar-tag { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--red); letter-spacing: 0.05em; }
   .format-badge { font-size: 0.65rem; font-weight: 800; background: var(--deep); color: white; padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase; }
-  
+
   .res-page-title { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.1; font-weight: 900; color: var(--deep); letter-spacing: -0.03em; margin-bottom: 1.5rem; }
   .res-page-promise { font-size: 1.3rem; line-height: 1.4; color: #54636C; font-weight: 600; }
 
   /* ─── SECTIONS ─── */
   .res-main-section { margin-bottom: 4rem; }
   .sub-title-v4 { font-size: 1.5rem; font-weight: 800; margin-bottom: 2rem; color: var(--deep); }
-  
+
   .intro-box { font-size: 1.25rem; line-height: 1.6; color: var(--deep); opacity: 0.85; }
 
   .res-check-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1.5rem; }
@@ -200,7 +296,7 @@ const cta = ctaContent[res.ctaType];
   .reflex-card { background: var(--deep); color: white; padding: 3.5rem; border-radius: 32px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
   .reflex-label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--neon); letter-spacing: 0.2em; margin-bottom: 1.5rem; }
   .reflex-text { font-size: 1.8rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
-  .reflex-card::after { content: "“"; position: absolute; top: -20px; left: 20px; font-size: 10rem; opacity: 0.05; font-family: serif; }
+  .reflex-card::after { content: "\201C"; position: absolute; top: -20px; left: 20px; font-size: 10rem; opacity: 0.05; font-family: serif; }
 
   .note-box { font-size: 1rem; opacity: 0.6; font-style: italic; border-left: 3px solid var(--border); padding-left: 1.5rem; }
 
@@ -208,13 +304,30 @@ const cta = ctaContent[res.ctaType];
   .tags-container { display: flex; gap: 0.8rem; flex-wrap: wrap; }
   .res-tag { font-size: 0.85rem; font-weight: 700; color: #99A1A7; }
 
+  /* ─── SPINNER ─── */
+  .spinner-wrap { display: flex; justify-content: center; padding: 4rem 0; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--deep); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── PAYWALL ─── */
+  .paywall-banner { margin: 2rem 0 4rem; padding: 3rem 2.5rem; background: var(--deep); border-radius: 24px; color: white; text-align: center; }
+  .paywall-inner { max-width: 480px; margin: 0 auto; }
+  .paywall-lock { font-size: 2.5rem; margin-bottom: 1rem; }
+  .paywall-banner h2 { font-size: 1.6rem; font-weight: 800; color: white; margin-bottom: 1rem; }
+  .paywall-banner p { font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.75); margin-bottom: 2rem; }
+  .paywall-banner strong { color: var(--neon); }
+  .paywall-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-paywall-primary { background: var(--neon); color: var(--deep); font-weight: 800; padding: 0.9rem 2rem; border-radius: 10px; text-decoration: none; font-size: 0.95rem; transition: opacity 0.2s; }
+  .btn-paywall-primary:hover { opacity: 0.85; }
+  .btn-paywall-secondary { background: transparent; color: rgba(255,255,255,0.7); font-weight: 700; padding: 0.9rem 2rem; border-radius: 10px; text-decoration: none; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.2); transition: border-color 0.2s, color 0.2s; }
+  .btn-paywall-secondary:hover { color: white; border-color: rgba(255,255,255,0.5); }
+
   /* ─── CTA BLOCK ─── */
   .res-cta-block { margin-top: 6rem; background: white; border: 1.5px solid var(--deep); padding: 3rem; border-radius: 32px; }
   .cta-inner { display: flex; justify-content: space-between; align-items: center; gap: 3rem; }
   .cta-info h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
   .cta-info p { opacity: 0.6; font-size: 1rem; }
-  
-  /* REUSE BUTTON FROM DIAG */
+
   .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
   .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
 
@@ -224,5 +337,6 @@ const cta = ctaContent[res.ctaType];
     .res-page-title { font-size: 2.3rem; }
     .reflex-card { padding: 2.5rem 1.5rem; }
     .reflex-text { font-size: 1.4rem; }
+    .paywall-banner { padding: 2.5rem 1.5rem; }
   }
 </style>
