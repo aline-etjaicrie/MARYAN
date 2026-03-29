@@ -16,8 +16,8 @@ const expertIcons = [
   title="Le Hub d'Experts — MARYAN"
   description="L'appui humain au cœur du dispositif. Une constellation d'experts pour éclairer vos arbitrages les plus sensibles."
 >
-  
-  <InternalHeader 
+
+  <InternalHeader
     label="Appui Humain & Relais"
     title="Le Hub <span class='emphasis'>d'Experts</span> MARYAN"
     subtitle="L'IA pour la méthode, l'expertise pour l'arbitrage. Un réseau de spécialistes du mandat local pour prendre le relais quand la situation l'exige."
@@ -25,22 +25,76 @@ const expertIcons = [
 
   <main class="hub-v3-main">
 
-    <!-- ── BANDEAU "EN COURS" ── -->
-    <section class="hub-banner">
+    <!-- ── BANDEAU EN COURS + FORMULAIRE CANDIDATURE ── -->
+    <div class="hub-banner">
       <div class="hub-banner-inner">
-        <div class="hub-banner-texte">
-          <span class="hub-badge">En constitution</span>
-          <p>
-            Le Hub d'Experts est en cours de construction. Les expertises présentées ci-dessous
-            reflètent la direction que nous prenons — les experts rejoignent le réseau progressivement.
-          </p>
-          <p>
-            Vous êtes praticien·ne du mandat local et vous souhaitez rejoindre le réseau ?
-            <a href="#candidater" class="hub-banner-lien">Candidatez ci-dessous →</a>
+
+        <div class="banner-statut">
+          <span class="banner-badge">En cours de constitution</span>
+          <h2 class="banner-titre">Le Hub d'Experts ouvre prochainement.</h2>
+          <p class="banner-texte">
+            Le réseau est en cours de construction. Les expertises présentées ci-dessous
+            reflètent les profils que nous recrutons. Si vous intervenez auprès des collectivités
+            et que vous voulez rejoindre MARYAN — candidatez.
           </p>
         </div>
+
+        <div class="banner-form-wrap" id="candidater">
+          <h3 class="form-titre">Rejoindre le réseau</h3>
+          <p class="form-sous-titre">Vous intervenez auprès des élus locaux ? Dites-nous qui vous êtes.</p>
+
+          <form id="expert-form" class="expert-form">
+            <div class="form-row">
+              <div class="form-champ">
+                <label for="expert-nom">Nom et prénom <span class="req">*</span></label>
+                <input type="text" id="expert-nom" name="nom" placeholder="Marie Dupont" required />
+              </div>
+              <div class="form-champ">
+                <label for="expert-email">Email <span class="req">*</span></label>
+                <input type="email" id="expert-email" name="email" placeholder="marie@exemple.fr" required />
+              </div>
+            </div>
+
+            <div class="form-champ">
+              <label for="expert-domaine">Domaine d'expertise principal <span class="req">*</span></label>
+              <select id="expert-domaine" name="domaine" required>
+                <option value="" disabled selected>Choisir un domaine</option>
+                <option>Fonctionnement des collectivités / exercice du mandat</option>
+                <option>Organisation du mandat et gestion du temps</option>
+                <option>Communication publique et pédagogie</option>
+                <option>Communication numérique et réseaux sociaux</option>
+                <option>Prise de parole et expression publique</option>
+                <option>Situations sensibles et gestion de crise</option>
+                <option>Urbanisme, aménagement, logement</option>
+                <option>Culture et patrimoine</option>
+                <option>Développement économique et attractivité</option>
+                <option>Insertion, solidarité et action sociale</option>
+                <option>Éducation, enfance et jeunesse</option>
+                <option>Transition écologique et cadre de vie</option>
+                <option>Finances locales et administration</option>
+                <option>Ressources humaines et management</option>
+                <option>Autre</option>
+              </select>
+            </div>
+
+            <div class="form-champ">
+              <label for="expert-linkedin">LinkedIn ou site web <span class="opt">(facultatif)</span></label>
+              <input type="url" id="expert-linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
+            </div>
+
+            <div class="form-champ">
+              <label for="expert-message">Présentez-vous en quelques lignes <span class="opt">(facultatif)</span></label>
+              <textarea id="expert-message" name="message" rows="4"
+                placeholder="Votre parcours, ce que vous apportez aux élus, vos modes d'intervention habituels…"></textarea>
+            </div>
+
+            <button type="submit" class="form-btn">Envoyer ma candidature →</button>
+            <p id="expert-feedback" class="expert-feedback" style="display:none"></p>
+          </form>
+        </div>
+
       </div>
-    </section>
+    </div>
 
     <!-- NETWORK VISUALIZATION (ABSTRACT MATIERE) -->
     <section class="section-v3 no-top bg-grid-reveal">
@@ -62,8 +116,8 @@ const expertIcons = [
            </div>
            <h3>Un réseau <span class="emphasis">hybridé</span></h3>
            <p>
-              Prendre ses fonctions, porter une délégation technique, gérer une séquence sensible... 
-              Notre réseau intervient en <em class="emphasis">complémentarité</em> de MARYAN pour proposer l’appui 
+              Prendre ses fonctions, porter une délégation technique, gérer une séquence sensible...
+              Notre réseau intervient en <em class="emphasis">complémentarité</em> de MARYAN pour proposer l'appui
               juste : autonome, ciblé, progressif et surtout utile.
            </p>
            <div class="hub-stat-v3">
@@ -112,72 +166,6 @@ const expertIcons = [
       </div>
     </section>
 
-    <!-- ── FORMULAIRE CANDIDATURE ── -->
-    <section class="hub-candidature" id="candidater">
-      <div class="hub-candidature-inner">
-        <div class="hub-candidature-header">
-          <span class="label-section">Rejoindre le réseau</span>
-          <h2>Vous voulez candidater ?</h2>
-          <p>
-            MARYAN construit un réseau d'experts du mandat local — pas des généralistes,
-            des praticiens qui connaissent de l'intérieur ce que vivent les élus.
-            Si c'est votre cas, on veut vous connaître.
-          </p>
-        </div>
-
-        <form id="form-expert" class="hub-form" novalidate>
-          <div class="hub-form-grille">
-            <div class="hub-champ">
-              <label for="expert-nom">Nom et prénom <span class="requis">*</span></label>
-              <input type="text" id="expert-nom" name="nom" placeholder="Marie Dupont" required />
-            </div>
-            <div class="hub-champ">
-              <label for="expert-email">Email <span class="requis">*</span></label>
-              <input type="email" id="expert-email" name="email" placeholder="marie@exemple.fr" required />
-            </div>
-            <div class="hub-champ hub-champ--large">
-              <label for="expert-domaine">Domaine d'expertise principal <span class="requis">*</span></label>
-              <select id="expert-domaine" name="domaine" required>
-                <option value="" disabled selected>Choisir un domaine</option>
-                <optgroup label="Expertises transversales">
-                  <option value="fonctionnement-collectivites">Fonctionnement des collectivités & exercice du mandat</option>
-                  <option value="organisation-mandat">Organisation du mandat & gestion du temps politique</option>
-                  <option value="communication-publique">Communication publique & pédagogie de l'action</option>
-                  <option value="communication-numerique">Communication numérique & réseaux sociaux</option>
-                  <option value="prise-de-parole">Prise de parole, posture & expression publique</option>
-                  <option value="situations-sensibles">Situations sensibles, tensions & séquences à risque</option>
-                </optgroup>
-                <optgroup label="Expertises thématiques">
-                  <option value="urbanisme">Urbanisme, aménagement, logement</option>
-                  <option value="culture">Culture, patrimoine & projets culturels</option>
-                  <option value="developpement-economique">Développement économique, commerce & attractivité</option>
-                  <option value="insertion-sociale">Insertion, solidarité & action sociale</option>
-                  <option value="education">Éducation, enfance & jeunesse</option>
-                  <option value="transition-ecologique">Transition écologique, cadre de vie & propreté</option>
-                  <option value="finances-locales">Finances locales & administration générale</option>
-                  <option value="rh-management">Ressources humaines, management & organisation interne</option>
-                </optgroup>
-                <option value="autre">Autre (préciser dans le message)</option>
-              </select>
-            </div>
-            <div class="hub-champ hub-champ--large">
-              <label for="expert-linkedin">LinkedIn ou site web <span class="optionnel">(facultatif)</span></label>
-              <input type="url" id="expert-linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
-            </div>
-            <div class="hub-champ hub-champ--large">
-              <label for="expert-message">Présentez-vous en quelques lignes <span class="requis">*</span></label>
-              <textarea id="expert-message" name="message" rows="5" placeholder="Votre parcours, ce qui vous rend légitime sur ce sujet, pourquoi MARYAN vous intéresse…" required></textarea>
-            </div>
-          </div>
-          <div class="hub-form-footer">
-            <button type="submit" class="hub-btn-submit" id="btn-submit">Envoyer ma candidature →</button>
-            <p class="hub-form-note">Vos données sont utilisées uniquement pour traiter votre candidature. Elles ne sont pas transmises à des tiers.</p>
-          </div>
-          <div id="hub-feedback" class="hub-feedback" style="display:none"></div>
-        </form>
-      </div>
-    </section>
-
     <!-- FINAL CTA V3 (INCARNATION) -->
     <section class="section-v3 bg-deep text-white text-center overflow-hidden">
        <div class="glow-v3 glow-red"></div>
@@ -212,9 +200,9 @@ const expertIcons = [
   /* ─── GRID / FILES ─── */
   .section-header-v3 { text-align: left; margin-bottom: 4rem; max-width: 600px; }
   .hub-grid-v3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem; }
-  
-  .expert-file-v3 { 
-    position: relative; transition: all 0.3s ease; 
+
+  .expert-file-v3 {
+    position: relative; transition: all 0.3s ease;
   }
   .expert-file-v3:hover { transform: translateY(-3px); }
 
@@ -229,174 +217,159 @@ const expertIcons = [
     .section-header-v3 { text-align: center; }
   }
 
-  /* ── BANDEAU EN COURS ── */
+  /* ── BANDEAU + FORMULAIRE ── */
   .hub-banner {
-    background: #fefce8;
-    border: 1px solid #fde047;
-    border-radius: 10px;
-    margin: 2rem 1.5rem 0;
+    background: var(--color-surface, #f9fafb);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    padding: 3rem 1.5rem 3.5rem;
   }
-  .hub-banner-inner { padding: 1.25rem 1.5rem; }
-  .hub-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    background: #fde047;
-    color: #713f12;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    margin-bottom: 0.75rem;
+  .hub-banner-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
   }
-  .hub-badge::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #92400e;
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
+  @media (max-width: 768px) {
+    .hub-banner-inner { grid-template-columns: 1fr; gap: 2rem; }
   }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .hub-banner-texte p {
-    margin: 0 0 0.5rem;
-    font-size: 0.9rem;
-    color: #78350f;
-    line-height: 1.6;
-  }
-  .hub-banner-texte p:last-child { margin: 0; }
-  .hub-banner-lien { color: #92400e; font-weight: 600; text-decoration: underline; }
 
-  /* ── CANDIDATURE ── */
-  .hub-candidature {
-    padding: 4rem 0;
-    border-top: 1px solid var(--border);
-  }
-  .hub-candidature-inner { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; }
-  .label-section {
+  .banner-badge {
     display: inline-block;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #6b7280;
-    margin-bottom: 0.75rem;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
   }
-  .hub-candidature-header h2 { font-size: 1.75rem; font-weight: 700; margin: 0 0 0.75rem; color: var(--deep); }
-  .hub-candidature-header p { font-size: 0.95rem; line-height: 1.65; color: #374151; margin: 0 0 2.5rem; }
-
-  .hub-form-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-  .hub-champ { display: flex; flex-direction: column; gap: 0.4rem; }
-  .hub-champ--large { grid-column: 1 / -1; }
-  .hub-champ label { font-size: 0.825rem; font-weight: 600; color: var(--deep); }
-  .requis { color: #dc2626; }
-  .optionnel { font-weight: 400; color: #9ca3af; }
-  .hub-champ input, .hub-champ select, .hub-champ textarea {
-    padding: 0.75rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
+  .banner-titre {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--color-text, #111);
+    line-height: 1.3;
+  }
+  .banner-texte {
     font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-text-secondary, #374151);
+    margin: 0;
+  }
+
+  .form-titre {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 0.3rem;
+    color: var(--color-text, #111);
+  }
+  .form-sous-titre {
+    font-size: 0.85rem;
+    color: var(--color-muted, #6b7280);
+    margin: 0 0 1.5rem;
+  }
+
+  .expert-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+
+  .form-champ { display: flex; flex-direction: column; gap: 0.35rem; }
+  .form-champ label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text, #111);
+  }
+  .req { color: #dc2626; }
+  .opt { font-weight: 400; color: var(--color-muted, #9ca3af); }
+
+  .form-champ input,
+  .form-champ select,
+  .form-champ textarea {
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid var(--color-border, #e5e7eb);
+    border-radius: 8px;
+    font-size: 0.875rem;
     font-family: inherit;
-    color: var(--deep);
-    background: #fff;
+    color: var(--color-text, #111);
+    background: var(--color-bg, #fff);
     transition: border-color 0.15s;
     resize: vertical;
-    width: 100%;
-    box-sizing: border-box;
   }
-  .hub-champ input:focus, .hub-champ select:focus, .hub-champ textarea:focus {
+  .form-champ input:focus,
+  .form-champ select:focus,
+  .form-champ textarea:focus {
     outline: none;
-    border-color: var(--deep);
+    border-color: var(--color-accent, #1a1a1a);
   }
-  .hub-champ select {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    padding-right: 2.5rem;
-  }
-  .hub-form-footer { margin-top: 1.75rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-  .hub-btn-submit {
-    padding: 0.8rem 1.75rem;
-    background: var(--deep);
+
+  .form-btn {
+    align-self: flex-start;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-accent, #1a1a1a);
     color: #fff;
     border: none;
     border-radius: 8px;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    font-family: inherit;
     cursor: pointer;
     transition: opacity 0.15s;
-    white-space: nowrap;
   }
-  .hub-btn-submit:hover { opacity: 0.85; }
-  .hub-btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-  .hub-form-note { font-size: 0.775rem; color: #9ca3af; margin: 0; line-height: 1.5; max-width: 320px; }
-  .hub-feedback {
-    margin-top: 1.25rem;
-    padding: 1rem 1.25rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-  .hub-feedback.ok { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-  .hub-feedback.erreur { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+  .form-btn:hover { opacity: 0.85; }
+  .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  @media (max-width: 580px) {
-    .hub-form-grille { grid-template-columns: 1fr; }
-    .hub-champ--large { grid-column: 1; }
-    .hub-form-footer { flex-direction: column; align-items: flex-start; }
-    .hub-btn-submit { width: 100%; }
+  .expert-feedback {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin: 0;
   }
+  .expert-feedback.ok { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+  .expert-feedback.erreur { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 </style>
 
 <script>
-  const form = document.getElementById('form-expert') as HTMLFormElement | null;
-  const feedback = document.getElementById('hub-feedback') as HTMLElement | null;
-  const btn = document.getElementById('btn-submit') as HTMLButtonElement | null;
+  const form = document.getElementById('expert-form') as HTMLFormElement | null;
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!form || !feedback || !btn) return;
+    const feedback = document.getElementById('expert-feedback') as HTMLElement;
+    const btn = form.querySelector<HTMLButtonElement>('.form-btn');
 
-    const data = {
-      nom: (document.getElementById('expert-nom') as HTMLInputElement).value.trim(),
-      email: (document.getElementById('expert-email') as HTMLInputElement).value.trim(),
-      domaine: (document.getElementById('expert-domaine') as HTMLSelectElement).value,
-      linkedin: (document.getElementById('expert-linkedin') as HTMLInputElement).value.trim(),
-      message: (document.getElementById('expert-message') as HTMLTextAreaElement).value.trim(),
-    };
+    const nom = (document.getElementById('expert-nom') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('expert-email') as HTMLInputElement).value.trim();
+    const domaine = (document.getElementById('expert-domaine') as HTMLSelectElement).value;
+    const linkedin = (document.getElementById('expert-linkedin') as HTMLInputElement).value.trim();
+    const message = (document.getElementById('expert-message') as HTMLTextAreaElement).value.trim();
 
-    btn.disabled = true;
-    btn.textContent = 'Envoi en cours…';
+    if (btn) btn.disabled = true;
 
     try {
       const res = await fetch('/api/expert-candidature', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ nom, email, domaine, linkedin, message })
       });
-
+      const data = await res.json();
       feedback.style.display = 'block';
-
       if (res.ok) {
-        feedback.className = 'hub-feedback ok';
-        feedback.innerHTML = `<strong>Candidature envoyée.</strong><br>Merci ${data.nom.split(' ')[0]} — nous revenons vers vous dès que possible.`;
+        feedback.className = 'expert-feedback ok';
+        feedback.textContent = 'Candidature reçue — nous reviendrons vers vous.';
         form.reset();
       } else {
-        throw new Error('Erreur serveur');
+        feedback.className = 'expert-feedback erreur';
+        feedback.textContent = `Erreur : ${data.error}`;
       }
     } catch {
       feedback.style.display = 'block';
-      feedback.className = 'hub-feedback erreur';
-      feedback.textContent = 'Une erreur est survenue. Réessayez ou écrivez-nous directement.';
+      feedback.className = 'expert-feedback erreur';
+      feedback.textContent = 'Une erreur est survenue. Réessayez.';
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Envoyer ma candidature →';
+      if (btn) btn.disabled = false;
     }
   });
 </script>
