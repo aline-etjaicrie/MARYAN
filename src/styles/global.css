@@ -294,6 +294,50 @@ h4 em {
 /* ──────────────────────────────────────────────────────────────────────────
    FOOTER REDESIGN
    ────────────────────────────────────────────────────────────────────────── */
+/* ── HEADER ── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--deep);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.header-logo {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: white;
+  text-decoration: none;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+.header-nav a {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.header-nav a:hover { color: white; }
+.header-compte {
+  color: var(--neon) !important;
+  font-weight: 700 !important;
+}
+@media (max-width: 640px) {
+  .header-nav { gap: 1rem; }
+  .header-nav a:not(.header-compte) { display: none; }
+}
+
+/* ── FOOTER ── */
 .site-footer {
   padding: 8rem 0; background: var(--deep); color: white; border-top: 1px solid rgba(255,255,255,0.05);
 }
