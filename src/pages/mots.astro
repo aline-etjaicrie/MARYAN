@@ -1,0 +1,532 @@
+---
+// src/pages/mots.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { mots, categories } from '../data/glossaire';
+---
+
+<BaseLayout title="Les mots — MARYAN" description="Un glossaire vivant du langage politique. Les mots qui creusent une distance, ceux qui sonnent creux, ceux qui piègent — et ceux qu'on devrait dire davantage.">
+
+  <main class="mots-page">
+
+    <!-- ── INTRO ── -->
+    <section class="intro">
+      <div class="intro-inner">
+        <span class="label-page">Langage & politique</span>
+        <h1>Les mots trahissent.</h1>
+        <p class="chapeau">
+          Il y a des mots qu'on utilise sans y penser. Des mots qui semblent neutres, professionnels, raisonnables.<br>
+          Et pourtant — ils creusent, doucement, une distance entre ceux qui gouvernent et ceux qui habitent.
+        </p>
+        <p class="chapeau">
+          Ce glossaire est un chantier ouvert. Pas un tribunal. Plutôt un miroir tendu au langage politique —
+          pour remarquer, nommer, et parfois faire autrement.
+        </p>
+        <div class="intro-note">
+          Ce glossaire est participatif. Les élus inscrits peuvent soumettre des mots.
+          Les mots les plus votés entrent dans MARYAN.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FILTRES ── -->
+    <nav class="filtres" aria-label="Filtrer par catégorie">
+      <button class="filtre actif" data-cat="tous">Tous</button>
+      {categories.map(cat => (
+        <button class="filtre" data-cat={cat.id} style={`--cat-color: ${cat.couleur}`}>
+          <span class="filtre-emoji">{cat.emoji}</span>
+          {cat.label.split(' ').slice(0,4).join(' ')}…
+        </button>
+      ))}
+    </nav>
+
+    <!-- ── GRILLE DES MOTS ── -->
+    <section class="grille">
+      {categories.map(cat => {
+        const motsCategorie = mots.filter(m => m.categorie === cat.id);
+        return (
+          <div class="categorie-bloc" data-cat={cat.id}>
+            <div class="categorie-header">
+              <span class="categorie-emoji">{cat.emoji}</span>
+              <div>
+                <h2 class="categorie-titre" style={`color: ${cat.couleur}`}>{cat.label}</h2>
+                <p class="categorie-desc">{cat.description}</p>
+              </div>
+            </div>
+            <div class="mots-liste">
+              {motsCategorie.map(m => (
+                <article class="fiche" data-cat={m.categorie} id={m.id}>
+                  <header class="fiche-header">
+                    <h3 class="fiche-mot">{m.mot}</h3>
+                    {m.categorie !== 'bon' && (
+                      <span class="fiche-badge" style={`background: ${cat.couleur}18; color: ${cat.couleur}; border-color: ${cat.couleur}30`}>
+                        {cat.emoji} {cat.label.split(' ').slice(0,3).join(' ')}
+                      </span>
+                    )}
+                  </header>
+
+                  <div class="fiche-corps">
+                    {m.categorie !== 'bon' ? (
+                      <>
+                        <div class="fiche-bloc">
+                          <span class="fiche-label">Ce que ça dit implicitement</span>
+                          <p>{m.implicite}</p>
+                        </div>
+                        <div class="fiche-bloc">
+                          <span class="fiche-label">Pourquoi ça pose problème</span>
+                          <p>{m.probleme}</p>
+                        </div>
+                        <div class="fiche-bloc fiche-alternative">
+                          <span class="fiche-label">Dire plutôt</span>
+                          <p>{m.alternative}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div class="fiche-bloc">
+                          <span class="fiche-label">Ce que ça dit</span>
+                          <p>{m.implicite}</p>
+                        </div>
+                        <div class="fiche-bloc fiche-alternative">
+                          <span class="fiche-label">Comment l'utiliser</span>
+                          <p>{m.alternative}</p>
+                        </div>
+                      </>
+                    )}
+
+                    {m.testMaryan && (
+                      <div class="fiche-test">
+                        <span class="test-label">Test MARYAN</span>
+                        <span class="test-question">→ {m.testMaryan}</span>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+
+    <!-- ── FORMULAIRE CONTRIBUTION ── -->
+    <section class="contribution" id="contribuer">
+      <div class="contribution-inner">
+        <h2>Un mot vous crispe ?</h2>
+        <p>Les élus inscrits peuvent soumettre un mot. Les contributions les plus votées entrent dans ce glossaire — et dans le Copilote MARYAN.</p>
+
+        <div id="contrib-auth-check">
+          <!-- Géré côté client selon l'état de connexion -->
+          <div id="contrib-non-connecte">
+            <p class="contrib-info">Pour contribuer, vous devez être <a href="/login">connecté·e</a>.</p>
+          </div>
+
+          <form id="contrib-form" class="contrib-formulaire" style="display:none">
+            <div class="contrib-champ">
+              <label for="contrib-mot">Le mot ou l'expression</label>
+              <input type="text" id="contrib-mot" name="mot" placeholder="Ex : aller sur le terrain" required />
+            </div>
+            <div class="contrib-champ">
+              <label for="contrib-pourquoi">Pourquoi ça vous crispe ?</label>
+              <textarea id="contrib-pourquoi" name="pourquoi" rows="3" placeholder="Ce que ce mot dit implicitement, pourquoi ça pose problème…" required></textarea>
+            </div>
+            <div class="contrib-champ">
+              <label for="contrib-alternative">Une alternative possible <span class="optionnel">(facultatif)</span></label>
+              <input type="text" id="contrib-alternative" name="alternative" placeholder="Ce qu'on pourrait dire à la place" />
+            </div>
+            <button type="submit" class="contrib-btn">Soumettre ce mot →</button>
+            <p id="contrib-feedback" class="contrib-feedback" style="display:none"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</BaseLayout>
+
+<style>
+  /* ── BASE ── */
+  .mots-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  /* ── INTRO ── */
+  .intro {
+    padding: 5rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+  .intro-inner { max-width: 680px; }
+  .label-page {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 1.5rem;
+    color: var(--deep);
+  }
+  .chapeau {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #374151;
+    margin: 0 0 1rem;
+  }
+  .intro-note {
+    margin-top: 1.75rem;
+    padding: 0.9rem 1.1rem;
+    background: #f9fafb;
+    border-left: 3px solid var(--deep);
+    font-size: 0.875rem;
+    color: #6b7280;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ── FILTRES ── */
+  .filtres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+  .filtre {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-size: 0.825rem;
+    cursor: pointer;
+    color: #374151;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .filtre:hover {
+    border-color: var(--cat-color, var(--deep));
+    color: var(--cat-color, var(--deep));
+  }
+  .filtre.actif {
+    background: var(--deep);
+    border-color: var(--deep);
+    color: #fff;
+  }
+  .filtre-emoji { margin-right: 0.3em; }
+
+  /* ── CATÉGORIES ── */
+  .categorie-bloc {
+    margin-bottom: 4rem;
+  }
+  .categorie-bloc.masque { display: none; }
+
+  .categorie-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .categorie-emoji {
+    font-size: 1.75rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .categorie-titre {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem;
+  }
+  .categorie-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── FICHES ── */
+  .mots-liste {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .fiche {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    background: #fff;
+  }
+  .fiche:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
+
+  .fiche-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    background: #f9fafb;
+    flex-wrap: wrap;
+  }
+  .fiche-mot {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--deep);
+  }
+  .fiche-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .fiche-corps {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .fiche-bloc { display: flex; flex-direction: column; gap: 0.3rem; }
+  .fiche-bloc p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #374151;
+  }
+  .fiche-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+
+  .fiche-alternative {
+    background: #f0fdf4;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border-left: 3px solid #16a34a;
+  }
+  .fiche-alternative .fiche-label { color: #166534; }
+  .fiche-alternative p { color: #166534; font-weight: 500; }
+
+  .fiche-test {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .test-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep);
+    white-space: nowrap;
+  }
+  .test-question {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #374151;
+  }
+
+  /* ── CONTRIBUTION ── */
+  .contribution {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+  }
+  .contribution-inner { max-width: 560px; }
+  .contribution h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--deep);
+  }
+  .contribution > .contribution-inner > p {
+    color: #374151;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0 0 2rem;
+  }
+
+  .contrib-info {
+    font-size: 0.9rem;
+    color: #6b7280;
+    padding: 1rem 1.25rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .contrib-info a { color: var(--deep); text-decoration: underline; }
+
+  .contrib-formulaire {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .contrib-champ {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .contrib-champ label {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--deep);
+  }
+  .optionnel {
+    font-weight: 400;
+    color: #9ca3af;
+  }
+  .contrib-champ input,
+  .contrib-champ textarea {
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--deep);
+    background: #fff;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  .contrib-champ input:focus,
+  .contrib-champ textarea:focus {
+    outline: none;
+    border-color: var(--deep);
+  }
+  .contrib-btn {
+    align-self: flex-start;
+    padding: 0.75rem 1.5rem;
+    background: var(--deep);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .contrib-btn:hover { opacity: 0.85; }
+
+  .contrib-feedback {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin: 0;
+  }
+  .contrib-feedback.ok {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+  .contrib-feedback.erreur {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .filtres { gap: 0.4rem; }
+    .filtre { font-size: 0.75rem; padding: 0.4rem 0.75rem; }
+    .fiche-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const supabase = createClient(
+    (import.meta as any).env.PUBLIC_SUPABASE_URL,
+    (import.meta as any).env.PUBLIC_SUPABASE_ANON_KEY
+  );
+
+  // ── Filtres ──
+  const filtres = document.querySelectorAll<HTMLButtonElement>('.filtre');
+  const blocs = document.querySelectorAll<HTMLElement>('.categorie-bloc');
+
+  filtres.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filtres.forEach(b => b.classList.remove('actif'));
+      btn.classList.add('actif');
+      const cat = btn.dataset.cat;
+      blocs.forEach(bloc => {
+        if (cat === 'tous' || bloc.dataset.cat === cat) {
+          bloc.classList.remove('masque');
+        } else {
+          bloc.classList.add('masque');
+        }
+      });
+    });
+  });
+
+  // ── Auth check ──
+  const { data: { session } } = await supabase.auth.getSession();
+  const nonConnecte = document.getElementById('contrib-non-connecte');
+  const form = document.getElementById('contrib-form') as HTMLFormElement | null;
+
+  if (session && form) {
+    nonConnecte?.remove();
+    form.style.display = 'flex';
+  }
+
+  // ── Formulaire ──
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const feedback = document.getElementById('contrib-feedback') as HTMLElement;
+    const btn = form.querySelector<HTMLButtonElement>('.contrib-btn');
+
+    const mot = (document.getElementById('contrib-mot') as HTMLInputElement).value.trim();
+    const pourquoi = (document.getElementById('contrib-pourquoi') as HTMLTextAreaElement).value.trim();
+    const alternative = (document.getElementById('contrib-alternative') as HTMLInputElement).value.trim();
+
+    if (btn) btn.disabled = true;
+
+    try {
+      const res = await fetch('/api/glossaire-contribution', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mot, pourquoi, alternative, user_id: session?.user?.id })
+      });
+
+      const data = await res.json();
+      feedback.style.display = 'block';
+
+      if (res.ok) {
+        feedback.className = 'contrib-feedback ok';
+        feedback.textContent = 'Merci ! Votre contribution est en attente de validation.';
+        form.reset();
+      } else {
+        feedback.className = 'contrib-feedback erreur';
+        feedback.textContent = `Erreur : ${data.error}`;
+      }
+    } catch {
+      feedback.style.display = 'block';
+      feedback.className = 'contrib-feedback erreur';
+      feedback.textContent = 'Une erreur est survenue. Réessayez.';
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  });
+</script>
