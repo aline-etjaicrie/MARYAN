@@ -1,0 +1,346 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { fichesDroitsDevoirs } from '../../data/droits-devoirs';
+
+export function getStaticPaths() {
+  return fichesDroitsDevoirs.map(f => ({
+    params: { slug: f.slug },
+    props: { fiche: f },
+  }));
+}
+
+const { fiche } = Astro.props;
+
+const pilierLabels: Record<string, string> = {
+  ethique: 'Éthique & probité',
+  travail: 'Travail & temps',
+  formation: 'Formation & reconversion',
+  indemnite: 'Indemnités & frais',
+  protection: 'Protection juridique',
+};
+
+const pilierCouleurs: Record<string, string> = {
+  ethique: '#C0392B',
+  travail: '#2471A3',
+  formation: '#1E8449',
+  indemnite: '#8E44AD',
+  protection: '#D35400',
+};
+
+const couleur = pilierCouleurs[fiche.pilier] ?? '#0A192F';
+
+// Minimal markdown → HTML (bold, lists, paragraphs)
+function renderContenu(text: string): string {
+  const paragraphs = text.trim().split(/\n\n+/);
+  return paragraphs.map(para => {
+    const lines = para.split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.every(l => l.startsWith('- '))) {
+      const items = lines.map(l =>
+        `<li>${l.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</li>`
+      ).join('');
+      return `<ul>${items}</ul>`;
+    }
+    const html = para
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+    return `<p>${html}</p>`;
+  }).join('');
+}
+---
+
+<BaseLayout
+  title={`${fiche.titre} — MARYAN`}
+  description={fiche.accroche}>
+
+  <main class="fiche-page">
+
+    <nav class="breadcrumb">
+      <a href="/droits">← Droits & devoirs</a>
+      <span>/</span>
+      <span style={`color: ${couleur}`}>{pilierLabels[fiche.pilier]}</span>
+    </nav>
+
+    <header class="fiche-header">
+      <div class="fiche-meta">
+        <span class="pilier-badge" style={`background: ${couleur}18; color: ${couleur}; border-color: ${couleur}30`}>
+          {pilierLabels[fiche.pilier]}
+        </span>
+        <span class="niveau-badge" data-niveau={fiche.niveau}>
+          {fiche.niveau === 'debutant' ? 'Premier mandat' : 'Tous niveaux'}
+        </span>
+      </div>
+      <h1>{fiche.titre}</h1>
+      <p class="accroche">{fiche.accroche}</p>
+    </header>
+
+    <div class="fiche-body">
+
+      <!-- Sections -->
+      {fiche.sections.map(section => (
+        <section class="section-bloc">
+          <h2 class="section-titre" style={`border-color: ${couleur}`}>{section.titre}</h2>
+          <div class="section-contenu" set:html={renderContenu(section.contenu)} />
+        </section>
+      ))}
+
+      <!-- Encadré pratique -->
+      {fiche.encadre_pratique && (
+        <div class="encadre-pratique" style={`border-color: ${couleur}; background: ${couleur}08`}>
+          <span class="encadre-label" style={`color: ${couleur}`}>En pratique</span>
+          <p>{fiche.encadre_pratique}</p>
+        </div>
+      )}
+
+      <!-- Source juridique -->
+      <div class="source-juridique">
+        <div class="source-header">
+          <span class="source-label">Référence juridique</span>
+          <span class="source-ref">{fiche.source_juridique.reference}</span>
+        </div>
+        <blockquote class="texte-juridique">
+          {fiche.source_juridique.texte}
+        </blockquote>
+      </div>
+
+      <!-- Mots-clés -->
+      <div class="mots-cles">
+        {fiche.mots_cles.map(mot => (
+          <span class="mot-cle">{mot}</span>
+        ))}
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav-bottom">
+        <a href="/droits" class="btn-retour">← Toutes les fiches</a>
+        <a href="/copilote" class="btn-copilote">Poser une question au Copilote →</a>
+      </div>
+
+    </div>
+
+  </main>
+
+</BaseLayout>
+
+<style>
+  .fiche-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+  }
+
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.825rem;
+    color: #9ca3af;
+    margin-bottom: 2.5rem;
+    margin-top: 1rem;
+  }
+  .breadcrumb a {
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .breadcrumb a:hover { color: var(--deep); }
+
+  /* ── HEADER ── */
+  .fiche-header {
+    margin-bottom: 3rem;
+  }
+
+  .fiche-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .pilier-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+  .niveau-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+  .niveau-badge[data-niveau="debutant"] {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 800;
+    color: var(--deep);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+
+  .accroche {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #4b5563;
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* ── BODY ── */
+  .fiche-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* ── SECTIONS ── */
+  .section-bloc {}
+  .section-titre {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep);
+    margin: 0 0 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid;
+  }
+  .section-contenu :global(p) {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #374151;
+    margin: 0 0 0.75rem;
+  }
+  .section-contenu :global(p:last-child) { margin-bottom: 0; }
+  .section-contenu :global(strong) {
+    font-weight: 700;
+    color: var(--deep);
+  }
+  .section-contenu :global(ul) {
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+  }
+  .section-contenu :global(li) {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ── ENCADRÉ PRATIQUE ── */
+  .encadre-pratique {
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid;
+    border-radius: 0 8px 8px 0;
+  }
+  .encadre-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .encadre-pratique p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #374151;
+    margin: 0;
+  }
+
+  /* ── SOURCE JURIDIQUE ── */
+  .source-juridique {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+  }
+  .source-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.85rem;
+  }
+  .source-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+  .source-ref {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--deep);
+  }
+  .texte-juridique {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    background: white;
+    border-left: 3px solid var(--border);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #4b5563;
+    font-style: italic;
+  }
+
+  /* ── MOTS-CLÉS ── */
+  .mots-cles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .mot-cle {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.65rem;
+    background: #f3f4f6;
+    color: #6b7280;
+    border-radius: 999px;
+  }
+
+  /* ── NAVIGATION ── */
+  .nav-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .btn-retour {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .btn-retour:hover { color: var(--deep); }
+
+  .btn-copilote {
+    display: inline-block;
+    padding: 0.65rem 1.25rem;
+    background: var(--deep);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn-copilote:hover { opacity: 0.85; }
+
+  @media (max-width: 640px) {
+    .nav-bottom { flex-direction: column; }
+    .btn-copilote { width: 100%; text-align: center; }
+  }
+</style>

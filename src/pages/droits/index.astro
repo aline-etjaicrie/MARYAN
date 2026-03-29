@@ -1,0 +1,215 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { fichesDroitsDevoirs } from '../../data/droits-devoirs';
+
+const piliers = [
+  { id: 'ethique', label: 'Éthique & probité', couleur: '#C0392B', emoji: '⚖️' },
+  { id: 'travail', label: 'Travail & temps', couleur: '#2471A3', emoji: '🕐' },
+  { id: 'formation', label: 'Formation & reconversion', couleur: '#1E8449', emoji: '📚' },
+  { id: 'indemnite', label: 'Indemnités & frais', couleur: '#8E44AD', emoji: '💶' },
+  { id: 'protection', label: 'Protection juridique', couleur: '#D35400', emoji: '🛡️' },
+] as const;
+---
+
+<BaseLayout
+  title="Droits & devoirs des élus — MARYAN"
+  description="Vos droits en tant qu'élu municipal : absences, crédit d'heures, formation, indemnités, protection juridique. Sourcé article par article dans le CGCT.">
+
+  <main class="droits-page">
+
+    <section class="intro">
+      <div class="intro-inner">
+        <span class="label-page">Droits & devoirs</span>
+        <h1>Ce que la loi prévoit pour vous.</h1>
+        <p class="chapeau">
+          La plupart des élus ne connaissent pas leurs droits — et donc ne les utilisent pas.
+          Ces fiches traduisent les articles L.2123-1 à L.2123-35 du Code général des collectivités territoriales
+          en langage clair, avec les références juridiques exactes.
+        </p>
+      </div>
+    </section>
+
+    <section class="catalogue">
+      {piliers.map(pilier => {
+        const fiches = fichesDroitsDevoirs.filter(f => f.pilier === pilier.id);
+        return (
+          <div class="pilier-bloc">
+            <div class="pilier-header" style={`border-color: ${pilier.couleur}`}>
+              <span class="pilier-emoji">{pilier.emoji}</span>
+              <h2 class="pilier-titre" style={`color: ${pilier.couleur}`}>{pilier.label}</h2>
+            </div>
+            <div class="fiches-liste">
+              {fiches.map(fiche => (
+                <a href={`/droits/${fiche.slug}`} class="fiche-card">
+                  <div class="fiche-card-inner">
+                    <div class="fiche-card-text">
+                      <span class="fiche-niveau" data-niveau={fiche.niveau}>
+                        {fiche.niveau === 'debutant' ? 'Premier mandat' : 'Tous niveaux'}
+                      </span>
+                      <h3 class="fiche-titre">{fiche.titre}</h3>
+                      <p class="fiche-accroche">{fiche.accroche}</p>
+                    </div>
+                    <span class="fiche-arrow" style={`color: ${pilier.couleur}`}>→</span>
+                  </div>
+                  <div class="fiche-source">{fiche.source_juridique.reference}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+
+  </main>
+
+</BaseLayout>
+
+<style>
+  .droits-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  .intro {
+    padding: 5rem 0 3.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .intro-inner { max-width: 680px; }
+
+  .label-page {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 1.25rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--deep);
+    margin: 0 0 1.5rem;
+  }
+
+  .chapeau {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #374151;
+    margin: 0;
+  }
+
+  /* ── CATALOGUE ── */
+  .catalogue {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .pilier-bloc {}
+
+  .pilier-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid;
+    margin-bottom: 1.25rem;
+  }
+  .pilier-emoji { font-size: 1.4rem; }
+  .pilier-titre {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .fiches-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .fiche-card {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.25rem 0.9rem;
+    text-decoration: none;
+    background: #fff;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .fiche-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border-color: #d1d5db;
+  }
+
+  .fiche-card-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .fiche-card-text { flex: 1; }
+
+  .fiche-niveau {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+  .fiche-niveau[data-niveau="debutant"] {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .fiche-titre {
+    font-size: 0.975rem;
+    font-weight: 700;
+    color: var(--deep);
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+  }
+
+  .fiche-accroche {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .fiche-arrow {
+    font-size: 1.2rem;
+    font-weight: 300;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: transform 0.15s;
+  }
+  .fiche-card:hover .fiche-arrow {
+    transform: translateX(3px);
+  }
+
+  .fiche-source {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-style: italic;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .fiche-card-inner { gap: 0.75rem; }
+  }
+</style>
