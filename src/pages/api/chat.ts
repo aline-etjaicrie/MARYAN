@@ -77,6 +77,12 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Aucun message à traiter.' }, 400);
   }
 
+  const fichesDisponibles = maryanResources
+    .map(r => `- ${r.slug} : ${r.title}`)
+    .join('\n');
+
+  const resourcesSection = `## Ressources à suggérer\n\nVoici la liste exhaustive des fiches disponibles dans MARYAN :\n${fichesDisponibles}\n\nRègles strictes :\n- Tu ne peux suggérer QUE des fiches de cette liste\n- Tu ne suggères une fiche que si son titre correspond directement et précisément au sujet de la question posée\n- Maximum 2 fiches par réponse\n- Si aucune fiche ne correspond exactement : ne suggère rien\n- Ne jamais inventer un slug ou un titre qui n'est pas dans la liste`;
+
   try {
     const isAgentMode = !!agentId;
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
@@ -91,7 +97,7 @@ export const POST: APIRoute = async ({ request }) => {
       : [
           {
             role: 'system' as const,
-            content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage)
+            content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage) + '\n\n' + resourcesSection
           },
           ...messages
         ];
