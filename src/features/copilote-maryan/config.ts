@@ -1,4 +1,5 @@
 import { droitsElusPromptContext } from '../../data/droits-devoirs';
+import { promptCGCT } from '../../data/prompt-cgct';
 
 export type MaryanMode = 'libre' | 'profil';
 export type MaryanSituationMode =
@@ -720,5 +721,5 @@ Tu tiens compte de ces éléments sans les réciter.`
 Règle : commence par cette scène, pas par le thème technique.`
     : '';
 
-  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${profileContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}`;
+  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${promptCGCT}\n\n${profileContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}`;
 }
