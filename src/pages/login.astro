@@ -220,6 +220,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (error) {
           showError('Email ou mot de passe incorrect.');
         } else if (data.session) {
+          // Sauvegarde du diagnostic localStorage → Supabase profiles
+          try {
+            const rawDiag = localStorage.getItem('maryan_v4_diag');
+            if (rawDiag) {
+              const diag = JSON.parse(rawDiag);
+              if (diag?.diagnostic_key && diag?.diagnostic_label) {
+                await supabase
+                  .from('profiles')
+                  .update({
+                    diagnostic_key: diag.diagnostic_key,
+                    diagnostic_label: diag.diagnostic_label
+                  })
+                  .eq('id', data.session.user.id);
+              }
+            }
+          } catch (_) { /* non bloquant */ }
           window.location.href = '/mon-compte';
         }
       }
