@@ -44,6 +44,32 @@ const {
       </div>
     </header>
     <slot />
+
+    <!-- Bandeau cookies RGPD -->
+    <div id="cookieBar" class="cookie-bar" style="display:none;">
+      <p class="cookie-bar-text">
+        MARYAN utilise uniquement des cookies techniques nécessaires au fonctionnement de l'authentification (Supabase). Aucun cookie publicitaire ou de tracking.
+        <a href="/confidentialite">En savoir plus</a>
+      </p>
+      <button id="cookieBarBtn" class="cookie-bar-btn">J'ai compris</button>
+    </div>
+    <script>
+      (function() {
+        if (!localStorage.getItem('maryan_cookies_ok')) {
+          var bar = document.getElementById('cookieBar');
+          if (bar) bar.style.display = 'flex';
+        }
+        var btn = document.getElementById('cookieBarBtn');
+        if (btn) {
+          btn.addEventListener('click', function() {
+            localStorage.setItem('maryan_cookies_ok', '1');
+            var b = document.getElementById('cookieBar');
+            if (b) b.style.display = 'none';
+          });
+        }
+      })();
+    </script>
+
     <footer class="site-footer">
       <div class="container footer-grid">
         <div class="footer-brand">
@@ -80,3 +106,35 @@ const {
     </footer>
   </body>
 </html>
+
+<style>
+  .cookie-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--deep);
+    color: rgba(255,255,255,0.85);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.85rem;
+    z-index: 9999;
+    flex-wrap: wrap;
+  }
+  .cookie-bar-text { margin: 0; line-height: 1.5; }
+  .cookie-bar a { color: var(--neon); }
+  .cookie-bar-btn {
+    background: var(--neon);
+    color: var(--deep);
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+</style>

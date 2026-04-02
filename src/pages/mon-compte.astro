@@ -108,7 +108,10 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
           <section class="dash-section" id="sessionsSection" style="display:none;">
             <div class="section-header-row">
               <h2 class="dash-h2">Vos sessions récentes</h2>
-              <a href="/copilote" class="btn-link">Nouveau →</a>
+              <div class="sessions-header-actions">
+                <button id="deleteAllSessionsBtn" class="btn-delete-all" title="Supprimer toutes mes sessions">Supprimer toutes mes sessions</button>
+                <a href="/copilote" class="btn-link">Nouveau →</a>
+              </div>
             </div>
             <div id="sessionsList" class="sessions-list"></div>
           </section>
@@ -363,21 +366,74 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
           const sessionsList = document.getElementById('sessionsList');
           if (sessions?.length && sessionsSection && sessionsList) {
             sessionsSection.style.display = 'block';
-            sessionsList.innerHTML = sessions.slice(0, 3).map((s: {
-              id: string;
-              session_type: string;
-              titre: string;
-              updated_at: string;
-            }) => `
-              <a href="/copilote?session_id=${s.id}" class="session-item">
-                <div class="session-meta">
-                  <span class="session-badge session-badge-${s.session_type}">${sessionTypeBadge(s.session_type)}</span>
-                  <span class="session-date">${formatDate(s.updated_at)}</span>
+
+            function renderSessions(list: { id: string; session_type: string; titre: string; updated_at: string; }[]) {
+              if (!sessionsList) return;
+              sessionsList.innerHTML = list.slice(0, 5).map((s) => `
+                <div class="session-row" data-session-id="${s.id}">
+                  <a href="/copilote?session_id=${s.id}" class="session-item">
+                    <div class="session-meta">
+                      <span class="session-badge session-badge-${s.session_type}">${sessionTypeBadge(s.session_type)}</span>
+                      <span class="session-date">${formatDate(s.updated_at)}</span>
+                    </div>
+                    <p class="session-titre">${s.titre || 'Session sans titre'}</p>
+                    <span class="session-cta">Reprendre →</span>
+                  </a>
+                  <button class="btn-delete-session" data-session-id="${s.id}" title="Supprimer cette session" aria-label="Supprimer cette session">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    Supprimer
+                  </button>
                 </div>
-                <p class="session-titre">${s.titre || 'Session sans titre'}</p>
-                <span class="session-cta">Reprendre →</span>
-              </a>
-            `).join('');
+              `).join('');
+
+              // Attacher les écouteurs sur les boutons de suppression
+              sessionsList.querySelectorAll('.btn-delete-session').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                  e.preventDefault();
+                  const sessionId = (btn as HTMLElement).dataset.sessionId;
+                  if (!sessionId) return;
+                  if (!confirm('Supprimer cette session ? Cette action est irréversible.')) return;
+                  try {
+                    const delRes = await fetch('/api/sessions', {
+                      method: 'DELETE',
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ session_id: sessionId })
+                    });
+                    if (delRes.ok) {
+                      const row = sessionsList?.querySelector(`.session-row[data-session-id="${sessionId}"]`);
+                      if (row) row.remove();
+                      if (!sessionsList?.querySelector('.session-row')) {
+                        if (sessionsSection) sessionsSection.style.display = 'none';
+                      }
+                    }
+                  } catch (_) { /* non bloquant */ }
+                });
+              });
+            }
+
+            renderSessions(sessions);
+
+            // Bouton "Supprimer toutes mes sessions"
+            document.getElementById('deleteAllSessionsBtn')?.addEventListener('click', async () => {
+              if (!confirm('Supprimer toutes vos sessions ? Cette action est irréversible.')) return;
+              try {
+                const delRes = await fetch('/api/sessions', {
+                  method: 'DELETE',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ delete_all: true })
+                });
+                if (delRes.ok) {
+                  if (sessionsList) sessionsList.innerHTML = '';
+                  if (sessionsSection) sessionsSection.style.display = 'none';
+                }
+              } catch (_) { /* non bloquant */ }
+            });
           }
         }
       } catch (_) { /* non bloquant */ }
@@ -608,6 +664,13 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 
   /* ── Sessions ── */
   .sessions-list { display: flex; flex-direction: column; gap: 1rem; }
+  .sessions-header-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+  .session-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .session-row .session-item { flex: 1; }
   .session-item {
     text-decoration: none;
     background: white;
@@ -636,6 +699,41 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
   .session-date { font-size: 0.8rem; color: #54636C; }
   .session-titre { font-size: 0.97rem; font-weight: 600; color: var(--deep); margin: 0; }
   .session-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); }
+
+  .btn-delete-session {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    background: none;
+    border: 1px solid #FFCDD2;
+    border-radius: 1.25rem;
+    padding: 0.75rem 1rem;
+    color: #C62828;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    min-width: 72px;
+  }
+  .btn-delete-session:hover { background: #FFF0F0; border-color: #C62828; }
+
+  .btn-delete-all {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #C62828;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border-bottom: 1px solid #FFCDD2;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-delete-all:hover { border-bottom-color: #C62828; }
 
   /* ── Tests ── */
   .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }

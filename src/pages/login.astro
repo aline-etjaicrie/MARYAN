@@ -82,6 +82,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </select>
           </div>
 
+          <div id="consentPartisGroup" class="field-group consent-group" style="display:none;">
+            <label class="consent-label">
+              <input type="checkbox" id="consentPartis" name="consentPartis" />
+              <span>J'accepte que MARYAN traite mon affiliation politique <strong>(donnée de catégorie particulière au sens de l'article 9 du RGPD)</strong> pour personnaliser les alertes du copilote. Ce consentement est facultatif et révocable à tout moment depuis mon compte.</span>
+            </label>
+          </div>
+
           <button type="submit" id="submitBtn" class="btn-submit">
             <span id="btnLabel">Se connecter</span>
             <span id="btnLoader" style="display:none;">Chargement…</span>
@@ -128,6 +135,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const confirmGroup = document.getElementById('confirmGroup') as HTMLDivElement;
     const politicalLabelSelect = document.getElementById('politicalLabel') as HTMLSelectElement;
     const politicalLabelGroup = document.getElementById('politicalLabelGroup') as HTMLDivElement;
+    const consentPartisGroup = document.getElementById('consentPartisGroup') as HTMLDivElement;
+    const consentPartisCheckbox = document.getElementById('consentPartis') as HTMLInputElement;
     const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
     const btnLabel = document.getElementById('btnLabel')!;
     const btnLoader = document.getElementById('btnLoader')!;
@@ -151,6 +160,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         modeToggle.textContent = 'Se connecter';
         confirmGroup.style.display = 'block';
         politicalLabelGroup.style.display = 'block';
+        consentPartisGroup.style.display = 'block';
         passwordInput.setAttribute('autocomplete', 'new-password');
       } else {
         formTitle.textContent = 'Se connecter';
@@ -160,6 +170,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         modeToggle.textContent = 'Créer un compte';
         confirmGroup.style.display = 'none';
         politicalLabelGroup.style.display = 'none';
+        consentPartisGroup.style.display = 'none';
         passwordInput.setAttribute('autocomplete', 'current-password');
       }
     });
@@ -207,6 +218,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         const partiId = politicalLabelSelect.value || null;
+
+        // Vérification consentement article 9 RGPD
+        if (partiId && !consentPartisCheckbox.checked) {
+          showError('Veuillez cocher la case de consentement pour renseigner votre affiliation politique, ou laisser le champ vide.');
+          return;
+        }
 
         // Mapping parti_id → label lisible pour Mistral
         const PARTI_LABELS: Record<string, string> = {
@@ -476,5 +493,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   optgroup {
     font-weight: 700;
     color: var(--deep);
+  }
+
+  .consent-group {
+    background: #F8F9FF;
+    border: 1.5px solid #C5CAE9;
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .consent-label {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #333;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .consent-label input[type="checkbox"] {
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--deep);
+    cursor: pointer;
   }
 </style>

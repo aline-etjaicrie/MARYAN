@@ -111,4 +111,41 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
+// DELETE /api/sessions — supprime une session ou toutes les sessions de l'utilisateur
+export const DELETE: APIRoute = async ({ request }) => {
+  const token = getToken(request);
+  if (!token) return json({ error: 'Non authentifié.' }, 401);
+
+  const userId = await getAuthenticatedUserId(token);
+  if (!userId) return json({ error: 'Token invalide.' }, 401);
+
+  let body: { session_id?: string; delete_all?: boolean } | null = null;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Format JSON invalide.' }, 400);
+  }
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+  if (body?.delete_all) {
+    const { error } = await supabase
+      .from('copilote_sessions')
+      .delete()
+      .eq('user_id', userId);
+    if (error) return json({ error: error.message }, 500);
+    return json({ success: true });
+  } else if (body?.session_id) {
+    const { error } = await supabase
+      .from('copilote_sessions')
+      .delete()
+      .eq('id', body.session_id)
+      .eq('user_id', userId);
+    if (error) return json({ error: error.message }, 500);
+    return json({ success: true });
+  } else {
+    return json({ error: 'Paramètre session_id ou delete_all requis.' }, 400);
+  }
+};
+
 export const ALL: APIRoute = async () => json({ error: 'Méthode non autorisée.' }, 405);
