@@ -1,0 +1,452 @@
+/*
+ * ============================================================
+ *  MARYAN — DESIGN SYSTEM
+ *  Charte graphique complète — v3 "République Design"
+ *  Fichier de référence pour partage designer
+ * ============================================================
+ *
+ *  Imports Google Fonts (à inclure dans le <head>) :
+ *  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+ *
+ * ============================================================
+ */
+
+
+/* ============================================================
+   1. TOKENS — COULEURS
+   ============================================================
+
+   Palette "République Design V3"
+
+   --bg            #F8F9FA   Ivoire blanc — fond de page, respiration
+   --deep          #0A192F   Bleu Encre Souverain — header, footer, sections sombres, CTA primaire
+   --ink           #1E2A32   Gris-bleu — texte courant sur fond clair
+   --accent-red    #E63946   Rouge Action — boutons hover, labels, tension, urgence
+   --neon          #ADFF2F   Vert Néon — signal, accent fort, mots mis en emphase dans les titres
+   --surface       #FFFFFF   Blanc pur — fond de carte
+   --border                  Bordure subtile = deep à 8% d'opacité
+   --border-neon             Bordure hover carte = neon à 40% d'opacité
+
+   Règle d'usage :
+   - Fond de page → --bg
+   - Texte courant → --ink
+   - Titres → --deep
+   - Sections sombres (hero, footer, CTA) → --deep comme fond, tout texte en blanc
+   - Accent fort / interactif → --accent-red (hover bouton, label)
+   - Mot-clé dans un titre → --neon (via <em> ou .emphasis)
+   - Ne jamais utiliser --neon comme couleur de fond ou de texte courant
+
+   ============================================================ */
+
+:root {
+  --bg:           #F8F9FA;
+  --deep:         #0A192F;
+  --ink:          #1E2A32;
+  --accent-red:   #E63946;
+  --neon:         #ADFF2F;
+  --surface:      #FFFFFF;
+  --border:       rgba(10, 25, 47, 0.08);
+  --border-neon:  rgba(173, 255, 47, 0.4);
+
+  /* ============================================================
+     2. TOKENS — TYPOGRAPHIE
+     ============================================================
+
+     --font-main      Inter — tout le texte : corps, titres, UI
+     --font-accent    Playfair Display — UNIQUEMENT pour les italiques d'emphase
+
+     Règles d'usage :
+     - Corps de texte    : Inter 400, line-height 1.625
+     - Titres h1–h4      : Inter 800, line-height 1.15, couleur --deep
+     - Labels / kicker   : Inter 800, uppercase, letter-spacing 0.15em, 0.75rem
+     - Emphase dans titre: Playfair Display italic 500, couleur --neon
+     - Emphase dans corps: Playfair Display italic 500, couleur héritée
+
+     ============================================================ */
+
+  --font-main:    'Inter', system-ui, sans-serif;
+  --font-accent:  'Playfair Display', serif;
+}
+
+
+/* ============================================================
+   3. RESET BASE
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-main);
+  line-height: 1.625;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+
+/* ============================================================
+   4. TYPOGRAPHIE
+   ============================================================ */
+
+/* Titres — Inter Black, couleur --deep */
+h1, h2, h3, h4 {
+  color: var(--deep);
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+/*
+  "La deuxième voix" — Emphase italique
+  Usage : <h2>Le mot <em>clé</em> qui compte</h2>
+  ou    : <span class="emphasis">mot</span>
+  → Playfair Display italic, devient vert néon dans les titres
+*/
+span.emphasis,
+em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 500;
+  display: inline-block;
+}
+
+h1 em, h2 em, h3 em, h4 em,
+h1 .emphasis, h2 .emphasis, h3 .emphasis, h4 .emphasis {
+  color: var(--neon) !important;
+}
+
+/*
+  Label / Kicker de section
+  Usage : <span class="label-v3">Catégorie</span>
+  → Tiret vert néon à gauche, texte rouge majuscule
+*/
+.label-v3 {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-red);
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+.label-v3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  background: var(--neon);
+  transform: translateY(-50%);
+}
+
+/* Sur fond sombre (--deep), le label passe en blanc */
+.bg-deep .label-v3,
+.section-v3.dark .label-v3 {
+  color: white !important;
+}
+.bg-deep .label-v3::before,
+.section-v3.dark .label-v3::before {
+  background: white !important;
+}
+
+/* Intro de section (sous-titre descriptif centré) */
+.intro-v3 {
+  font-size: 1.25rem;
+  color: #54636C;
+}
+
+
+/* ============================================================
+   5. MISE EN PAGE
+   ============================================================ */
+
+/* Conteneur standard */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Conteneur étroit (articles, textes longs) */
+.container-narrow {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Section standard — grand espacement vertical */
+.section-v3 {
+  padding: 8rem 0;
+}
+
+/* Section sombre */
+.section-v3.dark {
+  background-color: var(--deep);
+  color: white;
+}
+
+/* En-tête de section centré */
+.section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 5rem;
+}
+.section-header h2 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .section-v3 { padding: 5rem 0; }
+}
+
+
+/* ============================================================
+   6. BOUTONS
+   ============================================================
+
+   .btn-primary-v3   → fond --deep, hover passe en --accent-red
+   .btn-secondary-v3 → fond blanc, bordure, hover passe en --accent-red
+
+   Les deux sont en border-radius pill (99px).
+   Sur fond sombre, le secondaire reste blanc avec fond blanc.
+
+   ============================================================ */
+
+.btn-primary-v3 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 2.75rem;
+  background: var(--deep);
+  color: white;
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: var(--font-main);
+  box-shadow: 0 10px 30px rgba(10, 25, 47, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-primary-v3:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(10, 25, 47, 0.25);
+  background: var(--accent-red);
+}
+
+.btn-secondary-v3 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem 2.25rem;
+  background: white;
+  color: var(--deep);
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: var(--font-main);
+  border: 1.5px solid var(--border);
+  transition: all 0.2s;
+}
+.btn-secondary-v3:hover {
+  border-color: var(--accent-red);
+  background: var(--accent-red);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Secondaire sur fond sombre → reste blanc */
+.bg-deep .btn-secondary-v3,
+.section-v3.dark .btn-secondary-v3 {
+  background: white !important;
+  color: var(--deep) !important;
+  border-color: rgba(10, 25, 47, 0.12) !important;
+}
+.bg-deep .btn-secondary-v3:hover,
+.section-v3.dark .btn-secondary-v3:hover {
+  background: var(--accent-red) !important;
+  color: white !important;
+  border-color: var(--accent-red) !important;
+}
+
+
+/* ============================================================
+   7. CARTE
+   ============================================================
+
+   .card-v3 → fond blanc, bordure subtile, coins arrondis 32px
+   Au hover : bordure neon + élévation légère
+
+   ============================================================ */
+
+.card-v3 {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 32px;
+  padding: 3rem;
+  transition: all 0.4s ease;
+  height: 100%;
+}
+.card-v3:hover {
+  border-color: var(--border-neon);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.03);
+}
+
+
+/* ============================================================
+   8. TEXTURES & EFFETS DÉCORATIFS
+   ============================================================
+
+   Ces éléments sont superposés en position absolute/fixed,
+   pointer-events: none — ils ne bloquent pas les interactions.
+
+   .grain-overlay  → Bruit de grain (SVG fractalNoise), opacité 4%, fixe sur toute la page
+   .bg-grid-v3     → Grille 80×80px en --border, masque radial au centre
+   .glow-v3        → Tache de lumière floue (blur 100px), 40vw
+   .glow-red       → Positionnée haut-gauche, couleur --accent-red
+   .glow-blue      → Positionnée bas-droite, couleur #3B82F6
+
+   ============================================================ */
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.bg-grid-v3 {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+.glow-v3 {
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-red  { background: var(--accent-red); top: -10%; left: -10%; }
+.glow-blue { background: #3B82F6;           bottom: -10%; right: -10%; }
+
+
+/* ============================================================
+   9. NAVIGATION — HEADER
+   ============================================================
+
+   Header sticky, fond --deep, hauteur 56px.
+   Lien "Mon compte" coloré en --neon.
+   Sur mobile (< 640px) : seul le lien compte reste visible.
+
+   ============================================================ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--deep);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.header-logo {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: white;
+  text-decoration: none;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+.header-nav a {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.header-nav a:hover { color: white; }
+.header-compte {
+  color: var(--neon) !important;
+  font-weight: 700 !important;
+}
+@media (max-width: 640px) {
+  .header-nav { gap: 1rem; }
+  .header-nav a:not(.header-compte) { display: none; }
+}
+
+
+/* ============================================================
+   10. FOOTER
+   ============================================================
+
+   Fond --deep, padding 8rem.
+   Grille 3 colonnes : 2fr / 1fr / 2fr.
+   Sur mobile (< 992px) : 1 colonne.
+
+   ============================================================ */
+
+.site-footer {
+  padding: 8rem 0;
+  background: var(--deep);
+  color: white;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  gap: 4rem;
+  align-items: start;
+}
+.brand       { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.brand-sub   { font-size: 0.9rem; opacity: 0.6; margin-bottom: 2rem; }
+.footer-credit   { font-size: 0.85rem; opacity: 0.5; }
+.footer-credit a { color: white; text-decoration: underline; }
+
+.footer-nav     { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.footer-nav a   { color: white; text-decoration: none; font-size: 0.95rem; font-weight: 600; opacity: 0.7; transition: all 0.2s; }
+.footer-nav a:hover { opacity: 1; padding-left: 4px; }
+
+.footer-kicker { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem; }
+.footer-note   { font-size: 1rem; line-height: 1.6; opacity: 0.8; }
+
+@media (max-width: 992px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+
+/* ============================================================
+   FIN DU FICHIER
+   ============================================================
+   Favicon : public/favicon.png + public/favicon.ico
+   Google Fonts : Inter (400 500 600 700 800 900) + Playfair Display (italic 500)
+   ============================================================ */

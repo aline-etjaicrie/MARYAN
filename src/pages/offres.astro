@@ -1,302 +1,263 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InternalHeader from '../components/InternalHeader.astro';
 ---
 
 <BaseLayout
   title="Offres & Tarifs — MARYAN"
-  description="Découvrez MARYAN : votre copilote d'élu personnel ou l'outil partagé pour votre collectivité. Des offres adaptées à chaque besoin."
+  description="MARYAN, le copilote des élu·es. Choisissez votre rythme, dès 10 €/mois. Offres individuelles, pack groupe et collectivités."
 >
-  
-  <InternalHeader 
-    label="Offres MARYAN"
-    title="MARYAN, votre <em class='emphasis'>copilote d'élu·e</em>"
-    subtitle="Un agent conversationnel conçu pour vous aider à comprendre, décider et agir dans votre mandat. Des réponses claires, des outils concrets."
-  />
 
   <main class="offres-v3">
-    
-    <!-- HERO SELECTION -->
-    <section class="section-v3 offers-hero-v4">
-      <div class="container-narrow text-center">
-         <div class="offers-hero-panel">
-            <p class="hero-note-v4">Choisissez votre point d’entrée : tester le copilote immédiatement, ou équiper une collectivité avec un cadre plus large.</p>
-            <div class="hero-cta-group">
-               <a href="/copilote" class="btn-primary-v3 big">Essayer gratuitement</a>
-               <a href="#collectivites" class="btn-secondary-v3">Voir les offres collectivités</a>
-            </div>
-            <div class="hero-signals-v4">
-               <div class="hero-signal-item">
-                  <strong>Essai libre</strong>
-                  <span>Une première question, tout de suite.</span>
-               </div>
-               <div class="hero-signal-item">
-                  <strong>Usage individuel</strong>
-                  <span>Un copilote personnel pour vos décisions et prises de parole.</span>
-               </div>
-               <div class="hero-signal-item">
-                  <strong>Usage collectif</strong>
-                  <span>Une mise à disposition simple pour vos élu·es et vos équipes.</span>
-               </div>
-            </div>
-         </div>
-      </div>
-    </section>
 
-    <!-- CE QUE VOUS TROUVEZ ICI -->
-    <section class="section-v3 no-padding-top offers-utility-section">
+    <!-- ═══════════════════════════════════════
+         HERO
+    ═══════════════════════════════════════ -->
+    <section class="hero-offres bg-deep">
       <div class="container">
-        <div class="section-header section-header-left offers-section-head">
-           <span class="label-v3">L'utilité</span>
-           <h2>Être élu·e, c’est décider souvent, parfois seul·e, souvent vite.</h2>
-           <p class="intro-v3">MARYAN vous aide à retrouver un cadre clair avant d’agir, de parler ou d’arbitrer.</p>
-        </div>
-
-        <div class="utility-grid-v4">
-           <article class="utility-card-v4">
-              <span class="utility-num-v4">01</span>
-              <h3>Prendre position</h3>
-              <p>Quand vous devez trancher vite, sans perdre en justesse.</p>
-           </article>
-           <article class="utility-card-v4">
-              <span class="utility-num-v4">02</span>
-              <h3>Préparer une parole</h3>
-              <p>Quand il faut expliquer, cadrer ou tenir une prise de parole sensible.</p>
-           </article>
-           <article class="utility-card-v4">
-              <span class="utility-num-v4">03</span>
-              <h3>Relire une situation</h3>
-              <p>Quand un dossier, une tension ou une décision commencent à vous échapper.</p>
-           </article>
+        <div class="hero-offres-inner">
+          <span class="label-v3">MARYAN — le copilote des élu·es</span>
+          <h1>
+            Un doute sur une décision ?<br>
+            Une prise de parole à préparer ?<br>
+            Une situation sensible à gérer ?
+          </h1>
+          <p class="hero-lead">
+            MARYAN vous aide à <strong>trancher et à agir</strong> rapidement.
+          </p>
+          <ul class="hero-bullets">
+            <li>Utilisable en quelques minutes</li>
+            <li>Pensé pour le réel du mandat</li>
+          </ul>
+          <a href="/copilote" class="btn-primary-v3">Tester maintenant</a>
         </div>
       </div>
     </section>
 
-    <!-- OFFRE INDIVIDUELLE : AVANCER -->
-    <section class="section-v3 plan-section-v4">
-      <div class="container">
-        <div class="plan-hero-v3">
-           <div class="plan-header-v3">
-              <span class="card-kicker text-red">Offre Individuelle</span>
-              <h2>AVANCER</h2>
-              <p class="intro-v3 opacity-70">Pour ne plus rester seul·e face aux décisions.</p>
-              <div class="plan-price-v3">
-                 <span class="amount">29€</span><span class="period">/mois</span>
-              </div>
-              <p class="plan-summary-v3">Un copilote personnel pour cadrer une décision, préparer une prise de parole ou retrouver du recul sur un dossier délicat.</p>
-           </div>
-           <div class="plan-features-v3">
-              <p class="plan-list-label">Ce que vous activez</p>
-              <ul class="v3-list-check-neon">
-                 <li>Agent conversationnel complet</li>
-                 <li>Aide à la décision sur des cas concrets</li>
-                 <li>Préparation de prises de parole</li>
-                 <li>Décryptage de situations locales</li>
-                 <li>Diagnostic rapide pour prendre du recul</li>
-              </ul>
-              <p class="plan-footer-text">Pour les élu·es qui veulent aller vite, sans faire n’importe quoi.</p>
-              <div class="plan-buttons-v3">
-                 <button class="btn-primary-v3 checkout-btn" data-price-id="price_INDIVIDUAL_AVANCER" style="background:var(--neon);color:var(--deep);">S’abonner</button>
-                 <a href="/copilote" class="btn-secondary-v3 dark">Essayer gratuitement</a>
-              </div>
-           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- OFFRE COLLECTIVITES -->
-    <section id="collectivites" class="section-v3 bg-ivory">
-      <div class="container">
-        <div class="section-header text-center" style="margin-bottom: 5rem;">
-           <span class="label-v3">Collectivités</span>
-           <h2>MARYAN pour votre <span class="emphasis">collectivité</span></h2>
-           <p class="intro-v3">Un outil partagé au service de vos élu·es. Mise en place simple, coût maîtrisé, usage immédiat.</p>
-        </div>
-
-        <div class="pricing-grid-v3">
-           <!-- Petite Commune -->
-           <div class="price-bubble-v3 border-green">
-              <span class="dot-v3 bg-green"></span>
-              <h3>Petites communes</h3>
-              <p class="size-label">(Jusqu'à 5 000 hab.)</p>
-              <p class="price-v3">À partir de 50€/mois</p>
-              <ul class="v3-list-dots">
-                 <li>Accès pour quelques élu·es</li>
-                 <li>Appui sur les décisions du quotidien</li>
-                 <li>Préparation de prises de parole</li>
-              </ul>
-           </div>
-
-           <!-- Intermédiaire -->
-           <div class="price-bubble-v3 border-yellow">
-              <span class="dot-v3 bg-yellow"></span>
-              <h3>Communes intermédiaires</h3>
-              <p class="size-label">(5 000 à 20 000 hab.)</p>
-              <p class="price-v3">À partir de 100€/mois</p>
-              <ul class="v3-list-dots">
-                 <li>Accès élargi</li>
-                 <li>Aide à la décision plus régulière</li>
-                 <li>Décryptage de situations locales</li>
-              </ul>
-           </div>
-
-           <!-- Ville -->
-           <div class="price-bubble-v3 border-blue">
-              <span class="dot-v3 bg-blue"></span>
-              <h3>Villes et intercommunalités</h3>
-              <p class="size-label">(20 000 à 100 000 hab.)</p>
-              <p class="price-v3">À partir de 200€/mois</p>
-              <ul class="v3-list-dots">
-                 <li>Usage collectif (élu·es + cabinet)</li>
-                 <li>Appui sur des sujets complexes</li>
-                 <li>Accompagnement des prises de position</li>
-              </ul>
-           </div>
-
-           <!-- Grande -->
-           <div class="price-bubble-v3 border-red">
-              <span class="dot-v3 bg-red"></span>
-              <h3>Grandes collectivités</h3>
-              <p class="size-label">Besoin spécifique</p>
-              <p class="price-v3">Offre personnalisée</p>
-              <ul class="v3-list-dots">
-                 <li>Nombre d'utilisateurs adapté</li>
-                 <li>Paramétrage sur-mesure</li>
-                 <li>Appui renforcé</li>
-              </ul>
-           </div>
-        </div>
-
-        <!-- PERSONNALISATION -->
-        <div class="custom-note-v3 card-v3">
-           <div class="note-content-v3">
-              <h3>Une offre <span class="emphasis">personnalisable</span></h3>
-              <p>Parce qu'aucune collectivité ne fonctionne pareil, vous pouvez ajuster le nombre d'utilisateurs, les profils (élus, cabinet, direction) et le niveau d'appui.</p>
-           </div>
-           <div class="note-cta-v3">
-              <a href="/contact" class="btn-primary-v3">Équiper ma collectivité</a>
-           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TESTER 2 SEMAINES -->
-    <section class="section-v3 no-padding-bottom">
-       <div class="container container-medium">
-          <div class="promo-banner-v3">
-             <div class="promo-text-v3">
-                <span class="badge-v3">2 semaines offertes</span>
-                <h2>Mise à disposition gratuite</h2>
-                <p>Accès complet, sans engagement. Le temps de voir concrètement si MARYAN vous est utile avant d'ajuster l'offre.</p>
-             </div>
-             <a href="/contact" class="btn-primary-v3">Être rappelé</a>
-          </div>
-       </div>
-    </section>
-
-    <!-- CONCRETEMENT -->
+    <!-- ═══════════════════════════════════════
+         OFFRE INDIVIDUELLE
+    ═══════════════════════════════════════ -->
     <section class="section-v3">
-       <div class="container">
-       <div class="section-header">
-          <h2>Concrètement</h2>
-          <p class="intro-v3">MARYAN vous aide là où ça compte vraiment.</p>
+      <div class="container">
+        <div class="section-header">
+          <span class="label-v3">Offre individuelle</span>
+          <h2>Choisissez votre <em>rythme</em></h2>
         </div>
-          <div class="use-cases-grid-v4">
-             <article class="use-case-card-v4">
-                <span class="use-case-index-v4">01</span>
-                <p>Préparer un conseil municipal</p>
-             </article>
-             <article class="use-case-card-v4">
-                <span class="use-case-index-v4">02</span>
-                <p>Comprendre rapidement un dossier</p>
-             </article>
-             <article class="use-case-card-v4">
-                <span class="use-case-index-v4">03</span>
-                <p>Arbitrer entre plusieurs options</p>
-             </article>
-             <article class="use-case-card-v4">
-                <span class="use-case-index-v4">04</span>
-                <p>Gérer une situation sensible</p>
-             </article>
-             <article class="use-case-card-v4">
-                <span class="use-case-index-v4">05</span>
-                <p>Formuler une prise de parole claire</p>
-             </article>
+
+        <div class="plans-grid">
+
+          <div class="plan-card">
+            <div class="plan-name">Essai libre</div>
+            <div class="plan-price-row">
+              <span class="plan-amount">19 €</span>
+              <span class="plan-period">/mois</span>
+            </div>
+            <p class="plan-engagement">Sans engagement</p>
+            <ul class="plan-list">
+              <li>Pour tester en situation réelle</li>
+              <li>Accès complet à la plateforme</li>
+            </ul>
+            <button class="btn-secondary-v3 checkout-btn w-full" data-price-id="price_INDIVIDUAL_MONTHLY">
+              Tester maintenant
+            </button>
           </div>
-       </div>
+
+          <div class="plan-card">
+            <div class="plan-name">Engagement 6 mois</div>
+            <div class="plan-price-row">
+              <span class="plan-amount">15 €</span>
+              <span class="plan-period">/mois</span>
+            </div>
+            <p class="plan-engagement">&nbsp;</p>
+            <ul class="plan-list">
+              <li>Pour une utilisation régulière</li>
+              <li>Accès complet à la plateforme</li>
+            </ul>
+            <button class="btn-secondary-v3 checkout-btn w-full" data-price-id="price_INDIVIDUAL_6M">
+              Tester maintenant
+            </button>
+          </div>
+
+          <div class="plan-card plan-featured">
+            <div class="plan-badge">Le plus utilisé</div>
+            <div class="plan-name">Engagement 12 mois</div>
+            <div class="plan-price-row">
+              <span class="plan-amount">10 €</span>
+              <span class="plan-period">/mois</span>
+            </div>
+            <p class="plan-engagement">&nbsp;</p>
+            <ul class="plan-list">
+              <li>Pour un usage dans la durée</li>
+              <li>2 mois offerts</li>
+            </ul>
+            <button class="btn-primary-v3 checkout-btn w-full btn-neon" data-price-id="price_INDIVIDUAL_12M">
+              Tester maintenant
+            </button>
+          </div>
+
+        </div>
+      </div>
     </section>
 
-    <!-- POURQUOI PAS CHATGPT -->
-    <section class="section-v3 diff-section-v4">
-       <div class="container-narrow text-center">
-          <span class="label-v3">La différence</span>
-          <h2>Pourquoi pas juste <span class="emphasis">ChatGPT ?</span></h2>
-          <div class="diff-grid-v3">
-             <div class="diff-item">
-                <p>Ici, vous n’avez pas à expliquer le fonctionnement des collectivités.</p>
-             </div>
-             <div class="diff-item">
-                <p>Les réponses sont pensées pour des situations d’élus municipaux.</p>
-             </div>
-             <div class="diff-item">
-                <p>L’objectif n’est pas d’informer, mais de vous aider à décider.</p>
-             </div>
+    <!-- ═══════════════════════════════════════
+         PACK GROUPE POLITIQUE
+    ═══════════════════════════════════════ -->
+    <section class="section-v3 pack-section">
+      <div class="container">
+        <div class="pack-banner">
+          <div class="pack-text">
+            <span class="label-v3">Accès rapide</span>
+            <h2>Pack groupe politique</h2>
+            <p class="pack-price"><strong>600 € / an</strong> — jusqu'à 8 élu·es</p>
+            <ul class="pack-signals">
+              <li>Idéal pour un groupe municipal</li>
+              <li>Activation immédiate</li>
+            </ul>
           </div>
-          <p class="diff-footnote-v4">MARYAN ne cherche pas seulement à produire du texte. Il aide à tenir un mandat avec plus de clarté.</p>
-          <p class="final-motto-v3">Un mandat local, ça ne devrait pas se faire seul. <strong>MARYAN est là pour ça.</strong></p>
-       </div>
+          <a href="/contact" class="btn-primary-v3 pack-cta">Activer le pack</a>
+        </div>
+      </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section class="section-v3 text-center">
-       <div class="container-narrow">
-          <div class="offres-cta-v3">
-             <a href="/copilote" class="btn-primary-v3 big">Essayer gratuitement</a>
-             <a href="/contact" class="btn-secondary-v3">Équiper ma collectivité</a>
+    <!-- ═══════════════════════════════════════
+         OFFRES COLLECTIVITÉS
+    ═══════════════════════════════════════ -->
+    <section id="collectivites" class="section-v3">
+      <div class="container">
+        <div class="section-header">
+          <span class="label-v3">Collectivités</span>
+          <h2>Équiper une équipe <em>simplement</em></h2>
+        </div>
+
+        <div class="collec-grid">
+
+          <div class="collec-card">
+            <div class="collec-tier">Starter</div>
+            <p class="collec-subtitle">petite équipe</p>
+            <p class="collec-size">5 à 10 élu·es</p>
+            <div class="collec-price">
+              8 € <span class="collec-unit">/mois/élu</span>
+              <span class="collec-billing">(annuel)</span>
+            </div>
+            <ul class="v3-list-dots">
+              <li>Accès complet à la plateforme</li>
+              <li>Mise en route autonome</li>
+            </ul>
           </div>
-       </div>
+
+          <div class="collec-card collec-card-mid">
+            <div class="collec-tier">Équipe</div>
+            <p class="collec-subtitle">exécutif élargi</p>
+            <p class="collec-size">10 à 30 élu·es</p>
+            <div class="collec-price">
+              6 € <span class="collec-unit">/mois/élu</span>
+              <span class="collec-billing">(annuel)</span>
+            </div>
+            <ul class="v3-list-dots">
+              <li>Accès multi-utilisateurs</li>
+              <li>Utilisation collective possible</li>
+            </ul>
+          </div>
+
+          <div class="collec-card">
+            <div class="collec-tier">Mandat</div>
+            <p class="collec-subtitle">grande collectivité</p>
+            <p class="collec-size">30 à 100+ élu·es</p>
+            <div class="collec-price">
+              4 € <span class="collec-unit">/mois/élu</span>
+              <span class="collec-billing">(annuel)</span>
+            </div>
+            <ul class="v3-list-dots">
+              <li>Accès étendu à l'ensemble des élu·es</li>
+              <li>Outil partagé à l'échelle du mandat</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="collec-cta-row">
+          <a href="/contact" class="btn-primary-v3">Équiper ma collectivité</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         POURQUOI MARYAN
+    ═══════════════════════════════════════ -->
+    <section class="section-v3 bg-deep why-section">
+      <div class="container">
+        <div class="why-header">
+          <span class="label-v3">Pourquoi MARYAN</span>
+        </div>
+        <div class="why-grid">
+          <div class="why-item">
+            <p>Aide à prendre des décisions rapidement</p>
+          </div>
+          <div class="why-item">
+            <p>Aide à structurer les prises de parole</p>
+          </div>
+          <div class="why-item">
+            <p>Clarifie les situations complexes</p>
+          </div>
+        </div>
+        <p class="why-signal">Un outil simple, utilisable immédiatement</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         CTA FINAL
+    ═══════════════════════════════════════ -->
+    <section class="section-v3 cta-final-section">
+      <div class="container-narrow">
+        <div class="cta-final-panel">
+          <h2>Commencer en quelques minutes</h2>
+          <p class="cta-lead">
+            Pas de formation.<br>
+            Pas de mise en place complexe.<br>
+            Juste un outil utile, tout de suite.
+          </p>
+          <a href="/copilote" class="btn-primary-v3 big">Tester maintenant</a>
+        </div>
+      </div>
     </section>
 
   </main>
 </BaseLayout>
 
 <script>
-  // STRIPE CLIENT INTEGRATION
   const checkoutButtons = document.querySelectorAll<HTMLButtonElement>('.checkout-btn');
-  
+
   checkoutButtons.forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const target = e.currentTarget as HTMLButtonElement;
       const priceId = target.dataset.priceId;
-      
       if (!priceId) return;
 
-      target.innerText = "Chargement...";
+      target.innerText = 'Chargement…';
       target.disabled = true;
 
       try {
         const response = await fetch('/api/create-checkout-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            priceId: priceId,
-            customerEmail: localStorage.getItem('user_email') || null 
+          body: JSON.stringify({
+            priceId,
+            customerEmail: localStorage.getItem('user_email') || null,
           }),
         });
-        
+
         const session = await response.json();
-        
+
         if (session.url) {
           window.location.href = session.url;
         } else {
-          alert("Erreur de session. Veuillez vérifier vos clés Stripe.");
-          target.innerText = "S'abonner";
+          alert('Erreur de session. Veuillez vérifier vos clés Stripe.');
+          target.innerText = 'Tester maintenant';
           target.disabled = false;
         }
       } catch (err) {
         console.error(err);
-        alert("La connexion à Stripe a échoué.");
-        target.innerText = "S'abonner";
+        alert('La connexion à Stripe a échoué.');
+        target.innerText = 'Tester maintenant';
         target.disabled = false;
       }
     });
@@ -304,395 +265,365 @@ import InternalHeader from '../components/InternalHeader.astro';
 </script>
 
 <style>
-  .offres-v3 {
-    --green: #22C55E;
-    --yellow: #FACC15;
-    --blue: #3B82F6;
-    --red: #EF4444;
-    color: var(--deep);
+  .offres-v3 { color: var(--deep); }
+
+  /* ── HERO ── */
+  .hero-offres {
+    padding: 7rem 0 6rem;
   }
 
-  .offres-v3 .section-v3:not(.bg-deep) :where(h1, h2, h3, h4) {
-    color: var(--deep);
+  .hero-offres-inner {
+    max-width: 46rem;
   }
 
-  .offres-v3 .section-v3:not(.bg-deep) :where(p, li) {
-    color: #54636c;
+  .hero-offres-inner h1 {
+    color: white;
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    line-height: 1.25;
+    margin-bottom: 1.5rem;
   }
 
-  .plan-section-v4,
-  .diff-section-v4 {
-    background: linear-gradient(180deg, #fbf8f2 0%, #fffdfa 100%);
+  .hero-lead {
+    color: rgba(255,255,255,0.8);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
   }
 
-  .bg-ivory {
-    background: linear-gradient(180deg, #fbf8f2 0%, #f4efe6 100%);
+  .hero-lead strong { color: white; }
+
+  .hero-bullets {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
   }
 
-  .text-center {
-    text-align: center;
+  .hero-bullets li {
+    color: var(--neon);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding-left: 1.4rem;
+    position: relative;
   }
 
-  .text-white {
-    color: white !important;
+  .hero-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
   }
 
-  .text-red {
-    color: var(--accent-red) !important;
-  }
-
-  .opacity-70 {
-    opacity: 0.72;
-  }
-
-  .no-padding-top {
-    padding-top: 0;
-  }
-
-  .no-padding-bottom {
-    padding-bottom: 0;
-  }
-
-  .offres-v3 .section-v3 {
-    padding: 7rem 0;
-  }
-
+  /* ── Section header ── */
   .offres-v3 .section-header {
-    max-width: 50rem;
+    max-width: 44rem;
     margin: 0 auto 4rem;
     text-align: center;
   }
 
   .offres-v3 .section-header h2 {
-    font-size: clamp(2.2rem, 4vw, 3.4rem);
-    margin-bottom: 1rem;
-    line-height: 1.04;
-    letter-spacing: -0.03em;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 
-  .offres-v3 .intro-v3 {
-    color: #54636c;
-    font-size: 1.08rem;
-    line-height: 1.65;
+  /* ── PLANS INDIVIDUELS ── */
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: start;
   }
 
-  .section-header-left {
-    text-align: left !important;
-    max-width: 44rem !important;
-    margin: 0 0 2.75rem !important;
+  .plan-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    padding: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
   }
 
-  .card-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-size: 0.76rem;
+  .plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(10,25,47,0.07);
+  }
+
+  .plan-featured {
+    background: var(--deep);
+    border-color: var(--deep);
+  }
+
+  .plan-badge {
+    display: inline-block;
+    background: var(--neon);
+    color: var(--deep);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.8rem;
+    border-radius: 99px;
+    margin-bottom: 1.25rem;
+    width: fit-content;
+  }
+
+  .plan-name {
+    font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-  }
-
-  .card-kicker::before {
-    content: "";
-    width: 10px;
-    height: 2px;
-    background: currentColor;
-  }
-
-  .offres-v3 .btn-primary-v3.big {
-    min-width: 15rem;
-  }
-
-  .offers-hero-v4 {
-    padding-top: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .offers-hero-v4::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 80px 80px;
-    mask-image: radial-gradient(circle at center, black, transparent 78%);
-  }
-
-  .offers-hero-v4 .container-narrow {
-    position: relative;
-    z-index: 1;
-  }
-
-  .offers-hero-panel {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 249, 252, 0.98) 100%);
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-radius: 2rem;
-    padding: 2rem 2.2rem 2.15rem;
-    box-shadow: 0 18px 40px rgba(10, 25, 47, 0.05);
-  }
-
-  .hero-note-v4 {
-    margin: 0 auto 1.6rem;
-    max-width: 42rem;
-    color: var(--deep);
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-
-  .hero-cta-group {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.6rem;
-  }
-
-  .hero-signals-v4 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.85rem;
-  }
-
-  .hero-signal-item {
-    display: grid;
-    gap: 0.35rem;
-    padding: 1rem 1.1rem;
-    border-radius: 1.1rem;
-    background: rgba(10, 25, 47, 0.03);
-    border: 1px solid rgba(10, 25, 47, 0.06);
-    text-align: left;
-  }
-
-  .hero-signal-item strong {
-    font-size: 0.92rem;
-    color: var(--deep);
-  }
-
-  .hero-signal-item span {
-    font-size: 0.84rem;
-    line-height: 1.45;
-    color: #54636c;
-  }
-
-  .offers-utility-section {
-    background: linear-gradient(180deg, #fbf8f2 0%, #fffdfa 100%);
-    border-top: 1px solid rgba(10, 25, 47, 0.05);
-  }
-
-  .utility-grid-v4 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.2rem;
-  }
-
-  .utility-card-v4 {
-    background: #fff;
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-radius: 1.6rem;
-    padding: 1.6rem;
-    box-shadow: 0 14px 32px rgba(10, 25, 47, 0.04);
-  }
-
-  .utility-num-v4 {
-    display: inline-block;
+    color: rgba(10,25,47,0.4);
     margin-bottom: 1rem;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.46);
   }
 
-  .utility-card-v4 h3 {
-    margin: 0 0 0.55rem;
-    font-size: 1.2rem;
-    line-height: 1.18;
+  .plan-featured .plan-name {
+    color: rgba(255,255,255,0.5);
   }
 
-  .utility-card-v4 p {
-    margin: 0;
-    color: #54636c;
-    line-height: 1.55;
-    font-size: 0.96rem;
-  }
-
-  .plan-hero-v3 {
-    display: grid;
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-    gap: 2rem;
-    background: linear-gradient(180deg, #ffffff 0%, #f8f3eb 100%);
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-radius: 2rem;
-    padding: 2.2rem;
-    box-shadow: 0 24px 50px rgba(10, 25, 47, 0.06);
-  }
-
-  .plan-header-v3 {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .plan-header-v3 h2 {
-    margin: 0.8rem 0 0.7rem;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    line-height: 0.98;
-    color: var(--deep);
-  }
-
-  .plan-header-v3 .intro-v3 {
-    color: #54636c;
-    font-size: 1.12rem;
-  }
-
-  .plan-price-v3 {
-    margin: 1.6rem 0 1rem;
+  .plan-price-row {
     display: flex;
     align-items: baseline;
-    gap: 0.45rem;
+    gap: 0.3rem;
+    margin-bottom: 0.3rem;
   }
 
-  .plan-price-v3 .amount {
-    font-size: clamp(3rem, 5vw, 4.8rem);
+  .plan-amount {
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
     font-weight: 800;
+    line-height: 1;
     color: var(--deep);
-    line-height: 0.95;
   }
 
-  .plan-price-v3 .period {
-    font-size: 1.15rem;
-    color: rgba(10, 25, 47, 0.58);
+  .plan-featured .plan-amount { color: white; }
+
+  .plan-period {
+    font-size: 1rem;
+    color: #54636C;
   }
 
-  .plan-summary-v3 {
-    margin: 0;
-    max-width: 28rem;
-    color: #54636c;
-    line-height: 1.6;
-    font-size: 0.98rem;
+  .plan-featured .plan-period { color: rgba(255,255,255,0.55); }
+
+  .plan-engagement {
+    font-size: 0.84rem;
+    color: #54636C;
+    margin-bottom: 1.75rem;
+    min-height: 1.25em;
   }
 
-  .plan-features-v3 {
-    background: rgba(10, 25, 47, 0.03);
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-radius: 1.6rem;
-    padding: 1.6rem;
-  }
+  .plan-featured .plan-engagement { color: rgba(255,255,255,0.45); }
 
-  .plan-list-label {
-    margin: 0 0 1rem;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.62);
-  }
-
-  .v3-list-check-neon {
+  .plan-list {
     list-style: none;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    margin: 0 0 1.5rem;
+    gap: 0.65rem;
+    margin-bottom: 2rem;
+    flex: 1;
   }
 
-  .v3-list-check-neon li {
+  .plan-list li {
+    font-size: 0.94rem;
+    color: #54636C;
+    padding-left: 1.2rem;
     position: relative;
-    padding-left: 1.55rem;
-    color: var(--deep);
     line-height: 1.5;
   }
 
-  .v3-list-check-neon li::before {
-    content: "";
+  .plan-featured .plan-list li { color: rgba(255,255,255,0.7); }
+
+  .plan-list li::before {
+    content: '→';
     position: absolute;
     left: 0;
-    top: 0.72rem;
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 999px;
-    background: var(--accent-red);
-    transform: translateY(-50%);
+    color: var(--accent-red);
+    font-size: 0.8rem;
   }
 
-  .plan-footer-text {
-    margin: 0 0 1.6rem;
-    color: #54636c;
-    font-size: 0.94rem;
-    line-height: 1.55;
+  .plan-featured .plan-list li::before { color: var(--neon); }
+
+  .w-full { width: 100%; justify-content: center; }
+
+  .btn-neon {
+    background: var(--neon) !important;
+    color: var(--deep) !important;
+    border-color: var(--neon) !important;
   }
 
-  .plan-buttons-v3 {
+  .btn-neon:hover {
+    background: white !important;
+    color: var(--deep) !important;
+    border-color: white !important;
+  }
+
+  /* ── PACK GROUPE ── */
+  .pack-section {
+    background: var(--deep);
+  }
+
+  .pack-banner {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.85rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2rem;
+    padding: 3rem 3.5rem;
   }
 
-  .pricing-grid-v3 {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.2rem;
-    margin-bottom: 2rem;
+  .pack-text h2 {
+    color: white;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    margin-bottom: 0.75rem;
+    line-height: 1.1;
   }
 
-  .price-bubble-v3 {
+  .pack-price {
+    color: rgba(255,255,255,0.7);
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .pack-price strong {
+    color: var(--neon);
+    font-size: 1.1rem;
+  }
+
+  .pack-signals {
+    list-style: none;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-    background: #fff;
-    padding: 2rem 1.55rem;
-    border-radius: 1.6rem;
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-top: 5px solid #eee;
-    box-shadow: 0 14px 32px rgba(10, 25, 47, 0.04);
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    gap: 0.5rem;
   }
 
-  .price-bubble-v3:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 38px rgba(10, 25, 47, 0.06);
+  .pack-signals li {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.94rem;
+    padding-left: 1.4rem;
+    position: relative;
   }
 
-  .dot-v3 {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: block;
-    margin-bottom: 1.2rem;
+  .pack-signals li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--neon);
   }
 
-  .pricing-grid-v3 h3 {
-    font-size: 1.12rem;
-    margin: 0 0 0.5rem;
-    line-height: 1.24;
+  .pack-cta {
+    flex-shrink: 0;
+    background: var(--neon) !important;
+    color: var(--deep) !important;
+    border-color: var(--neon) !important;
   }
 
-  .size-label {
-    min-height: 2.6em;
-    margin: 0 0 1rem;
-    color: #6b7680;
-    font-size: 0.84rem;
-    line-height: 1.4;
+  .pack-cta:hover {
+    background: white !important;
+    color: var(--deep) !important;
+    border-color: white !important;
   }
 
-  .price-v3 {
+  .pack-section .label-v3 { color: rgba(255,255,255,0.55) !important; }
+  .pack-section .label-v3::before { background: var(--neon) !important; }
+
+  /* ── COLLECTIVITÉS ── */
+  .collec-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .collec-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    padding: 2.2rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .collec-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(10,25,47,0.07);
+  }
+
+  .collec-card-mid {
+    background: var(--deep);
+    border-color: var(--deep);
+  }
+
+  .collec-tier {
+    font-size: 1.25rem;
     font-weight: 800;
-    font-size: 1rem;
     color: var(--deep);
-    margin: 0 0 1.25rem;
+    margin-bottom: 0.2rem;
   }
+
+  .collec-card-mid .collec-tier { color: white; }
+
+  .collec-subtitle {
+    font-size: 0.8rem;
+    color: #54636C;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .collec-card-mid .collec-subtitle { color: rgba(255,255,255,0.45); }
+
+  .collec-size {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+  }
+
+  .collec-card-mid .collec-size { color: var(--neon); }
+
+  .collec-price {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--deep);
+    line-height: 1;
+    margin-bottom: 1.75rem;
+  }
+
+  .collec-card-mid .collec-price { color: white; }
+
+  .collec-unit {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #54636C;
+  }
+
+  .collec-card-mid .collec-unit { color: rgba(255,255,255,0.5); }
+
+  .collec-billing {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #54636C;
+    margin-top: 0.2rem;
+  }
+
+  .collec-card-mid .collec-billing { color: rgba(255,255,255,0.4); }
+
+  .collec-cta-row { text-align: center; }
 
   .v3-list-dots {
     list-style: none;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    font-size: 0.92rem;
-    margin-top: auto;
+    gap: 0.7rem;
+    font-size: 0.9rem;
   }
 
   .v3-list-dots li {
@@ -702,247 +633,115 @@ import InternalHeader from '../components/InternalHeader.astro';
     line-height: 1.5;
   }
 
+  .collec-card-mid .v3-list-dots li { color: rgba(255,255,255,0.65); }
+
   .v3-list-dots li::before {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
-    top: 0.68rem;
+    top: 0.65rem;
     width: 5px;
     height: 5px;
-    border-radius: 999px;
-    background: rgba(10, 25, 47, 0.24);
+    border-radius: 50%;
+    background: rgba(10,25,47,0.2);
     transform: translateY(-50%);
   }
 
-  .bg-green { background: var(--green); }
-  .bg-yellow { background: var(--yellow); }
-  .bg-blue { background: var(--blue); }
-  .bg-red { background: var(--red); }
-  .border-green { border-top-color: var(--green); }
-  .border-yellow { border-top-color: var(--yellow); }
-  .border-blue { border-top-color: var(--blue); }
-  .border-red { border-top-color: var(--red); }
+  .collec-card-mid .v3-list-dots li::before { background: var(--neon); }
 
-  .custom-note-v3 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    background: #fff;
-    padding: 2rem 2.2rem;
-    border-radius: 1.6rem;
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    box-shadow: 0 14px 32px rgba(10, 25, 47, 0.04);
-    margin-top: 0.6rem;
-  }
+  /* ── POURQUOI MARYAN ── */
+  .why-header { margin-bottom: 3rem; }
 
-  .note-content-v3 h3 {
-    margin: 0 0 0.7rem;
-    font-size: 1.55rem;
-    line-height: 1.2;
-  }
-
-  .note-content-v3 p {
-    margin: 0;
-    color: #54636c;
-    line-height: 1.6;
-    max-width: 40rem;
-  }
-
-  .promo-banner-v3 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    background: linear-gradient(135deg, #e63946 0%, #cb2533 100%);
-    color: white;
-    border-radius: 1.9rem;
-    padding: 2.8rem 3rem;
-    box-shadow: 0 22px 48px rgba(230, 57, 70, 0.18);
-  }
-
-  .badge-v3 {
-    display: inline-block;
-    margin-bottom: 1rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    background: rgba(10, 25, 47, 0.18);
-    color: white;
-    font-size: 0.74rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .promo-text-v3 h2 {
-    color: white;
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.05;
-    margin: 0 0 0.85rem;
-    letter-spacing: -0.03em;
-  }
-
-  .promo-text-v3 p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.6;
-    max-width: 34rem;
-  }
-
-  .use-cases-grid-v4 {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 3rem;
-  }
-
-  .use-case-card-v4 {
-    background: white;
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    border-radius: 1.4rem;
-    padding: 1.35rem 1.2rem;
-    box-shadow: 0 12px 26px rgba(10, 25, 47, 0.03);
-  }
-
-  .use-case-index-v4 {
-    display: inline-block;
-    margin-bottom: 1rem;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: rgba(10, 25, 47, 0.42);
-  }
-
-  .use-case-card-v4 p {
-    margin: 0;
-    color: var(--deep);
-    line-height: 1.45;
-    font-weight: 700;
-    font-size: 0.96rem;
-  }
-
-  .diff-grid-v3 {
+  .why-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.2rem;
-    margin: 3rem 0 2rem;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
   }
 
-  .diff-item {
-    background: white;
-    padding: 1.7rem 1.45rem;
-    border-radius: 1.4rem;
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    box-shadow: 0 12px 26px rgba(10, 25, 47, 0.03);
+  .why-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 1.5rem;
+    padding: 2rem;
   }
 
-  .diff-item p {
-    margin: 0;
-    color: var(--deep);
-    line-height: 1.55;
-  }
-
-  .diff-footnote-v4 {
-    margin: 0 auto 1rem;
-    max-width: 38rem;
-    color: #54636c;
-    line-height: 1.6;
-  }
-
-  .final-motto-v3 {
-    max-width: 34rem;
-    margin: 0 auto;
-    font-size: 1.35rem;
+  .why-item p {
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
     line-height: 1.45;
-    color: var(--deep);
-    font-family: var(--font-accent);
-    font-style: italic;
+    margin: 0;
   }
 
-  .offres-cta-v3 {
-    padding: 2.2rem;
-    border-radius: 1.8rem;
-    background: linear-gradient(180deg, #ffffff 0%, #f7f3ec 100%);
-    border: 1px solid rgba(10, 25, 47, 0.08);
-    box-shadow: 0 16px 36px rgba(10, 25, 47, 0.04);
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
+  .why-signal {
+    color: var(--neon);
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding-left: 1.4rem;
+    position: relative;
+    width: fit-content;
   }
 
-  @media (max-width: 1100px) {
-    .hero-signals-v4,
-    .pricing-grid-v3,
-    .use-cases-grid-v4 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .plan-hero-v3 {
-      grid-template-columns: 1fr;
-    }
+  .why-signal::before {
+    content: '→';
+    position: absolute;
+    left: 0;
   }
 
+  /* ── CTA FINAL ── */
+  .cta-final-section {
+    background: linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
+  }
+
+  .cta-final-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    padding: 4rem 3rem;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(10,25,47,0.05);
+  }
+
+  .cta-final-panel h2 {
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-lead {
+    color: #54636C;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 2.5rem;
+  }
+
+  .btn-primary-v3.big {
+    padding: 1.4rem 3.5rem;
+    font-size: 1.05rem;
+  }
+
+  /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    .offres-v3 .section-v3 {
-      padding: 5rem 0;
-    }
-
-    .hero-cta-group,
-    .plan-buttons-v3,
-    .offres-cta-v3,
-    .custom-note-v3,
-    .promo-banner-v3 {
-      flex-direction: column;
-    }
-
-    .hero-signals-v4,
-    .utility-grid-v4,
-    .pricing-grid-v3,
-    .diff-grid-v3,
-    .use-cases-grid-v4 {
+    .plans-grid,
+    .collec-grid,
+    .why-grid {
       grid-template-columns: 1fr;
     }
 
-    .offers-hero-panel,
-    .plan-hero-v3,
-    .custom-note-v3,
-    .promo-banner-v3 {
-      padding: 1.6rem;
-    }
-
-    .custom-note-v3,
-    .promo-banner-v3,
-    .offres-cta-v3 {
+    .pack-banner {
+      flex-direction: column;
+      padding: 2rem;
       text-align: center;
-      align-items: stretch;
     }
 
-    .hero-cta-group .btn-primary-v3,
-    .hero-cta-group .btn-secondary-v3,
-    .plan-buttons-v3 .btn-primary-v3,
-    .plan-buttons-v3 .btn-secondary-v3,
-    .promo-banner-v3 .btn-primary-v3,
-    .offres-cta-v3 .btn-primary-v3,
-    .offres-cta-v3 .btn-secondary-v3 {
-      width: 100%;
-    }
-  }
+    .pack-signals { align-items: center; }
 
-  @media (max-width: 600px) {
-    .offres-v3 .section-header h2,
-    .plan-header-v3 h2,
-    .promo-text-v3 h2 {
-      letter-spacing: -0.02em;
-    }
+    .pack-cta,
+    .w-full { width: 100%; justify-content: center; }
 
-    .hero-note-v4,
-    .offres-v3 .intro-v3,
-    .plan-summary-v3,
-    .promo-text-v3 p,
-    .note-content-v3 p,
-    .diff-item p {
-      font-size: 0.98rem;
-    }
+    .why-signal { margin: 0 auto; }
+
+    .cta-final-panel { padding: 2.5rem 1.5rem; }
   }
 </style>
