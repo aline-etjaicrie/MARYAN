@@ -8,7 +8,7 @@ import {
   type MaryanSituationMode
 } from '../../features/copilote-maryan/config';
 import { maryanResources } from '../../data/resources';
-import { buildPartisPromptSection } from '../../data/partis';
+import { getMotsDeclencheurs } from '../../data/partis';
 import type { DiagnosticProfile, MaryanResource } from '../../data/types';
 
 interface CopilotMessage {
@@ -127,8 +127,25 @@ export const POST: APIRoute = async ({ request }) => {
     const diagKey = supabaseProfile.diagnostic_key || '';
     const diagInstruction = DIAG_INSTRUCTIONS[diagKey] || '';
 
-    // Étiquette politique : parti_label stocké en profil > political_label de user_metadata
-    const politicalLabel = supabaseProfile.parti_label || supabaseProfile.political_label || null;
+    // Étiquette politique : parti_id et parti_label stockés en profil
+    const partiId = supabaseProfile.parti_id || null;
+    const partiLabel = supabaseProfile.parti_label || supabaseProfile.political_label || null;
+
+    const promptPartis = partiId ? `
+AFFILIATION POLITIQUE DE L'ÉLU·E : ${partiLabel}
+
+Tu as accès à des informations sur les positions habituelles de ce parti sur les thèmes municipaux. Quand l'élu·e aborde un sujet politique (eau, cantine, logement, sécurité, budget, DSP, écologie, intercommunalité, laïcité) :
+
+1. Détecte si sa position semble en tension avec celle de son parti
+2. Si oui, signale-le avec douceur et bienveillance, en utilisant EXACTEMENT cette formulation : "Tu sais que ${partiLabel} a tendance à défendre [position] sur ce sujet. Ça ne veut pas dire que tu as tort — mais si tu pars dans une autre direction, il peut être utile de préparer comment tu vas l'expliquer à ton groupe."
+3. Si le niveau de certitude de l'info est 'interprété', ajoute : "C'est ce que j'observe généralement, mais tu connais mieux que moi les positions réelles de ton groupe."
+4. NE signale PAS de tension si le sujet est clairement hors politique (droit des élus, procédure, questions personnelles)
+5. Propose TOUJOURS une sortie constructive : "Tu veux qu'on prépare ensemble comment porter ta position ?"
+6. Ne sois JAMAIS donneur de leçon. Tu aides l'élu à être cohérent et préparé, pas à lui dire quoi penser.
+
+Mots qui peuvent signaler une tension selon l'affiliation de cet élu :
+${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
+` : '';
 
     profileSection = [
       `\n\nPROFIL DE L'ÉLU·E :`,
@@ -141,7 +158,7 @@ export const POST: APIRoute = async ({ request }) => {
       `Tu t'adresses toujours à cette personne en utilisant son prénom si disponible. Tu adaptes tes réponses à son diagnostic et à son rôle.`,
       diagInstruction || '',
       ``,
-      buildPartisPromptSection(politicalLabel)
+      promptPartis
     ].filter(l => l !== undefined).join('\n');
   }
 
