@@ -1,164 +1,123 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InternalHeader from '../components/InternalHeader.astro';
 import CompteRenduManager from '../components/CompteRenduManager.astro';
 import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
-
-// Pour l'instant, données mockées en attendant le backend Authentication
-const userProfile = {
-  name: "Aline Weber",
-  role: "Adjointe à la Culture",
-  municipality: "Commune de Test",
-  diagnosticResult: "Besoin de méthode (Copilote Plus)",
-  plan: "Découverte (Gratuit)",
-  messagesRemaining: 3
-};
-
-const modules = [
-  { 
-    title: "Mon Copilote", 
-    desc: "Échangez avec MARYAN sur vos dossiers en cours.", 
-    link: "/copilote", 
-    status: "Actif",
-    icon: "💬" 
-  },
-  { 
-    title: "La Bibliothèque", 
-    desc: "Toutes vos fiches pratiques et trames opérationnelles.", 
-    link: "/ressources", 
-    status: "Illimité",
-    icon: "📚" 
-  },
-  {
-    title: "Le Hub Experts",
-    desc: "Contactez un expert juridique ou stratégique.",
-    link: "/hub-experts",
-    status: "Sur devis",
-    icon: "🤝"
-  },
-  {
-    title: "Mes Tests",
-    desc: "5 tests thématiques pour mieux vous connaître en tant qu'élu·e.",
-    link: "/tests",
-    status: "Nouveau",
-    icon: "🧭"
-  },
-  {
-    title: "Mes Comptes Rendus",
-    desc: "Créez et archivez vos CR de réunion par dictée ou manuellement.",
-    link: "#cr",
-    status: "Actif",
-    icon: "📋"
-  }
-];
 ---
 
-<BaseLayout 
-  title="Mon Compte — MARYAN" 
-  description="Gérez votre abonnement MARYAN et accédez à vos outils de mandat.">
-  
-  <InternalHeader 
-    label="Espace Personnel"
-    title="Bienvenue, <span class='emphasis'>Aline</span>"
-    subtitle="Retrouvez ici vos diagnostics, vos outils et votre accès privilégié au réseau d'experts."
-  />
+<BaseLayout
+  title="Mon Compte — MARYAN"
+  description="Votre espace personnel MARYAN : diagnostic, copilote, ressources et tests.">
 
   <main class="dashboard-v3">
     <div class="container">
-      
-      <!-- SUCCESS BANNER (Hidden by default) -->
-      <div id="successBanner" class="card-v3 highlight-neon" style="display:none; margin-bottom: 3rem; border-color: var(--neon); padding: 2rem;">
-         <h3 style="color:var(--deep);">Bienvenue dans MARYAN Plus !</h3>
-         <p>Votre abonnement a été activé. Vous avez désormais un accès illimité au Copilote et à la Bibliothèque.</p>
+
+      <!-- SUCCESS BANNER -->
+      <div id="successBanner" class="success-banner" style="display:none;">
+        <strong>Bienvenue dans MARYAN Plus !</strong>
+        Votre abonnement a été activé. Accès illimité au Copilote et à la Bibliothèque.
       </div>
 
       <div class="dashboard-grid">
-        
-        <!-- SIDEBAR INFO -->
+
+        <!-- ═══ SIDEBAR ═══ -->
         <aside class="dash-sidebar">
           <div class="dash-profile card-v3">
+
             <div class="profile-header">
-              <div class="avatar-circle" id="avatarInitials">AW</div>
+              <div class="avatar-circle" id="avatarInitials">–</div>
               <div class="profile-text">
-                <h3 id="profileName">{userProfile.name}</h3>
-                <p id="profileRole">{userProfile.role} — {userProfile.municipality}</p>
+                <h3 id="profileName">Chargement…</h3>
+                <p id="profileRole" class="profile-role-line"></p>
               </div>
             </div>
-            
+
             <hr class="dash-sep" />
 
             <div class="profile-stat">
-              <span class="label">Compte</span>
-              <p class="val" id="userEmail" style="font-size:0.85rem; font-weight:500; word-break:break-all;"></p>
+              <span class="stat-label">Compte</span>
+              <p id="userEmail" class="stat-email"></p>
               <button id="logoutBtn" class="logout-btn">Se déconnecter →</button>
             </div>
 
             <hr class="dash-sep" />
 
             <div class="profile-stat">
-              <span class="label">Votre forfait</span>
-              <p class="val" id="planVal">{userProfile.plan}</p>
-              <a href="/offres" id="upgradeBtn" class="upgrade-btn">Passer à MARYAN Plus →</a>
+              <span class="stat-label">Forfait</span>
+              <p id="planVal" class="stat-val">–</p>
+              <a href="/offres" id="upgradeBtn" class="upgrade-btn" style="display:none;">Passer à MARYAN Plus →</a>
             </div>
 
             <div class="profile-stat">
-              <span class="label">Crédit Copilote</span>
+              <span class="stat-label">Copilote</span>
               <div class="progress-bar">
-                <div id="progressFill" class="progress-fill" style="width: 60%;"></div>
+                <div id="progressFill" class="progress-fill" style="width:0%;"></div>
               </div>
-              <p class="val-sub" id="counterText">{userProfile.messagesRemaining} sur 5 messages restants</p>
+              <p id="counterText" class="stat-sub"></p>
             </div>
+
           </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
+        <!-- ═══ CONTENU PRINCIPAL ═══ -->
         <div class="dash-content">
-          <section class="dash-section">
-            <h2 class="dash-h2">Vos outils prioritaires</h2>
-            <div class="modules-grid">
-              {modules.map(mod => (
-                <a href={mod.link} class="module-card card-v3">
-                  <div class="module-title-row">
-                    <h3>{mod.title}</h3>
-                    <span class="mod-status">{mod.status}</span>
-                  </div>
-                  <p>{mod.desc}</p>
-                  <span class="mod-nav">Ouvrir l'outil →</span>
-                </a>
-              ))}
-            </div>
+
+          <!-- 1. BONJOUR -->
+          <section class="dash-section dash-hello">
+            <h1 id="helloTitle" class="hello-title">Bonjour élu·e</h1>
+            <p id="helloSub" class="hello-sub">Que voulez-vous faire aujourd'hui ?</p>
           </section>
 
-          <section class="dash-section" style="margin-top: 4rem;">
-            <h2 class="dash-h2">Dernier diagnostic</h2>
-            <div class="diag-summary card-v3 highlight-neon">
+          <!-- 2. DIAGNOSTIC -->
+          <section class="dash-section" id="diagSection">
+            <div class="section-header-row">
+              <h2 class="dash-h2">Votre diagnostic MARYAN</h2>
+              <a href="/diagnostic" class="btn-link">Refaire →</a>
+            </div>
+
+            <!-- Diagnostic présent -->
+            <div id="diagPresent" class="diag-card card-v3" style="display:none;">
               <div class="diag-header-row">
                 <div>
-                   <span class="label">Résultat préconisé</span>
-                   <p class="diag-val">{userProfile.diagnosticResult}</p>
+                  <span class="diag-kicker">Résultat</span>
+                  <p id="diagLabel" class="diag-val">–</p>
                 </div>
-                <a href="/diagnostic" class="btn-link">Refaire le diagnostic</a>
+                <span id="diagBadge" class="diag-badge">–</span>
               </div>
-              <p class="diag-desc">Votre profil indique un besoin de structure et de méthode pour gagner du temps sur vos dossiers stratégiques.</p>
+              <p id="diagAccroche" class="diag-accroche"></p>
+            </div>
+
+            <!-- Pas de diagnostic -->
+            <div id="diagAbsent" class="diag-cta-card" style="display:none;">
+              <p>Vous n'avez pas encore effectué votre diagnostic MARYAN.</p>
+              <a href="/diagnostic" class="btn-primary-v3" style="margin-top:1.5rem; display:inline-flex;">Faire mon diagnostic</a>
             </div>
           </section>
 
-          <section class="dash-section" style="margin-top: 4rem;">
-             <h2 class="dash-h2">Abonnement & Facturation</h2>
-             <div class="billing-card card-v3">
-                <p>Aucun paiement n’a été effectué pour le moment.</p>
-                <div class="billing-actions">
-                  <button class="btn-secondary-v3">Configurer Stripe Payout</button>
-                  <button class="btn-link">Afficher l’historique des factures</button>
-                </div>
-             </div>
+          <!-- 3. RESSOURCES RECOMMANDÉES -->
+          <section class="dash-section" id="ressourcesSection">
+            <div class="section-header-row">
+              <h2 class="dash-h2">Vos ressources recommandées</h2>
+              <a href="/ressources" class="btn-link">Toutes les fiches →</a>
+            </div>
+            <div id="ressourcesGrid" class="ressources-grid">
+              <!-- Injecté côté client -->
+            </div>
           </section>
 
-          <!-- TESTS SECTION -->
-          <section class="dash-section" id="tests" style="margin-top: 4rem;">
+          <!-- 4. SESSIONS RÉCENTES -->
+          <section class="dash-section" id="sessionsSection" style="display:none;">
             <div class="section-header-row">
-              <h2 class="dash-h2">Mes Tests thématiques</h2>
-              <a href="/tests" class="btn-link">Voir tous les tests →</a>
+              <h2 class="dash-h2">Vos sessions récentes</h2>
+              <a href="/copilote" class="btn-link">Nouveau →</a>
+            </div>
+            <div id="sessionsList" class="sessions-list"></div>
+          </section>
+
+          <!-- 5. TESTS -->
+          <section class="dash-section" id="tests">
+            <div class="section-header-row">
+              <h2 class="dash-h2">Vos tests thématiques</h2>
+              <a href="/tests" class="btn-link">Voir tous →</a>
             </div>
             <div class="tests-grid">
               <a href="/tests/style-decision" class="test-tile card-v3" data-key="maryan_test_decision">
@@ -170,7 +129,7 @@ const modules = [
               <a href="/tests/posture-conflit" class="test-tile card-v3" data-key="maryan_test_conflit">
                 <span class="test-num">02</span>
                 <h3>Ma posture face au conflit</h3>
-                <p>Mode de gestion dominant et signaux d’alerte.</p>
+                <p>Mode de gestion dominant et signaux d'alerte.</p>
                 <span class="test-cta">Faire le test →</span>
               </a>
               <a href="/tests/prise-de-parole" class="test-tile card-v3" data-key="maryan_test_parole">
@@ -194,22 +153,19 @@ const modules = [
             </div>
           </section>
 
-          <!-- COMPTES RENDUS SECTION -->
-          <section class="dash-section" id="cr" style="margin-top: 4rem;">
+          <!-- 6. COMPTES RENDUS -->
+          <section class="dash-section" id="cr">
             <div class="section-header-row">
               <h2 class="dash-h2">Mes Comptes Rendus</h2>
-              <button id="openRecorderBtn" class="upgrade-btn" style="border-bottom-color: var(--accent-red);">🎤 Créer par dictée</button>
+              <button id="openRecorderBtn" class="upgrade-btn" style="border-bottom-color:var(--accent-red);">🎤 Créer par dictée</button>
             </div>
-
-            <!-- Recorder Modal -->
-            <div id="recorderModal" class="recorder-modal" style="display: none;">
-              <div class="recorder-modal-overlay" onclick="document.getElementById(‘recorderModal’).style.display=’none’;"></div>
+            <div id="recorderModal" class="recorder-modal" style="display:none;">
+              <div class="recorder-modal-overlay" onclick="document.getElementById('recorderModal').style.display='none';"></div>
               <div class="recorder-modal-content card-v3">
-                <button class="recorder-close-btn" onclick="document.getElementById(‘recorderModal’).style.display=’none’;">✕</button>
+                <button class="recorder-close-btn" onclick="document.getElementById('recorderModal').style.display='none';">✕</button>
                 <CompteRenduRecorder />
               </div>
             </div>
-
             <CompteRenduManager readonly={false} />
           </section>
 
@@ -223,163 +179,498 @@ const modules = [
 <script>
   import { createClient } from '@supabase/supabase-js';
 
-  // AUTH GUARD
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
 
-  if (SUPABASE_URL && SUPABASE_KEY) {
+  // ── Mapping diagnostic_key → accroche ──
+  const DIAG_ACCROCHES: Record<string, string> = {
+    'vigilance-institutionnelle': 'Vous êtes attentif·ve à vos droits et à la régularité des procédures. MARYAN peut vous aider à les faire valoir.',
+    'isolation-politique': 'Vous traversez une période d\'isolement. MARYAN vous aide à identifier vos alliés et à construire des coalitions.',
+    'surcharge-operationnelle': 'Vous êtes en surcharge. MARYAN va à l\'essentiel pour vous aider à prioriser et agir rapidement.',
+    'mandat-recent': 'Vous débutez votre mandat. MARYAN vous accompagne dans la prise de repères et la compréhension de votre rôle.',
+    'tension-relationnelle': 'Des tensions relationnelles compliquent votre mandat. MARYAN vous aide à les désamorcer.',
+  };
+
+  // ── Fiches génériques si pas de diagnostic ──
+  const FICHES_GENERIQUES = [
+    { slug: 'comprendre-votre-role', title: 'Comprendre votre rôle d\'élu·e' },
+    { slug: 'droits-fondamentaux-elu', title: 'Les droits fondamentaux de l\'élu·e' },
+    { slug: 'prendre-la-parole-en-conseil', title: 'Prendre la parole en conseil municipal' }
+  ];
+
+  // ── Formatage de date ──
+  function formatDate(iso: string): string {
+    try {
+      return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+    } catch { return ''; }
+  }
+
+  // ── Badge session type ──
+  function sessionTypeBadge(type: string): string {
+    const labels: Record<string, string> = {
+      copilote: 'Copilote',
+      cr_reunion: 'CR réunion',
+      analyse: 'Analyse'
+    };
+    return labels[type] || type;
+  }
+
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    window.location.href = '/login';
+  } else {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
       window.location.href = '/login';
     } else {
-      // Show email
-      const emailEl = document.getElementById('userEmail');
-      if (emailEl) emailEl.textContent = session.user.email || '';
+      const user = session.user;
+      const token = session.access_token;
 
-      // Avatar initials from email
-      const initials = (session.user.email || 'AU').slice(0, 2).toUpperCase();
+      // ── Email & avatar ──
+      const emailEl = document.getElementById('userEmail');
+      if (emailEl) emailEl.textContent = user.email || '';
+      const initials = (user.email || 'EU').slice(0, 2).toUpperCase();
       const avatarEl = document.getElementById('avatarInitials');
       if (avatarEl) avatarEl.textContent = initials;
 
-      // Logout
+      // ── Déconnexion ──
       document.getElementById('logoutBtn')?.addEventListener('click', async () => {
         await supabase.auth.signOut();
         window.location.href = '/login';
       });
-    }
-  }
 
-  // ACTIVATION LOGIC
-  const urlParams = new URLSearchParams(window.location.search);
-  const sessionId = urlParams.get('session_id');
-  
-  if (sessionId) {
-    const banner = document.getElementById('successBanner');
-    if (banner) banner.style.display = 'block';
-    
-    // Simulate back-end activation by updating localStorage
-    const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-    if (profile) {
-      profile.plan = "MARYAN Plus";
-      profile.offerLevel = 2;
-      localStorage.setItem('maryan_profile', JSON.stringify(profile));
-      
-      // Update UI
+      // ── Profil Supabase ──
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('first_name, commune, role, diagnostic_key, diagnostic_label, plan')
+        .eq('id', user.id)
+        .single();
+
+      const firstName = profile?.first_name || '';
+      const diagKey = profile?.diagnostic_key || '';
+      const diagLabel = profile?.diagnostic_label || '';
+      const plan = profile?.plan || 'gratuit';
+
+      // ── Bonjour ──
+      const helloTitle = document.getElementById('helloTitle');
+      if (helloTitle) {
+        helloTitle.textContent = firstName ? `Bonjour ${firstName}` : 'Bonjour élu·e';
+      }
+      const helloSub = document.getElementById('helloSub');
+      if (helloSub && profile?.role) {
+        helloSub.textContent = `${profile.role}${profile.commune ? ' — ' + profile.commune : ''}`;
+      }
+
+      // ── Profil sidebar ──
+      const profileNameEl = document.getElementById('profileName');
+      if (profileNameEl) profileNameEl.textContent = firstName || user.email?.split('@')[0] || 'Mon compte';
+      const profileRoleEl = document.getElementById('profileRole');
+      if (profileRoleEl && (profile?.role || profile?.commune)) {
+        profileRoleEl.textContent = [profile.role, profile.commune].filter(Boolean).join(' — ');
+      }
+
+      // ── Plan ──
       const planVal = document.getElementById('planVal');
-      if (planVal) planVal.innerText = "MARYAN Plus";
-      
+      if (planVal) planVal.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
       const upgradeBtn = document.getElementById('upgradeBtn');
-      if (upgradeBtn) upgradeBtn.style.display = 'none';
-      
-      const progressFill = document.getElementById('progressFill') as HTMLElement;
-      if (progressFill) progressFill.style.width = '100%';
-      
+      if (upgradeBtn && plan !== 'plus' && plan !== 'admin') {
+        (upgradeBtn as HTMLElement).style.display = 'inline-block';
+      }
+
+      // ── Avatar initiales depuis prénom ──
+      if (firstName && avatarEl) {
+        avatarEl.textContent = firstName.slice(0, 2).toUpperCase();
+      }
+
+      // ── Crédit copilote (simulé) ──
+      const progressFill = document.getElementById('progressFill') as HTMLElement | null;
       const counterText = document.getElementById('counterText');
-      if (counterText) counterText.innerText = "Accès Illimité";
+      if (plan === 'plus' || plan === 'admin') {
+        if (progressFill) progressFill.style.width = '100%';
+        if (counterText) counterText.textContent = 'Accès illimité';
+      } else {
+        if (progressFill) progressFill.style.width = '60%';
+        if (counterText) counterText.textContent = '3 messages restants aujourd\'hui';
+      }
+
+      // ── Diagnostic ──
+      const diagPresent = document.getElementById('diagPresent');
+      const diagAbsent = document.getElementById('diagAbsent');
+
+      // Tente aussi localStorage en fallback
+      let localDiagKey = diagKey;
+      let localDiagLabel = diagLabel;
+      try {
+        const raw = localStorage.getItem('maryan_v4_diag');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (!localDiagKey && parsed?.diagnostic_key) localDiagKey = parsed.diagnostic_key;
+          if (!localDiagLabel && parsed?.diagnostic_label) localDiagLabel = parsed.diagnostic_label;
+        }
+      } catch (_) {}
+
+      if (localDiagKey || localDiagLabel) {
+        if (diagPresent) diagPresent.style.display = 'block';
+        if (diagAbsent) diagAbsent.style.display = 'none';
+        const diagLabelEl = document.getElementById('diagLabel');
+        if (diagLabelEl) diagLabelEl.textContent = localDiagLabel || localDiagKey;
+        const diagBadge = document.getElementById('diagBadge');
+        if (diagBadge) diagBadge.textContent = localDiagKey;
+        const diagAccroche = document.getElementById('diagAccroche');
+        if (diagAccroche) {
+          diagAccroche.textContent = DIAG_ACCROCHES[localDiagKey] || 'MARYAN adapte ses réponses à votre profil.';
+        }
+      } else {
+        if (diagPresent) diagPresent.style.display = 'none';
+        if (diagAbsent) diagAbsent.style.display = 'block';
+      }
+
+      // ── Ressources recommandées ──
+      const ressourcesGrid = document.getElementById('ressourcesGrid');
+      if (ressourcesGrid) {
+        let slugs: { slug: string; title: string }[] = [];
+
+        // Depuis localStorage diagnostic
+        try {
+          const raw = localStorage.getItem('maryan_v4_diag');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            const keys = parsed?.recommended_slugs || parsed?.priorites || [];
+            slugs = keys.slice(0, 3).map((s: string) => ({ slug: s, title: s.replace(/-/g, ' ') }));
+          }
+        } catch (_) {}
+
+        if (!slugs.length) slugs = FICHES_GENERIQUES;
+
+        ressourcesGrid.innerHTML = slugs.map(({ slug, title }) => `
+          <a href="/ressources/${slug}" class="ressource-tile card-v3">
+            <span class="ressource-num">→</span>
+            <p class="ressource-title">${title}</p>
+            <span class="ressource-cta">Consulter →</span>
+          </a>
+        `).join('');
+      }
+
+      // ── Sessions récentes ──
+      try {
+        const res = await fetch('/api/sessions', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const { sessions } = await res.json();
+          const sessionsSection = document.getElementById('sessionsSection');
+          const sessionsList = document.getElementById('sessionsList');
+          if (sessions?.length && sessionsSection && sessionsList) {
+            sessionsSection.style.display = 'block';
+            sessionsList.innerHTML = sessions.slice(0, 3).map((s: {
+              id: string;
+              session_type: string;
+              titre: string;
+              updated_at: string;
+            }) => `
+              <a href="/copilote?session_id=${s.id}" class="session-item">
+                <div class="session-meta">
+                  <span class="session-badge session-badge-${s.session_type}">${sessionTypeBadge(s.session_type)}</span>
+                  <span class="session-date">${formatDate(s.updated_at)}</span>
+                </div>
+                <p class="session-titre">${s.titre || 'Session sans titre'}</p>
+                <span class="session-cta">Reprendre →</span>
+              </a>
+            `).join('');
+          }
+        }
+      } catch (_) { /* non bloquant */ }
+
+      // ── Activation abonnement via session_id Stripe ──
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('session_id')) {
+        const banner = document.getElementById('successBanner');
+        if (banner) banner.style.display = 'block';
+        if (planVal) planVal.textContent = 'MARYAN Plus';
+        if (upgradeBtn) (upgradeBtn as HTMLElement).style.display = 'none';
+        if (progressFill) progressFill.style.width = '100%';
+        if (counterText) counterText.textContent = 'Accès illimité';
+      }
+
+      // ── Tests : marquer ceux déjà faits ──
+      document.querySelectorAll('.test-tile[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (key && localStorage.getItem(key)) {
+          el.classList.add('test-done');
+          const cta = el.querySelector('.test-cta');
+          if (cta) cta.textContent = '✓ Refaire →';
+        }
+      });
+
+      // ── Recorder modal ──
+      document.getElementById('openRecorderBtn')?.addEventListener('click', () => {
+        const modal = document.getElementById('recorderModal');
+        if (modal) modal.style.display = 'flex';
+      });
     }
   }
-
-  // Dynamic Profile Rendering (Simple)
-  const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-  if (profile.title) {
-     document.getElementById('profileName')!.innerText = profile.firstName || "Aline";
-     document.getElementById('profileRole')!.innerText = `${profile.title} — ${profile.commune || 'Votre Commune'}`;
-     document.getElementById('planVal')!.innerText = profile.plan || "Découverte (Gratuit)";
-  }
-
-  // Tests: mark completed ones
-  document.querySelectorAll('.test-tile[data-key]').forEach(el => {
-    const key = el.getAttribute('data-key');
-    if (key && localStorage.getItem(key)) {
-      el.classList.add('test-done');
-      const cta = el.querySelector('.test-cta');
-      if (cta) cta.textContent = '✓ Refaire →';
-    }
-  });
-
-  // Recorder modal
-  const openRecorderBtn = document.getElementById('openRecorderBtn');
-  const recorderModal = document.getElementById('recorderModal');
-  openRecorderBtn?.addEventListener('click', () => {
-    if (recorderModal) recorderModal.style.display = 'flex';
-  });
 </script>
 
 <style>
-  .dashboard-v3 { padding-bottom: 8rem; background: var(--bg); min-height: 80vh; }
-  
-  .dashboard-grid { display: grid; grid-template-columns: 340px 1fr; gap: 4rem; align-items: start; }
-  
-  .dash-h2 { font-size: 1.5rem; margin-bottom: 2rem; color: var(--deep); }
-  
-  /* Sidebar */
+  .dashboard-v3 {
+    padding: 4rem 0 8rem;
+    background: var(--bg);
+    min-height: 80vh;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  /* ── Success banner ── */
+  .success-banner {
+    background: #F0FFF4;
+    border: 1px solid #A5D6A7;
+    color: #2E7D32;
+    padding: 1.25rem 1.75rem;
+    border-radius: 12px;
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* ── Sidebar ── */
   .dash-sidebar { position: sticky; top: 2rem; }
-  .dash-profile { padding: 2.5rem; background: white; }
-  .profile-header { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem; }
-  .avatar-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--deep); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
-  .profile-text h3 { font-size: 1.15rem; margin-bottom: 0.25rem; }
-  .profile-text p { font-size: 0.9rem; opacity: 0.6; }
-  
-  .dash-sep { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-  
-  .profile-stat { margin-bottom: 2rem; }
-  .profile-stat .label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #54636C; display: block; margin-bottom: 0.75rem; }
-  .profile-stat .val { font-size: 1.1rem; font-weight: 700; color: var(--deep); }
-  .profile-stat .val-sub { font-size: 0.85rem; opacity: 0.6; margin-top: 0.5rem; }
-  
-  .upgrade-btn { display: inline-block; margin-top: 1rem; color: var(--accent-red); font-weight: 800; font-size: 0.9rem; text-decoration: none; border-bottom: 2px solid var(--accent-red); }
-  .logout-btn { display: inline-block; margin-top: 0.75rem; background: none; border: none; padding: 0; color: #54636C; font-weight: 700; font-size: 0.85rem; font-family: inherit; cursor: pointer; border-bottom: 1px solid #ccc; }
+  .dash-profile { padding: 2rem; background: white; }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .avatar-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--deep);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .profile-text h3 { font-size: 1.05rem; margin-bottom: 0.2rem; }
+  .profile-role-line { font-size: 0.85rem; color: #54636C; }
+
+  .dash-sep { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  .profile-stat { margin-bottom: 1.5rem; }
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #54636C;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .stat-email { font-size: 0.82rem; color: var(--deep); font-weight: 500; word-break: break-all; }
+  .stat-val { font-size: 1rem; font-weight: 700; color: var(--deep); }
+  .stat-sub { font-size: 0.82rem; color: #54636C; margin-top: 0.4rem; }
+
+  .upgrade-btn {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: var(--accent-red);
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent-red);
+  }
+
+  .logout-btn {
+    display: inline-block;
+    margin-top: 0.6rem;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #54636C;
+    font-weight: 700;
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+  }
   .logout-btn:hover { color: var(--accent-red); border-bottom-color: var(--accent-red); }
-  
-  .progress-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-top: 1rem; }
-  .progress-fill { height: 100%; background: var(--accent-red); border-radius: 99px; }
 
-  /* Modules Grid */
-  .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-  .module-card { text-decoration: none; padding: 2.5rem; transition: all 0.3s; }
-  .module-card:hover { transform: translateY(-5px); border-color: var(--accent-red); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
-  .module-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .module-title-row h3 { font-size: 1.25rem; color: var(--deep); }
-  .mod-status { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; background: #E8F5E9; color: #2E7D32; padding: 0.3rem 0.6rem; border-radius: 4px; }
-  .module-card p { font-size: 0.95rem; color: #54636C; line-height: 1.5; margin-bottom: 1.5rem; }
-  .mod-nav { font-size: 0.85rem; font-weight: 800; color: var(--deep); }
+  .progress-bar {
+    width: 100%;
+    height: 7px;
+    background: var(--bg);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+  .progress-fill { height: 100%; background: var(--accent-red); border-radius: 99px; transition: width 0.4s; }
 
-  /* Diagnostic Summary */
-  .diag-summary { padding: 3rem; }
-  .diag-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
-  .diag-val { font-size: 1.5rem; font-weight: 800; color: var(--deep); }
-  .diag-desc { font-size: 1.05rem; opacity: 0.8; line-height: 1.6; }
+  /* ── Contenu principal ── */
+  .dash-content { display: flex; flex-direction: column; gap: 4rem; }
+  .dash-section {}
 
-  /* Billing */
-  .billing-card { padding: 3rem; text-align: center; color: #54636C; opacity: 0.8; }
-  .billing-actions { display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; }
+  .dash-h2 { font-size: 1.4rem; color: var(--deep); }
+  .section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .section-header-row .dash-h2 { margin: 0; }
 
-  /* Section header row */
-  .section-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-  .section-header-row .dash-h2 { margin-bottom: 0; }
+  .btn-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .btn-link:hover { border-bottom-color: var(--accent-red); }
 
-  /* Tests grid */
-  .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-  .test-tile { text-decoration: none; padding: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
-  .test-num { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #bbb; }
-  .test-tile h3 { font-size: 1.05rem; color: var(--deep); margin: 0; line-height: 1.3; }
-  .test-tile p { font-size: 0.9rem; color: #54636C; margin: 0; line-height: 1.5; flex: 1; }
-  .test-cta { font-size: 0.85rem; font-weight: 800; color: var(--deep); margin-top: auto; }
+  /* ── Bonjour ── */
+  .dash-hello { padding-bottom: 0; }
+  .hello-title { font-size: clamp(2rem, 4vw, 2.8rem); color: var(--deep); margin-bottom: 0.5rem; }
+  .hello-sub { font-size: 1rem; color: #54636C; }
+
+  /* ── Diagnostic ── */
+  .diag-card { padding: 2.5rem; }
+  .diag-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+  .diag-kicker {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #54636C;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .diag-val { font-size: 1.5rem; font-weight: 800; color: var(--deep); line-height: 1.2; }
+  .diag-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(10,25,47,0.06);
+    color: var(--deep);
+    padding: 0.35rem 0.75rem;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .diag-accroche { font-size: 0.97rem; color: #54636C; line-height: 1.6; }
+
+  .diag-cta-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    text-align: center;
+    color: #54636C;
+  }
+
+  /* ── Ressources ── */
+  .ressources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .ressource-tile {
+    text-decoration: none;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s;
+  }
+  .ressource-tile:hover { transform: translateY(-3px); border-color: var(--border-neon); }
+  .ressource-num { font-size: 1.1rem; color: var(--neon); }
+  .ressource-title { font-size: 0.95rem; font-weight: 700; color: var(--deep); line-height: 1.4; flex: 1; margin: 0; text-transform: capitalize; }
+  .ressource-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); margin-top: auto; }
+
+  /* ── Sessions ── */
+  .sessions-list { display: flex; flex-direction: column; gap: 1rem; }
+  .session-item {
+    text-decoration: none;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s;
+  }
+  .session-item:hover { border-color: var(--accent-red); transform: translateY(-2px); }
+  .session-meta { display: flex; align-items: center; gap: 0.75rem; }
+  .session-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 99px;
+    background: rgba(10,25,47,0.07);
+    color: var(--deep);
+  }
+  .session-badge-cr_reunion { background: rgba(230,57,70,0.1); color: var(--accent-red); }
+  .session-badge-analyse { background: rgba(173,255,47,0.2); color: #4a7a00; }
+  .session-date { font-size: 0.8rem; color: #54636C; }
+  .session-titre { font-size: 0.97rem; font-weight: 600; color: var(--deep); margin: 0; }
+  .session-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); }
+
+  /* ── Tests ── */
+  .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
+  .test-tile {
+    text-decoration: none;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    transition: all 0.2s;
+  }
+  .test-tile:hover { transform: translateY(-3px); border-color: var(--border-neon); }
+  .test-num { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #bbb; }
+  .test-tile h3 { font-size: 1rem; color: var(--deep); margin: 0; line-height: 1.3; }
+  .test-tile p { font-size: 0.88rem; color: #54636C; margin: 0; line-height: 1.5; flex: 1; }
+  .test-cta { font-size: 0.82rem; font-weight: 800; color: var(--deep); }
   .test-done .test-cta { color: var(--neon); }
   .test-done { border-color: var(--border-neon); }
 
-  /* Recorder modal */
+  /* ── Recorder ── */
   .recorder-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; }
   .recorder-modal-overlay { position: absolute; inset: 0; background: rgba(10,25,47,0.5); cursor: pointer; }
   .recorder-modal-content { position: relative; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; z-index: 1001; padding: 2rem; }
-  .recorder-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #999; z-index: 10; }
+  .recorder-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #999; }
   .recorder-close-btn:hover { color: var(--deep); }
 
+  /* ── Responsive ── */
   @media (max-width: 992px) {
-    .dashboard-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .dashboard-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     .dash-sidebar { position: static; }
+    .tests-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
     .tests-grid { grid-template-columns: 1fr; }
+    .ressources-grid { grid-template-columns: 1fr; }
   }
 </style>
