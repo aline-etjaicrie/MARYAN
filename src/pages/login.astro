@@ -58,17 +58,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
 
           <div id="politicalLabelGroup" class="field-group" style="display:none;">
-            <label for="politicalLabel">Étiquette politique</label>
+            <label for="politicalLabel">Affiliation politique <span class="field-optional">(optionnel)</span></label>
+            <p class="field-hint">Permet à MARYAN d'anticiper les tensions avec votre famille politique.</p>
             <select id="politicalLabel" name="politicalLabel">
               <option value="">— Choisir (optionnel) —</option>
-              <option value="sans_etiquette">Sans étiquette</option>
-              <option value="gauche">Gauche</option>
-              <option value="centre_gauche">Centre-gauche</option>
-              <option value="centre">Centre</option>
-              <option value="centre_droit">Centre-droit</option>
-              <option value="droite">Droite</option>
-              <option value="ecologiste">Écologiste</option>
-              <option value="autre">Autre</option>
+              <optgroup label="Sans étiquette / Divers">
+                <option value="sans_etiquette">Sans étiquette</option>
+                <option value="autre">Divers / Autre</option>
+              </optgroup>
+              <optgroup label="Gauche">
+                <option value="LFI">La France Insoumise (LFI)</option>
+                <option value="PCF">Parti Communiste Français (PCF)</option>
+                <option value="PS">Parti Socialiste (PS)</option>
+                <option value="EELV">Les Écologistes / EELV</option>
+              </optgroup>
+              <optgroup label="Centre">
+                <option value="REN">Renaissance / Majorité présidentielle</option>
+              </optgroup>
+              <optgroup label="Droite">
+                <option value="LR">Les Républicains (LR)</option>
+                <option value="RN">Rassemblement National (RN)</option>
+              </optgroup>
             </select>
           </div>
 
@@ -196,13 +206,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           return;
         }
 
-        const politicalLabel = politicalLabelSelect.value || null;
+        const partiId = politicalLabelSelect.value || null;
+
+        // Mapping parti_id → label lisible pour Mistral
+        const PARTI_LABELS: Record<string, string> = {
+          'LFI': 'La France Insoumise',
+          'PS': 'Parti Socialiste',
+          'EELV': 'Les Écologistes',
+          'LR': 'Les Républicains',
+          'RN': 'Rassemblement National',
+          'PCF': 'Parti Communiste Français',
+          'REN': 'Renaissance / Majorité présidentielle',
+          'sans_etiquette': 'Sans étiquette',
+          'autre': 'Divers'
+        };
+        const partiLabel = partiId ? (PARTI_LABELS[partiId] || partiId) : null;
+
         setLoading(true);
-        const { error } = await supabase.auth.signUp({
+        const { data: signUpData, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { political_label: politicalLabel },
+            data: {
+              political_label: partiId,  // conservé pour compatibilité
+              parti_id: partiId,
+              parti_label: partiLabel
+            },
           },
         });
         setLoading(false);
@@ -210,6 +239,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (error) {
           showError(error.message);
         } else {
+          // Sauvegarde parti dans profiles si session immédiate
+          if (signUpData.session && partiId) {
+            try {
+              await supabase
+                .from('profiles')
+                .update({ parti_id: partiId, parti_label: partiLabel })
+                .eq('id', signUpData.session.user.id);
+            } catch (_) {}
+          }
           showSuccess('Compte créé. Vérifiez votre boîte mail pour confirmer, ou connectez-vous directement si la confirmation est désactivée.');
         }
       } else {
@@ -417,5 +455,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .btn-text:hover {
     color: var(--accent-red);
+  }
+
+  .field-optional {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #999;
+    font-size: 0.75rem;
+  }
+
+  .field-hint {
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: -0.25rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  optgroup {
+    font-weight: 700;
+    color: var(--deep);
   }
 </style>

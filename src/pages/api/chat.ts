@@ -8,6 +8,7 @@ import {
   type MaryanSituationMode
 } from '../../features/copilote-maryan/config';
 import { maryanResources } from '../../data/resources';
+import { buildPartisPromptSection } from '../../data/partis';
 import type { DiagnosticProfile, MaryanResource } from '../../data/types';
 
 interface CopilotMessage {
@@ -90,7 +91,10 @@ export const POST: APIRoute = async ({ request }) => {
     diagnostic_key?: string;
     diagnostic_label?: string;
     plan?: string;
+    parti_id?: string;
+    parti_label?: string;
     id?: string;
+    political_label?: string; // depuis user_metadata Supabase Auth
   } | null = null;
 
   const authHeader = request.headers.get('Authorization') || '';
@@ -103,24 +107,42 @@ export const POST: APIRoute = async ({ request }) => {
       if (user) {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan')
+          .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label')
           .eq('id', user.id)
           .single();
+        // Récupère aussi l'étiquette politique depuis user_metadata Auth
+        const politicalLabel = (user.user_metadata?.political_label as string) || null;
         if (profileData) {
-          supabaseProfile = { ...profileData, id: user.id };
+          supabaseProfile = { ...profileData, id: user.id, political_label: politicalLabel };
         } else {
-          supabaseProfile = { id: user.id };
+          supabaseProfile = { id: user.id, political_label: politicalLabel };
         }
       }
     } catch (_) { /* non bloquant */ }
   }
 
-  // ── Injection du profil dans le system prompt ──
+  // ── Injection du profil + contexte politique dans le system prompt ──
   let profileSection = '';
   if (supabaseProfile) {
     const diagKey = supabaseProfile.diagnostic_key || '';
     const diagInstruction = DIAG_INSTRUCTIONS[diagKey] || '';
-    profileSection = `\n\nPROFIL DE L'ÉLU·E :\n\nPrénom : ${supabaseProfile.first_name || '(non renseigné)'}\nCommune : ${supabaseProfile.commune || '(non renseigné)'}\nRôle : ${supabaseProfile.role || '(non renseigné)'}\nDiagnostic MARYAN : ${supabaseProfile.diagnostic_label || '(non effectué)'} (${diagKey || '-'})\nPlan : ${supabaseProfile.plan || 'gratuit'}\n\nTu t'adresses toujours à cette personne en utilisant son prénom si disponible. Tu adaptes tes réponses à son diagnostic et à son rôle.${diagInstruction ? '\n' + diagInstruction : ''}`;
+
+    // Étiquette politique : parti_label stocké en profil > political_label de user_metadata
+    const politicalLabel = supabaseProfile.parti_label || supabaseProfile.political_label || null;
+
+    profileSection = [
+      `\n\nPROFIL DE L'ÉLU·E :`,
+      `Prénom : ${supabaseProfile.first_name || '(non renseigné)'}`,
+      `Commune : ${supabaseProfile.commune || '(non renseigné)'}`,
+      `Rôle : ${supabaseProfile.role || '(non renseigné)'}`,
+      `Diagnostic MARYAN : ${supabaseProfile.diagnostic_label || '(non effectué)'} (${diagKey || '-'})`,
+      `Plan : ${supabaseProfile.plan || 'gratuit'}`,
+      ``,
+      `Tu t'adresses toujours à cette personne en utilisant son prénom si disponible. Tu adaptes tes réponses à son diagnostic et à son rôle.`,
+      diagInstruction || '',
+      ``,
+      buildPartisPromptSection(politicalLabel)
+    ].filter(l => l !== undefined).join('\n');
   }
 
   // ── Profile pour la logique de suggestion de ressources ──
