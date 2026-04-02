@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { createClient } from '@supabase/supabase-js';
 import {
   buildAgentPrimingMessage,
   buildSystemPrompt,
@@ -19,6 +20,7 @@ interface CopilotRequestBody {
   messages?: CopilotMessage[];
   mode?: MaryanSituationMode | string;
   message?: string;
+  session_id?: string | null;
 }
 
 interface SuggestedResource {
@@ -39,6 +41,13 @@ const DEFAULT_MODEL = 'mistral-large-latest';
 const CONTINUATION_PROMPT =
   "Continuez uniquement à partir du dernier mot, sans répéter le début. Terminez proprement la section en cours. Si nécessaire, ajoutez seulement un bloc « Bon réflexe » très court.";
 
+// Mapping diagnostic_key → adaptation du ton Mistral
+const DIAG_INSTRUCTIONS: Record<string, string> = {
+  'vigilance-institutionnelle': "L'utilisateur·ice est particulièrement sensible à ses droits formels en tant qu'élu·e. Insiste sur les textes réglementaires, les droits statutaires et les procédures officielles.",
+  'isolation-politique': "L'utilisateur·ice souffre d'isolement politique. Insiste sur les stratégies de coalition, les alliances possibles, et les leviers collectifs.",
+  'surcharge-operationnelle': "L'utilisateur·ice est en surcharge. Va à l'essentiel, sois très concis, donne des réponses courtes et actionnables. Pas de développements inutiles.",
+};
+
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
@@ -49,13 +58,11 @@ export const POST: APIRoute = async ({ request }) => {
     (process.env.MISTRAL_MODEL as string) ||
     DEFAULT_MODEL;
 
+  const supabaseUrl = (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+  const supabaseServiceKey = (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
+
   if (!apiKey) {
-    return json(
-      {
-        error: 'Configuration MISTRAL_API_KEY manquante sur Vercel.'
-      },
-      503
-    );
+    return json({ error: 'Configuration MISTRAL_API_KEY manquante sur Vercel.' }, 503);
   }
 
   let body: CopilotRequestBody | null;
@@ -65,17 +72,66 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Format JSON invalide.' }, 400);
   }
 
-  const profile = body?.profile || null;
   const messages = Array.isArray(body?.messages) ? body.messages.filter(isCopilotMessage) : [];
   const latestUserMessage =
     typeof body?.message === 'string' && body.message.trim()
       ? body.message.trim()
-      : [...messages].reverse().find((message) => message.role === 'user')?.content || '';
-  const resolvedMode = inferMaryanSituationMode(latestUserMessage, profile);
+      : [...messages].reverse().find((m) => m.role === 'user')?.content || '';
 
   if (!messages.length) {
     return json({ error: 'Aucun message à traiter.' }, 400);
   }
+
+  // ── Récupération du profil Supabase si token fourni ──
+  let supabaseProfile: {
+    first_name?: string;
+    commune?: string;
+    role?: string;
+    diagnostic_key?: string;
+    diagnostic_label?: string;
+    plan?: string;
+    id?: string;
+  } | null = null;
+
+  const authHeader = request.headers.get('Authorization') || '';
+  const userToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
+  if (userToken && supabaseUrl && supabaseServiceKey) {
+    try {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      const { data: { user } } = await supabase.auth.getUser(userToken);
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan')
+          .eq('id', user.id)
+          .single();
+        if (profileData) {
+          supabaseProfile = { ...profileData, id: user.id };
+        } else {
+          supabaseProfile = { id: user.id };
+        }
+      }
+    } catch (_) { /* non bloquant */ }
+  }
+
+  // ── Injection du profil dans le system prompt ──
+  let profileSection = '';
+  if (supabaseProfile) {
+    const diagKey = supabaseProfile.diagnostic_key || '';
+    const diagInstruction = DIAG_INSTRUCTIONS[diagKey] || '';
+    profileSection = `\n\nPROFIL DE L'ÉLU·E :\n\nPrénom : ${supabaseProfile.first_name || '(non renseigné)'}\nCommune : ${supabaseProfile.commune || '(non renseigné)'}\nRôle : ${supabaseProfile.role || '(non renseigné)'}\nDiagnostic MARYAN : ${supabaseProfile.diagnostic_label || '(non effectué)'} (${diagKey || '-'})\nPlan : ${supabaseProfile.plan || 'gratuit'}\n\nTu t'adresses toujours à cette personne en utilisant son prénom si disponible. Tu adaptes tes réponses à son diagnostic et à son rôle.${diagInstruction ? '\n' + diagInstruction : ''}`;
+  }
+
+  // ── Profile pour la logique de suggestion de ressources ──
+  const profile = body?.profile || (supabaseProfile ? {
+    key: supabaseProfile.diagnostic_key || '',
+    summary: supabaseProfile.diagnostic_label || '',
+    themeLabel: supabaseProfile.role || '',
+    tags: []
+  } as MaryanProfile : null);
+
+  const resolvedMode = inferMaryanSituationMode(latestUserMessage, profile);
 
   const fichesDisponibles = maryanResources
     .map(r => `- ${r.slug} : ${r.title}`)
@@ -97,27 +153,17 @@ export const POST: APIRoute = async ({ request }) => {
       : [
           {
             role: 'system' as const,
-            content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage) + '\n\n' + resourcesSection
+            content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage) + profileSection + '\n\n' + resourcesSection
           },
           ...messages
         ];
 
     const basePayload = isAgentMode
-      ? {
-          agent_id: agentId,
-          messages: baseMessages,
-          max_tokens: 460,
-          temperature: 0.35
-        }
-      : {
-          model,
-          messages: baseMessages,
-          max_tokens: 460,
-          temperature: 0.35
-        };
+      ? { agent_id: agentId, messages: baseMessages, max_tokens: 460, temperature: 0.35 }
+      : { model, messages: baseMessages, max_tokens: 460, temperature: 0.35 };
 
     const firstPass = await requestCompletion(url, apiKey, basePayload);
-    let reply = firstPass.reply || 'Je n’ai pas pu générer de réponse utile pour le moment.';
+    let reply = firstPass.reply || 'Je n\'ai pas pu générer de réponse utile pour le moment.';
 
     if (shouldContinueReply(reply, firstPass.finishReason)) {
       const continuationPayload = isAgentMode
@@ -146,6 +192,40 @@ export const POST: APIRoute = async ({ request }) => {
       reply = mergeReplyParts(reply, continuation.reply);
     }
 
+    // ── Sauvegarde de la session dans copilote_sessions ──
+    if (supabaseProfile?.id && supabaseUrl && supabaseServiceKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        const sessionId = body?.session_id || null;
+        const titre = messages.find(m => m.role === 'user')?.content?.slice(0, 60) || 'Session copilote';
+        const updatedMessages = [
+          ...messages,
+          { role: 'assistant', content: reply }
+        ];
+
+        if (sessionId) {
+          await supabase
+            .from('copilote_sessions')
+            .update({
+              messages: updatedMessages,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', sessionId)
+            .eq('user_id', supabaseProfile.id);
+        } else {
+          await supabase
+            .from('copilote_sessions')
+            .insert({
+              user_id: supabaseProfile.id,
+              session_type: 'copilote',
+              titre,
+              messages: updatedMessages,
+              diagnostic_key: supabaseProfile.diagnostic_key || null
+            });
+        }
+      } catch (_) { /* non bloquant */ }
+    }
+
     return json({
       reply,
       resources: getSuggestedResources(latestUserMessage, profile, resolvedMode),
@@ -153,12 +233,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;
-    return json(
-      {
-        error: `Erreur de connexion : ${e.message}`
-      },
-      status
-    );
+    return json({ error: `Erreur de connexion : ${e.message}` }, status);
   }
 };
 
@@ -181,7 +256,7 @@ async function requestCompletion(
   const data = (await upstream.json().catch(() => ({}))) as Record<string, any>;
 
   if (!upstream.ok) {
-    const apiError = data?.message || data?.error?.message || 'Le moteur Mistral n’a pas pu répondre.';
+    const apiError = data?.message || data?.error?.message || 'Le moteur Mistral n\'a pas pu répondre.';
     const error = new Error(apiError);
     (error as Error & { status?: number }).status = upstream.status;
     throw error;
@@ -205,11 +280,7 @@ function isCopilotMessage(value: unknown): value is CopilotMessage {
 
 function extractReply(data: Record<string, any>): string {
   const content = data?.choices?.[0]?.message?.content;
-
-  if (typeof content === 'string') {
-    return content.trim();
-  }
-
+  if (typeof content === 'string') return content.trim();
   if (Array.isArray(content)) {
     return content
       .map((item) => {
@@ -221,11 +292,7 @@ function extractReply(data: Record<string, any>): string {
       .join('\n')
       .trim();
   }
-
-  if (content && typeof content.text === 'string') {
-    return content.text.trim();
-  }
-
+  if (content && typeof content.text === 'string') return content.text.trim();
   return '';
 }
 
@@ -237,42 +304,24 @@ function extractFinishReason(data: Record<string, any>): string | null {
 function shouldContinueReply(reply: string, finishReason: string | null): boolean {
   const trimmed = reply.trim();
   if (!trimmed) return false;
-
   const normalized = normalizeText(trimmed);
-  if (finishReason && !['stop', 'eos', 'eos_token'].includes(finishReason)) {
-    return true;
-  }
-
-  if (/(bon reflexe|a retenir|faites maintenant)\s*:?\s*$/i.test(normalized)) {
-    return true;
-  }
-
-  return /\b(a|a la|a l|au|aux|avec|ce|cet|cette|dans|de|des|du|d|en|et|la|le|les|ou|par|pour|que|qui|sur|un|une)\s*$/i.test(
-    normalized
-  );
+  if (finishReason && !['stop', 'eos', 'eos_token'].includes(finishReason)) return true;
+  if (/(bon reflexe|a retenir|faites maintenant)\s*:?\s*$/i.test(normalized)) return true;
+  return /\b(a|a la|a l|au|aux|avec|ce|cet|cette|dans|de|des|du|d|en|et|la|le|les|ou|par|pour|que|qui|sur|un|une)\s*$/i.test(normalized);
 }
 
 function mergeReplyParts(initialReply: string, continuationReply: string): string {
   const first = initialReply.trimEnd();
   const second = continuationReply.trim();
-
   if (!second) return first;
-
   const normalizedFirst = normalizeText(first);
   const normalizedSecond = normalizeText(second);
-  if (normalizedSecond && normalizedFirst.endsWith(normalizedSecond)) {
-    return first;
-  }
-
-  const compactJoin = /\b(a|a la|a l|au|aux|avec|ce|cet|cette|dans|de|des|du|d|en|et|la|le|les|ou|par|pour|que|qui|sur|un|une)\s*$/i.test(
-    normalizeText(first)
-  );
+  if (normalizedSecond && normalizedFirst.endsWith(normalizedSecond)) return first;
+  const compactJoin = /\b(a|a la|a l|au|aux|avec|ce|cet|cette|dans|de|des|du|d|en|et|la|le|les|ou|par|pour|que|qui|sur|un|une)\s*$/i.test(normalizeText(first));
   const separator = compactJoin ? ' ' : second.startsWith('Bon réflexe') || second.startsWith('Bon reflexe') ? '\n\n' : ' ';
-
   return `${first}${separator}${second}`.trim();
 }
 
-// Maps situation modes to likely diagnostic profiles for scoring boost
 const MODE_TO_DIAGNOSTIC: Partial<Record<MaryanSituationMode, DiagnosticProfile[]>> = {
   prise_de_reperes: ['mandat_recent'],
   reprise_de_recul: ['surcharge'],
@@ -300,9 +349,7 @@ function getSuggestedResources(
   return maryanResources
     .map((resource) => {
       const tokenScore = getTokenScore(resource, textTokens);
-      const totalScore = tokenScore > 0
-        ? tokenScore + getMetaScore(resource, profile, resolvedMode)
-        : 0;
+      const totalScore = tokenScore > 0 ? tokenScore + getMetaScore(resource, profile, resolvedMode) : 0;
       return { resource, score: totalScore };
     })
     .filter(({ score }) => score >= 3)
@@ -315,25 +362,16 @@ function getSuggestedResources(
     }));
 }
 
-// Generic tokens that match too broadly and should not count toward score
 const GENERIC_TOKENS = new Set([
   'elu', 'elue', 'elus', 'elues', 'mandat', 'commune', 'local', 'politique',
   'votre', 'vous', 'votre', 'pour', 'dans', 'avec', 'sur', 'une', 'les', 'des'
 ]);
 
-// Token overlap score only — a resource scoring 0 here is excluded entirely
 function getTokenScore(resource: MaryanResource, textTokens: Set<string>): number {
   let score = 0;
-  const candidates = [
-    resource.title,
-    resource.promise,
-    ...resource.tags,
-    ...resource.useCases
-  ];
+  const candidates = [resource.title, resource.promise, ...resource.tags, ...resource.useCases];
   for (const candidate of candidates) {
-    const overlaps = tokenize(candidate).filter(
-      (t) => textTokens.has(t) && !GENERIC_TOKENS.has(t)
-    );
+    const overlaps = tokenize(candidate).filter((t) => textTokens.has(t) && !GENERIC_TOKENS.has(t));
     if (overlaps.length) {
       score += Math.min(overlaps.length, candidate === resource.title ? 4 : 3);
     }
@@ -341,27 +379,20 @@ function getTokenScore(resource: MaryanResource, textTokens: Set<string>): numbe
   return score;
 }
 
-// Metadata boosts — only applied on top of a non-zero token score
 function getMetaScore(
   resource: MaryanResource,
   profile: MaryanProfile | null,
   resolvedMode: MaryanSituationMode
 ): number {
   let score = resource.priority === 'haute' ? 1 : 0;
-  if (profile?.key && resource.diagnosticProfiles.includes(profile.key as DiagnosticProfile)) {
-    score += 3;
-  }
+  if (profile?.key && resource.diagnosticProfiles.includes(profile.key as DiagnosticProfile)) score += 3;
   const modeProfiles = MODE_TO_DIAGNOSTIC[resolvedMode] || [];
-  if (modeProfiles.some((p) => resource.diagnosticProfiles.includes(p))) {
-    score += 1;
-  }
+  if (modeProfiles.some((p) => resource.diagnosticProfiles.includes(p))) score += 1;
   return score;
 }
 
 function tokenize(value: string): string[] {
-  return normalizeText(value)
-    .split(' ')
-    .filter((token) => token.length > 2);
+  return normalizeText(value).split(' ').filter((token) => token.length > 2);
 }
 
 function normalizeText(value: string): string {
