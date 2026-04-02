@@ -1725,37 +1725,40 @@ const copilotSuggestions = [
   .res-grid {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(10, 25, 47, 0.04);
+    gap: 0.55rem;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+    box-shadow: none;
   }
 
   .res-lux-card {
-    text-decoration: none;
+    text-decoration: none !important;
     background: white;
-    border-bottom: 1px solid var(--border);
+    border: 1px solid var(--border);
     border-left: 3px solid transparent;
-    border-radius: 0;
-    transition: background 0.15s;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(10, 25, 47, 0.05);
+    transition: box-shadow 0.18s, transform 0.18s, background 0.15s;
     display: flex;
     align-items: center;
     gap: 1rem;
     width: 100%;
-    padding: 1rem 1.25rem 1rem 1.1rem;
+    padding: 0.85rem 1.1rem 0.85rem 1rem;
     color: var(--deep);
   }
-
-  .res-lux-card:last-child { border-bottom: none; }
 
   .res-lux-card[data-pillar="se_situer"]   { border-left-color: var(--pillar-se_situer); }
   .res-lux-card[data-pillar="comprendre"]  { border-left-color: var(--pillar-comprendre); }
   .res-lux-card[data-pillar="agir"]        { border-left-color: var(--pillar-agir); }
   .res-lux-card[data-pillar="se_proteger"] { border-left-color: var(--pillar-se_proteger); }
 
-  .res-lux-card:hover { background: #F5F6F8; }
+  .res-lux-card:hover {
+    background: #F9FAFB;
+    box-shadow: 0 3px 14px rgba(10, 25, 47, 0.09);
+    transform: translateY(-1px);
+  }
 
   .res-card-content {
     flex: 1;
@@ -1770,17 +1773,21 @@ const copilotSuggestions = [
   }
 
   .res-card-kicker {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.4);
+    color: rgba(10, 25, 47, 0.5);
+    background: rgba(10, 25, 47, 0.05);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    white-space: nowrap;
   }
 
-  .res-lux-card[data-pillar="se_situer"]   .res-card-kicker { color: var(--pillar-se_situer); }
-  .res-lux-card[data-pillar="comprendre"]  .res-card-kicker { color: var(--pillar-comprendre); }
-  .res-lux-card[data-pillar="agir"]        .res-card-kicker { color: var(--pillar-agir); }
-  .res-lux-card[data-pillar="se_proteger"] .res-card-kicker { color: var(--pillar-se_proteger); }
+  .res-lux-card[data-pillar="se_situer"]   .res-card-kicker { color: var(--pillar-se_situer);   background: rgba(59,130,246,0.1); }
+  .res-lux-card[data-pillar="comprendre"]  .res-card-kicker { color: var(--pillar-comprendre);  background: rgba(139,92,246,0.1); }
+  .res-lux-card[data-pillar="agir"]        .res-card-kicker { color: var(--pillar-agir);        background: rgba(16,185,129,0.1); }
+  .res-lux-card[data-pillar="se_proteger"] .res-card-kicker { color: var(--pillar-se_proteger); background: rgba(230,57,70,0.1); }
 
   .res-card-format-badge {
     font-size: 0.62rem;
@@ -1794,12 +1801,13 @@ const copilotSuggestions = [
   }
 
   .res-card-title {
-    font-size: 0.97rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: var(--deep);
     margin: 0;
     line-height: 1.2;
     letter-spacing: -0.01em;
+    text-decoration: none;
   }
 
   .res-card-promise {

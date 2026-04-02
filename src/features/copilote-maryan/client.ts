@@ -55,6 +55,11 @@ function initCopilot(rootElement: HTMLElement) {
   );
   const modeBadge = rootElement.querySelector<HTMLElement>('[data-mode-badge]');
   const micBtn = rootElement.querySelector<HTMLButtonElement>('[data-mic-btn]');
+  const attachBtn = rootElement.querySelector<HTMLButtonElement>('[data-attach-btn]');
+  const attachInput = rootElement.querySelector<HTMLInputElement>('[data-attach-input]');
+  const attachPreview = rootElement.querySelector<HTMLElement>('[data-attach-preview]');
+  const attachFilename = rootElement.querySelector<HTMLElement>('[data-attach-filename]');
+  const removeAttachBtn = rootElement.querySelector<HTMLButtonElement>('[data-remove-attach]');
 
   const drawer = rootElement.querySelector<HTMLElement>('[data-profile-drawer]');
   const overlay = rootElement.querySelector<HTMLElement>('[data-drawer-overlay]');
@@ -68,6 +73,8 @@ function initCopilot(rootElement: HTMLElement) {
   const profileTags = rootElement.querySelector<HTMLElement>('[data-profile-tags]');
   const profileStatus = rootElement.querySelector<HTMLElement>('[data-profile-status]');
 
+  type PendingAttachment = { filename: string; description: string } | null;
+
   const state = {
     msgCount: 0,
     isBusy: false,
@@ -76,7 +83,8 @@ function initCopilot(rootElement: HTMLElement) {
     isLoggedIn: false,
     hasPaidPlan: false,
     history: [] as HistoryMessage[],
-    userProfile: loadProfile()
+    userProfile: loadProfile(),
+    pendingAttachment: null as PendingAttachment
   };
 
   function hasUnlimitedAccess(): boolean {
@@ -112,6 +120,7 @@ function initCopilot(rootElement: HTMLElement) {
   bindSuggestions();
   bindDrawer();
   bindSpeechRecognition();
+  bindAttachment();
 
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -170,6 +179,106 @@ function initCopilot(rootElement: HTMLElement) {
     } catch {
       return null;
     }
+  }
+
+  // ─── ATTACHMENT ───────────────────────────────────────────────────────────
+
+  function clearAttachment() {
+    state.pendingAttachment = null;
+    if (attachInput) attachInput.value = '';
+    if (attachPreview) attachPreview.classList.add('hidden');
+    if (attachBtn) attachBtn.classList.remove('active');
+    syncInputUi();
+  }
+
+  function bindAttachment() {
+    if (!attachBtn || !attachInput) return;
+
+    attachBtn.addEventListener('click', () => attachInput.click());
+
+    attachInput.addEventListener('change', async () => {
+      const file = attachInput.files?.[0];
+      if (!file) return;
+
+      if (file.size > 10 * 1024 * 1024) {
+        addMessage('assistant', '<p>⚠️ Fichier trop volumineux (max 10 Mo).</p>', true);
+        return;
+      }
+
+      attachBtn.classList.add('active');
+      if (attachPreview) attachPreview.classList.remove('hidden');
+      if (attachFilename) attachFilename.textContent = `⏳ Analyse : ${file.name}`;
+
+      try {
+        const isPdf = file.type === 'application/pdf';
+        const fileType = isPdf ? 'pdf' : 'image';
+        const content = isPdf ? await extractPdfTextClient(file) : await resizeImageClient(file);
+
+        const res = await fetch('/api/analyse-document', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileType, content, context: 'chat' })
+        });
+        const data = (await res.json()) as { description?: string; error?: string };
+
+        if (data.error) throw new Error(data.error);
+
+        state.pendingAttachment = { filename: file.name, description: data.description || '' };
+        if (attachFilename) attachFilename.textContent = `📎 ${file.name}`;
+        syncInputUi();
+      } catch (e: any) {
+        clearAttachment();
+        addMessage('assistant', `<p>⚠️ Impossible d'analyser le fichier : ${escapeHtml(e.message || 'erreur inconnue')}</p>`, true);
+      }
+    });
+
+    removeAttachBtn?.addEventListener('click', () => clearAttachment());
+  }
+
+  async function resizeImageClient(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.onerror = reject;
+        img.src = (e.target as FileReader).result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function extractPdfTextClient(file: File): Promise<string> {
+    await new Promise<void>((resolve, reject) => {
+      if ((window as any).pdfjsLib) { resolve(); return; }
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = () => {
+        (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve();
+      };
+      script.onerror = () => reject(new Error('PDF.js non disponible'));
+      document.head.appendChild(script);
+    });
+    const lib = (window as any).pdfjsLib;
+    const buf = await file.arrayBuffer();
+    const pdf = await lib.getDocument({ data: buf }).promise;
+    let text = '';
+    for (let i = 1; i <= Math.min(pdf.numPages, 10); i++) {
+      const page = await pdf.getPage(i);
+      const c = await page.getTextContent();
+      text += (c.items as any[]).map((item: any) => item.str).join(' ') + '\n';
+    }
+    return text.trim();
   }
 
   function bindSuggestions() {
@@ -340,9 +449,10 @@ function initCopilot(rootElement: HTMLElement) {
 
   function syncInputUi() {
     const hasText = input.value.trim().length > 0;
+    const hasAttachment = !!state.pendingAttachment;
 
     input.disabled = state.isBusy || state.isBlocked;
-    sendBtn.disabled = state.isBusy || state.isBlocked || !hasText;
+    sendBtn.disabled = state.isBusy || state.isBlocked || (!hasText && !hasAttachment);
 
     if (state.isBlocked) {
       input.placeholder = 'Passez à MARYAN Plus pour continuer...';
@@ -377,8 +487,9 @@ function initCopilot(rootElement: HTMLElement) {
 
   async function sendMessage() {
     const text = input.value.trim();
+    const attachment = state.pendingAttachment;
 
-    if (!text || state.isBusy) return;
+    if ((!text && !attachment) || state.isBusy) return;
 
     if (!hasUnlimitedAccess() && state.msgCount >= FREE_LIMIT) {
       showPaywall();
@@ -388,8 +499,21 @@ function initCopilot(rootElement: HTMLElement) {
     input.value = '';
     autoResize(input);
 
-    addMessage('user', escapeHtml(text), false);
-    state.history.push({ role: 'user', content: text });
+    // Build display HTML and API message text
+    let displayHtml: string;
+    let apiText: string;
+
+    if (attachment) {
+      displayHtml = `<span class="msg-attachment-badge">📎 ${escapeHtml(attachment.filename)}</span>${text ? `<br><br>${escapeHtml(text)}` : ''}`;
+      apiText = `[Document joint : ${attachment.filename}]\nContenu : ${attachment.description}${text ? '\n\n' + text : ''}`.trim();
+      clearAttachment();
+    } else {
+      displayHtml = escapeHtml(text);
+      apiText = text;
+    }
+
+    addMessage('user', displayHtml, true);
+    state.history.push({ role: 'user', content: apiText });
     toggleSuggestions();
 
     if (!hasUnlimitedAccess()) {
@@ -400,14 +524,14 @@ function initCopilot(rootElement: HTMLElement) {
     state.isBusy = true;
     syncInputUi();
     const typing = addTyping();
-    const mode = inferMaryanSituationMode(text, state.userProfile);
+    const mode = inferMaryanSituationMode(apiText, state.userProfile);
 
     try {
       const reply = await getAssistantReply({
         endpoint,
         profile: state.userProfile,
         history: state.history,
-        message: text,
+        message: apiText,
         mode
       });
 

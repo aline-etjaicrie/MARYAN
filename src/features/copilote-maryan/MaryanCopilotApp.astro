@@ -78,6 +78,19 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       font-size: 0.95rem;
     }
 
+    .msg-attachment-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.22rem 0.55rem;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      margin-bottom: 0.45rem;
+      opacity: 0.88;
+    }
+
     .msg-bubble p:last-child {
       margin-bottom: 0;
     }
@@ -314,6 +327,10 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
       <footer class="app-input-bar">
         <p class="privacy-notice">Pour votre confidentialité, évitez de mentionner des noms de personnes ou des informations permettant d'identifier des tiers.</p>
+        <div class="attach-preview hidden" data-attach-preview>
+          <span data-attach-filename class="attach-preview-name"></span>
+          <button type="button" class="attach-remove-btn" data-remove-attach title="Retirer">✕</button>
+        </div>
         <div class="input-shell">
           <button class="mic-btn" type="button" aria-label="Dicter" data-mic-btn>
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -321,6 +338,11 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
               <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"></path>
             </svg>
           </button>
+
+          <button class="attach-btn" type="button" aria-label="Joindre un document" data-attach-btn>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+          <input type="file" style="display:none" accept=".pdf,image/png,image/jpeg,image/webp,image/jpg" data-attach-input>
 
           <label class="input-wrap">
             <span class="sr-only">Votre message</span>
@@ -622,11 +644,52 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       backdrop-filter: blur(18px);
     }
 
+    .attach-preview {
+      width: min(100%, 50rem);
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.9rem;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(10, 25, 47, 0.1);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--deep);
+      font-weight: 600;
+    }
+
+    .attach-preview-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .attach-remove-btn {
+      width: 1.35rem;
+      height: 1.35rem;
+      border: none;
+      background: rgba(10, 25, 47, 0.07);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.18s;
+    }
+
+    .attach-remove-btn:hover {
+      background: rgba(230, 57, 70, 0.15);
+    }
+
     .input-shell {
       width: min(100%, 50rem);
       margin: 0 auto;
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto auto auto 1fr auto;
       gap: 0.6rem;
       align-items: end;
       padding: 0.5rem;
@@ -637,6 +700,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     }
 
     .mic-btn,
+    .attach-btn,
     .send-btn {
       width: 2.8rem;
       height: 2.8rem;
@@ -649,16 +713,33 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
     }
 
-    .mic-btn {
+    .mic-btn,
+    .attach-btn {
       background: rgba(10, 25, 47, 0.05);
       color: rgba(10, 25, 47, 0.55);
     }
 
+    .attach-btn.active {
+      background: rgba(230, 57, 70, 0.1);
+      color: var(--accent-red);
+    }
+
+    .mic-btn svg,
+    .attach-btn svg,
+    .send-btn svg {
+      width: 1.1rem;
+      height: 1.1rem;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .mic-btn svg,
     .send-btn svg {
-      width: 1.15rem;
-      height: 1.15rem;
       fill: currentColor;
+      stroke: none;
     }
 
     .mic-btn.recording {
@@ -921,8 +1002,8 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       }
 
       .input-shell {
-        grid-template-columns: 1fr auto;
-        padding: 0.45rem 0.45rem 0.45rem 0.7rem;
+        grid-template-columns: auto auto 1fr auto;
+        padding: 0.45rem 0.45rem 0.45rem 0.45rem;
         border-radius: 1.2rem;
       }
 

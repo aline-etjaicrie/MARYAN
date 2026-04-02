@@ -34,10 +34,22 @@
     </div>
 
     <div class="chat-input-area">
-      <textarea id="chat-input" placeholder="Écrivez votre message..." rows="1"></textarea>
-      <button id="chat-send" class="chat-send-v3">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      </button>
+      <div id="chat-attach-row" class="chat-attach-row" style="display:none">
+        <span class="chat-attach-pill">
+          <span id="chat-attach-name" class="chat-attach-label"></span>
+          <button id="chat-attach-remove" class="chat-attach-x" type="button" title="Retirer">✕</button>
+        </span>
+      </div>
+      <div class="chat-input-row">
+        <input type="file" id="chat-file-input" accept=".pdf,image/png,image/jpeg,image/webp,image/jpg" style="display:none">
+        <button id="chat-attach" class="chat-attach-btn" type="button" title="Joindre un document (PDF, photo)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <textarea id="chat-input" placeholder="Écrivez votre message..." rows="1"></textarea>
+        <button id="chat-send" class="chat-send-v3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
     </div>
     
     <div class="chat-footer-v3">
@@ -208,10 +220,83 @@
   }
 
   .chat-input-area {
-    padding: 1rem 1.5rem 1.5rem;
+    padding: 0.75rem 1.5rem 1.25rem;
     display: flex;
-    gap: 0.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
     background: white;
+  }
+
+  .chat-attach-row {
+    display: flex;
+  }
+
+  .chat-attach-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    background: rgba(217, 119, 87, 0.08);
+    border: 1px solid rgba(217, 119, 87, 0.3);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--chat-terracotta);
+    max-width: 100%;
+  }
+
+  .chat-attach-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+
+  .chat-attach-x {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--chat-terracotta);
+    font-size: 0.7rem;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .chat-attach-x:hover { opacity: 1; }
+
+  .chat-input-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-end;
+  }
+
+  .chat-attach-btn {
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--chat-muted);
+    flex-shrink: 0;
+    transition: all 0.18s;
+    padding: 0;
+  }
+
+  .chat-attach-btn:hover {
+    border-color: var(--chat-terracotta);
+    color: var(--chat-terracotta);
+  }
+
+  .chat-attach-btn.active {
+    border-color: var(--chat-terracotta);
+    color: var(--chat-terracotta);
+    background: rgba(217, 119, 87, 0.06);
   }
 
   textarea {
@@ -297,6 +382,7 @@
       this.limit = 3;
       this.messages = [];
       this.profile = null;
+      this.pendingDoc = null; // { filename, description } or null
 
       this.elements = {
         root: document.getElementById('maryan-chat-root'),
@@ -308,7 +394,12 @@
         send: document.getElementById('chat-send'),
         count: document.getElementById('msg-count'),
         badge: document.getElementById('chat-mode-badge'),
-        suggestions: document.getElementById('chat-suggestions')
+        suggestions: document.getElementById('chat-suggestions'),
+        fileInput: document.getElementById('chat-file-input'),
+        attachBtn: document.getElementById('chat-attach'),
+        attachRow: document.getElementById('chat-attach-row'),
+        attachName: document.getElementById('chat-attach-name'),
+        attachRemove: document.getElementById('chat-attach-remove')
       };
 
       this.init();
@@ -333,7 +424,108 @@
         });
       });
 
+      // Attachment
+      this.elements.attachBtn.addEventListener('click', () => {
+        this.elements.fileInput.click();
+      });
+
+      this.elements.fileInput.addEventListener('change', async () => {
+        const file = this.elements.fileInput.files?.[0];
+        if (!file) return;
+        await this.handleFileAttach(file);
+      });
+
+      this.elements.attachRemove.addEventListener('click', () => {
+        this.clearAttachment();
+      });
+
       this.checkProfile();
+    }
+
+    clearAttachment() {
+      this.pendingDoc = null;
+      this.elements.fileInput.value = '';
+      this.elements.attachRow.style.display = 'none';
+      this.elements.attachBtn.classList.remove('active');
+      this.elements.attachName.textContent = '';
+    }
+
+    async handleFileAttach(file) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.addMessage('⚠️ Fichier trop volumineux (max 10 Mo).', 'bot');
+        return;
+      }
+
+      this.elements.attachRow.style.display = 'flex';
+      this.elements.attachBtn.classList.add('active');
+      this.elements.attachName.textContent = `⏳ Analyse : ${file.name}`;
+
+      try {
+        const isPdf = file.type === 'application/pdf';
+        const fileType = isPdf ? 'pdf' : 'image';
+        const content = isPdf ? await this.extractPdfText(file) : await this.resizeImage(file);
+
+        const res = await fetch('/api/analyse-document', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileType, content, context: 'chat' })
+        });
+        const data = await res.json();
+
+        if (data.error) throw new Error(data.error);
+
+        this.pendingDoc = { filename: file.name, description: data.description || '' };
+        this.elements.attachName.textContent = `📎 ${file.name}`;
+      } catch (e) {
+        this.clearAttachment();
+        this.addMessage(`⚠️ Impossible d'analyser le fichier : ${e.message || 'erreur inconnue'}`, 'bot');
+      }
+    }
+
+    async resizeImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async extractPdfText(file) {
+      await new Promise((resolve, reject) => {
+        if (window.pdfjsLib) { resolve(); return; }
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        script.onload = () => {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+      const lib = window.pdfjsLib;
+      const buf = await file.arrayBuffer();
+      const pdf = await lib.getDocument({ data: buf }).promise;
+      let text = '';
+      for (let i = 1; i <= Math.min(pdf.numPages, 10); i++) {
+        const page = await pdf.getPage(i);
+        const c = await page.getTextContent();
+        text += c.items.map(item => item.str).join(' ') + '\n';
+      }
+      return text.trim();
     }
 
     checkProfile() {
@@ -377,13 +569,32 @@
 
     async handleSend() {
       const text = this.elements.input.value.trim();
-      if (!text || (this.msgCount >= this.limit && !this.profile)) return;
+      const doc = this.pendingDoc;
+
+      if (!text && !doc) return;
+      if (this.msgCount >= this.limit && !this.profile) return;
 
       this.elements.input.value = '';
       this.elements.suggestions.classList.add('hidden');
-      this.addMessage(text, 'user');
+
+      // Build display + API message
+      let displayText = text;
+      let apiMessage = text;
+
+      if (doc) {
+        displayText = `📎 ${doc.filename}${text ? '\n' + text : ''}`;
+        apiMessage = `[Document joint : ${doc.filename}]\nContenu : ${doc.description}${text ? '\n\n' + text : ''}`.trim();
+        this.clearAttachment();
+      }
+
+      this.addMessage(displayText, 'user');
       this.msgCount++;
       if (this.elements.count) this.elements.count.textContent = this.msgCount;
+
+      // Replace messages entry with enriched content
+      const lastUserIdx = this.messages.map(m => m.role).lastIndexOf('user');
+      if (lastUserIdx >= 0) this.messages[lastUserIdx] = { role: 'user', content: apiMessage };
+      else this.messages.push({ role: 'user', content: apiMessage });
 
       // Bot loading
       const loadingDiv = document.createElement('div');
