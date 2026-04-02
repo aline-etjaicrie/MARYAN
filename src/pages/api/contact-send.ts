@@ -12,20 +12,7 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: "Champs manquants" }), { status: 400 });
     }
 
-    // 2. CONSTITUTION DU RAPPORT DE CONTACT
-    const report = `
-      Nouveau Contact MARYAN
-      ---
-      Nom: ${firstname} ${lastname}
-      Email: ${email}
-      Mandat: ${mandate}
-      Taille Ville: ${citySize}
-      Objet: ${subject}
-      Message: ${message || "Pas de message."}
-      Date: ${new Date().toLocaleString('fr-FR')}
-    `;
-
-    console.log("CONTACT SUBMISSION RECEIVED:", report);
+    console.log('[contact-send] new submission received');
 
     /**
      * NOTE POUR ALINE: 
@@ -40,7 +27,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
   } catch (error) {
-    console.error("API CONTACT ERROR:", error);
+    console.error('[contact-send] erreur serveur interne');
     return new Response(JSON.stringify({ error: "Erreur serveur" }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json' }

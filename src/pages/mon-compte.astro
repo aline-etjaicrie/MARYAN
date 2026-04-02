@@ -116,7 +116,50 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
             <div id="sessionsList" class="sessions-list"></div>
           </section>
 
-          <!-- 5. TESTS -->
+          <!-- 5. RGPD — MES DONNÉES & CONFIDENTIALITÉ -->
+          <section class="dash-section rgpd-section" id="rgpdSection">
+            <h2>Mes données &amp; confidentialité</h2>
+
+            <!-- 5a. Affiliation politique (Article 9) -->
+            <div class="rgpd-item" id="rgpdAffilItem" style="display:none;">
+              <div class="rgpd-item-info">
+                <span class="rgpd-item-label">Affiliation politique</span>
+                <p id="rgpdAffilText"></p>
+              </div>
+              <button class="btn-rgpd btn-rgpd-danger" id="rgpdAffilBtn">Retirer mon affiliation</button>
+            </div>
+
+            <!-- 5b. Diagnostic -->
+            <div class="rgpd-item" id="rgpdDiagItem" style="display:none;">
+              <div class="rgpd-item-info">
+                <span class="rgpd-item-label">Diagnostic MARYAN</span>
+                <p id="rgpdDiagText"></p>
+              </div>
+              <button class="btn-rgpd btn-rgpd-danger" id="rgpdDiagBtn">Effacer mon diagnostic</button>
+            </div>
+
+            <!-- 5c. Export des données -->
+            <div class="rgpd-item">
+              <div class="rgpd-item-info">
+                <span class="rgpd-item-label">Export de mes données</span>
+                <p>Téléchargez une copie de toutes vos données personnelles (RGPD, Art. 20).</p>
+              </div>
+              <button class="btn-rgpd btn-rgpd-primary" id="rgpdExportBtn">Télécharger mes données (RGPD)</button>
+            </div>
+
+            <!-- 5d. Suppression du compte -->
+            <div class="rgpd-item">
+              <div class="rgpd-item-info" style="width:100%;">
+                <div class="rgpd-danger-zone">
+                  <p>La suppression est définitive et irréversible. Toutes vos données, sessions et profil seront supprimés.</p>
+                  <button class="btn-rgpd btn-rgpd-danger" id="rgpdDeleteAccountBtn">Supprimer mon compte définitivement</button>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- 6. TESTS -->
           <section class="dash-section" id="tests">
             <div class="section-header-row">
               <h2 class="dash-h2">Vos tests thématiques</h2>
@@ -246,7 +289,7 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
       // ── Profil Supabase ──
       const { data: profile } = await supabase
         .from('profiles')
-        .select('first_name, commune, role, diagnostic_key, diagnostic_label, plan')
+        .select('first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label')
         .eq('id', user.id)
         .single();
 
@@ -463,6 +506,125 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
       document.getElementById('openRecorderBtn')?.addEventListener('click', () => {
         const modal = document.getElementById('recorderModal');
         if (modal) modal.style.display = 'flex';
+      });
+
+      // ══════════════════════════════════════════
+      // ── RGPD — Mes données & confidentialité ──
+      // ══════════════════════════════════════════
+
+      // 5a. Affiliation politique (Article 9)
+      const partiLabel = profile?.parti_label || '';
+      const partiId = profile?.parti_id || '';
+      if (partiLabel || partiId) {
+        const affilItem = document.getElementById('rgpdAffilItem');
+        const affilText = document.getElementById('rgpdAffilText');
+        if (affilItem) affilItem.style.display = 'flex';
+        if (affilText) affilText.textContent = `Affiliation renseignée : ${partiLabel || partiId}`;
+      }
+
+      document.getElementById('rgpdAffilBtn')?.addEventListener('click', async () => {
+        const confirmed = confirm('Retirer votre affiliation politique ? Cette donnée sera supprimée de votre profil et ne sera plus utilisée par le copilote.');
+        if (!confirmed) return;
+        try {
+          await fetch('/api/profile-update', {
+            method: 'PATCH',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: 'parti_id', value: null })
+          });
+          await fetch('/api/profile-update', {
+            method: 'PATCH',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: 'parti_label', value: null })
+          });
+          const affilItem = document.getElementById('rgpdAffilItem');
+          if (affilItem) {
+            affilItem.innerHTML = '<p style="color:#2E7D32;font-size:0.9rem;font-weight:600;">Affiliation retirée.</p>';
+          }
+        } catch (_) {
+          alert('Une erreur est survenue. Veuillez réessayer.');
+        }
+      });
+
+      // 5b. Diagnostic
+      if (localDiagKey || localDiagLabel) {
+        const diagItem = document.getElementById('rgpdDiagItem');
+        const diagText = document.getElementById('rgpdDiagText');
+        if (diagItem) diagItem.style.display = 'flex';
+        if (diagText) diagText.textContent = `Diagnostic actuel : ${localDiagLabel || localDiagKey}`;
+      }
+
+      document.getElementById('rgpdDiagBtn')?.addEventListener('click', async () => {
+        const confirmed = confirm('Effacer votre diagnostic ? Cette donnée sera supprimée de votre profil.');
+        if (!confirmed) return;
+        try {
+          await fetch('/api/profile-update', {
+            method: 'PATCH',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: 'diagnostic_key', value: null })
+          });
+          await fetch('/api/profile-update', {
+            method: 'PATCH',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: 'diagnostic_label', value: null })
+          });
+          try { localStorage.removeItem('maryan_v4_diag'); } catch (_) {}
+          const diagItem = document.getElementById('rgpdDiagItem');
+          if (diagItem) {
+            diagItem.innerHTML = '<p style="color:#2E7D32;font-size:0.9rem;font-weight:600;">Diagnostic effacé.</p>';
+          }
+        } catch (_) {
+          alert('Une erreur est survenue. Veuillez réessayer.');
+        }
+      });
+
+      // 5c. Export des données (Article 20)
+      document.getElementById('rgpdExportBtn')?.addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/export-data', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!res.ok) {
+            alert("Erreur lors de l'export. Veuillez réessayer.");
+            return;
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'maryan-mes-donnees.json';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (_) {
+          alert("Erreur lors de l'export. Veuillez réessayer.");
+        }
+      });
+
+      // 5d. Suppression du compte (Article 17)
+      document.getElementById('rgpdDeleteAccountBtn')?.addEventListener('click', async () => {
+        const input = prompt('Pour confirmer la suppression définitive de votre compte, tapez SUPPRIMER :');
+        if (input !== 'SUPPRIMER') {
+          if (input !== null) alert('Suppression annulée. Vous devez taper exactement SUPPRIMER.');
+          return;
+        }
+        try {
+          const res = await fetch('/api/delete-account', {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            // Effacement de toutes les données locales
+            try { localStorage.clear(); } catch (_) {}
+            try { sessionStorage.clear(); } catch (_) {}
+            window.location.href = '/?compte=supprime';
+          } else {
+            const data = await res.json().catch(() => ({}));
+            alert(data?.error || 'Une erreur est survenue. Veuillez contacter le support.');
+          }
+        } catch (_) {
+          alert('Une erreur est survenue. Veuillez contacter le support.');
+        }
       });
     }
   }
@@ -759,6 +921,69 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
   .recorder-modal-content { position: relative; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; z-index: 1001; padding: 2rem; }
   .recorder-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #999; }
   .recorder-close-btn:hover { color: var(--deep); }
+
+  /* ── RGPD — Mes données & confidentialité ── */
+  .rgpd-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .rgpd-section h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--deep);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .rgpd-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .rgpd-item:last-child { border-bottom: none; }
+  .rgpd-item-info { flex: 1; }
+  .rgpd-item-info p { font-size: 0.9rem; color: #54636C; margin: 0.2rem 0 0; }
+  .rgpd-item-label { font-size: 0.85rem; font-weight: 700; color: var(--deep); }
+  .btn-rgpd {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1.5px solid var(--deep);
+    background: white;
+    color: var(--deep);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-rgpd:hover { background: var(--deep); color: white; }
+  .btn-rgpd-danger {
+    border-color: #C62828;
+    color: #C62828;
+  }
+  .btn-rgpd-danger:hover { background: #C62828; color: white; }
+  .btn-rgpd-primary {
+    background: var(--deep);
+    color: white;
+    border-color: var(--deep);
+  }
+  .btn-rgpd-primary:hover { background: #0d2140; }
+  .rgpd-danger-zone {
+    background: #FFF8F8;
+    border: 1.5px solid #FFCDD2;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 1rem;
+    width: 100%;
+  }
+  .rgpd-danger-zone p { font-size: 0.85rem; color: #C62828; margin-bottom: 1rem; }
 
   /* ── Responsive ── */
   @media (max-width: 992px) {
