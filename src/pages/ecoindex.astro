@@ -153,10 +153,10 @@ import InternalHeader from '../components/InternalHeader.astro';
   .eco-stat.card-v3 { color: var(--deep); background: white; }
   .eco-stat.card-v3 p { color: #54636C; }
 
-  /* Fix: carte pédagogie dans section bg-deep → texte blanc */
-  .impact-pédagogie.card-v3 { background: rgba(255,255,255,0.08); color: white; }
-  .impact-pédagogie.card-v3 p { color: rgba(255,255,255,0.85); margin-bottom: 1rem; }
-  .impact-pédagogie.card-v3 strong { color: white; }
+  /* Fix: carte pédagogie dans section bg-deep → texte blanc — override card-v3 */
+  .impact-pédagogie { background: rgba(255,255,255,0.08) !important; color: white !important; border-color: rgba(255,255,255,0.15) !important; }
+  .impact-pédagogie p { color: rgba(255,255,255,0.85) !important; margin-bottom: 1rem; }
+  .impact-pédagogie strong { color: white !important; }
 
   /* Fix: carte philosophie (highlight-neon) → texte foncé explicite */
   .eco-philosophy.card-v3 { background: white; color: var(--deep); }
