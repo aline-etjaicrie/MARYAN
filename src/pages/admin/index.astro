@@ -1,0 +1,484 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = false;
+---
+
+<BaseLayout title="Dashboard Admin — MARYAN" description="Administration MARYAN">
+  <main class="admin-page">
+    <div class="admin-wrap">
+
+      <div class="admin-header">
+        <h1>Dashboard Admin</h1>
+        <p class="admin-sub">Gestion des utilisateurs, abonnements et modération.</p>
+        <div id="adminError" class="admin-error" style="display:none;"></div>
+      </div>
+
+      <div id="adminLoader" class="admin-loader">Vérification des accès…</div>
+      <div id="adminContent" style="display:none;">
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-value" id="statTotal">—</div>
+            <div class="stat-label">Utilisateurs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statPlus">—</div>
+            <div class="stat-label">Abonnés Plus</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statFree">—</div>
+            <div class="stat-label">Gratuit</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statSessions">—</div>
+            <div class="stat-label">Sessions totales</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="users">Utilisateurs</button>
+          <button class="admin-tab" data-tab="glossaire">Glossaire <span id="pendingBadge" class="badge" style="display:none;"></span></button>
+        </div>
+
+        <!-- Users tab -->
+        <div id="tab-users" class="tab-content">
+          <div class="table-wrap">
+            <table class="admin-table" id="usersTable">
+              <thead>
+                <tr>
+                  <th>Prénom</th>
+                  <th>Commune</th>
+                  <th>Rôle</th>
+                  <th>Parti</th>
+                  <th>Diagnostic</th>
+                  <th>Sessions</th>
+                  <th>Plan</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Glossaire tab -->
+        <div id="tab-glossaire" class="tab-content" style="display:none;">
+          <div id="glossaireList"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  const adminError = document.getElementById('adminError')!;
+  const adminLoader = document.getElementById('adminLoader')!;
+  const adminContent = document.getElementById('adminContent')!;
+
+  function showError(msg: string) {
+    adminError.textContent = msg;
+    adminError.style.display = 'block';
+    adminLoader.style.display = 'none';
+  }
+
+  async function init() {
+    if (!SUPABASE_URL || !SUPABASE_KEY) { showError('Configuration manquante.'); return; }
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { window.location.href = '/login'; return; }
+
+    const token = session.access_token;
+
+    // Check admin access
+    const profileRes = await supabase.from('profiles').select('plan').eq('id', session.user.id).single();
+    if (profileRes.data?.plan !== 'admin') {
+      window.location.href = '/mon-compte';
+      return;
+    }
+
+    adminLoader.style.display = 'none';
+    adminContent.style.display = 'block';
+
+    // Load users
+    await loadUsers(token);
+    await loadGlossaire(token);
+
+    // Tabs
+    document.querySelectorAll('.admin-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => (t as HTMLElement).style.display = 'none');
+        btn.classList.add('active');
+        const tab = btn.getAttribute('data-tab');
+        const el = document.getElementById(`tab-${tab}`);
+        if (el) el.style.display = 'block';
+      });
+    });
+  }
+
+  async function loadUsers(token: string) {
+    const res = await fetch('/api/admin/users', { headers: { Authorization: `Bearer ${token}` } });
+    const data = await res.json();
+    if (!res.ok || !data.users) { showError('Erreur chargement utilisateurs.'); return; }
+
+    const users = data.users as any[];
+    document.getElementById('statTotal')!.textContent = String(users.length);
+    document.getElementById('statPlus')!.textContent = String(users.filter((u: any) => u.plan === 'plus').length);
+    document.getElementById('statFree')!.textContent = String(users.filter((u: any) => !u.plan || u.plan === 'gratuit').length);
+    document.getElementById('statSessions')!.textContent = String(users.reduce((a: number, u: any) => a + (u.session_count || 0), 0));
+
+    const tbody = document.getElementById('usersTableBody')!;
+    tbody.innerHTML = users.map((u: any) => `
+      <tr>
+        <td>${u.first_name || '—'}</td>
+        <td>${u.commune || '—'}</td>
+        <td>${u.role || '—'}</td>
+        <td>${u.parti_label || '—'}</td>
+        <td>${u.diagnostic_label ? `<span class="diag-badge">${u.diagnostic_label.slice(0, 20)}…</span>` : '—'}</td>
+        <td>${u.session_count || 0}</td>
+        <td><span class="plan-badge plan-${u.plan || 'gratuit'}">${u.plan || 'gratuit'}</span></td>
+        <td>
+          <select class="plan-select" data-user-id="${u.id}" data-token="${token}">
+            <option value="gratuit" ${(!u.plan || u.plan === 'gratuit') ? 'selected' : ''}>Gratuit</option>
+            <option value="plus" ${u.plan === 'plus' ? 'selected' : ''}>Plus</option>
+            <option value="admin" ${u.plan === 'admin' ? 'selected' : ''}>Admin</option>
+          </select>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('.plan-select').forEach(sel => {
+      sel.addEventListener('change', async (e) => {
+        const target = e.target as HTMLSelectElement;
+        const userId = target.getAttribute('data-user-id')!;
+        const t = target.getAttribute('data-token')!;
+        const plan = target.value;
+        const res = await fetch('/api/admin/users', {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${t}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId, plan })
+        });
+        if (!res.ok) { alert('Erreur lors de la mise à jour.'); return; }
+        // Update badge
+        const row = target.closest('tr')!;
+        const badge = row.querySelector('.plan-badge')!;
+        badge.className = `plan-badge plan-${plan}`;
+        badge.textContent = plan;
+      });
+    });
+  }
+
+  async function loadGlossaire(token: string) {
+    const res = await fetch('/api/admin/glossaire', { headers: { Authorization: `Bearer ${token}` } });
+    const data = await res.json();
+    if (!res.ok) return;
+
+    const contributions = data.contributions as any[];
+    const pending = contributions.filter((c: any) => c.statut === 'en_attente');
+    const badge = document.getElementById('pendingBadge')!;
+    if (pending.length > 0) {
+      badge.textContent = String(pending.length);
+      badge.style.display = 'inline-block';
+    }
+
+    const list = document.getElementById('glossaireList')!;
+    if (!contributions.length) {
+      list.innerHTML = '<p class="empty-state">Aucune contribution pour le moment.</p>';
+      return;
+    }
+
+    list.innerHTML = contributions.map((c: any) => `
+      <div class="contrib-card" id="contrib-${c.id}">
+        <div class="contrib-meta">
+          <span class="contrib-statut statut-${c.statut}">${c.statut}</span>
+          <span class="contrib-date">${new Date(c.created_at).toLocaleDateString('fr-FR')}</span>
+        </div>
+        <div class="contrib-body">
+          <strong>${c.mot || c.terme || c.title || '(sans titre)'}</strong>
+          <p>${c.definition || c.content || c.message || c.pourquoi || ''}</p>
+        </div>
+        ${c.statut === 'en_attente' ? `
+          <div class="contrib-actions">
+            <button class="btn-valider" data-id="${c.id}" data-token="${token}">Valider</button>
+            <button class="btn-rejeter" data-id="${c.id}" data-token="${token}">Rejeter</button>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+
+    list.querySelectorAll('.btn-valider').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id')!;
+        const t = btn.getAttribute('data-token')!;
+        await moderateContrib(id, 'valide', t);
+      });
+    });
+    list.querySelectorAll('.btn-rejeter').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id')!;
+        const t = btn.getAttribute('data-token')!;
+        await moderateContrib(id, 'rejete', t);
+      });
+    });
+  }
+
+  async function moderateContrib(id: string, statut: string, token: string) {
+    const res = await fetch('/api/admin/glossaire', {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, statut })
+    });
+    if (res.ok) {
+      const card = document.getElementById(`contrib-${id}`);
+      if (card) {
+        const statutEl = card.querySelector('.contrib-statut');
+        if (statutEl) {
+          statutEl.className = `contrib-statut statut-${statut}`;
+          statutEl.textContent = statut;
+        }
+        card.querySelector('.contrib-actions')?.remove();
+      }
+    }
+  }
+
+  init();
+</script>
+
+<style>
+  .admin-page {
+    min-height: 100vh;
+    background: var(--bg);
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .admin-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .admin-header {
+    margin-bottom: 2rem;
+  }
+
+  .admin-header h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--deep);
+    margin-bottom: 0.25rem;
+  }
+
+  .admin-sub {
+    color: #54636C;
+    font-size: 0.95rem;
+  }
+
+  .admin-loader {
+    text-align: center;
+    padding: 4rem;
+    color: #888;
+  }
+
+  .admin-error {
+    background: #FFF0F0;
+    border: 1px solid #FFCDD2;
+    color: #C62828;
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--deep);
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-top: 0.25rem;
+  }
+
+  .admin-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .admin-tab {
+    background: none;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    position: relative;
+  }
+
+  .admin-tab.active {
+    color: var(--deep);
+    border-bottom-color: var(--deep);
+  }
+
+  .badge {
+    background: var(--accent-red);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.1rem 0.45rem;
+    margin-left: 0.4rem;
+  }
+
+  .table-wrap {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .admin-table th {
+    background: #f8f8f6;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0ee;
+    color: var(--deep);
+    vertical-align: middle;
+  }
+
+  .admin-table tr:last-child td { border-bottom: none; }
+
+  .plan-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .plan-gratuit { background: #f0f0ee; color: #888; }
+  .plan-plus { background: #E3F2FD; color: #1565C0; }
+  .plan-admin { background: #0A192F; color: #64FFDA; }
+
+  .plan-select {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .diag-badge {
+    font-size: 0.75rem;
+    color: #54636C;
+  }
+
+  .contrib-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .contrib-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .contrib-statut {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .statut-en_attente { background: #FFF8E1; color: #F57F17; }
+  .statut-valide { background: #E8F5E9; color: #2E7D32; }
+  .statut-rejete { background: #FFF0F0; color: #C62828; }
+
+  .contrib-date { font-size: 0.8rem; color: #888; }
+
+  .contrib-body strong { color: var(--deep); font-size: 1rem; display: block; margin-bottom: 0.25rem; }
+  .contrib-body p { color: #54636C; font-size: 0.88rem; line-height: 1.5; margin: 0; }
+
+  .contrib-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .btn-valider, .btn-rejeter {
+    padding: 0.4rem 0.9rem;
+    border-radius: 5px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-valider { background: #E8F5E9; color: #2E7D32; }
+  .btn-valider:hover { background: #2E7D32; color: white; }
+
+  .btn-rejeter { background: #FFF0F0; color: #C62828; }
+  .btn-rejeter:hover { background: #C62828; color: white; }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+  }
+</style>

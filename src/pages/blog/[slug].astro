@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, getPostBySlug } from '../../data/blog';
+
+export function getStaticPaths() {
+  return getPublishedPosts().map(post => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+
+if (!post) {
+  return Astro.redirect('/blog');
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  droits: 'Droits & statut',
+  methode: 'Méthode',
+  temoignage: 'Témoignage',
+  actualite: 'Actualité',
+  outil: 'Outil & pratique'
+};
+---
+
+<BaseLayout
+  title={post.metaTitle || `${post.title} | MARYAN`}
+  description={post.metaDescription || post.description}>
+
+  <main class="article-page">
+
+    <div class="article-hero">
+      <div class="article-container">
+        <nav class="breadcrumb">
+          <a href="/blog">← Blog</a>
+        </nav>
+        <div class="article-meta">
+          <span class="article-category">{CATEGORY_LABELS[post.category] || post.category}</span>
+          <span class="article-date">{formatDate(post.date)}</span>
+          <span class="article-time">{post.readingTime} min de lecture</span>
+        </div>
+        <h1>{post.title}</h1>
+        <p class="article-desc">{post.description}</p>
+      </div>
+    </div>
+
+    <div class="article-body-wrap">
+      <div class="article-container">
+        <div class="article-layout">
+
+          <article class="article-content" set:html={post.content} />
+
+          <aside class="article-aside">
+            <div class="aside-card">
+              <p class="aside-label">Discutez-en avec MARYAN</p>
+              <p class="aside-text">Le copilote peut vous aider à appliquer ces éléments à votre situation précise.</p>
+              <a href="/copilote" class="aside-btn">Ouvrir le copilote →</a>
+            </div>
+            <div class="aside-card aside-tags">
+              <p class="aside-label">Tags</p>
+              <div class="tag-list">
+                {post.tags.map(tag => <span class="tag">{tag}</span>)}
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</BaseLayout>
+
+<style>
+  .article-hero {
+    background: var(--deep);
+    padding: 3rem 1.5rem 3rem;
+    color: white;
+  }
+
+  .article-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+  }
+  .breadcrumb a {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .breadcrumb a:hover { color: var(--neon); }
+
+  .article-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .article-category {
+    background: var(--neon);
+    color: var(--deep);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .article-date, .article-time {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .article-hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .article-desc {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .article-body-wrap {
+    background: var(--bg);
+    padding: 3rem 0 5rem;
+  }
+
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: flex-start;
+  }
+
+  @media (max-width: 720px) {
+    .article-layout { grid-template-columns: 1fr; }
+  }
+
+  .article-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    line-height: 1.8;
+    color: var(--deep);
+  }
+
+  .article-content :global(h2) {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--deep);
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .article-content :global(h2:first-child) { margin-top: 0; }
+
+  .article-content :global(p) {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  .article-content :global(strong) { color: var(--deep); }
+
+  .aside-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+
+  .aside-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .aside-text {
+    font-size: 0.85rem;
+    color: #54636C;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .aside-btn {
+    display: block;
+    background: var(--deep);
+    color: white;
+    text-align: center;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .aside-btn:hover { background: #0d2140; }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    background: #f4f4f0;
+    color: #666;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+</style>

@@ -1,11 +1,13 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import sentry from '@sentry/astro';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://maryanapp.fr',
   output: 'static',
   integrations: [
+    sitemap(),
     sentry({
       dsn: process.env.SENTRY_DSN || import.meta.env.SENTRY_DSN,
       sourceMapsUploadOptions: {
