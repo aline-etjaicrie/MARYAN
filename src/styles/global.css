@@ -1,4 +1,18 @@
 
+/* ── Print CSS ──────────────────────────────────────────────────────────────
+   GreenIT best practice: fournir une print CSS
+   ────────────────────────────────────────────────────────────────────────── */
+@media print {
+  * { background: white !important; color: black !important; box-shadow: none !important; }
+  header, footer, nav, .grain-overlay, .bg-grid-v3, .cookie-bar, .glow-v3 { display: none !important; }
+  main { max-width: 100%; padding: 0; margin: 0; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.75em; color: #555; }
+  a[href^="#"]::after, a[href^="javascript"]::after { content: ""; }
+  h1, h2, h3 { page-break-after: avoid; color: black !important; }
+  p, li { orphans: 3; widows: 3; }
+  img { max-width: 100% !important; }
+}
+
 :root {
   /* 🎨 NEW PALETTE: REPUBLIQUE DESIGN V3 */
   --bg: #F8F9FA;         /* Ivoire Blanc pur respiration */
