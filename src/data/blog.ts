@@ -110,6 +110,99 @@ export const blogPosts: BlogPost[] = [
     metaDescription: 'Comment gérer un conflit au sein du conseil municipal — avec le maire, son groupe ou l\'opposition — sans perdre en efficacité ni en crédibilité.'
   },
   {
+    slug: 'role-elu-local-pouvoirs-limites',
+    title: 'Le rôle de l\'élu local : ce que vous pouvez vraiment faire (et ce que vous ne contrôlez pas)',
+    description: 'Quel est le vrai rôle d\'un élu local ? Pouvoirs, limites, relations avec l\'administration : comprendre la réalité du mandat pour agir efficacement.',
+    date: '2026-04-03',
+    author: 'Équipe MARYAN',
+    category: 'methode',
+    tags: ['rôle', 'pouvoir réel', 'mandat', 'décision', 'administration', 'marges de manœuvre'],
+    readingTime: 6,
+    published: true,
+    excerpt: 'Être élu local, ce n\'est pas "décider de tout". C\'est évoluer dans un système où les décisions sont partagées, les contraintes nombreuses, et les marges de manœuvre réelles… mais encadrées. Comprendre cette réalité est essentiel pour agir efficacement.',
+    metaTitle: 'Rôle de l\'élu local : pouvoirs réels et limites | MARYAN',
+    metaDescription: 'Quel est le vrai rôle d\'un élu local ? Pouvoirs, limites, relations avec l\'administration : comprendre la réalité du mandat.',
+    content: `
+<h2>Un pouvoir réel… mais jamais solitaire</h2>
+<p>Contrairement à une idée répandue, un élu ne décide pas seul. Chaque décision dépend de l'administration (expertise, mise en œuvre), du cadre légal, des autres collectivités, des contraintes budgétaires et des équilibres politiques.</p>
+<p><strong>Le pouvoir de l'élu est un pouvoir d'orientation et d'arbitrage — pas un pouvoir d'exécution solitaire.</strong></p>
+
+<h2>Les 4 rôles clés de l'élu</h2>
+<p><strong>Donner une direction.</strong> Fixer des priorités, porter une vision. C'est le rôle le plus structurant — et souvent le plus négligé au profit de l'urgence quotidienne.</p>
+<p><strong>Mettre à l'agenda.</strong> Faire émerger des sujets et lancer des dynamiques. L'élu ne produit pas — il impulse.</p>
+<p><strong>Arbitrer.</strong> Trancher entre plusieurs options imparfaites, dans des délais contraints. C'est là que le jugement politique est irremplaçable.</p>
+<p><strong>Faciliter.</strong> Coordonner les acteurs, lever des blocages relationnels ou institutionnels, maintenir la cohérence d'ensemble.</p>
+
+<h2>Pourquoi les décisions prennent du temps</h2>
+<p>Un projet local passe toujours par plusieurs étapes : cadrage politique, étude technique, validation juridique, financement, mise en œuvre. Entre la décision politique et le résultat visible, il y a un temps incompressible — parfois plusieurs mois, parfois plusieurs années.</p>
+<p>C'est une réalité du système, pas un dysfonctionnement. L'élu efficace l'intègre dans sa stratégie plutôt que de le subir.</p>
+
+<h2>Le piège : surestimer son pouvoir immédiat</h2>
+<p>Beaucoup d'élus pensent pouvoir agir vite, transformer rapidement, contourner les blocages administratifs. Le résultat est toujours le même : frustration, tensions avec les services, perte de crédibilité auprès des citoyens et de l'équipe.</p>
+<p><strong>Promettre ce qu'on ne maîtrise pas est l'une des principales sources de fragilité politique.</strong></p>
+
+<h2>La clé : comprendre le système pour agir efficacement</h2>
+<p>Un élu efficace comprend qui décide vraiment, identifie les bons leviers au bon moment, travaille avec les bons acteurs, et accepte le temps du processus. Il ne subit pas le système — il s'y appuie.</p>
+<p>Cette compréhension n'est pas une capitulation. C'est la condition d'une action durable.</p>
+
+<h2>Un rôle stratégique, pas exécutif</h2>
+<p>Être élu, ce n'est pas tout faire. C'est orienter, prioriser, arbitrer, tenir un cap dans la durée. Le pouvoir n'est pas absolu — mais il est déterminant. C'est précisément parce qu'il est limité qu'il doit être exercé avec clarté et méthode.</p>
+
+<div style="background:#0A192F;border-radius:10px;padding:1.5rem 2rem;margin-top:2rem;">
+<p style="color:#ADFF2F;font-weight:800;margin:0 0 0.5rem;">Vous vous demandez comment agir concrètement dans votre mandat ?</p>
+<p style="color:rgba(255,255,255,0.8);margin:0 0 1rem;font-size:0.9rem;">MARYAN vous aide à comprendre votre rôle et à prendre les bonnes décisions, en situation réelle.</p>
+<a href="https://maryanapp.fr/copilote" style="display:inline-block;background:#ADFF2F;color:#0A192F;padding:0.6rem 1.25rem;border-radius:6px;font-weight:800;text-decoration:none;font-size:0.88rem;">Essayer le copilote →</a>
+</div>
+`
+  },
+  {
+    slug: 'relation-elu-administration',
+    title: 'Élus et administration : comprendre la relation pour éviter les blocages',
+    description: 'Comment travailler efficacement avec l\'administration en tant qu\'élu ? Rôles, tensions, erreurs à éviter et bonnes pratiques pour construire une relation durable.',
+    date: '2026-04-03',
+    author: 'Équipe MARYAN',
+    category: 'methode',
+    tags: ['administration', 'relation', 'blocages', 'fonctionnement', 'tensions', 'services'],
+    readingTime: 6,
+    published: true,
+    excerpt: 'La relation entre élus et administration est au cœur de l\'action publique. Et pourtant, elle est souvent source de tensions et mal gérée. Bien la comprendre, c\'est éviter une grande partie des blocages.',
+    metaTitle: 'Relation élus-administration : comprendre et mieux travailler | MARYAN',
+    metaDescription: 'Comment travailler efficacement avec l\'administration en tant qu\'élu ? Rôles, tensions, erreurs à éviter et bonnes pratiques.',
+    content: `
+<h2>Qui fait quoi ? Une confusion fréquente</h2>
+<p>En théorie, la distinction est simple : les élus définissent les orientations, l'administration met en œuvre. Dans la réalité, les rôles s'entremêlent : les services apportent expertise et faisabilité, les élus arbitrent et priorisent.</p>
+<p><strong>C'est une relation de complémentarité, pas une hiérarchie simple.</strong> Confondre les deux registres est la source de la plupart des tensions.</p>
+
+<h2>Pourquoi les tensions apparaissent</h2>
+<p>Les causes sont souvent les mêmes : attentes irréalistes des élus sur les délais, contraintes administratives mal comprises, différences de temporalité entre temps politique et temps administratif, manque de communication régulière.</p>
+<p>Le conflit vient rarement d'une mauvaise volonté. Il vient d'un décalage de perception sur ce qui est possible, légitime, urgent.</p>
+
+<h2>Les erreurs classiques côté élus</h2>
+<p>Vouloir aller trop vite, contourner les services, imposer sans expliquer, interpréter les contraintes comme des blocages volontaires. Ces comportements fragilisent durablement la relation — et ralentissent in fine l'action.</p>
+
+<h2>Les erreurs côté administration</h2>
+<p>Rigidité excessive face aux demandes politiques, manque de pédagogie sur les contraintes, protection du cadre au détriment du projet, communication insuffisante sur les avancées et blocages. La responsabilité est partagée.</p>
+
+<h2>Comment construire une relation efficace</h2>
+<p><strong>Clarifier les rôles dès le départ.</strong> Qui décide ? Qui fait ? Qui valide ? Une ambiguïté non résolue se paie toujours plus tard.</p>
+<p><strong>Travailler en confiance.</strong> Partager les objectifs, expliquer les contraintes politiques, accepter les contraintes techniques. La transparence mutuelle est un accélérateur.</p>
+<p><strong>Accepter le cadre légal et procédural.</strong> Le droit et les procédures ne sont pas optionnels — ils protègent aussi les élus. Les ignorer crée des risques juridiques.</p>
+<p><strong>Installer un dialogue régulier.</strong> Les incompréhensions naissent dans les silences. Une réunion courte et régulière vaut mieux qu'une réunion de crise.</p>
+
+<h2>Le bon équilibre</h2>
+<p>Un élu efficace respecte l'administration sans s'effacer. Une administration efficace applique les règles tout en accompagnant le projet politique. Quand les deux côtés jouent ce rôle, l'action publique avance.</p>
+
+<h2>Une relation structurante pour le mandat</h2>
+<p>Une mauvaise relation élu-administration bloque tout — les projets, les décisions, la crédibilité. Une bonne relation permet d'accélérer les projets, de sécuriser les décisions et de renforcer la légitimité politique. C'est l'un des leviers d'efficacité les plus sous-estimés dans un mandat.</p>
+
+<div style="background:#0A192F;border-radius:10px;padding:1.5rem 2rem;margin-top:2rem;">
+<p style="color:#ADFF2F;font-weight:800;margin:0 0 0.5rem;">En tension avec votre administration ou vous ne savez pas comment vous positionner ?</p>
+<p style="color:rgba(255,255,255,0.8);margin:0 0 1rem;font-size:0.9rem;">MARYAN vous aide à trouver la bonne posture et à débloquer les situations concrètes.</p>
+<a href="https://maryanapp.fr/copilote" style="display:inline-block;background:#ADFF2F;color:#0A192F;padding:0.6rem 1.25rem;border-radius:6px;font-weight:800;text-decoration:none;font-size:0.88rem;">Essayer le copilote →</a>
+</div>
+`
+  },
+  {
     slug: 'irreprochable-politique-probite-confiance-democratie',
     title: 'Pourquoi être irréprochable en politique est essentiel',
     description: 'Probité, confiance, démocratie : pourquoi l\'exemplarité des élus est devenue indispensable pour renouer avec les citoyens.',
