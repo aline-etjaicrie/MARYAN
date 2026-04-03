@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
+import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
 ---
 
 <BaseLayout
@@ -313,7 +313,20 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
           </div>
 
           <section class="suggestions-strip" data-suggestions>
-            <p class="suggestions-title">Pour commencer</p>
+            <!-- Parcours types : 3 portes d'entrée situationnelles -->
+            <p class="suggestions-title">Quelle est votre situation ?</p>
+            <div class="parcours-grid">
+              {PARCOURS_TYPES.map((p) => (
+                <button type="button" class="parcours-card" data-suggestion={p.message}>
+                  <span class="parcours-icon">{p.icon}</span>
+                  <span class="parcours-label">{p.label}</span>
+                  <span class="parcours-desc">{p.description}</span>
+                </button>
+              ))}
+            </div>
+
+            <!-- Exemples libres -->
+            <p class="suggestions-title suggestions-title-secondary">Ou décrivez librement</p>
             <div class="suggestions-grid">
               {SUGGESTIONS.map((suggestion) => (
                 <button type="button" class="suggestion-chip" data-suggestion={suggestion}>
@@ -603,6 +616,68 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       color: rgba(10, 25, 47, 0.58);
     }
 
+    .suggestions-title-secondary {
+      margin-top: 1.4rem;
+    }
+
+    /* ── Parcours types ── */
+    .parcours-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .parcours-card {
+      appearance: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      text-align: left;
+      border: 1.5px solid rgba(10, 25, 47, 0.1);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--deep);
+      border-radius: 1.1rem;
+      padding: 1rem 0.85rem 0.9rem;
+      font: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .parcours-card:hover,
+    .parcours-card:focus-visible {
+      border-color: var(--deep);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(10, 25, 47, 0.1);
+      outline: none;
+    }
+
+    .parcours-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+      margin-bottom: 0.1rem;
+    }
+
+    .parcours-label {
+      font-size: 0.875rem;
+      font-weight: 800;
+      color: var(--deep);
+      line-height: 1.2;
+    }
+
+    .parcours-desc {
+      font-size: 0.75rem;
+      color: rgba(10, 25, 47, 0.56);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 520px) {
+      .parcours-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Suggestions libres ── */
     .suggestions-grid {
       display: grid;
       gap: 0.7rem;

@@ -12,6 +12,7 @@ export type MaryanSituationMode =
   | 'explication_pedagogique'
   | 'cadre_relation_projet'
   | 'ia_usage_reflechi'
+  | 'vigilance_risque'
   | 'cadrage_general';
 
 export interface MaryanProfile {
@@ -43,12 +44,35 @@ export interface MaryanIntentAnalysis {
 export const FREE_LIMIT = 5;
 export const PROFILE_STORAGE_KEY = 'maryan_profile';
 
+// Parcours types — 3 portes d'entrée situationnelles (affichées en priorité)
+export const PARCOURS_TYPES = [
+  {
+    label: 'Je suis perdu·e',
+    icon: '🧭',
+    description: 'Début de mandat, repères flous, où est mon pouvoir réel',
+    message: "Je suis en début de mandat et je ne sais pas vraiment par où commencer. J'ai l'impression de ne pas comprendre encore comment fonctionne le système ni quelle est vraiment ma place.",
+  },
+  {
+    label: 'Je dois décider',
+    icon: '⚖️',
+    description: 'Arbitrage difficile, pression, plusieurs options imparfaites',
+    message: "Je dois prendre une décision difficile et je ne sais pas laquelle choisir. Les options sont imparfaites et on me pousse à trancher rapidement.",
+  },
+  {
+    label: 'Je suis en risque',
+    icon: '🛡️',
+    description: 'VSS, conflit d\'intérêts, menace, risque juridique',
+    message: "Je pense être dans une situation à risque — juridique, comportemental ou politique — et j'ai besoin de comprendre ce que je dois faire et comment me protéger.",
+  },
+] as const;
+
+// Suggestions libres — exemples de situations concrètes
 export const SUGGESTIONS = [
-  'Je suis une nouvelle élue et je stresse avant mon premier conseil municipal.',
   "J'ai une réunion publique sensible demain : comment me préparer sans surjouer ?",
   'Un post Facebook tourne mal : répondre tout de suite ou attendre ?',
   "Je sens que les services bloquent tout et je ne sais pas si c'est technique ou relationnel.",
-  "Est-ce que je peux utiliser l'IA pour préparer une allocution sans perdre ma voix ?"
+  "L'administration ralentit un dossier important. Comment débloquer ça ?",
+  "Est-ce que je peux utiliser l'IA pour préparer une allocution sans perdre ma voix ?",
 ];
 
 export const WELCOME_PARAGRAPHS = [
@@ -390,6 +414,33 @@ Style attendu :
 - centre sur le discernement.
 
 Tu aides a bien utiliser l'IA sans lui deleguer le jugement.`,
+  vigilance_risque: `Mode implicite : vigilance risque / sécurisation.
+
+Cas typiques :
+- risque juridique ou pénal ;
+- situation VSS, harcèlement, comportement inapproprié ;
+- probité, corruption, trafic d'influence, prise illégale d'intérêt ;
+- menace sur l'élu·e ou sa famille ;
+- accusation, mise en cause, plainte ;
+- doute sur une décision à risque éthique ou légal.
+
+Style attendu :
+- grave sans dramatiser ;
+- factuel, jamais spéculatif ;
+- sécurisant sans minimiser.
+
+Tu identifies d'abord la nature exacte du risque :
+1. juridique/pénal → rappeler les règles, orienter vers un avocat spécialisé en droit public
+2. comportemental → sortir du face-à-face, activer un cadre formel
+3. réputationnel → ne pas reagir seul·e, prendre le temps de cadrer
+
+Tu proposes toujours :
+- une compréhension claire de ce qui se passe
+- une action immédiate concrète
+- si pertinent : une fiche droits (/droits/) ou une fiche ressource sensible
+
+Tu ne minimises jamais. Tu ne maximises pas. Tu ne donnes pas d'avis sur la culpabilité de qui que ce soit.`,
+
   cadrage_general: `Mode implicite : cadrage general.
 
 Style attendu :
@@ -591,10 +642,40 @@ const SIGNAL_GROUPS: Record<Exclude<MaryanSituationMode, 'cadrage_general'>, str
     'preparer un discours avec l ia',
     'resumer un document',
     'est ce que je peux utiliser l ia'
+  ],
+  vigilance_risque: [
+    'je suis en risque',
+    'je suis en danger',
+    'menace',
+    'harcelement',
+    'vss',
+    'violences sexistes',
+    'corruption',
+    'pot de vin',
+    'conflit d interet',
+    'prise illegale',
+    'trafic influence',
+    'je pourrais etre mis en cause',
+    'je suis accuse',
+    'on me reproche',
+    'plainte',
+    'deontologie',
+    'signalement',
+    'protection juridique',
+    'je dois consulter un avocat',
+    'risque juridique',
+    'risque penal',
+    'responsabilite penale',
+    'je me sens protege',
+    'comment me proteger',
+    'comportement inapproprie',
+    'accusation',
+    'mise en cause'
   ]
 };
 
 const MODE_PRIORITIES: MaryanSituationMode[] = [
+  'vigilance_risque',      // priorité absolue — sécuriser d'abord
   'prise_de_reperes',
   'soutien_reassurance',
   'reprise_de_recul',
@@ -638,6 +719,7 @@ function prettifyLabel(value: string): string {
     explication_pedagogique: 'besoin de compréhension du système',
     cadre_relation_projet: 'relation avec un porteur de projet',
     ia_usage_reflechi: "usage réfléchi de l'IA",
+    vigilance_risque: 'vigilance / sécurisation du risque',
     cadrage_general: 'cadrage général',
     premier_conseil: 'premier conseil',
     debut_mandat: 'début de mandat',
@@ -668,6 +750,11 @@ function inferExperienceLevel(text: string): MaryanIntentAnalysis['experienceLev
 
 export function inferMaryanSituationMode(message: string, profile: MaryanProfile | null): MaryanSituationMode {
   const text = normalizeText(`${buildProfileContext(profile)} ${message}`);
+
+  // Vigilance risque — priorité absolue (sécuriser avant tout)
+  if (includesAny(text, SIGNAL_GROUPS.vigilance_risque)) {
+    return 'vigilance_risque';
+  }
 
   if (includesAny(text, SIGNAL_GROUPS.prise_de_reperes)) {
     return 'prise_de_reperes';
@@ -725,6 +812,7 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
   if (detectedMode === 'lecture_de_tension') fragilitySignals.push('crispation relationnelle');
   if (detectedMode === 'parole_exposition') fragilitySignals.push('exposition', 'risque de surréaction');
   if (detectedMode === 'arbitrage_cadrage') fragilitySignals.push('pression de décision');
+  if (detectedMode === 'vigilance_risque') fragilitySignals.push('risque juridique ou comportemental', 'besoin de sécurisation');
 
   const realNeedsMap: Record<MaryanSituationMode, string[]> = {
     prise_de_reperes: ['repères concrets', 'réassurance sobre', 'pédagogie simple'],
@@ -736,6 +824,7 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
     explication_pedagogique: ['clarification', 'lisibilité', 'explication simple'],
     cadre_relation_projet: ['clarification des attentes', 'cadre', 'gestion du décalage'],
     ia_usage_reflechi: ['discernement', 'bon usage', 'relecture critique'],
+    vigilance_risque: ['identification du risque', 'action immédiate', 'orientation protection'],
     cadrage_general: ['clarification', 'première étape utile']
   };
 
@@ -749,6 +838,7 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
     explication_pedagogique: 'pédagogique, concret, non technocratique',
     cadre_relation_projet: 'net, relationnel, centré sur le cadre',
     ia_usage_reflechi: 'pratique, prudent, orienté discernement',
+    vigilance_risque: 'grave sans dramatiser, factuel, action immédiate',
     cadrage_general: 'concis, clair, orienté action'
   };
 
@@ -762,6 +852,7 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
     explication_pedagogique: 'besoin de comprendre comment ça marche',
     cadre_relation_projet: 'décalage de cadre avec un porteur de projet',
     ia_usage_reflechi: "usage de l'IA à calibrer avec discernement",
+    vigilance_risque: 'risque juridique, comportemental ou réputationnel à sécuriser',
     cadrage_general: 'situation à clarifier'
   };
 
