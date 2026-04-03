@@ -3288,6 +3288,81 @@ export const maryanResources: MaryanResource[] = [
     institutionContexts: ["commune", "intercommunalite"],
     experienceLevels: ["debutant", "intermediaire", "confirme"],
     irlPotential: false
+  },
+
+  // ── DÉCISION PUBLIQUE & TEMPS DU MANDAT ─────────────────────────────────────
+  {
+    id: "role-reel-elu-decision-publique",
+    title: "Le rôle réel de l'élu·e dans la décision publique",
+    slug: "role-reel-elu-decision-publique",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Comprendre les marges de manœuvre réelles d'un·e élu·e, pour agir efficacement dans un environnement complexe et partagé.",
+    intro: "L'élu·e participe à la décision publique, mais ne décide pas seul·e. Toute décision s'inscrit dans un cadre structuré qui mobilise des règles juridiques, des services administratifs, des contraintes budgétaires, des équilibres politiques et des partenaires institutionnels. La décision est collective, encadrée et progressive.",
+    understand: [
+      "La décision publique engage toujours plusieurs acteurs : l'administration (expertise, mise en œuvre), d'autres collectivités (intercommunalité, département, région), l'État (réglementation, contrôle) et des acteurs locaux (associations, opérateurs).",
+      "L'élu·e agit dans un écosystème de décision, pas en autonomie totale.",
+      "Surestimer sa capacité d'action immédiate est le piège le plus fréquent — avec des conséquences réelles : frustration, tensions avec les services, promesses difficiles à tenir, perte de crédibilité."
+    ],
+    commonTrap: "Surestimer sa capacité d'action immédiate. Penser qu'une décision politique suffit à produire un résultat immédiat. Entre décision et effet, il existe des délais, des procédures, des ajustements.",
+    actions: [
+      "Donner une orientation : définir des priorités, porter une vision.",
+      "Mettre à l'agenda : faire émerger des sujets, impulser des dynamiques.",
+      "Arbitrer : choisir entre plusieurs options, hiérarchiser les décisions.",
+      "Faciliter : coordonner les acteurs, lever des blocages.",
+      "Pour chaque dossier, identifier : 'Qui intervient réellement dans cette décision, et à quel niveau ?'"
+    ],
+    reflex: "L'élu·e ne fait pas tout — mais il ou elle structure et oriente l'action publique. Une décision non partagée ou mal préparée se bloque, se dégrade ou ne se met pas en œuvre.",
+    tags: ["décision", "rôle", "mandat", "administration", "marges de manœuvre", "pouvoir réel"],
+    useCases: [
+      "Vous commencez un mandat et voulez comprendre où vous avez vraiment du pouvoir",
+      "Un dossier n'avance pas et vous ne savez pas pourquoi",
+      "Vous sentez une tension avec l'administration",
+      "Vous avez fait une promesse et ne savez pas comment la tenir"
+    ],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "besoin_methode", "surcharge"],
+    ctaType: "copilote",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "inscrire-action-temps-mandat",
+    title: "Inscrire son action dans le temps du mandat",
+    slug: "inscrire-action-temps-mandat",
+    pillar: "se_situer",
+    format: "fiche",
+    promise: "Adopter une stratégie d'action réaliste et efficace, adaptée aux contraintes du mandat.",
+    intro: "L'action publique s'inscrit dans un temps long. Un mandat ne permet pas de tout transformer, tout corriger, tout résoudre. Il permet de faire évoluer, de structurer et d'engager des trajectoires. Vouloir produire des résultats immédiats sur des sujets complexes mène à la dispersion, à la surcharge et au découragement.",
+    understand: [
+      "Un mandat permet de faire avancer des priorités, d'enclencher des projets, d'obtenir des résultats concrets (même partiels), de stabiliser des politiques publiques.",
+      "Certains effets dépassent le mandat, nécessitent plusieurs années, dépendent d'autres acteurs. L'élu·e travaille aussi pour la continuité de l'action publique.",
+      "Assimiler réussite politique à transformation totale est une erreur classique. L'action publique est cumulative."
+    ],
+    commonTrap: "Vouloir produire des résultats immédiats sur des sujets complexes. Se disperser sur trop de dossiers sans prioriser. Promettre des résultats qui dépassent le périmètre d'un mandat.",
+    actions: [
+      "Se poser la question : 'Quel résultat concret puis-je atteindre dans ce mandat ?'",
+      "Identifier les indicateurs d'un mandat réussi : décisions utiles, projets engagés, blocages levés, trajectoire claire, relations consolidées.",
+      "Adopter une posture d'ambition réaliste : priorisation, constance, capacité d'ajustement.",
+      "Sur chaque projet : valider politique → étude technique → cadrage juridique → mobilisation des services → financement → mise en œuvre. Le rôle de l'élu·e : tenir la cohérence et le cap."
+    ],
+    reflex: "La bonne mesure d'un mandat n'est pas 'tout ce que j'aurais voulu faire', mais 'ce que j'ai réellement engagé, tenu et transmis'.",
+    tags: ["mandat", "stratégie", "temps", "priorisation", "action publique", "réalisme"],
+    useCases: [
+      "Vous êtes en début de mandat et voulez définir vos priorités",
+      "Vous vous sentez débordé·e et voulez reprendre un fil directeur",
+      "Vous doutez de l'utilité de votre action",
+      "Vous avez du mal à expliquer ce que vous avez accompli"
+    ],
+    diagnosticProfiles: ["mandat_recent", "surcharge", "isolement", "besoin_methode"],
+    ctaType: "copilote",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    irlPotential: true,
+    priority: "haute"
   }
 ];
 

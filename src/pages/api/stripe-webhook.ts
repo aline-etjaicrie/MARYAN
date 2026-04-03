@@ -5,6 +5,7 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { sendPaymentConfirmationEmail } from '../../lib/email';
 
 export const prerender = false;
 
@@ -67,12 +68,24 @@ export const POST: APIRoute = async ({ request }) => {
       return;
     }
 
+    // Fetch profile for first_name
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('first_name, plan')
+      .eq('id', user.id)
+      .single();
+
     await supabase
       .from('profiles')
       .update({ plan })
       .eq('id', user.id);
 
     console.log(`[webhook] plan mis à jour: ${email} → ${plan}`);
+
+    // Email de confirmation paiement si upgrade
+    if (plan === 'plus' && profile?.plan !== 'plus') {
+      await sendPaymentConfirmationEmail(email, profile?.first_name || undefined, 'MARYAN Plus').catch(console.error);
+    }
   }
 
   try {

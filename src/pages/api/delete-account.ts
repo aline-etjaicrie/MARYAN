@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { unsubscribeFromAudience } from '../../lib/email';
 
 export const prerender = false;
 
@@ -33,6 +34,11 @@ export const DELETE: APIRoute = async ({ request }) => {
   if (authError || !user) return json({ error: 'Token invalide.' }, 401);
 
   const userId = user.id;
+
+  // Désabonner de l'audience email (RGPD Article 17)
+  if (user.email) {
+    await unsubscribeFromAudience(user.email).catch(() => {});
+  }
 
   // Suppression des sessions copilote
   const { error: sessionsDeleteError } = await supabase

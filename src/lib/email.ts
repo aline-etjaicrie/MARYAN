@@ -4,6 +4,7 @@
 import { Resend } from 'resend';
 
 const RESEND_API_KEY = (import.meta.env.RESEND_API_KEY as string) || (process.env.RESEND_API_KEY as string);
+const RESEND_AUDIENCE_ID = (import.meta.env.RESEND_AUDIENCE_ID as string) || (process.env.RESEND_AUDIENCE_ID as string);
 const FROM_EMAIL = 'MARYAN <aline@etjaicrie.com>';
 const REPLY_TO = 'aline@etjaicrie.com';
 
@@ -122,12 +123,22 @@ export async function sendNewsletterNotification(data: {
     ? `https://maryanapp.fr/ressources/${data.slug}`
     : `https://maryanapp.fr/${data.slug}`;
 
+  const broadcastHtml = baseTemplate(`
+    <h1>📬 Nouvelle publication sur MARYAN</h1>
+    <p><strong>${typeLabel} :</strong> ${data.title}</p>
+    ${data.description ? `<p style="color:#555;">${data.description}</p>` : ''}
+    <a href="${url}" class="btn">Lire →</a>
+    <hr style="border:none;border-top:1px solid #eee;margin:1.5rem 0;">
+    <p style="font-size:0.8rem;color:#888;">Vous recevez cet email car vous êtes inscrit·e sur <a href="https://maryanapp.fr">maryanapp.fr</a>.<br>
+    Pour vous désabonner des notifications de publication, <a href="https://maryanapp.fr/mon-compte">gérez vos préférences ici</a>.</p>
+  `);
+
   try {
-    // Notification interne à Aline
+    // 1. Notification interne à Aline (toujours)
     await resend.emails.send({
       from: FROM_EMAIL,
       to: REPLY_TO,
-      subject: `[MARYAN] Nouvelle publication : ${data.title}`,
+      subject: `[MARYAN Admin] Nouvelle publication : ${data.title}`,
       html: baseTemplate(`
         <h1>Nouvelle publication sur MARYAN</h1>
         <p><strong>Type :</strong> ${typeLabel}</p>
@@ -138,8 +149,74 @@ export async function sendNewsletterNotification(data: {
         <p style="font-size:0.8rem;color:#888;">Ceci est une notification automatique MARYAN.</p>
       `)
     });
+
+    // 2. Broadcast aux abonnés si audience configurée
+    if (RESEND_AUDIENCE_ID) {
+      // audienceId est déprécié en faveur de segmentId dans Resend v6+
+      // mais fonctionne encore — à migrer vers un segment ID quand disponible
+      const broadcast = await resend.broadcasts.create({
+        audienceId: RESEND_AUDIENCE_ID,
+        from: FROM_EMAIL,
+        replyTo: REPLY_TO,
+        subject: `${typeLabel} : ${data.title}`,
+        html: broadcastHtml,
+        name: `${data.type}-${data.slug}-${Date.now()}`,
+        send: true, // envoi immédiat (pas de draft intermédiaire)
+      } as any); // cast needed: audienceId deprecated in SDK types
+      if (broadcast.data?.id) {
+        console.log('[email] broadcast envoyé aux abonnés:', broadcast.data.id);
+      }
+    }
   } catch (e) {
     console.error('[email] sendNewsletterNotification failed:', e);
+  }
+}
+
+// ── Gestion audience Resend ──────────────────────────────────────────────────
+
+/**
+ * Ajoute un contact à l'audience Resend (liste abonnés MARYAN).
+ * Appelé lors de l'inscription. Requiert RESEND_AUDIENCE_ID.
+ */
+export async function addContactToAudience(email: string, firstName?: string): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+  if (!RESEND_AUDIENCE_ID) {
+    console.warn('[email] RESEND_AUDIENCE_ID non configurée — contact non ajouté à la liste');
+    return;
+  }
+  try {
+    await resend.contacts.create({
+      audienceId: RESEND_AUDIENCE_ID,
+      email,
+      firstName: firstName || '',
+      unsubscribed: false,
+    });
+    console.log('[email] contact ajouté audience:', email);
+  } catch (e: any) {
+    // Silencieux si déjà existant (code 422 duplicate)
+    if (e?.statusCode !== 422) {
+      console.error('[email] addContactToAudience failed:', e);
+    }
+  }
+}
+
+/**
+ * Supprime le consentement marketing (désabonnement RGPD).
+ * Met le contact comme unsubscribed dans l'audience Resend.
+ */
+export async function unsubscribeFromAudience(email: string): Promise<void> {
+  const resend = getResend();
+  if (!resend || !RESEND_AUDIENCE_ID) return;
+  try {
+    // Resend ne permet pas de rechercher par email directement → on crée avec unsubscribed: true
+    await resend.contacts.create({
+      audienceId: RESEND_AUDIENCE_ID,
+      email,
+      unsubscribed: true,
+    });
+  } catch (e) {
+    console.error('[email] unsubscribeFromAudience failed:', e);
   }
 }
 
