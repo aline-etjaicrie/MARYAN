@@ -265,7 +265,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 .eq('id', signUpData.session.user.id);
             } catch (_) {}
           }
-          showSuccess('Compte créé. Vérifiez votre boîte mail pour confirmer, ou connectez-vous directement si la confirmation est désactivée.');
+          showSuccess('Compte créé ! Redirection vers votre espace…');
+
+          // Send welcome email (non-blocking)
+          try {
+            await fetch('/api/send-welcome', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, firstName: '' })
+            });
+          } catch (_) {}
+
+          // Redirect to onboarding after signup success
+          setTimeout(() => { window.location.href = '/bienvenue'; }, 1500);
         }
       } else {
         setLoading(true);

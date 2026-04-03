@@ -11,6 +11,17 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
   <main class="dashboard-v3">
     <div class="container">
 
+      <!-- PAYMENT SUCCESS BANNER (shown when ?session_id is present) -->
+      <div id="paymentSuccessBanner" class="payment-success-banner" style="display:none;">
+        <div class="payment-success-inner">
+          <span class="payment-success-icon">✓</span>
+          <div>
+            <strong>Abonnement activé !</strong>
+            <p>Votre paiement a été validé. Bienvenue dans MARYAN Plus — toutes les fonctionnalités sont maintenant disponibles.</p>
+          </div>
+        </div>
+      </div>
+
       <!-- SUCCESS BANNER -->
       <div id="successBanner" class="success-banner" style="display:none;">
         <strong>Bienvenue dans MARYAN Plus !</strong>
@@ -224,6 +235,14 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 
 <script>
   import { createClient } from '@supabase/supabase-js';
+
+  // ── Payment success banner (when redirected from Stripe checkout) ──
+  if (window.location.search.includes('session_id')) {
+    const paymentBanner = document.getElementById('paymentSuccessBanner');
+    if (paymentBanner) paymentBanner.style.display = 'block';
+    // Clean up URL to avoid showing banner on refresh
+    window.history.replaceState({}, '', '/mon-compte');
+  }
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -631,6 +650,43 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 </script>
 
 <style>
+  .payment-success-banner {
+    background: linear-gradient(135deg, #0A192F, #0d2140);
+    border: 1.5px solid #64FFDA;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .payment-success-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .payment-success-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #64FFDA;
+    color: #0A192F;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .payment-success-banner strong {
+    color: #64FFDA;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .payment-success-banner p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
   .dashboard-v3 {
     padding: 4rem 0 8rem;
     background: var(--bg);

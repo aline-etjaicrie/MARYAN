@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { checkRateLimit } from './_ratelimit';
 import {
   buildAgentPrimingMessage,
   buildSystemPrompt,
@@ -100,6 +101,22 @@ export const POST: APIRoute = async ({ request }) => {
   const authHeader = request.headers.get('Authorization') || '';
   const userToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
+  // ── Rate limiting ──
+  const rateLimitKey = userToken
+    ? `user:${userToken.slice(-16)}`
+    : `ip:${request.headers.get('x-forwarded-for') || 'unknown'}`;
+  const rateLimit = checkRateLimit(rateLimitKey, !!userToken);
+  if (!rateLimit.allowed) {
+    return new Response(JSON.stringify({ error: 'Trop de requêtes. Veuillez patienter avant de réécrire.' }), {
+      status: 429,
+      headers: {
+        'content-type': 'application/json',
+        'Retry-After': '60',
+        'X-RateLimit-Remaining': '0'
+      }
+    });
+  }
+
   if (userToken && supabaseUrl && supabaseServiceKey) {
     try {
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -117,6 +134,31 @@ export const POST: APIRoute = async ({ request }) => {
         } else {
           supabaseProfile = { id: user.id, political_label: politicalLabel };
         }
+      }
+    } catch (_) { /* non bloquant */ }
+  }
+
+  // ── Free tier gating (server-side) ──
+  if (supabaseProfile && supabaseProfile.plan !== 'plus' && supabaseProfile.plan !== 'admin') {
+    try {
+      const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+      const { data: sessions } = await supabase
+        .from('copilote_sessions')
+        .select('messages')
+        .eq('user_id', supabaseProfile.id!);
+
+      const totalMessages = sessions?.reduce((acc, s) => {
+        const msgs = Array.isArray(s.messages) ? s.messages : [];
+        return acc + msgs.filter((m: { role?: string }) => m.role === 'user').length;
+      }, 0) || 0;
+
+      const FREE_LIMIT = 5; // matches client-side config
+      if (totalMessages >= FREE_LIMIT) {
+        return json({
+          error: 'free_limit_reached',
+          message: 'Vous avez atteint la limite de messages gratuits. Passez à MARYAN Plus pour continuer.',
+          upgradeUrl: '/offres'
+        }, 403);
       }
     } catch (_) { /* non bloquant */ }
   }

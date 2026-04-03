@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Bienvenue — MARYAN"
+  description="Votre copilote de mandat est prêt. Voici comment démarrer.">
+
+  <main class="onboarding-page">
+    <div class="onboarding-wrap">
+
+      <div class="onboarding-brand">
+        <div class="brand-badge">Compte créé ✓</div>
+        <h1>Bienvenue dans MARYAN</h1>
+        <p class="onboarding-sub">Votre copilote de mandat est prêt. Voici comment en tirer le meilleur dès maintenant.</p>
+      </div>
+
+      <div class="steps-grid">
+
+        <div class="step-card step-active" id="step1">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h2>Faites votre diagnostic</h2>
+            <p>5 minutes pour que MARYAN comprenne votre situation réelle — votre rôle, vos tensions, votre contexte. Il adaptera ensuite chaque réponse à votre profil.</p>
+            <div class="step-time">⏱ 5 minutes</div>
+            <a href="/diagnostic" class="btn-step-primary">Faire le diagnostic →</a>
+          </div>
+        </div>
+
+        <div class="step-card" id="step2">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h2>Posez votre première question</h2>
+            <p>Ouvrez le copilote et posez une vraie question — la plus concrète possible. Un arbitrage difficile, une tension en réunion, une procédure floue. MARYAN répond en élu, pas en généraliste.</p>
+            <div class="step-time">⚡ Réponse en quelques secondes</div>
+            <a href="/copilote" class="btn-step">Ouvrir le copilote →</a>
+          </div>
+        </div>
+
+        <div class="step-card" id="step3">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h2>Explorez les ressources</h2>
+            <p>Des fiches pratiques sur vos droits, les procédures, les situations de mandat. Filtrées selon votre diagnostic. À portée de main quand vous en avez besoin.</p>
+            <div class="step-time">📚 +40 fiches disponibles</div>
+            <a href="/ressources" class="btn-step">Voir les ressources →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="onboarding-footer">
+        <p>Pas besoin de tout faire maintenant — votre espace vous attend.</p>
+        <a href="/mon-compte" class="btn-skip">Aller à mon espace →</a>
+      </div>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<style>
+  .onboarding-page {
+    min-height: 100vh;
+    background: var(--deep);
+    padding: 4rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .onboarding-wrap {
+    max-width: 860px;
+    width: 100%;
+  }
+
+  .onboarding-brand {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .brand-badge {
+    display: inline-block;
+    background: rgba(100, 255, 218, 0.15);
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+  }
+
+  .onboarding-brand h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    color: white;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
+  }
+
+  .onboarding-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .step-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: border-color 0.2s;
+  }
+
+  .step-active {
+    border-color: var(--neon);
+    background: rgba(100, 255, 218, 0.05);
+  }
+
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    background: var(--neon);
+    color: var(--deep);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .step-card:not(.step-active) .step-number {
+    background: rgba(255,255,255,0.15);
+    color: white;
+  }
+
+  .step-content h2 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.75rem;
+  }
+
+  .step-content p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .step-time {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1.25rem;
+  }
+
+  .btn-step-primary {
+    display: inline-block;
+    background: var(--neon);
+    color: var(--deep);
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .btn-step-primary:hover { opacity: 0.85; }
+
+  .btn-step {
+    display: inline-block;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    color: white;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .btn-step:hover { border-color: white; }
+
+  .onboarding-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .onboarding-footer p {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+
+  .btn-skip {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.88rem;
+    text-decoration: underline;
+  }
+  .btn-skip:hover { color: white; }
+
+  @media (max-width: 600px) {
+    .steps-grid { grid-template-columns: 1fr; }
+  }
+</style>
