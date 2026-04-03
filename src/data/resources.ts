@@ -3136,6 +3136,116 @@ export const maryanResources: MaryanResource[] = [
     ctaType: "formation_irl",
     irlPotential: true,
     priority: "haute"
+  },
+
+  // ── LOT VSS / HARCÈLEMENT ─────────────────────────────────────────────────
+
+  {
+    id: "prevenir-gerer-vss-harcelement",
+    title: "Prévenir et gérer les situations de VSS et harcèlement",
+    slug: "prevenir-gerer-vss-harcelement",
+    pillar: "se_proteger",
+    format: "fiche",
+    priority: "haute",
+    promise: "Savoir repérer, qualifier et agir face à une situation de violence, de harcèlement ou d'abus de position, dans le respect du cadre légal et de sa responsabilité d'élu·e.",
+    intro: "Les situations de violences sexistes et sexuelles (VSS), de harcèlement moral ou sexuel et d'abus de position dominante peuvent concerner des relations élu·e/agent, élu·e/usager, entre agents ou avec des partenaires. En tant qu'élu·e, vous avez une responsabilité politique, morale et juridique : garantir un environnement sûr, ne pas fermer les yeux, ne pas vous substituer aux procédures… mais ne pas rester passif·ve. Une situation n'a pas besoin d'être « prouvée » pour être prise au sérieux.",
+    understand: [
+      "Harcèlement moral : répétition de propos ou comportements dégradants, isolement, pression, déstabilisation.",
+      "Harcèlement sexuel / VSS : propos ou comportements à connotation sexuelle, pression, chantage, gestes déplacés, agression ou tentative d'agression.",
+      "Abus de position dominante : usage de son pouvoir (hiérarchique, politique, symbolique) pour obtenir un avantage ou imposer une relation.",
+      "Même sans intention affichée, l'effet sur la victime prime.",
+      "En tant qu'élu·e, votre inaction peut engager votre responsabilité."
+    ],
+    commonTrap: "Minimiser ('c'est un conflit, ça va s'arranger'), chercher à régler seul·e et informellement, protéger l'institution plutôt que la personne, attendre une preuve irréfutable, ou confondre loyauté politique et silence. Le vrai risque : laisser une situation s'installer — votre responsabilité est alors engagée.",
+    actions: [
+      "Accueillir la parole : écouter sans juger, ne pas minimiser, ne pas promettre ce que vous ne pouvez pas garantir. Dire : 'Je prends ce que vous me dites très au sérieux.'",
+      "Protéger immédiatement si nécessaire : éloignement temporaire, adaptation des conditions de travail, sécurisation de la personne.",
+      "Alerter le bon niveau selon les cas : direction générale / RH, référent VSS, médecine du travail, inspection. Vous n'êtes pas enquêteur — vous êtes déclencheur.",
+      "Tracer : noter les faits (date, propos, contexte), formaliser les signalements, éviter les échanges uniquement oraux.",
+      "Se protéger soi-même : ne pas gérer seul·e, éviter toute situation ambiguë, garder une posture claire et professionnelle."
+    ],
+    reflex: "Toujours prendre au sérieux. Toujours sortir du face-à-face. Toujours activer un cadre collectif. Toujours protéger la personne avant de protéger l'image.",
+    sensitiveNote: "Question à se poser : 'Si cette situation devenait publique demain, ai-je agi de manière responsable ?' Ne pas agir, c'est prendre parti pour la situation existante.",
+    targetRoles: ["maire", "adjoint", "majorite", "conseiller_municipal"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "isolement", "besoin_methode", "gouvernance"],
+    useCases: ["Un agent vous signale un comportement d'un collègue ou d'un élu", "Vous êtes témoin d'une situation ambiguë", "Un usager vous alerte", "Vous gérez les RH de la collectivité"],
+    tags: ["VSS", "harcèlement", "protection", "responsabilité", "signalement", "se_proteger"],
+    ctaType: "copilote",
+    irlPotential: false
+  },
+
+  {
+    id: "accusation-elu-vss-harcelement",
+    title: "Accusation visant un·e élu·e — VSS et comportements inappropriés",
+    slug: "accusation-elu-vss-harcelement",
+    pillar: "se_proteger",
+    format: "fiche",
+    priority: "haute",
+    promise: "Savoir réagir immédiatement, se positionner clairement et éviter les erreurs irréversibles lorsqu'un·e élu·e est mis·e en cause pour des faits de VSS, harcèlement ou comportements déplacés.",
+    intro: "Une accusation peut prendre plusieurs formes : témoignage direct, signalement interne, révélation publique ou rumeur persistante. Peu importe le canal, l'impact est immédiat — politique, humain, médiatique. Depuis #MeToo, la parole des victimes est beaucoup plus audible, la tolérance sociale beaucoup plus faible, et l'inaction elle-même est jugée. La réaction compte autant que les faits.",
+    understand: [
+      "Comportements inappropriés : messages déplacés (SMS, réseaux, mails), remarques à connotation sexuelle, ambiguïté entretenue.",
+      "Harcèlement / VSS : répétition, pression liée à une position de pouvoir, gestes, propositions, chantage.",
+      "Abus de position : profiter de son statut d'élu·e, créer une dépendance ou une situation déséquilibrée.",
+      "Le consentement est fragilisé par le rapport de pouvoir — même si les faits paraissent 'isolés'.",
+      "Ce qui est jugé aujourd'hui : la réaction, pas seulement les faits."
+    ],
+    commonTrap: "'On attend d'en savoir plus' (immobilisme), défense automatique de la personne mise en cause, minimisation ('blague', 'maladresse', 'SMS un peu lourd'), gestion en off / entre-soi, communication tardive ou floue. Aujourd'hui, ce qui est jugé : la réaction compte autant que les faits.",
+    actions: [
+      "Prendre la situation au sérieux immédiatement — même si vous connaissez la personne, même si les faits semblent flous. La crédibilité se joue ici.",
+      "Sortir du réflexe clanique : pas de protection automatique, pas de jugement immédiat, pas de disqualification de la parole. Ni tribunal, ni déni.",
+      "Mettre à distance si nécessaire : retrait temporaire de délégation, mise en retrait médiatique, suspension de certaines fonctions. Ce n'est pas une condamnation — c'est une mesure de responsabilité.",
+      "Activer un cadre formel : signalement interne, saisine RH / inspection, éventuellement signalement judiciaire. Ne jamais gérer seul·e.",
+      "Communiquer sobrement : reconnaître la gravité, affirmer que la situation est prise en charge. Exemple : 'Ces faits, s'ils sont avérés, sont graves. Une procédure est engagée.' Ne jamais défendre sur le fond sans éléments, ne jamais attaquer la personne qui parle."
+    ],
+    reflex: "Fermeté sur les principes, prudence sur les faits, protection des personnes, refus du déni. L'objectif : tenir la ligne sans exploser la situation.",
+    sensitiveNote: "Un 'message isolé' peut être une faute, un abus, un déclencheur de crise. Le critère n'est pas 'c'était pour rire' — c'est impact + contexte + position. 'C'est sa vie privée' est faux dès lors qu'il y a lien professionnel, rapport de pouvoir, ou impact sur autrui.",
+    targetRoles: ["maire", "adjoint", "majorite", "conseiller_municipal"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "exposition", "prise_de_parole", "arbitrage"],
+    useCases: ["Un·e élu·e de votre groupe est accusé·e", "Vous devez réagir publiquement", "Une situation médiatique se développe", "Un signalement interne vise un élu"],
+    tags: ["VSS", "accusation", "harcèlement", "crise", "communication", "responsabilité"],
+    ctaType: "copilote",
+    irlPotential: false
+  },
+
+  {
+    id: "comportement-elu-vie-privee-numerique",
+    title: "Votre comportement a des conséquences — vie publique, réseaux, relations",
+    slug: "comportement-elu-vie-privee-numerique",
+    pillar: "se_proteger",
+    format: "fiche",
+    priority: "haute",
+    promise: "Comprendre que devenir élu·e change les règles du jeu, y compris dans les interactions personnelles, numériques et intimes.",
+    intro: "Quand vous êtes élu·e, vous êtes identifiable, exposé·e, et associé·e à une institution — même hors cadre professionnel. Ce qui relève de la 'vie privée' peut devenir un sujet public dès lors qu'il y a déséquilibre de position, comportement déplacé ou diffusion de contenus. La règle d'or : 'Est-ce que je ferais la même chose si cette conversation était publique demain ?'",
+    understand: [
+      "Tout message, photo ou échange peut être conservé, transmis et publié — même en contexte 'privé'.",
+      "Le consentement est fragilisé par votre position : les personnes en lien professionnel (agents, partenaires, usagers) sont dans un rapport de pouvoir avec vous.",
+      "Sur les applis de rencontre : vous avez le droit d'y être, mais vous n'êtes pas un utilisateur comme les autres (risque de capture d'écran, identification, asymétrie de pouvoir implicite).",
+      "Le problème n'est pas seulement l'intention — c'est l'effet + le contexte + votre statut.",
+      "Un message isolé n'est jamais 'juste un message' — c'est une trace + un contexte + une position."
+    ],
+    commonTrap: "Les illusions fréquentes : 'C'est privé', 'C'était consenti', 'C'était pour rire', 'C'est un message isolé'. Ces arguments ne tiennent pas dès lors qu'il y a rapport de pouvoir, lien professionnel ou effet sur autrui.",
+    actions: [
+      "Garder une communication sobre dans toutes les interactions liées de près ou de loin à votre mandat.",
+      "Éviter toute ambiguïté — si une interaction vous fait hésiter, c'est déjà un signal.",
+      "Couper immédiatement si un malaise est exprimé, ne jamais insister.",
+      "En cas de doute : ne pas envoyer. Règle simple et absolue.",
+      "Anticiper : demandez-vous si votre position d'élu·e influence l'interaction avant de vous engager."
+    ],
+    reflex: "Si tu hésites → tu n'envoies pas.",
+    sensitiveNote: "La zone à risque inclut : SMS ambigus, DM insistants, blagues sexualisées, envoi de photos intimes, contenus déplacés, relations avec des personnes en lien professionnel. Tout peut être diffusé. Votre position crée une asymétrie de pouvoir même dans les contextes apparemment personnels.",
+    targetRoles: ["maire", "adjoint", "majorite", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "prise_de_parole", "tension_relationnelle"],
+    useCases: ["Vous utilisez les réseaux sociaux à titre personnel", "Vous avez une interaction ambiguë avec un·e agent·e ou partenaire", "Vous souhaitez comprendre les limites de la vie privée en tant qu'élu·e"],
+    tags: ["comportement", "numérique", "réseaux", "vie privée", "VSS", "prévention"],
+    ctaType: "copilote",
+    irlPotential: false
   }
 ];
 
