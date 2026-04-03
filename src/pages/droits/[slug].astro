@@ -75,38 +75,65 @@ function renderContenu(text: string): string {
 
     <div class="fiche-body">
 
-      <!-- Sections -->
-      {fiche.sections.map(section => (
+      <!-- SECTION 1 — toujours publique -->
+      {fiche.sections.length > 0 && (
         <section class="section-bloc">
-          <h2 class="section-titre" style={`border-color: ${couleur}`}>{section.titre}</h2>
-          <div class="section-contenu" set:html={renderContenu(section.contenu)} />
+          <h2 class="section-titre" style={`border-color: ${couleur}`}>{fiche.sections[0].titre}</h2>
+          <div class="section-contenu" set:html={renderContenu(fiche.sections[0].contenu)} />
         </section>
-      ))}
-
-      <!-- Encadré pratique -->
-      {fiche.encadre_pratique && (
-        <div class="encadre-pratique" style={`border-color: ${couleur}; background: ${couleur}08`}>
-          <span class="encadre-label" style={`color: ${couleur}`}>En pratique</span>
-          <p>{fiche.encadre_pratique}</p>
-        </div>
       )}
 
-      <!-- Source juridique -->
-      <div class="source-juridique">
-        <div class="source-header">
-          <span class="source-label">Référence juridique</span>
-          <span class="source-ref">{fiche.source_juridique.reference}</span>
-        </div>
-        <blockquote class="texte-juridique">
-          {fiche.source_juridique.texte}
-        </blockquote>
+      <!-- SPINNER -->
+      <div id="droits-spinner" class="spinner-wrap" aria-label="Vérification en cours…">
+        <span class="spinner"></span>
       </div>
 
-      <!-- Mots-clés -->
-      <div class="mots-cles">
-        {fiche.mots_cles.map(mot => (
-          <span class="mot-cle">{mot}</span>
+      <!-- PAYWALL -->
+      <div id="droits-paywall" class="paywall-banner" style="display:none;">
+        <div class="paywall-inner">
+          <p class="paywall-lock">🔒</p>
+          <h2>Contenu réservé aux abonnés</h2>
+          <p>La suite de cette fiche (sections détaillées, encadré pratique, référence juridique) est accessible avec l'offre <strong>MARYAN Plus</strong>.</p>
+          <div class="paywall-actions">
+            <a href="/offres" class="btn-paywall-primary">Voir les offres</a>
+            <a href="/login" class="btn-paywall-secondary">Se connecter</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENU PROTÉGÉ (sections 2+, encadré, source) -->
+      <div id="droits-protected" style="display:none;">
+
+        {fiche.sections.slice(1).map(section => (
+          <section class="section-bloc">
+            <h2 class="section-titre" style={`border-color: ${couleur}`}>{section.titre}</h2>
+            <div class="section-contenu" set:html={renderContenu(section.contenu)} />
+          </section>
         ))}
+
+        {fiche.encadre_pratique && (
+          <div class="encadre-pratique" style={`border-color: ${couleur}; background: ${couleur}08`}>
+            <span class="encadre-label" style={`color: ${couleur}`}>En pratique</span>
+            <p>{fiche.encadre_pratique}</p>
+          </div>
+        )}
+
+        <div class="source-juridique">
+          <div class="source-header">
+            <span class="source-label">Référence juridique</span>
+            <span class="source-ref">{fiche.source_juridique.reference}</span>
+          </div>
+          <blockquote class="texte-juridique">
+            {fiche.source_juridique.texte}
+          </blockquote>
+        </div>
+
+        <div class="mots-cles">
+          {fiche.mots_cles.map(mot => (
+            <span class="mot-cle">{mot}</span>
+          ))}
+        </div>
+
       </div>
 
       <!-- Navigation -->
@@ -120,6 +147,51 @@ function renderContenu(text: string): string {
   </main>
 
 </BaseLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  const spinner = document.getElementById('droits-spinner')!;
+  const paywall = document.getElementById('droits-paywall')!;
+  const protected_ = document.getElementById('droits-protected')!;
+
+  async function checkAccess() {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      spinner.style.display = 'none';
+      paywall.style.display = 'block';
+      return;
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      spinner.style.display = 'none';
+      paywall.style.display = 'block';
+      return;
+    }
+
+    // Vérifier le plan
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', session.user.id)
+      .single();
+
+    spinner.style.display = 'none';
+
+    if (profile?.plan === 'plus' || profile?.plan === 'admin') {
+      protected_.style.display = 'block';
+    } else {
+      paywall.style.display = 'block';
+    }
+  }
+
+  checkAccess();
+</script>
 
 <style>
   .fiche-page {
@@ -343,4 +415,22 @@ function renderContenu(text: string): string {
     .nav-bottom { flex-direction: column; }
     .btn-copilote { width: 100%; text-align: center; }
   }
+
+  /* ── SPINNER ── */
+  .spinner-wrap { display: flex; justify-content: center; padding: 3rem 0; }
+  .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--deep); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PAYWALL ── */
+  .paywall-banner { margin: 1rem 0 3rem; padding: 2.5rem 2rem; background: var(--deep); border-radius: 16px; color: white; text-align: center; }
+  .paywall-inner { max-width: 440px; margin: 0 auto; }
+  .paywall-lock { font-size: 2rem; margin-bottom: 0.75rem; }
+  .paywall-banner h2 { font-size: 1.4rem; font-weight: 800; color: white; margin-bottom: 0.75rem; }
+  .paywall-banner p { font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.75); margin-bottom: 1.75rem; }
+  .paywall-banner strong { color: #ADFF2F; }
+  .paywall-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .btn-paywall-primary { background: #ADFF2F; color: var(--deep); font-weight: 800; padding: 0.8rem 1.75rem; border-radius: 8px; text-decoration: none; font-size: 0.9rem; transition: opacity 0.2s; }
+  .btn-paywall-primary:hover { opacity: 0.85; }
+  .btn-paywall-secondary { background: transparent; color: rgba(255,255,255,0.7); font-weight: 700; padding: 0.8rem 1.75rem; border-radius: 8px; text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); transition: border-color 0.2s, color 0.2s; }
+  .btn-paywall-secondary:hover { color: white; border-color: rgba(255,255,255,0.5); }
 </style>
