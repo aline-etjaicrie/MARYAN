@@ -108,6 +108,66 @@ export const blogPosts: BlogPost[] = [
     `,
     metaTitle: 'Conflit au conseil municipal : réagir sans s\'isoler | MARYAN',
     metaDescription: 'Comment gérer un conflit au sein du conseil municipal — avec le maire, son groupe ou l\'opposition — sans perdre en efficacité ni en crédibilité.'
+  },
+  {
+    slug: 'irreprochable-politique-probite-confiance-democratie',
+    title: 'Pourquoi être irréprochable en politique est essentiel',
+    description: 'Probité, confiance, démocratie : pourquoi l\'exemplarité des élus est devenue indispensable pour renouer avec les citoyens.',
+    date: '2026-04-02',
+    author: 'Équipe MARYAN',
+    category: 'droits',
+    tags: ['probité', 'exemplarité', 'confiance', 'démocratie', 'éthique publique', 'comportement élus'],
+    readingTime: 8,
+    published: true,
+    excerpt: 'Dans un contexte de défiance croissante, la probité des élus est devenue un pilier essentiel pour maintenir la confiance et faire vivre la démocratie. Être irréprochable, ce n\'est pas être parfait — c\'est être clair, responsable, aligné et conscient de sa position.',
+    metaTitle: 'Pourquoi être irréprochable en politique est essentiel',
+    metaDescription: 'Probité, confiance, démocratie : pourquoi l\'exemplarité des élus est devenue indispensable pour renouer avec les citoyens.',
+    content: `
+<h2>La confiance : socle fragile de la démocratie</h2>
+<p>La démocratie repose sur un principe simple : les citoyens acceptent les règles parce qu'ils font confiance à celles et ceux qui les incarnent. Lorsque cette confiance s'érode, les conséquences sont immédiates : hausse de l'abstention, rejet des institutions, montée des tensions politiques, affaiblissement du dialogue démocratique.</p>
+<p><strong>La confiance démocratique n'est pas acquise. Elle se construit et se maintient.</strong></p>
+
+<h2>Pourquoi l'exemplarité des élus est devenue indispensable</h2>
+<p>Être élu aujourd'hui, c'est évoluer dans un environnement ultra-visible, numérique, instantané et fortement exposé médiatiquement. Chaque comportement peut être observé, capturé, diffusé, interprété.</p>
+<p><strong>L'exemplarité politique n'est plus une option. C'est une condition d'exercice du mandat.</strong></p>
+
+<h2>Probité : bien plus qu'une obligation légale</h2>
+<p>La probité des élus ne se limite pas au respect de la loi. Elle inclut l'absence de conflits d'intérêts, le refus des avantages indus, la transparence des pratiques, la maîtrise des situations ambiguës.</p>
+<p>La frontière entre légal et acceptable est devenue plus exigeante. Un comportement peut être légal… mais fragiliser la confiance publique.</p>
+
+<h2>Le soupçon : un risque systémique pour la vie publique</h2>
+<p>Le problème aujourd'hui n'est pas seulement la faute. C'est le soupçon permanent. Des perceptions comme "les élus sont au-dessus des lois" ou "ils profitent du système" affaiblissent profondément la démocratie en bloquant l'action publique, les réformes et le dialogue avec les citoyens.</p>
+
+<h2>Renouer avec les citoyens : une question de cohérence</h2>
+<p>Les citoyens n'attendent pas des élus parfaits. Ils attendent des élus cohérents, responsables, transparents, capables d'assumer leurs décisions. L'écart entre discours et comportement est aujourd'hui le principal facteur de défiance.</p>
+
+<h2>Dialogue démocratique : sans confiance, tout se crispe</h2>
+<p>Sans confiance, chaque décision est suspectée, chaque action contestée, chaque parole remise en cause. À l'inverse, une posture claire permet un dialogue apaisé, une meilleure acceptation des décisions, une relation plus saine avec les citoyens.</p>
+<p><strong>L'éthique publique est une condition du dialogue démocratique.</strong></p>
+
+<h2>Être irréprochable : une protection pour les élus eux-mêmes</h2>
+<p>Adopter une posture irréprochable permet aussi de limiter les risques juridiques, éviter les crises médiatiques, se protéger des accusations et réduire les zones grises. L'exemplarité est aussi une stratégie de sécurisation du mandat.</p>
+
+<h2>Une responsabilité individuelle et collective</h2>
+<p>La confiance ne dépend pas uniquement des lois. Elle repose sur les comportements individuels, les pratiques collectives, la capacité à réagir en cas de problème et la clarté des règles internes. Chaque élu contribue à renforcer… ou fragiliser la confiance démocratique.</p>
+
+<h2>Conclusion : une exigence politique majeure</h2>
+<p>Être irréprochable, ce n'est pas être parfait. C'est être clair, responsable, aligné, conscient de sa position. La probité est aujourd'hui une condition de légitimité politique. <strong>Sans confiance, il n'y a pas de démocratie vivante.</strong></p>
+
+<h2>Ressources utiles sur la probité et l'éthique publique</h2>
+<p>Plusieurs institutions encadrent et accompagnent les élus sur ces sujets :</p>
+<ul>
+<li><strong><a href="https://www.hatvp.fr" target="_blank" rel="noopener">Haute Autorité pour la transparence de la vie publique (HATVP)</a></strong> — Déclarations d'intérêts, contrôle du patrimoine, prévention des conflits d'intérêts</li>
+<li><strong><a href="https://www.agence-francaise-anticorruption.gouv.fr" target="_blank" rel="noopener">Agence française anticorruption (AFA)</a></strong> — Recommandations pour prévenir la corruption et les atteintes à la probité</li>
+<li><strong><a href="https://www.transparency.fr" target="_blank" rel="noopener">Transparency International France</a></strong> — Analyses, rapports et plaidoyer sur l'intégrité publique</li>
+<li><strong><a href="https://www.defenseurdesdroits.fr" target="_blank" rel="noopener">Défenseur des droits</a></strong> — Protection des droits, signalements, accompagnement des lanceurs d'alerte</li>
+</ul>
+<div style="background:#0A192F;border-radius:10px;padding:1.5rem 2rem;margin-top:2rem;">
+<p style="color:#64FFDA;font-weight:800;margin:0 0 0.5rem;">Vous êtes élu·e ou en responsabilité publique ?</p>
+<p style="color:rgba(255,255,255,0.8);margin:0 0 1rem;font-size:0.9rem;">MARYAN vous aide à décider dans les situations sensibles, en temps réel.</p>
+<a href="https://maryanapp.fr/copilote" style="display:inline-block;background:#64FFDA;color:#0A192F;padding:0.6rem 1.25rem;border-radius:6px;font-weight:800;text-decoration:none;font-size:0.88rem;">Essayer le copilote →</a>
+</div>
+`
   }
 ];
 

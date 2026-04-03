@@ -106,6 +106,43 @@ export async function sendPaymentConfirmationEmail(email: string, firstName?: st
   }
 }
 
+export async function sendNewsletterNotification(data: {
+  type: 'ressource' | 'blog' | 'autre';
+  title: string;
+  slug: string;
+  description?: string;
+}): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const typeLabel = data.type === 'blog' ? 'Article blog' : data.type === 'ressource' ? 'Nouvelle fiche' : 'Publication';
+  const url = data.type === 'blog'
+    ? `https://maryanapp.fr/blog/${data.slug}`
+    : data.type === 'ressource'
+    ? `https://maryanapp.fr/ressources/${data.slug}`
+    : `https://maryanapp.fr/${data.slug}`;
+
+  try {
+    // Notification interne à Aline
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: REPLY_TO,
+      subject: `[MARYAN] Nouvelle publication : ${data.title}`,
+      html: baseTemplate(`
+        <h1>Nouvelle publication sur MARYAN</h1>
+        <p><strong>Type :</strong> ${typeLabel}</p>
+        <p><strong>Titre :</strong> ${data.title}</p>
+        ${data.description ? `<p><strong>Description :</strong> ${data.description}</p>` : ''}
+        <a href="${url}" class="btn">Voir la publication →</a>
+        <hr style="border:none;border-top:1px solid #eee;margin:1.5rem 0;">
+        <p style="font-size:0.8rem;color:#888;">Ceci est une notification automatique MARYAN.</p>
+      `)
+    });
+  } catch (e) {
+    console.error('[email] sendNewsletterNotification failed:', e);
+  }
+}
+
 export async function sendContactEmail(data: {
   firstname: string;
   lastname: string;

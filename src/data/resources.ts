@@ -3246,6 +3246,48 @@ export const maryanResources: MaryanResource[] = [
     tags: ["comportement", "numérique", "réseaux", "vie privée", "VSS", "prévention"],
     ctaType: "copilote",
     irlPotential: false
+  },
+
+  // ── LOT PROBITÉ / CORRUPTION ───────────────────────────────────────────────
+  {
+    id: "corruption-tentative-influence-elu",
+    slug: "corruption-tentative-influence-elu",
+    title: "On vous propose un avantage en échange d'une faveur",
+    pillar: "se_proteger",
+    format: "fiche",
+    priority: "haute",
+    promise: "Savoir identifier, refuser et sécuriser une situation de corruption ou de tentative d'influence, sans vous mettre en faute.",
+    intro: "Une proposition peut être explicite ('si tu fais passer ça, on peut…'), implicite ('on saura être reconnaissants…') ou indirecte (cadeau, invitation, service rendu, opportunité). Ce n'est pas toujours frontal — mais c'est toujours structuré autour d'un échange. Et les risques sont pénaux : corruption, trafic d'influence, prise illégale d'intérêt.",
+    understand: [
+      "Signaux d'alerte : proposition faite hors cadre formel, insistance sur la discrétion, avantage personnel (argent, cadeaux, emploi, service), timing suspect avant une décision ou un vote.",
+      "Phrases typiques à reconnaître : 'ça reste entre nous', 'on peut s'arranger', 'tu y gagnerais aussi'.",
+      "La règle absolue : si un avantage est lié à une décision publique → refus immédiat, même si c'est 'petit', 'habituel', ou que 'tout le monde fait ça'.",
+      "Le simple fait de laisser la porte ouverte peut déjà poser problème juridiquement.",
+      "Question à se poser : 'Est-ce que cet avantage existerait sans mon rôle d'élu·e ?' Si non → danger."
+    ],
+    commonTrap: "'Je n'ai rien accepté donc ça va', 'C'était une blague', 'C'est un partenaire de confiance', 'Je vais juste écouter'. Le simple fait de maintenir un lien ambigu ou de ne pas couper net peut constituer une faute. Une 'opportunité personnelle' liée à votre fonction est une tentative d'influence, pas une chance.",
+    actions: [
+      "Refuser immédiatement et clairement : 'Je ne peux pas accepter ce type de proposition.' Pas d'humour, pas de flou, pas de 'peut-être plus tard'.",
+      "Mettre fin à l'échange : ne pas négocier, ne pas entrer dans le détail, ne pas maintenir le lien ambigu.",
+      "Tracer : noter les faits, conserver les messages, dater et contextualiser — même si vous ne comptez pas donner suite immédiatement.",
+      "Alerter si nécessaire selon la gravité : hiérarchie, direction juridique, autorités compétentes. Vous vous protégez en signalant.",
+      "Cas concrets à identifier : invitation VIP avant un vote, promesse d'embauche pour un proche, financement facilité d'un projet personnel, cadeau disproportionné, prestation gratuite 'en échange d'un coup de pouce'."
+    ],
+    reflex: "Avantage lié à une décision = refus immédiat. Pas de discussion. Je trace. J'alerte si nécessaire. Je ne gère pas la situation — j'y mets fin.",
+    sensitiveNote: "Vous n'avez pas besoin d'avoir accepté pour être en difficulté. L'entrée dans une négociation, le maintien d'un lien ambigu ou l'absence de refus clair peuvent suffire à créer une zone de risque juridique. En cas de doute, consultez un avocat spécialisé en droit public avant de gérer seul·e.",
+    tags: ["corruption", "trafic d'influence", "probité", "refus", "protection", "pénal"],
+    useCases: [
+      "On vous propose quelque chose en lien avec une décision à prendre",
+      "Vous recevez un cadeau ou une invitation dans un contexte suspect",
+      "Un partenaire ou prestataire vous fait une proposition ambiguë",
+      "Vous voulez comprendre où se situe la limite légale"
+    ],
+    diagnosticProfiles: ["tension_relationnelle", "gouvernance", "besoin_methode"],
+    ctaType: "copilote",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition", "conseiller_municipal", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    irlPotential: false
   }
 ];
 
