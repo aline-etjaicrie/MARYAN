@@ -149,9 +149,24 @@ import InternalHeader from '../components/InternalHeader.astro';
   .impact-pédagogie { max-width: 600px; margin: 0 auto; text-align: left; padding: 2.5rem; line-height: 1.7; }
   .impact-pédagogie p { margin-bottom: 1rem; }
 
+  /* Fix: texte blanc sur fond clair — forcer les couleurs explicitement */
+  .eco-stat.card-v3 { color: var(--deep); background: white; }
+  .eco-stat.card-v3 p { color: #54636C; }
+
+  /* Fix: carte pédagogie dans section bg-deep → texte blanc */
+  .impact-pédagogie.card-v3 { background: rgba(255,255,255,0.08); color: white; }
+  .impact-pédagogie.card-v3 p { color: rgba(255,255,255,0.85); margin-bottom: 1rem; }
+  .impact-pédagogie.card-v3 strong { color: white; }
+
+  /* Fix: carte philosophie (highlight-neon) → texte foncé explicite */
+  .eco-philosophy.card-v3 { background: white; color: var(--deep); }
   .eco-philosophy { padding: 4rem; }
-  .eco-philosophy h3 { font-size: 2rem; margin: 1.5rem 0 2rem; }
+  .eco-philosophy h3 { font-size: 2rem; margin: 1.5rem 0 2rem; color: var(--deep); }
   .eco-philosophy p { font-size: 1.15rem; line-height: 1.6; color: #54636C; margin-bottom: 1.5rem; }
+  .eco-philosophy li { color: #54636C; }
+
+  /* Fix: score card — texte foncé */
+  .score-details h3 { color: var(--deep); }
 
   @media (max-width: 992px) {
     .score-card-v3 { flex-direction: column; text-align: center; gap: 2rem; padding: 2.5rem; }
