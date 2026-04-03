@@ -70,7 +70,7 @@ import InternalHeader from '../components/InternalHeader.astro';
           </div>
         </div>
 
-        <div class="impact-pédagogie card-v3 dark">
+        <div class="impact-pédagogie">
           <p><strong>Ça veut dire quoi ?</strong></p>
           <p>Pour vous donner une idée, <strong>1 kg CO2e</strong> équivaut à un trajet d’environ 5 km en voiture. Une douche consomme en moyenne 6 litres d’eau à la minute.</p>
           <p>Pour 1000 visiteurs par mois, l’usage de MARYAN représente <strong>1,26 kg de CO2e</strong> — soit un trajet de 6,3 km en voiture — et <strong>18,9 litres d’eau</strong>, soit 3 minutes de douche. Des chiffres qui situent l’effort : réel, mesuré, et bien en dessous de la moyenne du web.</p>
@@ -153,10 +153,11 @@ import InternalHeader from '../components/InternalHeader.astro';
   .eco-stat.card-v3 { color: var(--deep); background: white; }
   .eco-stat.card-v3 p { color: #54636C; }
 
-  /* Fix: carte pédagogie dans section bg-deep → texte blanc — override card-v3 */
-  .impact-pédagogie { background: rgba(255,255,255,0.08) !important; color: white !important; border-color: rgba(255,255,255,0.15) !important; }
-  .impact-pédagogie p { color: rgba(255,255,255,0.85) !important; margin-bottom: 1rem; }
-  .impact-pédagogie strong { color: white !important; }
+  /* Carte pédagogie dans section sombre — sans card-v3 */
+  .impact-pédagogie { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 2rem 2.5rem; color: white; max-width: 600px; margin: 0 auto; text-align: left; }
+  .impact-pédagogie p { color: rgba(255,255,255,0.85); margin-bottom: 1rem; line-height: 1.7; }
+  .impact-pédagogie p:last-child { margin-bottom: 0; }
+  .impact-pédagogie strong { color: white; }
 
   /* Fix: carte philosophie (highlight-neon) → texte foncé explicite */
   .eco-philosophy.card-v3 { background: white; color: var(--deep); }
