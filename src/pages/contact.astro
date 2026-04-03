@@ -75,7 +75,7 @@ import InternalHeader from '../components/InternalHeader.astro';
 
           <div class="form-footer-v3">
             <button type="submit" class="btn-primary-v3 big" id="submitBtn">Envoyer ma demande</button>
-            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par Et j'ai crié pour répondre à votre demande. <a href="/confidentialite">Politique de confidentialité</a></p>
+            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par MARYAN pour répondre à votre demande. <a href="/confidentialite">Politique de confidentialité</a></p>
           </div>
         </form>
       </div>
@@ -92,6 +92,7 @@ import InternalHeader from '../components/InternalHeader.astro';
   </main>
 
   <style>
+    .hidden { display: none !important; }
     .contact-v3 { padding-bottom: 8rem; }
     .container-narrow { max-width: 700px; margin: 0 auto; padding: 0 1.5rem; }
     .contact-card-v3 { padding: 4rem; margin-top: -2rem; }
@@ -159,7 +160,7 @@ import InternalHeader from '../components/InternalHeader.astro';
           success.classList.remove('hidden');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          alert("Une erreur est survenue. Veuillez réessayer ou contacter directment aline@etjaicrie.com");
+          alert("Une erreur est survenue. Veuillez réessayer ou utiliser le formulaire de contact.");
           btn.innerText = "Envoyer ma demande";
           btn.disabled = false;
         }
