@@ -110,6 +110,63 @@ export const blogPosts: BlogPost[] = [
     metaDescription: 'Comment gérer un conflit au sein du conseil municipal — avec le maire, son groupe ou l\'opposition — sans perdre en efficacité ni en crédibilité.'
   },
   {
+    slug: 'pouvoir-reel-elu-impuissance-marges-manoeuvre',
+    title: 'Pourquoi les élus se sentent impuissants (et comment retrouver un pouvoir réel)',
+    description: 'Pourquoi les élus se sentent impuissants ? Comprendre les limites du mandat et retrouver des marges de manœuvre concrètes.',
+    date: '2026-04-03',
+    author: 'Équipe MARYAN',
+    category: 'methode',
+    tags: ['pouvoir réel', 'impuissance', 'marge de manœuvre', 'rôle élu', 'frustration', 'mandat'],
+    readingTime: 6,
+    published: true,
+    excerpt: 'Beaucoup d\'élus arrivent avec la conviction qu\'ils vont pouvoir agir, décider, transformer. Très vite, un sentiment s\'installe : celui de ne pas avoir autant de pouvoir que prévu. Ce décalage n\'est pas un problème individuel — c\'est une réalité structurelle du mandat.',
+    metaTitle: 'Pouvoir réel des élus : pourquoi vous vous sentez impuissant | MARYAN',
+    metaDescription: 'Pourquoi les élus se sentent impuissants ? Comprendre les limites du mandat et retrouver des marges de manœuvre concrètes.',
+    content: `
+<h2>Le choc du réel : un pouvoir encadré</h2>
+<p>Contrairement à une idée répandue, un élu ne décide pas seul. Chaque décision dépend de l'administration, du cadre juridique, des budgets disponibles, des autres collectivités, des partenaires et des équilibres politiques.</p>
+<p><strong>Le pouvoir de l'élu est réel… mais partagé et encadré.</strong></p>
+<p>→ <a href="https://maryanapp.fr/ressources/role-reel-elu-decision-publique">Le rôle réel de l'élu dans la décision publique</a></p>
+
+<h2>Pourquoi ce sentiment d'impuissance apparaît</h2>
+<p><strong>Une attente initiale trop élevée.</strong> Imaginer pouvoir agir rapidement et directement. Le mandat commence souvent avec une projection de pouvoir qui ne correspond pas à la réalité institutionnelle.</p>
+<p><strong>Une complexité sous-estimée.</strong> Les processus sont longs, techniques, multi-acteurs. Ce qui semble simple depuis l'extérieur révèle, de l'intérieur, une série de contraintes imbriquées.</p>
+<p><strong>Une confusion sur le rôle.</strong> Vouloir faire à la place de l'administration… ou attendre d'elle qu'elle décide. Les deux postures produisent les mêmes blocages.</p>
+<p>→ <a href="https://maryanapp.fr/ressources/elus-administration-qui-fait-quoi">Élus / administration : qui fait quoi</a></p>
+
+<h2>Le vrai pouvoir de l'élu : moins visible, mais déterminant</h2>
+<p>Le pouvoir de l'élu n'est pas un pouvoir d'exécution. C'est un pouvoir d'orientation, de priorisation, d'arbitrage et d'impulsion. Vous ne faites pas tout — mais vous influencez ce qui se fait, dans quel ordre, et avec qui.</p>
+<p>Cette distinction est fondamentale. La confondre avec de l'impuissance, c'est se priver des leviers réels du mandat.</p>
+
+<h2>Là où vous avez réellement de la marge</h2>
+<p>Même dans un cadre contraint, vous avez un pouvoir réel sur <strong>l'agenda</strong> (ce qui est traité ou non), <strong>les priorités</strong> (ce qui est urgent ou secondaire), <strong>les arbitrages</strong> (ce qui est retenu entre plusieurs options) et <strong>les alliances</strong> (avec qui vous travaillez).</p>
+<p>Autrement dit : vous ne contrôlez pas tout — mais vous orientez beaucoup. Et c'est précisément là que se joue l'efficacité d'un mandat.</p>
+
+<h2>Le piège : vouloir reprendre un pouvoir direct</h2>
+<p>Face à la frustration, certains élus tentent de contourner les services, d'accélérer sans cadre, d'imposer sans concertation. Le résultat est systématiquement le même : blocages, tensions avec l'administration, perte d'efficacité et fragilisation de la relation politique.</p>
+<p><strong>La tentation du court-circuit est le principal ennemi du pouvoir réel.</strong></p>
+
+<h2>Retrouver du pouvoir, concrètement</h2>
+<p><strong>Comprendre le système.</strong> Identifier qui fait quoi, à quel moment, avec quels leviers. La carte du pouvoir réel est rarement celle qu'on imagine.</p>
+<p><strong>Clarifier votre rôle.</strong> Vous n'êtes pas exécutant. Vous orientez, arbitrez, impulsez. Assumer ce rôle pleinement, c'est déjà reprendre du pouvoir.</p>
+<p><strong>Travailler les leviers.</strong> Acteurs, timing, priorités. L'influence s'exerce souvent en amont des décisions — pas au moment du vote.</p>
+<p><strong>Accepter le temps.</strong> Une décision produit ses effets dans la durée. Inscrire son action dans le temps du mandat, c'est travailler pour des résultats réels plutôt que pour des apparences immédiates.</p>
+<p>→ <a href="https://maryanapp.fr/ressources/inscrire-action-temps-mandat">Inscrire son action dans le temps du mandat</a></p>
+
+<h2>Ce qui change tout</h2>
+<p>Le basculement se fait ici : passer de <em>"je veux décider"</em> à <em>"je veux faire avancer"</em>. Ce n'est pas une capitulation — c'est une compréhension plus juste du mandat. Et c'est là que le pouvoir devient réel.</p>
+
+<h2>Un pouvoir différent, mais essentiel</h2>
+<p>Être élu, ce n'est pas contrôler. C'est orienter, arbitrer, impulser, tenir un cap dans la durée. Le pouvoir n'est pas absolu — mais il est structurant. Les élus qui le comprennent sont ceux qui agissent le mieux.</p>
+
+<div style="background:#0A192F;border-radius:10px;padding:1.5rem 2rem;margin-top:2rem;">
+<p style="color:#ADFF2F;font-weight:800;margin:0 0 0.5rem;">Vous avez le sentiment de ne pas avoir de prise sur une situation ?</p>
+<p style="color:rgba(255,255,255,0.8);margin:0 0 1rem;font-size:0.9rem;">Décrivez-la. MARYAN vous aide à comprendre où se situe votre pouvoir… et comment l'exercer concrètement.</p>
+<a href="https://maryanapp.fr/copilote" style="display:inline-block;background:#ADFF2F;color:#0A192F;padding:0.6rem 1.25rem;border-radius:6px;font-weight:800;text-decoration:none;font-size:0.88rem;">Essayer le copilote →</a>
+</div>
+`
+  },
+  {
     slug: 'role-elu-local-pouvoirs-limites',
     title: 'Le rôle de l\'élu local : ce que vous pouvez vraiment faire (et ce que vous ne contrôlez pas)',
     description: 'Quel est le vrai rôle d\'un élu local ? Pouvoirs, limites, relations avec l\'administration : comprendre la réalité du mandat pour agir efficacement.',
