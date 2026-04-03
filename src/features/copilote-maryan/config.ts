@@ -180,6 +180,44 @@ Sujets sensibles : corruption, tentative d'influence, probité
 
 Quand un·e élu·e évoque une proposition suspecte, un avantage en échange d'une faveur, un cadeau ou une invitation dans un contexte de décision : identifier immédiatement le risque pénal (corruption, trafic d'influence, prise illégale d'intérêt), rappeler la règle absolue du refus immédiat et clair, insister sur la traçabilité, et proposer la fiche 'corruption-tentative-influence-elu'. Ne jamais minimiser, même si la situation semble 'petite' ou 'habituelle'.
 
+Navigation du contenu MARYAN — règles de renvoi :
+
+Deux types de contenus existent sur MARYAN. Distingue-les toujours :
+- "droits" → cadre légal, ce que dit la loi, droits formels de l'élu·e (indemnités, formation, protection, charte) → maryanapp.fr/droits/[slug]
+- "ressources" → comment agir concrètement dans une situation terrain → maryanapp.fr/ressources/[slug]
+
+Fiches socle — à proposer en priorité sur les sujets correspondants :
+→ rôle, marges de manœuvre, décision partagée : /ressources/role-reel-elu-decision-publique
+→ stratégie du mandat, priorisation, réalisme : /ressources/inscrire-action-temps-mandat
+→ prise de fonction, trouver sa place : /ressources/trouver-sa-place-dans-le-mandat
+→ relation élu/administration : /ressources/elus-administration-qui-fait-quoi
+
+Fiches sensibles — à citer systématiquement quand le sujet est abordé :
+→ VSS/harcèlement côté institution : /ressources/prevenir-gerer-vss-harcelement
+→ accusation visant un·e élu·e : /ressources/accusation-elu-vss-harcelement
+→ comportement / réseaux / vie privée : /ressources/comportement-elu-vie-privee-numerique
+→ corruption / tentative d'influence : /ressources/corruption-tentative-influence-elu
+→ conflit d'intérêts droit : /droits/conflit-interets
+→ protection juridique droit : /droits/protection-juridique-elu
+
+Fiches pratiques courantes :
+→ arbitrer une décision : /ressources/arbitrer-une-decision-sensible
+→ prioriser quand tout est urgent : /ressources/prioriser-quand-tout-semble-urgent
+→ gérer tension dans la majorité : /ressources/gerer-une-tension-dans-la-majorite-ou-l-executif
+→ répondre à une critique : /ressources/repondre-critique-publique
+→ menaces sur l'élu·e : /ressources/menaces-sur-elu-que-faire
+→ premier conseil municipal : /ressources/premier-conseil-municipal-erreurs
+
+Règle de proposition de fiche :
+Si la situation de l'élu·e correspond précisément à une fiche existante, propose-la en 1 ligne à la fin de ta réponse, sous la forme : "→ Fiche utile : [titre court] — maryanapp.fr/ressources/[slug]" ou "/droits/[slug]".
+Ne propose jamais plus d'une fiche par réponse. Ne propose une fiche que si c'est vraiment pertinent (pas systématiquement).
+
+Distinctions à toujours tenir :
+- "majorité/opposition : ce que ça change" = lecture politique globale (positionnement dans l'assemblée)
+- "rôle dans la majorité vs opposition" = posture individuelle (comment agir selon sa place)
+- "qui décide quoi dans la collectivité" = cartographie des acteurs
+- "comment se prend une décision" = processus et procédure
+
 Interdictions absolues :
 - partir hors sujet technique ;
 - produire une réponse longue sans structure ;
@@ -210,7 +248,13 @@ Style attendu :
 - progressif ;
 - concret.
 
-Tu aides d'abord a reprendre pied.`,
+Tu aides d'abord a reprendre pied.
+
+Point d'attention specifique :
+Quand l'elu·e exprime un manque total de reperes sur sa fonction, son pouvoir ou sa place dans le systeme, les fiches socles a proposer en priorite sont :
+- trouver-sa-place-dans-le-mandat (posture generale)
+- role-reel-elu-decision-publique (comprendre ses vraies marges)
+- premier-conseil-municipal-erreurs (si premier conseil)`,
   soutien_reassurance: `Mode implicite : soutien / reassurance.
 
 Cas typiques :
@@ -234,12 +278,18 @@ Cas typiques :
 - fatigue decisionnelle ;
 - dispersion ;
 - impression de courir partout ;
-- pression diffuse.
+- pression diffuse ;
+- "je ne sais plus quoi prioriser dans mon mandat" ;
+- "je veux tout faire et je ne fais rien bien".
 
 Style attendu :
 - apaise ;
 - priorise ;
-- oriente vers une seule prochaine etape utile.`,
+- oriente vers une seule prochaine etape utile.
+
+Point d'attention specifique :
+Quand la dispersion porte sur l'ensemble du mandat (pas juste une semaine), proposer la fiche :
+inscrire-action-temps-mandat — pour aider a retrouver une strategie realiste.`,
   arbitrage_cadrage: `Mode implicite : arbitrage / cadrage.
 
 Cas typiques :
@@ -292,14 +342,24 @@ Cas typiques :
 - role de chacun ;
 - procedure ;
 - marge de manoeuvre ;
-- fonctionnement local.
+- fonctionnement local ;
+- "quel est mon role vraiment ?" ;
+- "qui a vraiment le pouvoir ?" ;
+- "je ne sais pas ce que je peux faire concrètement".
 
 Style attendu :
 - pedagogique ;
 - concret ;
 - non technocratique.
 
-Tu expliques simplement, sans faire un cours.`,
+Tu expliques simplement, sans faire un cours.
+
+Point d'attention specifique :
+Quand la question porte sur le role reel, les marges de manoeuvre ou le positionnement dans le systeme, rappelle que :
+- l'elu·e agit dans un ecosysteme partage (administration, partenaires, Etat) ;
+- la decision est collective et progressive ;
+- le mandat permet d'orienter et d'impulser, pas de tout décider seul·e.
+→ proposer la fiche socle : role-reel-elu-decision-publique ou inscrire-action-temps-mandat selon l'angle.`,
   cadre_relation_projet: `Mode implicite : cadre relation projet.
 
 Cas typiques :
@@ -376,7 +436,34 @@ const TECHNICAL_THEME_MARKERS: Record<string, string[]> = {
   communication: ['communication', 'message public', 'post', 'publication'],
   reseaux_sociaux: ['facebook', 'reseaux sociaux', 'instagram', 'commentaires'],
   ia: ['ia', 'chatgpt', 'copilote', 'outil de redaction', 'resumer un document'],
-  projet: ['collectif', 'association', 'entreprise', 'porteur de projet', 'habitants']
+  projet: ['collectif', 'association', 'entreprise', 'porteur de projet', 'habitants'],
+  // Thèmes enrichis — fiches socle + structuration pilier agir
+  role_dans_systeme: [
+    'quel est mon role', 'mon role vraiment', 'ou est mon pouvoir', 'qui a le pouvoir',
+    'marge de manoeuvre', 'je ne sais pas ce que je peux faire', 'pouvoir reel',
+    'deciseur', 'qui decide', 'ecosysteme de decision', 'partage de decision'
+  ],
+  temps_du_mandat: [
+    'temps du mandat', 'fin de mandat', 'priorites du mandat', 'ce que je peux faire en',
+    'resultats du mandat', 'mandat ne suffit pas', 'sur le long terme',
+    'strategie de mandat', 'je ne sais pas par ou commencer', 'je me disperse'
+  ],
+  droits_elu: [
+    'mes droits', 'indemnites', 'formation elu', 'credit heures', 'conge mandat',
+    'protection juridique', 'employeur', 'responsabilite penale', 'charte elu',
+    'conflit interet declaration', 'fin de mandat reconversion'
+  ],
+  vss_probite: [
+    'harcelement', 'vss', 'violences sexistes', 'comportement inappropriate', 'comportement deplacé',
+    'corruption', 'pot de vin', 'prise illegale', 'trafic influence', 'favoritisme',
+    'conflit interet', 'probite', 'signalement', 'deontologie'
+  ],
+  // 5 sous-blocs du pilier "agir" pour une meilleure navigation copilote
+  agir_decision: ['arbitrer', 'trancher', 'deliberation', 'voter', 'decision politique'],
+  agir_projet: ['projet public', 'conduire un projet', 'porteur de projet', 'appel a projet', 'subvention'],
+  agir_participation: ['participation citoyenne', 'concertation', 'reunion publique', 'habitants', 'co-construction'],
+  agir_parole: ['prise de parole', 'discours', 'allocution', 'medias', 'communique'],
+  agir_politique: ['majorite', 'opposition', 'executif', 'groupe politique', 'coalition']
 };
 
 const SIGNAL_GROUPS: Record<Exclude<MaryanSituationMode, 'cadrage_general'>, string[]> = {
@@ -469,7 +556,20 @@ const SIGNAL_GROUPS: Record<Exclude<MaryanSituationMode, 'cadrage_general'>, str
     'a quoi sert',
     'je suis perdue dans le fonctionnement',
     'je suis perdu dans le fonctionnement',
-    'je ne sais pas quelle est ma marge'
+    'je ne sais pas quelle est ma marge',
+    // Signaux "se situer dans le système" — fiches socle
+    'quel est mon role vraiment',
+    'ou est mon pouvoir',
+    'je ne sais pas ce que je peux faire vraiment',
+    'qui a vraiment le pouvoir',
+    'quelle est ma marge de manoeuvre',
+    'je ne comprends pas qui decide',
+    'comment se prend une decision',
+    'est ce que j ai vraiment un pouvoir',
+    'comment fonctionner dans ce systeme',
+    'je ne sais pas par ou commencer',
+    'je me disperse sur tout',
+    'quel objectif pour ce mandat'
   ],
   cadre_relation_projet: [
     'collectif d habitants',
