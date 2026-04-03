@@ -4,7 +4,7 @@
 import { Resend } from 'resend';
 
 const RESEND_API_KEY = (import.meta.env.RESEND_API_KEY as string) || (process.env.RESEND_API_KEY as string);
-const FROM_EMAIL = 'MARYAN <bonjour@maryanapp.fr>';
+const FROM_EMAIL = 'MARYAN <aline@etjaicrie.com>';
 const REPLY_TO = 'aline@etjaicrie.com';
 
 function getResend(): Resend | null {
