@@ -313,6 +313,9 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
           </div>
 
           <section class="suggestions-strip" data-suggestions>
+            <!-- Notice RGPD tiers — AIPD R3 -->
+            <p class="tiers-notice">🔒 Pour protéger les données des personnes que vous mentionnez, évitez d'indiquer des noms ou informations permettant d'identifier des tiers (collègues, agents, élus).</p>
+
             <!-- Parcours types : 3 portes d'entrée situationnelles -->
             <p class="suggestions-title">Quelle est votre situation ?</p>
             <div class="parcours-grid">
@@ -600,6 +603,18 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
       display: flex;
       flex-direction: column;
       gap: 0;
+    }
+
+    .tiers-notice {
+      width: 100%;
+      margin: 0 0 1.1rem;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: rgba(10, 25, 47, 0.65);
+      background: rgba(10, 25, 47, 0.03);
+      border: 1px solid rgba(10, 25, 47, 0.1);
+      border-radius: 0.75rem;
     }
 
     .suggestions-strip {
