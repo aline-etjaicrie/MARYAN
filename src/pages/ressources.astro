@@ -45,12 +45,12 @@ const copilotSuggestions = [
       <InternalHeader
         label="Vos ressources"
         title="Vos ressources <span class='emphasis text-neon'>MARYAN</span>"
-        subtitle="Des repères concrets pour comprendre, décider et agir selon votre réalité de mandat."
+        subtitle="Des repères concrets pour comprendre une situation, décider plus clairement et avancer."
       />
 
       <div class="hero-note-card">
-        <p class="hero-note-lead">Votre diagnostic nous aide à vous orienter vers les ressources les plus utiles pour vous.</p>
-        <p class="hero-note-text">Mais toutes les ressources restent accessibles à tout moment.</p>
+        <p class="hero-note-lead">Le diagnostic personnalise vos premières ressources.</p>
+        <p class="hero-note-text">Sans diagnostic, toute la bibliothèque reste accessible.</p>
       </div>
     </div>
     <div class="hero-glow glow-red"></div>
@@ -84,12 +84,12 @@ const copilotSuggestions = [
     </div>
 
     <!-- ══ ENTRÉE SITUATIONNELLE ══ -->
-    <section class="parcours-express-section">
+    <section id="parcoursExpressSection" class="parcours-express-section">
       <div class="container container-medium">
         <div class="pe-header">
-          <span class="label-v3">Où en êtes-vous ?</span>
-          <h2>Votre situation en ce moment</h2>
-          <p class="pe-lead">Choisissez ce qui vous correspond — MARYAN vous oriente vers les ressources utiles et ouvre une conversation.</p>
+          <span class="label-v3">Entrer par une situation</span>
+          <h2>Commencer par un cas</h2>
+          <p class="pe-lead">Si vous n’avez pas encore fait le diagnostic, choisissez ici un point d’entrée concret.</p>
         </div>
         <div class="pe-grid">
           {parcoursExpress.map(p => (
@@ -141,9 +141,9 @@ const copilotSuggestions = [
         <div class="diagnostic-helper-card card-v3">
           <div class="diagnostic-helper-copy">
             <span class="label-v3">Personnalisation</span>
-            <h2>Commencez par le diagnostic pour orienter vos premières lectures</h2>
+            <h2>Commencez par le diagnostic</h2>
             <p>
-              MARYAN peut faire remonter les ressources, parcours et situations les plus utiles pour vous. Mais vous restez libre d’explorer tout le reste.
+              En quelques minutes, MARYAN peut faire remonter les ressources et parcours les plus utiles pour vous.
             </p>
           </div>
 
@@ -179,7 +179,7 @@ const copilotSuggestions = [
         <header class="section-header-v4">
           <span class="label-v3">Sélectionnées à partir de votre diagnostic</span>
           <h2 class="section-title-standard">À commencer par là</h2>
-          <p class="section-subtitle-v4">Trois ressources choisies pour entrer dans le sujet avec méthode, sans vous perdre dans l’ensemble.</p>
+          <p class="section-subtitle-v4">Trois ressources choisies pour entrer dans le sujet sans vous perdre dans l’ensemble.</p>
         </header>
 
         <div id="recommendedGrid" class="rec-v4-grid"></div>
@@ -191,7 +191,7 @@ const copilotSuggestions = [
         <header class="section-header-v4">
           <span class="label-v3">Parcours conseillé</span>
           <h2 class="section-title-standard">Un parcours utile pour votre situation</h2>
-          <p class="section-subtitle-v4">Si vous voulez avancer de manière plus structurée, commencez par ce parcours.</p>
+          <p class="section-subtitle-v4">Si vous voulez avancer de manière plus structurée, commencez ici.</p>
         </header>
 
         <div class="path-highlight-card card-v3">
@@ -223,9 +223,9 @@ const copilotSuggestions = [
       <div class="container">
         <header class="section-header-v4">
           <span class="label-v3">Explorer</span>
-          <h2 class="section-title-standard">Explorer les ressources</h2>
+          <h2 class="section-title-standard">Explorer toute la bibliothèque</h2>
           <p class="section-subtitle-v4">
-            Votre profil vous oriente, mais il ne vous enferme pas. Toutes les ressources restent ouvertes à l’exploration.
+            Votre profil peut vous orienter, mais toutes les ressources restent ouvertes à l’exploration.
           </p>
         </header>
 
@@ -295,9 +295,9 @@ const copilotSuggestions = [
       <div class="container">
         <header class="section-header-v4">
           <span class="label-v3">Cas concrets</span>
-          <h2 class="section-title-standard">Situations fréquentes</h2>
+          <h2 class="section-title-standard">Entrer par un cas concret</h2>
           <p class="section-subtitle-v4">
-            Entrer par un cas concret, quand vous cherchez moins un thème qu’une situation à traverser.
+            Quand vous cherchez moins un thème qu’une situation à traverser.
           </p>
         </header>
 
@@ -322,7 +322,7 @@ const copilotSuggestions = [
             <span class="copilot-dark-kicker">Poser une question à MARYAN</span>
             <h2 class="copilot-dark-title">Vous ne trouvez pas exactement votre cas ?</h2>
             <p class="copilot-dark-desc">
-              MARYAN peut vous aider à cadrer la situation, poser les bonnes questions et identifier les ressources utiles.
+              MARYAN peut vous aider à cadrer la situation et identifier les ressources utiles.
             </p>
           </div>
 
@@ -346,13 +346,12 @@ const copilotSuggestions = [
         <div class="subtle-support-card">
           <div class="subtle-support-copy">
             <span class="label-v3">Aller plus loin</span>
-            <h3>Selon votre situation, MARYAN peut aussi vous orienter vers le bon niveau d’appui.</h3>
-            <p>Copilote, accompagnement individuel, offre collectivité ou formation ciblée : l’idée reste la même, vous proposer l’appui juste.</p>
+            <h3>Besoin d’un autre niveau d’appui ?</h3>
+            <p>Selon votre situation, MARYAN peut aussi vous orienter vers une offre individuelle, une offre collectivité ou un échange direct.</p>
           </div>
 
           <div class="subtle-support-actions">
             <a href="/offres" class="btn-secondary-v3">Voir les offres</a>
-            <a href="/methode" class="btn-secondary-v3">Découvrir la méthode</a>
             <a href="/contact" class="btn-secondary-v3">Être rappelé</a>
           </div>
         </div>
@@ -458,6 +457,7 @@ const copilotSuggestions = [
     };
 
     const els = {
+      parcoursExpressSection: document.getElementById('parcoursExpressSection'),
       diagnosticHelper: document.getElementById('diagnosticHelper'),
       prioritiesSection: document.getElementById('prioritiesSection'),
       priorityGrid: document.getElementById('priorityGrid'),
@@ -613,10 +613,12 @@ const copilotSuggestions = [
 
     function renderPersonalizedContent() {
       if (!state.profile) {
+        els.parcoursExpressSection?.classList.remove('hidden');
         els.diagnosticHelper?.classList.remove('hidden');
         return;
       }
 
+      els.parcoursExpressSection?.classList.add('hidden');
       els.diagnosticHelper?.classList.add('hidden');
 
       const priorities = state.recommendedPath?.priorities?.slice(0, 3)?.length
