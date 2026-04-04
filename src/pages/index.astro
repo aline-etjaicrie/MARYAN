@@ -70,68 +70,74 @@ const collectiveOffer = [
   description="Faites le point en quelques minutes. Clarifiez votre situation, avancez avec des réponses adaptées à votre mandat, en accès individuel ou collectif."
 >
   <section class="home-hero">
-    <div class="container home-hero-grid">
-      <div class="hero-copy">
-        <h1>
-          <span class="hero-title-brand">MARYAN</span>
-          <span class="hero-title-line">
-            Le <span class="accent-keyword">copilote</span> de <span class="accent-keyword">mandat</span>
-          </span>
-          <span class="hero-title-line">
-            au service de la <span class="accent-keyword">clarté</span>
-          </span>
-        </h1>
+    <div class="container">
+      <div class="home-hero-grid">
+        <div class="hero-copy">
+          <div class="hero-copy-head">
+            <h1>
+              <span class="hero-title-brand">MARYAN</span>
+              <span class="hero-title-line">
+                Le <span class="accent-keyword">copilote</span> de <span class="accent-keyword">mandat</span>
+              </span>
+              <span class="hero-title-line">
+                au service de la <span class="accent-keyword">clarté</span>
+              </span>
+            </h1>
+          </div>
 
-        <p class="hero-hook">
-          Exercer un mandat aujourd’hui est complexe.
-          <br />
-          Vous n’êtes pas censé.e tout savoir.
-        </p>
+          <div class="hero-copy-body">
+            <p class="hero-hook">
+              Exercer un mandat aujourd’hui est complexe.
+              <br />
+              Vous n’êtes pas censé.e tout savoir.
+            </p>
 
-        <p class="hero-support">
-          Faites le point en quelques minutes.
-          <br />
-          Avancez avec des réponses adaptées à votre situation.
-        </p>
+            <p class="hero-support">
+              Faites le point en quelques minutes.
+              <br />
+              Avancez avec des réponses adaptées à votre situation.
+            </p>
 
-        <div class="hero-actions">
-          <a href="/diagnostic" class="btn-primary-v3 hero-primary">Lancer le diagnostic</a>
-          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Poser une question</a>
+            <div class="hero-actions">
+              <a href="/diagnostic" class="btn-primary-v3 hero-primary">Lancer le diagnostic</a>
+              <a href="/copilote" class="btn-secondary-v3 hero-secondary">Poser une question</a>
+            </div>
+
+            <p class="hero-note">Le diagnostic ouvre le parcours, en accès individuel comme en déploiement collectif.</p>
+          </div>
         </div>
 
-        <p class="hero-note">Le diagnostic ouvre le parcours, en accès individuel comme en déploiement collectif.</p>
+        <div class="hero-media">
+          <figure class="hero-scene">
+            <div class="hero-scene-frame">
+              <Image
+                src={heroScene}
+                alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
+                class="hero-scene-image"
+                widths={[720, 960, 1280]}
+                sizes="(max-width: 1024px) calc(100vw - 4rem), 46vw"
+                quality={84}
+                loading="eager"
+                fetchpriority="high"
+              />
+            </div>
+          </figure>
+        </div>
       </div>
 
-      <div class="hero-media">
-        <figure class="hero-scene">
-          <div class="hero-scene-frame">
-            <Image
-              src={heroScene}
-              alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
-              class="hero-scene-image"
-              widths={[720, 960, 1280]}
-              sizes="(max-width: 1024px) calc(100vw - 4rem), 46vw"
-              quality={84}
-              loading="eager"
-              fetchpriority="high"
-            />
-          </div>
-        </figure>
+      <aside class="hero-context-card">
+        <span class="label-v3">Première étape</span>
+        <h2>Le diagnostic vous donne une première direction.</h2>
 
-        <aside class="hero-context-card">
-          <span class="label-v3">Première étape</span>
-          <h2>Le diagnostic vous donne une première direction.</h2>
-
-          <div class="hero-context-grid">
-            {heroPreview.map((item) => (
-              <div class="hero-context-item">
-                <strong>{item.title}</strong>
-                <span>{item.copy}</span>
-              </div>
-            ))}
-          </div>
-        </aside>
-      </div>
+        <div class="hero-context-grid">
+          {heroPreview.map((item) => (
+            <div class="hero-context-item">
+              <strong>{item.title}</strong>
+              <span>{item.copy}</span>
+            </div>
+          ))}
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -308,11 +314,24 @@ const collectiveOffer = [
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(380px, 0.98fr);
       gap: 3rem;
-      align-items: center;
+      align-items: stretch;
+      margin-bottom: 1.2rem;
     }
 
     .hero-copy {
       max-width: 38rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .hero-copy-head {
+      max-width: 36rem;
+    }
+
+    .hero-copy-body {
+      margin-top: auto;
+      padding-top: 2rem;
     }
 
     .home-hero h1,
@@ -392,13 +411,13 @@ const collectiveOffer = [
     }
 
     .hero-media {
-      display: grid;
-      gap: 1rem;
-      align-content: start;
+      display: flex;
+      align-items: stretch;
     }
 
     .hero-scene {
       margin: 0;
+      width: 100%;
     }
 
     .hero-scene-frame {
@@ -431,8 +450,9 @@ const collectiveOffer = [
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 28px;
-      padding: 1.4rem;
+      padding: 1.5rem;
       backdrop-filter: blur(8px);
+      width: 100%;
     }
 
     .hero-context-card .label-v3,
@@ -811,6 +831,10 @@ const collectiveOffer = [
         max-width: 100%;
       }
 
+      .hero-copy-body {
+        padding-top: 1.5rem;
+      }
+
       .hero-scene-image {
         aspect-ratio: 1.3 / 1;
         object-position: 44% 56%;
@@ -858,6 +882,11 @@ const collectiveOffer = [
       .hero-scene-image {
         aspect-ratio: 1.16 / 1;
         object-position: 45% 58%;
+      }
+
+      .hero-copy-body {
+        margin-top: 0;
+        padding-top: 1rem;
       }
     }
   </style>
