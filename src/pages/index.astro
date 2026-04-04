@@ -1,302 +1,384 @@
 ---
 import Layout from '../layouts/BaseLayout.astro';
+
+const heroPreview = [
+  {
+    title: 'Situation',
+    copy: 'Comprendre ce qui se joue vraiment avant d’agir.'
+  },
+  {
+    title: 'Priorité',
+    copy: 'Identifier le sujet à traiter en premier.'
+  },
+  {
+    title: 'Suite',
+    copy: 'Choisir le bon niveau d’appui pour avancer.'
+  }
+];
+
+const diagnosticPoints = [
+  {
+    title: 'Clarifier votre situation',
+    copy: 'Nommer plus clairement ce qui se joue dans votre mandat.'
+  },
+  {
+    title: 'Identifier vos priorités',
+    copy: 'Faire ressortir ce qui demande votre attention en premier.'
+  },
+  {
+    title: 'Savoir quoi faire en premier',
+    copy: 'Repartir avec une direction lisible, sans dispersion.'
+  }
+];
+
+const copilotePoints = [
+  'une situation à gérer',
+  'une décision à prendre',
+  'un doute à lever'
+];
+
+const benefits = [
+  'comprendre plus rapidement',
+  'structurer vos décisions',
+  'éviter les erreurs classiques',
+  'gagner du temps au quotidien'
+];
+
+const credibilityPoints = [
+  'plus de 20 ans d’expérience en communication publique et en cabinet',
+  'une connaissance directe des pratiques institutionnelles',
+  'des situations concrètes intégrées dans l’outil'
+];
+
+const individualOffer = [
+  'abonnement individuel',
+  'accès direct à l’outil',
+  'démarrage immédiat'
+];
+
+const collectiveOffer = [
+  'accès groupé pour plusieurs élu·es',
+  'déploiement simple',
+  'moins de 10 € / élu / mois dans de nombreuses configurations'
+];
 ---
 
 <Layout
-  title="MARYAN — Un appui pour les élu·es qui prennent leur mandat au sérieux"
-  description="Comprendre, répondre, se positionner, arbitrer, décider… souvent seul·e, souvent vite. MARYAN vous aide à y voir plus clair."
+  title="MARYAN — Le copilote de mandat au service de la clarté"
+  description="Faites le point en quelques minutes. Clarifiez votre situation, avancez avec des réponses adaptées à votre mandat, en accès individuel ou collectif."
 >
   <section class="home-hero">
-    <div class="hero-glow-layer">
-      <div class="glow-red"></div>
-      <div class="glow-green"></div>
-    </div>
+    <div class="container home-hero-grid">
+      <div class="hero-copy">
+        <img
+          src="/maryan-mark.png"
+          alt="Logo MARYAN"
+          class="hero-mark"
+          width="480"
+          height="480"
+          fetchpriority="high"
+        />
 
-      <div class="container home-hero-grid">
-        <div class="home-hero-copy">
-          <img
-            src="/maryan-mark.png"
-            alt="Logo MARYAN"
-            class="hero-mark"
-            width="480"
-            height="480"
-            fetchpriority="high"
-          />
-          <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
-          <h1>
-            <span class="hero-title-line">Un appui</span>
-            <span class="hero-title-line hero-title-accent">pour les élus</span>
-            <span class="hero-title-line">qui prennent leur mandat</span>
-            <span class="hero-title-line hero-title-accent">au sérieux</span>
-          </h1>
-          <p class="hero-lead">
-          Comprendre, répondre, se positionner, arbitrer, décider... souvent seul·e, souvent vite.
-          MARYAN vous aide d'abord à qualifier votre situation, puis à avancer avec le bon niveau d'appui.
+        <h1>
+          <span class="hero-title-brand">MARYAN</span>
+          <span class="hero-title-line">
+            Le <span class="accent-keyword">copilote</span> de <span class="accent-keyword">mandat</span>
+          </span>
+          <span class="hero-title-line">
+            au service de la <span class="accent-keyword">clarté</span>
+          </span>
+        </h1>
+
+        <p class="hero-hook">
+          Exercer un mandat aujourd’hui est complexe.
+          <br />
+          Vous n’êtes pas censé·e tout savoir.
+        </p>
+
+        <p class="hero-support">
+          Faites le point en quelques minutes.
+          <br />
+          Avancez avec des réponses adaptées à votre situation.
         </p>
 
         <div class="hero-actions">
-          <a href="/diagnostic" class="btn-primary-v3 big pulse-border">Faire le diagnostic</a>
-          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Tester le copilote gratuit</a>
+          <a href="/diagnostic" class="btn-primary-v3 hero-primary">Lancer le diagnostic</a>
+          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Poser une question</a>
         </div>
 
-        <p class="hero-alt-entry">
-          Le diagnostic reste l'entrée recommandée. Le copilote est là si vous avez déjà une question précise à traiter.
-        </p>
-
-        <div class="hero-hint">
-          <span class="dot-neon"></span>
-          5 minutes · Gratuit · Confidentiel
-        </div>
+        <p class="hero-note">Pour un abonnement individuel comme pour un déploiement collectif.</p>
       </div>
 
-      <aside class="home-hero-panel">
+      <aside class="hero-panel">
         <span class="label-v3">Première étape</span>
-        <h2>Commencez par le diagnostic.</h2>
+        <h2>Le diagnostic vous donne une première direction.</h2>
         <p>
-          En quelques minutes, MARYAN clarifie la situation, fait ressortir le point de vigilance principal
-          et vous oriente vers la bonne suite.
+          En quelques minutes, vous repartez avec une lecture plus claire de votre situation et
+          un premier cap pour avancer.
         </p>
 
         <div class="hero-panel-grid">
-          <div class="hero-panel-item">
-            <strong>Situation</strong>
-            <span>Une lecture rapide de votre moment de mandat.</span>
-          </div>
-          <div class="hero-panel-item">
-            <strong>Vigilance</strong>
-            <span>Le point à sécuriser avant d'aller plus loin.</span>
-          </div>
-          <div class="hero-panel-item">
-            <strong>Orientation</strong>
-            <span>Copilote, ressource ciblée ou relais humain selon le cas.</span>
-          </div>
+          {heroPreview.map((item) => (
+            <div class="hero-panel-item">
+              <strong>{item.title}</strong>
+              <span>{item.copy}</span>
+            </div>
+          ))}
         </div>
+
+        <p class="hero-panel-caption">Individuel ou collectif, le même point de départ.</p>
       </aside>
     </div>
   </section>
 
   <section class="section-v3">
-    <div class="container container-medium">
-      <div class="section-header section-header-compact">
-        <span class="label-v3">Pourquoi commencer ici</span>
-        <h2>Le diagnostic ouvre le parcours.</h2>
-        <p class="intro-v3">
-          Ce n'est pas un module parmi d'autres. C'est le point d'entrée qui aide à comprendre ce qui se joue
-          avant d'agir trop vite.
-        </p>
-      </div>
-
-      <div class="diagnostic-grid">
-        <div class="diagnostic-main">
-          <h3>Ce que le diagnostic produit concrètement</h3>
-          <p>
-            MARYAN ne cherche pas à donner une réponse automatique. Il aide d'abord à clarifier la situation,
-            à hiérarchiser les priorités et à choisir la bonne suite.
-          </p>
-
-          <div class="diagnostic-output-grid">
-            <article class="diagnostic-output">
-              <h4>Une lecture de situation</h4>
-              <p>Pour nommer clairement ce que vous traversez dans votre mandat.</p>
-            </article>
-            <article class="diagnostic-output">
-              <h4>Un point de vigilance</h4>
-              <p>Pour savoir où ne pas vous tromper dans la décision, le tempo ou la manière de la porter.</p>
-            </article>
-            <article class="diagnostic-output">
-              <h4>Une suite lisible</h4>
-              <p>Pour poursuivre avec le copilote, une ressource utile ou un relais humain si la situation l'exige.</p>
-            </article>
-          </div>
-        </div>
-
-        <aside class="diagnostic-side card-v3">
-          <span class="label-v3">Différenciation</span>
-          <h3>Ce n'est pas une IA qui répond à votre place.</h3>
-          <p>
-            MARYAN vous aide à prendre du recul, à mieux cadrer la situation et à ne pas rester seul·e
-            face à ce qui se joue.
-          </p>
-          <p class="diagnostic-side-note">
-            Quand c'est nécessaire, l'outil vous aide aussi à savoir quand passer le relais et aller parler
-            aux bonnes personnes.
-          </p>
-          <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-v3 bg-light">
-    <div class="container container-medium">
-      <div class="section-header section-header-compact text-center">
-        <span class="label-v3">Le parcours</span>
-        <h2>Un appui en trois temps.</h2>
-        <p class="intro-v3">
-          Un chemin simple : faire le point, traiter la question, puis mobiliser le bon niveau d'appui.
-        </p>
-      </div>
-
-      <div class="path-grid">
-        <a href="/diagnostic" class="path-step card-v3">
-          <div class="step-num">01.</div>
-          <h3>Faire le point</h3>
-          <p>Le diagnostic qualifie votre situation, vos tensions du moment et votre priorité de vigilance.</p>
-        </a>
-        <a href="/copilote" class="path-step card-v3">
-          <div class="step-num">02.</div>
-          <h3>Traiter la question</h3>
-          <p>Le copilote vous aide à cadrer un sujet concret, préparer une décision ou structurer une prise de parole.</p>
-        </a>
-        <a href="/hub-experts" class="path-step card-v3">
-          <div class="step-num">03.</div>
-          <h3>Mobiliser un relais</h3>
-          <p>Quand le sujet devient sensible, MARYAN oriente vers le bon appui humain plutôt que de laisser l'utilisateur seul.</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-v3 bg-deep support-section">
     <div class="container">
-      <div class="support-grid">
-        <div class="support-copy">
-          <span class="label-v3">Relais humain</span>
-          <h2 class="text-white">Un outil quand vous pouvez avancer seul·e. Un <span class="emphasis">relais humain</span> quand il le faut.</h2>
-          <p class="support-lead">
-            Certaines situations demandent autre chose qu'une réponse rapide. MARYAN vous aide à savoir quand
-            continuer, quand vous entourer et vers quel type d'expertise aller.
-          </p>
-          <a href="/hub-experts" class="btn-secondary-v3">Explorer les expertises</a>
+      <div class="section-head">
+        <span class="label-v3">Diagnostic</span>
+        <h2>Par où <span class="accent-keyword">commencer</span> ?</h2>
+        <p class="section-intro">Le diagnostic vous permet de :</p>
+      </div>
+
+      <div class="point-grid point-grid-three">
+        {diagnosticPoints.map((point, index) => (
+          <article class="point-card">
+            <span class="point-index">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{point.title}</h3>
+            <p>{point.copy}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="section-close">
+        <p class="section-conclusion">En quelques minutes, vous avez une direction claire.</p>
+        <a href="/diagnostic" class="btn-primary-v3">Lancer le diagnostic</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-v3 section-copilote">
+    <div class="container copilote-grid">
+      <div class="section-head section-head-light">
+        <span class="label-v3">Copilote</span>
+        <h2>
+          Une question concrète, une réponse
+          <span class="accent-keyword"> structurée</span>
+        </h2>
+        <p class="section-intro">
+          Posez votre question.
+          <br />
+          Obtenez une réponse claire, directement applicable.
+        </p>
+        <p class="copilote-note">
+          <strong>Un appui, pas un substitut.</strong>
+          <br />
+          Pour décider plus clairement, plus vite, avec plus de sécurité.
+        </p>
+        <a href="/copilote" class="btn-secondary-v3">Accéder au copilote</a>
+      </div>
+
+      <div class="copilote-panel">
+        <span class="copilote-panel-label">Pour traiter</span>
+        <ul class="copilote-list">
+          {copilotePoints.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-v3 benefits-section">
+    <div class="container">
+      <div class="section-head section-head-center">
+        <span class="label-v3">Bénéfices</span>
+        <h2>Moins <span class="accent-keyword">subir</span>. Plus <span class="accent-keyword">agir</span>.</h2>
+      </div>
+
+      <div class="point-grid point-grid-four">
+        {benefits.map((benefit) => (
+          <article class="point-card benefit-card">
+            <h3>{benefit}</h3>
+          </article>
+        ))}
+      </div>
+
+      <p class="section-conclusion section-conclusion-center">Être plus serein dans son mandat.</p>
+    </div>
+  </section>
+
+  <section class="section-v3 credibility-section">
+    <div class="container">
+      <div class="credibility-shell">
+        <div class="section-head section-head-light">
+          <span class="label-v3">Crédibilité</span>
+          <h2>
+            Un outil conçu à partir de la <span class="accent-keyword">réalité</span> du
+            <span class="accent-keyword"> mandat</span>
+          </h2>
         </div>
 
-        <div class="support-box">
-          <span class="label-v3">Passer à l'action</span>
-          <h3>Reprenez de la clarté sur votre mandat.</h3>
-          <p>
-            Commencez par le diagnostic. Si vous avez déjà une question précise, entrez directement dans le copilote.
-          </p>
-          <div class="support-actions">
-            <a href="/diagnostic" class="btn-primary-v3 big">Faire le diagnostic (5 min)</a>
-            <a href="/copilote" class="btn-secondary-v3 support-secondary-action">Tester le copilote gratuit</a>
-          </div>
+        <div class="point-grid point-grid-three">
+          {credibilityPoints.map((item) => (
+            <article class="credibility-card">
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+
+        <p class="credibility-conclusion">Une IA construite à partir de cas réels, pas une IA abstraite.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-v3 offers-section">
+    <div class="container">
+      <div class="section-head section-head-center">
+        <span class="label-v3">Accès</span>
+        <h2>Choisir le bon format d’<span class="accent-keyword">accès</span></h2>
+        <p class="section-intro section-intro-narrow">
+          MARYAN s’adresse à l’élu qui veut avancer seul comme aux équipes qui veulent équiper
+          plusieurs élu·es.
+        </p>
+      </div>
+
+      <div class="offers-grid">
+        <article class="offer-card card-v3">
+          <span class="offer-audience">Pour un élu</span>
+          <h3>Un accès individuel, direct et simple à activer.</h3>
+          <ul class="clean-list">
+            {individualOffer.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <a href="/offres" class="btn-primary-v3">Découvrir les offres</a>
+        </article>
+
+        <article class="offer-card offer-card-highlight">
+          <span class="offer-audience">Pour une équipe ou une collectivité</span>
+          <h3>Un format pensé pour déployer MARYAN à plusieurs.</h3>
+          <ul class="clean-list">
+            {collectiveOffer.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <a href="/contact" class="btn-secondary-v3">Demander une démo</a>
+        </article>
+      </div>
+
+      <div class="final-cta-panel">
+        <p>Anticiper, plutôt que subir.</p>
+        <div class="final-cta-actions">
+          <a href="/diagnostic" class="btn-primary-v3 hero-primary">Lancer le diagnostic</a>
+          <a href="/offres" class="btn-secondary-v3">Voir les offres</a>
         </div>
       </div>
     </div>
   </section>
 
   <style>
+    .accent-keyword {
+      color: var(--neon) !important;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-weight: 700;
+      display: inline;
+      white-space: normal;
+    }
+
     .home-hero {
       position: relative;
-      background: var(--deep);
-      color: white;
-      padding: 5.5rem 0 6.5rem;
       overflow: hidden;
-      border-bottom: 1.5px solid var(--neon);
-    }
-
-    .hero-glow-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .glow-red {
-      position: absolute;
-      top: 10%;
-      left: -6%;
-      width: 46vw;
-      height: 46vw;
-      background: radial-gradient(circle, rgba(230, 57, 70, 0.12) 0%, transparent 72%);
-    }
-
-    .glow-green {
-      position: absolute;
-      right: -8%;
-      bottom: -6%;
-      width: 34vw;
-      height: 34vw;
-      background: radial-gradient(circle, rgba(173, 255, 47, 0.1) 0%, transparent 72%);
+      background:
+        radial-gradient(circle at top left, rgba(230, 57, 70, 0.16), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(173, 255, 47, 0.14), transparent 32%),
+        var(--deep);
+      color: white;
+      padding: 5.5rem 0 6.25rem;
+      border-bottom: 1px solid rgba(173, 255, 47, 0.24);
     }
 
     .home-hero-grid {
       position: relative;
-      z-index: 2;
+      z-index: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
       gap: 2rem;
       align-items: center;
     }
 
-    .home-hero-copy {
+    .hero-copy {
       max-width: 44rem;
     }
 
     .hero-mark {
       display: block;
-      width: clamp(74px, 12vw, 116px);
+      width: clamp(78px, 11vw, 112px);
       height: auto;
-      margin: 0 0 1.1rem;
+      margin: 0 0 1.25rem;
       filter: drop-shadow(0 20px 34px rgba(0, 0, 0, 0.28));
     }
 
-    .hero-badge {
-      display: inline-block;
-      padding: 0.65rem 1.35rem;
-      margin-bottom: 1.5rem;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
-      color: white;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+    .home-hero h1,
+    .section-head h2 {
+      text-wrap: balance;
     }
 
     .home-hero h1 {
       color: white;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      margin-bottom: 1.35rem;
+      font-size: clamp(2.8rem, 5.1vw, 4.9rem);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      margin-bottom: 1.4rem;
     }
 
+    .hero-title-brand,
     .hero-title-line {
       display: block;
     }
 
-    .hero-title-accent {
-      color: var(--neon);
-      font-family: var(--font-accent);
-      font-style: italic;
-      font-weight: 700;
-    }
-
-    .hero-lead {
-      max-width: 40rem;
-      margin: 0 0 1.5rem;
-      font-size: clamp(1.02rem, 2vw, 1.22rem);
-      line-height: 1.7;
-      color: rgba(255,255,255,0.82);
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
+    .hero-title-brand {
       margin-bottom: 1rem;
+      font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+      line-height: 1.2;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
     }
 
-    .big {
+    .hero-hook {
+      max-width: 34rem;
+      margin: 0 0 1rem;
+      font-size: clamp(1.18rem, 2vw, 1.45rem);
+      line-height: 1.5;
+      font-weight: 600;
+      color: white;
+    }
+
+    .hero-support {
+      max-width: 34rem;
+      margin: 0 0 1.75rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .hero-actions,
+    .final-cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .hero-primary {
       min-width: 16rem;
     }
 
     .hero-secondary {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.12);
       color: white;
-      border-color: rgba(255,255,255,0.18);
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
     .hero-secondary:hover,
@@ -306,316 +388,395 @@ import Layout from '../layouts/BaseLayout.astro';
       border-color: white !important;
     }
 
-    .hero-alt-entry {
-      max-width: 36rem;
-      margin: 0 0 1rem;
-      color: rgba(255,255,255,0.72);
-      font-size: 0.95rem;
+    .hero-note {
+      margin-top: 1rem;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.94rem;
       line-height: 1.55;
     }
 
-    .hero-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.7rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.64);
-    }
-
-    .dot-neon {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--neon);
-      box-shadow: 0 0 10px var(--neon);
-    }
-
-    .pulse-border {
-      position: relative;
-    }
-
-    .pulse-border::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 999px;
-      border: 1.5px solid var(--neon);
-      opacity: 0.3;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.5; }
-      100% { transform: scale(1.08); opacity: 0; }
-    }
-
-    .home-hero-panel {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
+    .hero-panel {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 32px;
       padding: 2rem;
       backdrop-filter: blur(8px);
-      box-shadow: 0 24px 60px rgba(6, 13, 24, 0.24);
+      box-shadow: 0 24px 60px rgba(6, 13, 24, 0.28);
     }
 
-    .home-hero-panel .label-v3,
-    .support-box .label-v3 {
+    .hero-panel .label-v3,
+    .section-head-light .label-v3,
+    .credibility-shell .label-v3 {
+      color: white !important;
+    }
+
+    .hero-panel .label-v3::before,
+    .section-head-light .label-v3::before,
+    .credibility-shell .label-v3::before {
+      background: white !important;
+    }
+
+    .hero-panel h2 {
       color: white;
-    }
-
-    .home-hero-panel .label-v3::before,
-    .support-box .label-v3::before {
-      background: white;
-    }
-
-    .home-hero-panel h2 {
-      color: white;
-      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-size: clamp(1.7rem, 2.8vw, 2.45rem);
       margin-bottom: 1rem;
     }
 
-    .home-hero-panel p {
-      margin: 0 0 1.5rem;
-      color: rgba(255,255,255,0.8);
+    .hero-panel p {
+      margin: 0 0 1.35rem;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .hero-panel-grid {
       display: grid;
-      gap: 0.9rem;
+      gap: 0.85rem;
     }
 
     .hero-panel-item {
       padding: 1rem 1.1rem;
       border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .hero-panel-item strong {
       display: block;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
       color: white;
-      font-size: 0.96rem;
+      font-size: 1rem;
     }
 
     .hero-panel-item span {
       display: block;
-      color: rgba(255,255,255,0.74);
-      font-size: 0.92rem;
-      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 0.95rem;
+      line-height: 1.55;
     }
 
-    .section-header-compact {
-      margin-bottom: 3.25rem;
+    .hero-panel-caption {
+      margin-bottom: 0 !important;
+      font-weight: 700;
+      color: white !important;
     }
 
-    .diagnostic-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-      gap: 1.5rem;
-      align-items: stretch;
+    .section-head {
+      max-width: 46rem;
+      margin-bottom: 2.75rem;
     }
 
-    .diagnostic-main {
-      padding: 2.5rem;
-      border-radius: 32px;
-      background: var(--deep);
-      color: white;
-      position: relative;
-      overflow: hidden;
+    .section-head-center {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
     }
 
-    .diagnostic-main::before {
-      content: '';
-      position: absolute;
-      inset: auto auto -48px -48px;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(173, 255, 47, 0.18), transparent 72%);
-      pointer-events: none;
-    }
-
-    .diagnostic-main > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .diagnostic-main h3 {
-      color: white;
-      font-size: 2rem;
+    .section-head h2 {
+      font-size: clamp(2.1rem, 4vw, 3.35rem);
       margin-bottom: 1rem;
     }
 
-    .diagnostic-main p {
-      margin: 0 0 1.5rem;
-      color: rgba(255,255,255,0.8);
+    .section-head-light h2,
+    .section-head-light p,
+    .credibility-shell h2,
+    .credibility-shell p {
+      color: white !important;
+    }
+
+    .section-intro {
+      color: #54636C;
+      font-size: 1.06rem;
+      line-height: 1.7;
+    }
+
+    .section-intro-narrow {
       max-width: 40rem;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .diagnostic-output-grid {
+    .point-grid {
       display: grid;
       gap: 1rem;
+    }
+
+    .point-grid-three {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .diagnostic-output {
-      padding: 1.15rem;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
+    .point-grid-four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .diagnostic-output h4 {
-      color: white;
-      margin-bottom: 0.55rem;
-      font-size: 1rem;
+    .point-card {
+      padding: 1.5rem;
+      border-radius: 28px;
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 50px rgba(10, 25, 47, 0.05);
     }
 
-    .diagnostic-output p {
-      margin: 0;
-      font-size: 0.94rem;
-      color: rgba(255,255,255,0.76);
+    .point-index {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      color: var(--accent-red);
     }
 
-    .diagnostic-side {
+    .point-card h3 {
+      margin-bottom: 0.65rem;
+      font-size: 1.2rem;
+    }
+
+    .point-card p {
+      color: #54636C;
+    }
+
+    .section-close {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.75rem;
     }
 
-    .diagnostic-side h3 {
-      font-size: 1.5rem;
-    }
-
-    .diagnostic-side p {
-      color: #54636C;
-    }
-
-    .diagnostic-side-note {
-      font-weight: 600;
-      color: var(--deep) !important;
-    }
-
-    .path-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.4rem;
-    }
-
-    .path-step {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .path-step h3 {
-      margin-bottom: 0.9rem;
-      font-size: 1.25rem;
-    }
-
-    .path-step p {
-      color: #54636C;
-    }
-
-    .step-num {
-      font-size: 3rem;
-      line-height: 1;
-      font-weight: 900;
-      opacity: 0.12;
-      margin-bottom: 1.25rem;
+    .section-conclusion {
+      font-size: 1.08rem;
+      font-weight: 700;
       color: var(--deep);
     }
 
-    .support-section {
-      position: relative;
-      overflow: hidden;
+    .section-conclusion-center {
+      margin-top: 1.75rem;
+      text-align: center;
     }
 
-    .support-grid {
+    .section-copilote {
+      background:
+        radial-gradient(circle at top right, rgba(173, 255, 47, 0.1), transparent 24%),
+        linear-gradient(180deg, var(--deep) 0%, #11253B 100%);
+    }
+
+    .copilote-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
-      gap: 2rem;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+      gap: 1.5rem;
       align-items: center;
     }
 
-    .support-copy {
-      max-width: 42rem;
-    }
-
-    .support-copy .label-v3 {
-      color: var(--accent-red) !important;
-    }
-
-    .support-copy .label-v3::before {
-      background: var(--accent-red) !important;
-    }
-
-    .support-copy h2 {
-      color: var(--deep) !important;
-      font-size: clamp(2.1rem, 4vw, 3.7rem);
-      margin-bottom: 1.25rem;
-    }
-
-    .support-copy h2 .emphasis {
-      color: var(--neon) !important;
-    }
-
-    .support-lead {
+    .copilote-note {
       margin: 0 0 1.75rem;
-      font-size: 1.08rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
       line-height: 1.7;
-      color: rgba(10,25,47,0.78) !important;
     }
 
-    .support-box {
+    .copilote-panel {
       padding: 2rem;
       border-radius: 32px;
-      background: rgba(10,25,47,0.92);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 22px 60px rgba(4, 10, 18, 0.2);
     }
 
-    .support-box h3 {
-      color: white;
-      font-size: 1.7rem;
+    .copilote-panel-label {
+      display: inline-block;
       margin-bottom: 1rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-red);
     }
 
-    .support-box p {
-      margin: 0 0 1.5rem;
-      color: rgba(255,255,255,0.76);
+    .copilote-list {
+      list-style: none;
+      display: grid;
+      gap: 0.9rem;
+      padding: 0;
+      margin: 0;
     }
 
-    .support-actions {
+    .copilote-list li {
+      position: relative;
+      padding: 1rem 1.1rem 1rem 2.5rem;
+      border-radius: 20px;
+      background: rgba(10, 25, 47, 0.04);
+      border: 1px solid rgba(10, 25, 47, 0.07);
+      color: var(--deep);
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .copilote-list li::before {
+      content: '';
+      position: absolute;
+      left: 1rem;
+      top: 1.45rem;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 10px rgba(173, 255, 47, 0.6);
+      transform: translateY(-50%);
+    }
+
+    .benefits-section {
+      background: linear-gradient(180deg, var(--bg) 0%, #EEF3F7 100%);
+    }
+
+    .benefit-card {
+      text-align: center;
+      min-height: 100%;
+    }
+
+    .benefit-card h3 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .credibility-shell {
+      position: relative;
+      overflow: hidden;
+      padding: 2.5rem;
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at bottom left, rgba(173, 255, 47, 0.14), transparent 28%),
+        var(--deep);
+    }
+
+    .credibility-card {
+      padding: 1.4rem;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .credibility-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.82) !important;
+      line-height: 1.65;
+    }
+
+    .credibility-conclusion {
+      margin-top: 1.75rem;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: white !important;
+    }
+
+    .offers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .offer-card {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      align-items: stretch;
+      gap: 1.25rem;
+      justify-content: space-between;
+      padding: 2rem;
+      border-radius: 32px;
     }
 
-    .support-secondary-action {
-      align-self: flex-start;
-      padding: 0.95rem 1.5rem;
-      font-size: 0.95rem;
+    .offer-card h3 {
+      font-size: 1.55rem;
+      margin: 0;
     }
 
-    .btn-link-simple {
-      font-weight: 700;
+    .offer-audience {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-red);
+    }
+
+    .offer-card-highlight {
+      background:
+        radial-gradient(circle at top right, rgba(173, 255, 47, 0.16), transparent 30%),
+        var(--deep);
       color: white;
-      text-decoration: underline;
-      text-underline-offset: 0.15em;
-      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 24px 60px rgba(10, 25, 47, 0.18);
+      border-radius: 32px;
+      padding: 2rem;
+    }
+
+    .offer-card-highlight h3,
+    .offer-card-highlight p,
+    .offer-card-highlight li {
+      color: white !important;
+    }
+
+    .offer-card-highlight .offer-audience {
+      color: var(--neon);
+    }
+
+    .clean-list {
+      list-style: none;
+      display: grid;
+      gap: 0.8rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .clean-list li {
+      position: relative;
+      padding-left: 1.25rem;
+      color: #54636C;
+      line-height: 1.55;
+    }
+
+    .clean-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.78rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 8px rgba(173, 255, 47, 0.4);
+      transform: translateY(-50%);
+    }
+
+    .offer-card-highlight .clean-list li::before {
+      background: white;
+      box-shadow: none;
+    }
+
+    .final-cta-panel {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 2rem 2.15rem;
+      border-radius: 32px;
+      background: var(--deep);
+    }
+
+    .final-cta-panel p {
+      margin: 0;
+      color: white;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      font-weight: 800;
+      line-height: 1.15;
     }
 
     @media (max-width: 1024px) {
       .home-hero-grid,
-      .diagnostic-grid,
-      .path-grid,
-      .support-grid,
-      .diagnostic-output-grid {
+      .copilote-grid,
+      .point-grid-three,
+      .point-grid-four,
+      .offers-grid {
         grid-template-columns: 1fr;
       }
 
@@ -626,38 +787,40 @@ import Layout from '../layouts/BaseLayout.astro';
 
     @media (max-width: 768px) {
       .home-hero h1 {
-        font-size: clamp(2rem, 10vw, 3rem);
+        font-size: clamp(2.3rem, 10vw, 3.2rem);
       }
 
       .hero-actions,
-      .support-actions {
+      .final-cta-actions,
+      .section-close {
         flex-direction: column;
         align-items: stretch;
       }
 
       .hero-actions a,
-      .support-actions a,
-      .support-copy .btn-secondary-v3 {
+      .final-cta-actions a,
+      .section-close a,
+      .copilote-grid .btn-secondary-v3 {
         width: 100%;
       }
 
-      .support-secondary-action {
-        align-self: stretch;
-      }
-
-      .big {
+      .hero-primary {
         min-width: 0;
       }
 
-      .diagnostic-main,
-      .home-hero-panel,
-      .support-box,
-      .card-v3 {
+      .hero-panel,
+      .copilote-panel,
+      .point-card,
+      .credibility-shell,
+      .offer-card,
+      .offer-card-highlight,
+      .final-cta-panel {
         padding: 1.6rem;
       }
 
-      .section-header h2 {
-        font-size: 2.2rem;
+      .section-head h2,
+      .hero-panel h2 {
+        font-size: 2.05rem;
       }
     }
   </style>
