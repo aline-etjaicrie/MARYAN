@@ -15,20 +15,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="hero-offres bg-deep">
       <div class="container">
         <div class="hero-offres-inner">
-          <span class="label-v3">MARYAN — le copilote des élu·es</span>
+          <span class="label-v3">Offres</span>
           <h1>
-            Un doute sur une décision ?<br>
-            Une prise de parole à préparer ?<br>
-            Une situation sensible à gérer ?
+            Choisir le bon format d’<span class="accent-keyword">accès</span>
           </h1>
           <p class="hero-lead">
-            MARYAN vous aide à <strong>trancher et à agir</strong> rapidement.
+            Un.e élu.e peut démarrer seul.e en quelques minutes. Une équipe peut équiper
+            plusieurs élu.e.s simplement, avec le même socle d’usage.
           </p>
-          <ul class="hero-bullets">
-            <li>Utilisable en quelques minutes</li>
-            <li>Pensé pour le réel du mandat</li>
-          </ul>
-          <a href="/copilote" class="btn-primary-v3">Tester maintenant</a>
+          <p class="hero-sublead">
+            Diagnostic, copilote, ressources ciblées : MARYAN s’adapte à la bonne échelle,
+            sans alourdir le mandat.
+          </p>
+          <div class="hero-actions">
+            <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+            <a href="/contact" class="btn-secondary-v3">Demander une démo</a>
+          </div>
+        </div>
+
+        <div class="audience-grid">
+          <a href="#individuel" class="audience-card">
+            <span class="audience-label">Pour un.e élu.e</span>
+            <strong>Abonnement individuel, démarrage immédiat.</strong>
+            <span>Accéder directement à l’outil et commencer à son rythme.</span>
+          </a>
+
+          <a href="#collectivites" class="audience-card">
+            <span class="audience-label">Pour une équipe</span>
+            <strong>Accès groupé pour plusieurs élu.e.s.</strong>
+            <span>Groupe politique, exécutif ou collectivité : déploiement simple.</span>
+          </a>
         </div>
       </div>
     </section>
@@ -36,11 +52,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <!-- ═══════════════════════════════════════
          OFFRE INDIVIDUELLE
     ═══════════════════════════════════════ -->
-    <section class="section-v3">
+    <section id="individuel" class="section-v3">
       <div class="container">
         <div class="section-header">
           <span class="label-v3">Offre individuelle</span>
           <h2>Choisissez votre <em>rythme</em></h2>
+          <p class="section-intro-copy">
+            Pour démarrer seul.e, choisir la formule qui correspond à votre fréquence d’usage.
+          </p>
         </div>
 
         <div class="plans-grid">
@@ -105,7 +124,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="pack-banner">
           <div class="pack-text">
-            <span class="label-v3">Accès rapide</span>
+            <span class="label-v3">Groupe politique</span>
             <h2>Pack groupe politique</h2>
             <p class="pack-price"><strong>600 € / an</strong> — jusqu'à 8 élu·es</p>
             <ul class="pack-signals">
@@ -126,6 +145,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="section-header">
           <span class="label-v3">Collectivités</span>
           <h2>Équiper une équipe <em>simplement</em></h2>
+          <p class="section-intro-copy">
+            Pour un exécutif, un groupe d’élu.e.s ou une collectivité qui souhaite déployer MARYAN
+            à plusieurs.
+          </p>
         </div>
 
         <div class="collec-grid">
@@ -186,20 +209,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="section-v3 bg-deep why-section">
       <div class="container">
         <div class="why-header">
-          <span class="label-v3">Pourquoi MARYAN</span>
+          <span class="label-v3">Ce que vous activez</span>
         </div>
         <div class="why-grid">
           <div class="why-item">
-            <p>Aide à prendre des décisions rapidement</p>
+            <p>Un diagnostic pour clarifier la situation de départ</p>
           </div>
           <div class="why-item">
-            <p>Aide à structurer les prises de parole</p>
+            <p>Un copilote pour traiter les questions concrètes du mandat</p>
           </div>
           <div class="why-item">
-            <p>Clarifie les situations complexes</p>
+            <p>Des ressources ciblées et un relais humain si besoin</p>
           </div>
         </div>
-        <p class="why-signal">Un outil simple, utilisable immédiatement</p>
+        <p class="why-signal">Même outil, niveaux d’accès différents selon votre usage.</p>
       </div>
     </section>
 
@@ -209,13 +232,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="section-v3 cta-final-section">
       <div class="container-narrow">
         <div class="cta-final-panel">
-          <h2>Commencer en quelques minutes</h2>
+          <h2>Vous hésitez sur la bonne formule ?</h2>
           <p class="cta-lead">
-            Pas de formation.<br>
-            Pas de mise en place complexe.<br>
-            Juste un outil utile, tout de suite.
+            Si vous êtes seul.e, commencez par le diagnostic.<br>
+            Si vous équipez plusieurs élu.e.s, demandez une démo et un chiffrage adapté.
           </p>
-          <a href="/copilote" class="btn-primary-v3 big">Tester maintenant</a>
+          <div class="cta-final-actions">
+            <a href="/diagnostic" class="btn-primary-v3 big">Faire le diagnostic</a>
+            <a href="/contact" class="btn-secondary-v3">Demander une démo</a>
+          </div>
         </div>
       </div>
     </section>
@@ -267,53 +292,113 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <style>
   .offres-v3 { color: var(--deep); }
 
+  .accent-keyword {
+    color: var(--neon) !important;
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 700;
+    display: inline;
+    white-space: normal;
+  }
+
   /* ── HERO ── */
   .hero-offres {
-    padding: 7rem 0 6rem;
-    background-color: var(--deep);
+    padding: 7rem 0 4.5rem;
+    background:
+      radial-gradient(circle at top left, rgba(230, 57, 70, 0.14), transparent 32%),
+      radial-gradient(circle at bottom right, rgba(173, 255, 47, 0.1), transparent 30%),
+      var(--deep);
   }
 
   .hero-offres-inner {
-    max-width: 46rem;
+    max-width: 52rem;
+    margin-bottom: 2rem;
   }
 
   .hero-offres-inner h1 {
     color: white;
-    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
-    line-height: 1.25;
+    font-size: clamp(2.2rem, 4.6vw, 3.7rem);
+    line-height: 1.08;
     margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
   }
 
   .hero-lead {
     color: rgba(255,255,255,0.8);
-    font-size: 1.1rem;
+    font-size: 1.08rem;
     line-height: 1.6;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
-  .hero-lead strong { color: white; }
+  .hero-sublead {
+    color: rgba(255,255,255,0.68);
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 42rem;
+    margin-bottom: 1.75rem;
+  }
 
-  .hero-bullets {
-    list-style: none;
-    padding: 0;
+  .hero-actions {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
-  .hero-bullets li {
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .audience-card {
+    display: grid;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .audience-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(173,255,47,0.4);
+    background: rgba(255,255,255,0.08);
+  }
+
+  .audience-label {
     color: var(--neon);
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding-left: 1.4rem;
-    position: relative;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .hero-bullets li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
+  .audience-card strong {
+    font-size: 1.1rem;
+    line-height: 1.35;
+  }
+
+  .audience-card span:last-child {
+    color: rgba(255,255,255,0.72);
+    line-height: 1.55;
+  }
+
+  .section-intro-copy {
+    color: #54636c;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    margin: 1rem auto 0;
+    max-width: 38rem;
+  }
+
+  .cta-final-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   /* ── Section header ── */
@@ -727,7 +812,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   @media (max-width: 900px) {
     .plans-grid,
     .collec-grid,
-    .why-grid {
+    .why-grid,
+    .audience-grid {
       grid-template-columns: 1fr;
     }
 
@@ -745,5 +831,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .why-signal { margin: 0 auto; }
 
     .cta-final-panel { padding: 2.5rem 1.5rem; }
+    .hero-actions,
+    .cta-final-actions {
+      flex-direction: column;
+    }
+    .hero-actions :global(a),
+    .cta-final-actions :global(a) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>
