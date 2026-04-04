@@ -308,12 +308,16 @@ const collectiveOffer = [
       border-bottom: 1px solid rgba(173, 255, 47, 0.24);
     }
 
+    .home-hero > .container {
+      max-width: 1280px;
+    }
+
     .home-hero-grid {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(380px, 0.98fr);
-      gap: 3rem;
+      grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.08fr);
+      gap: 2.5rem;
       align-items: stretch;
       margin-bottom: 1.2rem;
     }
@@ -326,7 +330,7 @@ const collectiveOffer = [
     }
 
     .hero-copy-head {
-      max-width: 36rem;
+      max-width: 34rem;
     }
 
     .hero-copy-body {
@@ -413,6 +417,7 @@ const collectiveOffer = [
     .hero-media {
       display: flex;
       align-items: stretch;
+      justify-content: flex-end;
     }
 
     .hero-scene {
@@ -423,9 +428,12 @@ const collectiveOffer = [
     .hero-scene-frame {
       position: relative;
       overflow: hidden;
-      border-radius: 32px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.08);
+      border-radius: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 12px 32px rgba(6, 13, 24, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .hero-scene-frame::after {
@@ -434,16 +442,16 @@ const collectiveOffer = [
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(180deg, rgba(10, 25, 47, 0.02) 0%, rgba(10, 25, 47, 0.12) 100%);
+        linear-gradient(180deg, rgba(10, 25, 47, 0.01) 0%, rgba(10, 25, 47, 0.1) 100%);
     }
 
     .hero-scene-image {
       display: block;
       width: 100%;
       height: auto;
-      aspect-ratio: 0.94 / 1.02;
+      aspect-ratio: 1.02 / 1;
       object-fit: cover;
-      object-position: 40% 54%;
+      object-position: 42% 55%;
     }
 
     .hero-context-card {
@@ -836,7 +844,7 @@ const collectiveOffer = [
       }
 
       .hero-scene-image {
-        aspect-ratio: 1.3 / 1;
+        aspect-ratio: 1.24 / 1;
         object-position: 44% 56%;
       }
     }
@@ -880,7 +888,7 @@ const collectiveOffer = [
       }
 
       .hero-scene-image {
-        aspect-ratio: 1.16 / 1;
+        aspect-ratio: 1.14 / 1;
         object-position: 45% 58%;
       }
 
