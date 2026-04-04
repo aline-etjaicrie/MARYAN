@@ -23,7 +23,12 @@ import Layout from '../layouts/BaseLayout.astro';
             fetchpriority="high"
           />
           <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
-          <h1>Un appui pour les élu·es qui prennent leur mandat au sérieux.</h1>
+          <h1>
+            <span class="hero-title-line">Un appui</span>
+            <span class="hero-title-line hero-title-accent">pour les élus</span>
+            <span class="hero-title-line">qui prennent leur mandat</span>
+            <span class="hero-title-line hero-title-accent">au sérieux</span>
+          </h1>
           <p class="hero-lead">
           Comprendre, répondre, se positionner, arbitrer, décider... souvent seul·e, souvent vite.
           MARYAN vous aide d'abord à qualifier votre situation, puis à avancer avec le bon niveau d'appui.
@@ -255,6 +260,17 @@ import Layout from '../layouts/BaseLayout.astro';
       line-height: 1.02;
       letter-spacing: -0.04em;
       margin-bottom: 1.35rem;
+    }
+
+    .hero-title-line {
+      display: block;
+    }
+
+    .hero-title-accent {
+      color: var(--neon);
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-weight: 700;
     }
 
     .hero-lead {
@@ -529,16 +545,29 @@ import Layout from '../layouts/BaseLayout.astro';
       max-width: 42rem;
     }
 
+    .support-copy .label-v3 {
+      color: var(--neon) !important;
+    }
+
+    .support-copy .label-v3::before {
+      background: var(--neon) !important;
+    }
+
     .support-copy h2 {
+      color: var(--deep) !important;
       font-size: clamp(2.1rem, 4vw, 3.7rem);
       margin-bottom: 1.25rem;
+    }
+
+    .support-copy h2 .emphasis {
+      color: var(--deep) !important;
     }
 
     .support-lead {
       margin: 0 0 1.75rem;
       font-size: 1.08rem;
       line-height: 1.7;
-      color: rgba(255,255,255,0.78);
+      color: rgba(10,25,47,0.78) !important;
     }
 
     .support-box {
