@@ -12,11 +12,19 @@ import Layout from '../layouts/BaseLayout.astro';
       <div class="glow-green"></div>
     </div>
 
-    <div class="container home-hero-grid">
-      <div class="home-hero-copy">
-        <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
-        <h1>Un appui pour les élu·es qui prennent leur mandat au sérieux.</h1>
-        <p class="hero-lead">
+      <div class="container home-hero-grid">
+        <div class="home-hero-copy">
+          <img
+            src="/maryan-mark.png"
+            alt="Logo MARYAN"
+            class="hero-mark"
+            width="480"
+            height="480"
+            fetchpriority="high"
+          />
+          <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
+          <h1>Un appui pour les élu·es qui prennent leur mandat au sérieux.</h1>
+          <p class="hero-lead">
           Comprendre, répondre, se positionner, arbitrer, décider... souvent seul·e, souvent vite.
           MARYAN vous aide d'abord à qualifier votre situation, puis à avancer avec le bon niveau d'appui.
         </p>
@@ -37,7 +45,7 @@ import Layout from '../layouts/BaseLayout.astro';
       </div>
 
       <aside class="home-hero-panel">
-        <span class="label-v3">Point d'entrée principal</span>
+        <span class="label-v3">Première étape</span>
         <h2>Commencez par le diagnostic.</h2>
         <p>
           En quelques minutes, MARYAN clarifie la situation, fait ressortir le point de vigilance principal
@@ -65,7 +73,7 @@ import Layout from '../layouts/BaseLayout.astro';
   <section class="section-v3">
     <div class="container container-medium">
       <div class="section-header section-header-compact">
-        <span class="label-v3">Diagnostic central</span>
+        <span class="label-v3">Pourquoi commencer ici</span>
         <h2>Le diagnostic ouvre le parcours.</h2>
         <p class="intro-v3">
           Ce n'est pas un module parmi d'autres. C'est le point d'entrée qui aide à comprendre ce qui se joue
@@ -165,8 +173,7 @@ import Layout from '../layouts/BaseLayout.astro';
           </p>
           <div class="support-actions">
             <a href="/diagnostic" class="btn-primary-v3 big">Faire le diagnostic (5 min)</a>
-            <a href="/copilote" class="btn-secondary-v3 big">Tester le copilote gratuit</a>
-            <a href="/contact" class="btn-link-simple">Poser une question à l'équipe</a>
+            <a href="/copilote" class="btn-secondary-v3 support-secondary-action">Tester le copilote gratuit</a>
           </div>
         </div>
       </div>
@@ -219,6 +226,14 @@ import Layout from '../layouts/BaseLayout.astro';
 
     .home-hero-copy {
       max-width: 44rem;
+    }
+
+    .hero-mark {
+      display: block;
+      width: clamp(74px, 12vw, 116px);
+      height: auto;
+      margin: 0 0 1.1rem;
+      filter: drop-shadow(0 20px 34px rgba(0, 0, 0, 0.28));
     }
 
     .hero-badge {
@@ -529,8 +544,8 @@ import Layout from '../layouts/BaseLayout.astro';
     .support-box {
       padding: 2rem;
       border-radius: 32px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(10,25,47,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
       box-shadow: 0 20px 50px rgba(0,0,0,0.15);
     }
 
@@ -550,6 +565,12 @@ import Layout from '../layouts/BaseLayout.astro';
       flex-direction: column;
       gap: 1rem;
       align-items: stretch;
+    }
+
+    .support-secondary-action {
+      align-self: flex-start;
+      padding: 0.95rem 1.5rem;
+      font-size: 0.95rem;
     }
 
     .btn-link-simple {
@@ -589,6 +610,10 @@ import Layout from '../layouts/BaseLayout.astro';
       .support-actions a,
       .support-copy .btn-secondary-v3 {
         width: 100%;
+      }
+
+      .support-secondary-action {
+        align-self: stretch;
       }
 
       .big {
