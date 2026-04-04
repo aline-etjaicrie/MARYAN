@@ -341,14 +341,21 @@ h4 em {
   text-decoration: none;
   transition: color 0.15s;
 }
+.header-nav .nav-primary {
+  color: white;
+  font-weight: 700;
+}
 .header-nav a:hover { color: white; }
 .header-compte {
   color: var(--neon) !important;
   font-weight: 700 !important;
 }
 @media (max-width: 640px) {
+  .header-inner { gap: 1rem; }
   .header-nav { gap: 1rem; }
-  .header-nav a:not(.header-compte) { display: none; }
+  .header-nav a { display: none; }
+  .header-nav .nav-primary,
+  .header-nav .header-compte { display: inline-flex; }
 }
 
 /* ── FOOTER ── */

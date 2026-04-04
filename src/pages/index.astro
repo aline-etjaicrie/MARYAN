@@ -2,350 +2,609 @@
 import Layout from '../layouts/BaseLayout.astro';
 ---
 
-<Layout 
+<Layout
   title="MARYAN — Un appui pour les élu·es qui prennent leur mandat au sérieux"
   description="Comprendre, répondre, se positionner, arbitrer, décider… souvent seul·e, souvent vite. MARYAN vous aide à y voir plus clair."
 >
-  <!-- ═══ HERO V3 ═══ -->
-  <section class="hero-v3-signature">
+  <section class="home-hero">
     <div class="hero-glow-layer">
       <div class="glow-red"></div>
       <div class="glow-green"></div>
     </div>
-    
-    <div class="container hero-container text-center">
-      <div class="hero-header">
-        <div class="top-nav-v3">
-          <a href="/a-propos">À propos</a>
-          <a href="/offres">Offres</a>
-          <a href="/diagnostic">Diagnostic</a>
-          <a href="/copilote" class="desktop-copilot-link">Copilote</a>
-          <a href="/login" class="nav-login-btn">Se connecter</a>
-        </div>
+
+    <div class="container home-hero-grid">
+      <div class="home-hero-copy">
         <span class="hero-badge">Liberté de <em class="emphasis">discernement</em></span>
-        <div class="hero-brand-wrap">
-          <span class="brand-logo-full">MARYAN</span>
+        <h1>Un appui pour les élu·es qui prennent leur mandat au sérieux.</h1>
+        <p class="hero-lead">
+          Comprendre, répondre, se positionner, arbitrer, décider... souvent seul·e, souvent vite.
+          MARYAN vous aide d'abord à qualifier votre situation, puis à avancer avec le bon niveau d'appui.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/diagnostic" class="btn-primary-v3 big pulse-border">Faire le diagnostic</a>
+          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Tester le copilote gratuit</a>
+        </div>
+
+        <p class="hero-alt-entry">
+          Le diagnostic reste l'entrée recommandée. Le copilote est là si vous avez déjà une question précise à traiter.
+        </p>
+
+        <div class="hero-hint">
+          <span class="dot-neon"></span>
+          5 minutes · Gratuit · Confidentiel
         </div>
       </div>
 
-      <div class="hero-content">
-        <h1>
-          Un appui pour les élu·es <br class="desktop-only" />
-          qui <span class="emphasis">prennent leur mandat au sérieux</span>.
-        </h1>
-        <p class="hero-lead">
-          Comprendre, répondre, se positionner, arbitrer, décider…<br />
-          souvent seul·e, souvent vite.<br />
-          MARYAN vous aide à y voir plus clair et à avancer sans vous trahir.
+      <aside class="home-hero-panel">
+        <span class="label-v3">Point d'entrée principal</span>
+        <h2>Commencez par le diagnostic.</h2>
+        <p>
+          En quelques minutes, MARYAN clarifie la situation, fait ressortir le point de vigilance principal
+          et vous oriente vers la bonne suite.
         </p>
-        
-        <div class="hero-actions">
-          <a href="/diagnostic" class="btn-primary-v3 big pulse-border">Faire le diagnostic →</a>
-          <a href="/copilote" class="btn-secondary-v3 hero-secondary desktop-copilot-cta">Tester le copilote gratuit</a>
-          <p class="hero-alt-entry">Commencez par un diagnostic, ou posez tout de suite une première question.</p>
-          <div class="hero-hint">
-            <span class="dot-neon"></span> 5 minutes · Gratuit · Confidentiel
+
+        <div class="hero-panel-grid">
+          <div class="hero-panel-item">
+            <strong>Situation</strong>
+            <span>Une lecture rapide de votre moment de mandat.</span>
+          </div>
+          <div class="hero-panel-item">
+            <strong>Vigilance</strong>
+            <span>Le point à sécuriser avant d'aller plus loin.</span>
+          </div>
+          <div class="hero-panel-item">
+            <strong>Orientation</strong>
+            <span>Copilote, ressource ciblée ou relais humain selon le cas.</span>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="hero-footer-line">
-      <span class="dash-neon"></span>
-      <span class="dash-red"></span>
+      </aside>
     </div>
   </section>
 
-  <!-- ═══ BLOC DIFFÉRENCE ═══ -->
-  <section class="section-v3 bg-light">
-    <div class="container container-medium">
-      <div class="section-header">
-        <span class="label-v3">Différenciation</span>
-        <h2>Ce n'est pas une IA <span class="emphasis">qui répond.</span></h2>
-      </div>
-
-      <div class="diff-grid-v3">
-        <div class="diff-block card-v3 highlight-neon">
-          <p class="diff-quote" style="font-size:1.4rem; margin-bottom:1.5rem; color:var(--deep);">
-            Ce n’est pas une IA qui répond.<br />
-            C’est un appui pour ne pas rester seul·e face à la situation.
-          </p>
-          <p class="secondary" style="opacity:0.8; font-size:1.1rem; line-height:1.6;">
-            MARYAN ne donne pas des réponses toutes faites. 
-            Elle vous aide à comprendre ce que vous vivez, à poser les bonnes questions, 
-            et à éviter de réagir trop vite.
-          </p>
-          <p class="secondary" style="margin-top:1.5rem; font-weight:700; color:var(--accent-red);">
-            Et quand c’est nécessaire, elle vous rappelle une chose simple : 
-            <strong>aller parler avec les gens.</strong>
-          </p>
-        </div>
-        
-        <div class="diff-block card-v3">
-          <span class="label-v3">Une autre manière de travailler</span>
-          <p style="font-size:1.15rem; margin-bottom:1rem; font-weight:700;">Agir vite ne veut pas dire agir seul·e.</p>
-          <p style="opacity:0.8; font-size:0.95rem;">
-            Dans beaucoup de situations, ce n’est pas une réponse qu’il manque, 
-            c’est un peu de recul, un bon cadrage, 
-            et parfois une conversation au bon endroit.
-          </p>
-          <a href="/diagnostic" class="btn-primary-v3" style="margin-top:2rem; width:100%;">Faire le diagnostic</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ BLOC POLITIQUE ═══ -->
-  <section class="section-v3 bg-deep text-white">
-    <div class="glow-v3 glow-red" style="top:-20%;left:-10%;"></div>
-    <div class="container container-medium text-center" style="position:relative;z-index:2;">
-      <span class="label-v3">Une autre façon de faire de la politique</span>
-      <h2 class="text-white" style="font-size: clamp(2.5rem, 5vw, 4rem); margin: 2rem 0;">
-        Pas plus lente.<br />
-        Pas plus compliquée.<br />
-        Juste plus <span class="emphasis">lucide.</span>
-      </h2>
-      <p class="intro-v3 text-white" style="opacity:0.75; max-width: 600px; margin: 0 auto 4rem;">
-        Prendre deux minutes pour cadrer une situation,<br />
-        c'est parfois éviter deux semaines de rattrapage.
-      </p>
-      <a href="/diagnostic" class="btn-primary-v3 big">Démarrer maintenant</a>
-    </div>
-  </section>
-
-  <!-- ═══ BLOC METHODE ═══ -->
   <section class="section-v3">
     <div class="container container-medium">
-      <div class="section-header text-center">
-        <span class="label-v3">La Méthode</span>
-        <h2>Un appui en <span class="emphasis">trois temps</span></h2>
+      <div class="section-header section-header-compact">
+        <span class="label-v3">Diagnostic central</span>
+        <h2>Le diagnostic ouvre le parcours.</h2>
+        <p class="intro-v3">
+          Ce n'est pas un module parmi d'autres. C'est le point d'entrée qui aide à comprendre ce qui se joue
+          avant d'agir trop vite.
+        </p>
       </div>
 
-      <div class="method-steps">
-        <a href="/diagnostic" class="step-v3 step-link-v3">
-          <div class="step-num">01.</div>
-          <h3>Diagnostic initial</h3>
-          <p>5 minutes pour qualifier votre profil et vos besoins prioritaires.</p>
-        </a>
-        <div class="step-arrow-v3"></div>
-        <a href="/copilote" class="step-v3 step-link-v3">
-          <div class="step-num">02.</div>
-          <h3>Appui Copilote</h3>
-          <p>Accès immédiat à l'agent de discernement et aux ressources ciblées.</p>
-        </a>
-        <div class="step-arrow-v3"></div>
-        <a href="/hub-experts" class="step-v3 step-link-v3">
-          <div class="step-num">03.</div>
-          <h3>Hub d'Experts</h3>
-          <p>Passage de relais à nos experts humains sur les arbitrages critiques.</p>
-        </a>
-      </div>
+      <div class="diagnostic-grid">
+        <div class="diagnostic-main">
+          <h3>Ce que le diagnostic produit concrètement</h3>
+          <p>
+            MARYAN ne cherche pas à donner une réponse automatique. Il aide d'abord à clarifier la situation,
+            à hiérarchiser les priorités et à choisir la bonne suite.
+          </p>
 
-      <div class="method-actions">
-        <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
-        <a href="/copilote" class="btn-secondary-v3">Tester le copilote gratuit</a>
+          <div class="diagnostic-output-grid">
+            <article class="diagnostic-output">
+              <h4>Une lecture de situation</h4>
+              <p>Pour nommer clairement ce que vous traversez dans votre mandat.</p>
+            </article>
+            <article class="diagnostic-output">
+              <h4>Un point de vigilance</h4>
+              <p>Pour savoir où ne pas vous tromper dans la décision, le tempo ou la manière de la porter.</p>
+            </article>
+            <article class="diagnostic-output">
+              <h4>Une suite lisible</h4>
+              <p>Pour poursuivre avec le copilote, une ressource utile ou un relais humain si la situation l'exige.</p>
+            </article>
+          </div>
+        </div>
+
+        <aside class="diagnostic-side card-v3">
+          <span class="label-v3">Différenciation</span>
+          <h3>Ce n'est pas une IA qui répond à votre place.</h3>
+          <p>
+            MARYAN vous aide à prendre du recul, à mieux cadrer la situation et à ne pas rester seul·e
+            face à ce qui se joue.
+          </p>
+          <p class="diagnostic-side-note">
+            Quand c'est nécessaire, l'outil vous aide aussi à savoir quand passer le relais et aller parler
+            aux bonnes personnes.
+          </p>
+          <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+        </aside>
       </div>
     </div>
   </section>
 
-  <!-- ═══ BLOC HUMAIN ═══ -->
-  <section class="section-v3 bg-deep dark-hub">
+  <section class="section-v3 bg-light">
+    <div class="container container-medium">
+      <div class="section-header section-header-compact text-center">
+        <span class="label-v3">Le parcours</span>
+        <h2>Un appui en trois temps.</h2>
+        <p class="intro-v3">
+          Un chemin simple : faire le point, traiter la question, puis mobiliser le bon niveau d'appui.
+        </p>
+      </div>
+
+      <div class="path-grid">
+        <a href="/diagnostic" class="path-step card-v3">
+          <div class="step-num">01.</div>
+          <h3>Faire le point</h3>
+          <p>Le diagnostic qualifie votre situation, vos tensions du moment et votre priorité de vigilance.</p>
+        </a>
+        <a href="/copilote" class="path-step card-v3">
+          <div class="step-num">02.</div>
+          <h3>Traiter la question</h3>
+          <p>Le copilote vous aide à cadrer un sujet concret, préparer une décision ou structurer une prise de parole.</p>
+        </a>
+        <a href="/hub-experts" class="path-step card-v3">
+          <div class="step-num">03.</div>
+          <h3>Mobiliser un relais</h3>
+          <p>Quand le sujet devient sensible, MARYAN oriente vers le bon appui humain plutôt que de laisser l'utilisateur seul.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-v3 bg-deep support-section">
     <div class="container">
-      <div class="hub-v3-inner">
-        <div class="hub-v3-content">
-          <span class="label-v3">Le Réseau</span>
-          <h2 class="text-white">Un outil. Et un <span class="emphasis">relais humain</span><br />quand il le faut.</h2>
-          <p style="font-size:1.25rem;color:white;opacity:0.95;margin-bottom:1rem;">
-            Parce que certaines situations ne se traitent pas seul.
-          </p>
-          <p style="font-size:1rem;color:white;opacity:0.75;max-width:500px;margin-bottom:2.5rem;">
-            MARYAN vous aide à savoir quand continuer… et quand vous entourer. 
-            Notre réseau de consultants (Stratégie, Droit, Communication, RH) prend le relais sur les dossiers les plus sensibles.
+      <div class="support-grid">
+        <div class="support-copy">
+          <span class="label-v3">Relais humain</span>
+          <h2 class="text-white">Un outil quand vous pouvez avancer seul·e. Un <span class="emphasis">relais humain</span> quand il le faut.</h2>
+          <p class="support-lead">
+            Certaines situations demandent autre chose qu'une réponse rapide. MARYAN vous aide à savoir quand
+            continuer, quand vous entourer et vers quel type d'expertise aller.
           </p>
           <a href="/hub-experts" class="btn-secondary-v3">Explorer les expertises</a>
         </div>
-        <div class="hub-v3-badge">
-          <div class="hub-badge-circle">
-            <span>Hybridation <br /><b>Humaine</b></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ FINAL CTA ═══ -->
-  <section class="section-v3 bg-ivory final-cta-section">
-    <div class="container text-center">
-      <div class="final-box-v3">
-        <span class="label-v3">Prêt à naviguer ?</span>
-        <h2>Reprenez de la <span class="emphasis">clarté</span><br />sur votre mandat.</h2>
-        <div class="final-actions-v3">
-          <a href="/diagnostic" class="btn-primary-v3 big">Faire le diagnostic (5min)</a>
-          <a href="/copilote" class="btn-secondary-v3 big">Tester le copilote gratuit</a>
-          <a href="/contact" class="btn-link-simple">Poser une question à l'équipe</a>
+        <div class="support-box">
+          <span class="label-v3">Passer à l'action</span>
+          <h3>Reprenez de la clarté sur votre mandat.</h3>
+          <p>
+            Commencez par le diagnostic. Si vous avez déjà une question précise, entrez directement dans le copilote.
+          </p>
+          <div class="support-actions">
+            <a href="/diagnostic" class="btn-primary-v3 big">Faire le diagnostic (5 min)</a>
+            <a href="/copilote" class="btn-secondary-v3 big">Tester le copilote gratuit</a>
+            <a href="/contact" class="btn-link-simple">Poser une question à l'équipe</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <style>
-    /* ─── NAVIGATION ─── */
-    .top-nav-v3 {
-      display: flex; gap: clamp(1rem, 3vw, 2.5rem); justify-content: center; 
-      margin-bottom: 3.5rem; opacity: 0.6; padding-top: 1rem;
-    }
-    .top-nav-v3 a { 
-      color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; 
-      text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; 
-    }
-    .top-nav-v3 a:hover { color: white; opacity: 1; }
-    .nav-login-btn {
-      border: 1.5px solid rgba(255,255,255,0.35) !important;
-      padding: 0.35rem 0.9rem !important;
-      border-radius: 99px !important;
-      opacity: 1 !important;
-    }
-    .nav-login-btn:hover { border-color: white !important; background: rgba(255,255,255,0.08); }
-    .desktop-copilot-link,
-    .desktop-copilot-cta { display: inline-flex; }
-
-    /* ─── HERO V3 ─── */
-    .hero-v3-signature {
+    .home-hero {
       position: relative;
-      background-color: var(--deep);
-      padding: 8rem 0 10rem;
+      background: var(--deep);
       color: white;
+      padding: 5.5rem 0 6.5rem;
       overflow: hidden;
       border-bottom: 1.5px solid var(--neon);
     }
-    .hero-glow-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-    .glow-red { position: absolute; top: 10%; left: 0%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(230, 57, 70, 0.08) 0%, transparent 70%); }
-    .glow-green { position: absolute; bottom: 10%; right: 0%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(173, 255, 47, 0.05) 0%, transparent 70%); }
-    .hero-container { position: relative; z-index: 2; margin-top: -1rem; }
-    .hero-header { margin-bottom: 4rem; position: relative; z-index: 10; }
 
-    .hero-badge { display: inline-block; padding: 0.65rem 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 99px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; color: white; margin-bottom: 2.5rem; }
+    .hero-glow-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-    .hero-brand-wrap { margin-bottom: 3rem; }
-    .brand-logo-full {
-      font-size: clamp(3.5rem, 15vw, 9rem);
-      font-weight: 900;
+    .glow-red {
+      position: absolute;
+      top: 10%;
+      left: -6%;
+      width: 46vw;
+      height: 46vw;
+      background: radial-gradient(circle, rgba(230, 57, 70, 0.12) 0%, transparent 72%);
+    }
+
+    .glow-green {
+      position: absolute;
+      right: -8%;
+      bottom: -6%;
+      width: 34vw;
+      height: 34vw;
+      background: radial-gradient(circle, rgba(173, 255, 47, 0.1) 0%, transparent 72%);
+    }
+
+    .home-hero-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .home-hero-copy {
+      max-width: 44rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.65rem 1.35rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .home-hero h1 {
+      color: white;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      line-height: 1.02;
       letter-spacing: -0.04em;
-      background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.7) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: block;
-      line-height: 1;
+      margin-bottom: 1.35rem;
     }
 
-    .hero-v3-signature h1 { font-size: clamp(1.8rem, 5vw, 4rem); color: white; margin-bottom: 2rem; line-height: 1.1; letter-spacing: -0.02em; }
-    .hero-lead { font-size: clamp(1rem, 2.5vw, 1.35rem); line-height: 1.7; opacity: 0.8; max-width: 700px; margin: 0 auto 3.5rem; }
-    .text-neon { color: var(--neon); }
-    .text-red { color: var(--accent-red); }
-
-    .hero-actions { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-    .hero-alt-entry {
-      margin: -0.1rem 0 0;
-      max-width: 34rem;
-      font-size: 0.92rem;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.72);
+    .hero-lead {
+      max-width: 40rem;
+      margin: 0 0 1.5rem;
+      font-size: clamp(1.02rem, 2vw, 1.22rem);
+      line-height: 1.7;
+      color: rgba(255,255,255,0.82);
     }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .big {
+      min-width: 16rem;
+    }
+
     .hero-secondary {
       background: rgba(255,255,255,0.12);
       color: white;
       border-color: rgba(255,255,255,0.18);
     }
-    .hero-secondary:hover {
-      background: white;
-      color: var(--deep);
-      border-color: white;
+
+    .hero-secondary:hover,
+    .hero-secondary:focus-visible {
+      background: white !important;
+      color: var(--deep) !important;
+      border-color: white !important;
     }
-    .pulse-border { position: relative; }
-    .pulse-border::after { content: ''; position: absolute; inset: -3px; border-radius: 99px; border: 1.5px solid var(--neon); opacity: 0.3; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { scale: 1; opacity: 0.5; } 100% { scale: 1.1; opacity: 0; } }
 
-    .hero-hint { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; opacity: 0.5; font-weight: 600; }
-    .dot-neon { width: 8px; height: 8px; background: var(--neon); border-radius: 50%; box-shadow: 0 0 10px var(--neon); }
-    .hero-footer-line { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); display: flex; gap: 2rem; }
-    .dash-neon { width: 60px; height: 1.5px; background: var(--neon); border-radius: 99px; opacity: 0.5; }
-    .dash-red { width: 60px; height: 1.5px; background: var(--accent-red); border-radius: 99px; opacity: 0.5; }
+    .hero-alt-entry {
+      max-width: 36rem;
+      margin: 0 0 1rem;
+      color: rgba(255,255,255,0.72);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
 
-    /* ─── DIFF GRID ─── */
-    .diff-grid-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 4rem; }
-    .diff-block { display: flex; flex-direction: column; gap: 1.5rem; }
-    .diff-quote { font-family: var(--font-accent); font-style: italic; font-size: 1.4rem; color: var(--deep); line-height: 1.3; }
-    .diff-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
-    .diff-list li { padding: 0.75rem 1rem; background: rgba(0,0,0,0.03); border-radius: 12px; font-weight: 600; font-size: 0.95rem; }
-    .highlight-neon { border-color: var(--neon); border-width: 2px; }
+    .hero-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.64);
+    }
 
-    /* ─── METHOD ─── */
-    .method-steps { display: flex; align-items: flex-start; gap: 2rem; margin: 4rem 0; }
-    .step-v3 { flex: 1; }
-    .step-link-v3 {
+    .dot-neon {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 10px var(--neon);
+    }
+
+    .pulse-border {
+      position: relative;
+    }
+
+    .pulse-border::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 999px;
+      border: 1.5px solid var(--neon);
+      opacity: 0.3;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.08); opacity: 0; }
+    }
+
+    .home-hero-panel {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 32px;
+      padding: 2rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 24px 60px rgba(6, 13, 24, 0.24);
+    }
+
+    .home-hero-panel .label-v3,
+    .support-box .label-v3 {
+      color: white;
+    }
+
+    .home-hero-panel .label-v3::before,
+    .support-box .label-v3::before {
+      background: white;
+    }
+
+    .home-hero-panel h2 {
+      color: white;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      margin-bottom: 1rem;
+    }
+
+    .home-hero-panel p {
+      margin: 0 0 1.5rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .hero-panel-grid {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .hero-panel-item {
+      padding: 1rem 1.1rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .hero-panel-item strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: white;
+      font-size: 0.96rem;
+    }
+
+    .hero-panel-item span {
+      display: block;
+      color: rgba(255,255,255,0.74);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .section-header-compact {
+      margin-bottom: 3.25rem;
+    }
+
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .diagnostic-main {
+      padding: 2.5rem;
+      border-radius: 32px;
+      background: var(--deep);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diagnostic-main::before {
+      content: '';
+      position: absolute;
+      inset: auto auto -48px -48px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(173, 255, 47, 0.18), transparent 72%);
+      pointer-events: none;
+    }
+
+    .diagnostic-main > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .diagnostic-main h3 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .diagnostic-main p {
+      margin: 0 0 1.5rem;
+      color: rgba(255,255,255,0.8);
+      max-width: 40rem;
+    }
+
+    .diagnostic-output-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .diagnostic-output {
+      padding: 1.15rem;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .diagnostic-output h4 {
+      color: white;
+      margin-bottom: 0.55rem;
+      font-size: 1rem;
+    }
+
+    .diagnostic-output p {
+      margin: 0;
+      font-size: 0.94rem;
+      color: rgba(255,255,255,0.76);
+    }
+
+    .diagnostic-side {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+
+    .diagnostic-side h3 {
+      font-size: 1.5rem;
+    }
+
+    .diagnostic-side p {
+      color: #54636C;
+    }
+
+    .diagnostic-side-note {
+      font-weight: 600;
+      color: var(--deep) !important;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+
+    .path-step {
       display: block;
       text-decoration: none;
       color: inherit;
-      padding: 1.5rem;
-      border-radius: 24px;
-      border: 1px solid transparent;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
-    .step-link-v3:hover,
-    .step-link-v3:focus-visible {
-      transform: translateY(-3px);
-      border-color: var(--border);
-      background: white;
-      box-shadow: 0 14px 28px rgba(10, 25, 47, 0.06);
-      outline: none;
+
+    .path-step h3 {
+      margin-bottom: 0.9rem;
+      font-size: 1.25rem;
     }
-    .step-num { font-size: 3rem; font-weight: 900; color: var(--deep); opacity: 0.1; line-height: 1; margin-bottom: 1.5rem; }
-    .step-v3 h3 { margin-bottom: 1rem; font-size: 1.2rem; }
-    .step-arrow-v3 { width: 40px; height: 1.5px; background: var(--border); margin-top: 5rem; }
-    .method-actions {
+
+    .path-step p {
+      color: #54636C;
+    }
+
+    .step-num {
+      font-size: 3rem;
+      line-height: 1;
+      font-weight: 900;
+      opacity: 0.12;
+      margin-bottom: 1.25rem;
+      color: var(--deep);
+    }
+
+    .support-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .support-copy {
+      max-width: 42rem;
+    }
+
+    .support-copy h2 {
+      font-size: clamp(2.1rem, 4vw, 3.7rem);
+      margin-bottom: 1.25rem;
+    }
+
+    .support-lead {
+      margin: 0 0 1.75rem;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .support-box {
+      padding: 2rem;
+      border-radius: 32px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+
+    .support-box h3 {
+      color: white;
+      font-size: 1.7rem;
+      margin-bottom: 1rem;
+    }
+
+    .support-box p {
+      margin: 0 0 1.5rem;
+      color: rgba(255,255,255,0.76);
+    }
+
+    .support-actions {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 2.5rem;
+      align-items: stretch;
     }
 
-    /* ─── HUB ─── */
-    .dark-hub { border-radius: 60px 60px 0 0; margin-top: -2rem; }
-    .hub-v3-inner { display: flex; align-items: center; gap: 5rem; }
-    .hub-v3-content { flex: 1; }
-    .hub-v3-content h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 1.5rem; }
-    .hub-v3-badge { flex-shrink: 0; }
-    .hub-badge-circle { width: 160px; height: 160px; border: 1px solid var(--neon); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.95rem; line-height: 1.3; }
-    .hub-badge-circle b { color: var(--neon); text-transform: uppercase; }
+    .btn-link-simple {
+      font-weight: 700;
+      color: white;
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+      text-align: left;
+    }
 
-    /* ─── FINAL CTA ─── */
-    .bg-ivory { background-color: #FDFBFA; }
-    .final-box-v3 { padding: 4rem 2rem; }
-    .final-box-v3 h2 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin: 2rem 0 3.5rem; }
-    .final-actions-v3 { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-    .btn-link-simple { font-weight: 700; color: #54636C; text-decoration: underline; }
+    @media (max-width: 1024px) {
+      .home-hero-grid,
+      .diagnostic-grid,
+      .path-grid,
+      .support-grid,
+      .diagnostic-output-grid {
+        grid-template-columns: 1fr;
+      }
 
-    /* ─── RESPONSIVE ─── */
+      .home-hero {
+        padding: 4.75rem 0 5.5rem;
+      }
+    }
+
     @media (max-width: 768px) {
-      .hero-v3-signature { padding: 6rem 1.5rem 8rem; }
-      .method-steps { flex-direction: column; gap: 3rem; }
-      .step-arrow-v3 { display: none; }
-      .hub-v3-inner { flex-direction: column; text-align: center; gap: 3rem; }
-      .hub-v3-badge { order: -1; }
-      .diff-grid-v3 { grid-template-columns: 1fr; }
-      .desktop-only { display: none; }
-      .method-actions { flex-direction: column; align-items: stretch; }
-      .method-actions a,
-      .final-actions-v3 a,
-      .hero-actions a { width: 100%; }
-    }
+      .home-hero h1 {
+        font-size: clamp(2rem, 10vw, 3rem);
+      }
 
-    .text-center { text-align: center !important; }
-    .bg-deep { background: var(--deep); }
-    .bg-light { background: var(--bg); }
-    .text-white { color: white !important; }
-    .container-medium { max-width: 1000px; margin: 0 auto; }
-    .overflow-hidden { overflow: hidden; }
+      .hero-actions,
+      .support-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-actions a,
+      .support-actions a,
+      .support-copy .btn-secondary-v3 {
+        width: 100%;
+      }
+
+      .big {
+        min-width: 0;
+      }
+
+      .diagnostic-main,
+      .home-hero-panel,
+      .support-box,
+      .card-v3 {
+        padding: 1.6rem;
+      }
+
+      .section-header h2 {
+        font-size: 2.2rem;
+      }
+    }
   </style>
 </Layout>

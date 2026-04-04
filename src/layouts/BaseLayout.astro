@@ -35,12 +35,11 @@ const {
       <div class="container header-inner">
         <a href="/" class="header-logo">MARYAN</a>
         <nav class="header-nav">
-          <a href="/diagnostic">Diagnostic</a>
-          <a href="/ressources">Ressources</a>
-          <a href="/blog">Blog</a>
-          <a href="/droits">Droits & devoirs</a>
+          <a href="/diagnostic" class="nav-primary">Diagnostic</a>
           <a href="/copilote">Copilote</a>
-          <a href="/mon-compte" class="header-compte">Mon compte</a>
+          <a href="/ressources">Ressources</a>
+          <a href="/droits">Droits & devoirs</a>
+          <a href="/login" id="accountEntry" class="header-compte">Se connecter</a>
         </nav>
       </div>
     </header>
@@ -83,7 +82,7 @@ const {
         <div class="footer-links">
           <p class="footer-kicker">Navigation</p>
           <ul class="footer-nav">
-            <li><a href="/mon-compte" style="color:var(--neon); font-weight:800;">Mon Compte</a></li>
+            <li><a href="/login" id="footerAccountEntry" style="color:var(--neon); font-weight:800;">Se connecter</a></li>
             <li><a href="/a-propos">À propos</a></li>
             <li><a href="/offres">Nos offres</a></li>
             <li><a href="/diagnostic">Diagnostic</a></li>
@@ -106,6 +105,36 @@ const {
         </div>
       </div>
     </footer>
+
+    <script>
+      import { createClient } from '@supabase/supabase-js';
+
+      const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+      const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+      const accountLinks = ['accountEntry', 'footerAccountEntry']
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+      function updateAccountLinks(href, label) {
+        accountLinks.forEach((link) => {
+          link.setAttribute('href', href);
+          link.textContent = label;
+        });
+      }
+
+      updateAccountLinks('/login', 'Se connecter');
+
+      if (SUPABASE_URL && SUPABASE_KEY) {
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) {
+            updateAccountLinks('/mon-compte', 'Mon compte');
+          }
+        });
+      }
+    </script>
   </body>
 </html>
 
