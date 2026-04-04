@@ -3329,6 +3329,43 @@ export const maryanResources: MaryanResource[] = [
     priority: "haute"
   },
   {
+    id: "gerer-boite-mail-elu",
+    title: "Gérer sa boîte mail quand on est élu·e",
+    slug: "gerer-boite-mail-elu",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Ne plus subir sa messagerie : distinguer ce qui vous appartient vraiment de ce qui doit être traité par l'administration.",
+    intro: "La boîte mail est l'un des aspects les plus banals de la vie mandataire — et l'un des plus épuisants. 70 % des messages reçus par un élu·e ne nécessitent pas une réponse politique directe. Pourtant, la tentation de tout traiter soi-même est forte : par souci de réactivité, par peur de rater quelque chose, par réflexe de contrôle. Elle crée une surcharge invisible, engage votre parole sur des sujets techniques qui ne vous appartiennent pas, et court-circuite les services qui devraient être vos relais naturels.",
+    understand: [
+      "70 % des mails reçus ne nécessitent pas une réponse politique directe. La plupart relèvent d'un traitement administratif ou d'une simple mise en relation avec le bon service.",
+      "Chaque réponse directe que vous envoyez est un engagement. Répondre à un administré sur un dossier technique sans impliquer le service compétent crée une attente que vous ne pourrez pas toujours tenir — et une dépendance qui s'auto-renforce.",
+      "La bonne distinction n'est pas 'important / pas important', mais : est-ce une décision politique, ou une demande de traitement ? Si c'est une demande de traitement, le bon réflexe est de transmettre — pas de répondre seul·e."
+    ],
+    commonTrap: "Répondre seul·e à tout par souci de réactivité ou de contrôle. Cela crée un goulot d'étranglement : les administrés s'adressent directement à vous pour tout, les services sont court-circuités, et votre messagerie devient une charge à temps plein. L'autre piège opposé : laisser traîner sans accuser réception — ce qui génère des relances, des tensions inutiles et une impression d'abandon.",
+    actions: [
+      "Accusez réception rapidement, même avec un message de 2 lignes. Cela suffit à stopper la relance et montre que vous avez lu.",
+      "Mettez le bon service en copie dès votre première réponse. C'est le moyen le plus efficace de transmettre sans perdre la main.",
+      "Reformulez la demande clairement dans votre message de transmission : 'M. X me demande [objet]. Je vous transmets pour traitement et retour direct.' Ça évite les allers-retours.",
+      "Distinguez deux types de réponse : la réponse politique (quand c'est votre positionnement qui est en jeu) et l'accusé de réception + transmission (pour tout le reste). Les deux ne demandent pas le même temps ni la même attention.",
+      "Réservez un créneau fixe pour traiter votre messagerie — et tenez-le. Couper les notifications entre-temps n'est pas du laxisme : c'est de la méthode."
+    ],
+    reflex: "Pour chaque mail : 'Est-ce que ma réponse engage ma parole d'élu·e, ou est-ce une demande qui relève d'un service ?' Si c'est le deuxième cas, transmettez avec un accusé de réception, ne répondez pas seul·e. Modèle utile : 'Merci pour votre message. Je transmets votre demande au service concerné (en copie) qui pourra vous répondre précisément. Je reste attentif·ve au suivi de votre situation.'",
+    targetRoles: ["maire", "adjoint", "conseiller_municipal", "majorite", "opposition", "interco"],
+    institutionContexts: ["commune", "intercommunalite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["surcharge", "besoin_methode", "mandat_recent"],
+    useCases: [
+      "Votre boîte mail est une charge constante",
+      "Vous répondez à des demandes que les services devraient traiter",
+      "Vous cherchez un modèle de réponse type pour les demandes courantes",
+      "Vous avez du mal à déléguer sans perdre le fil"
+    ],
+    tags: ["mail", "messagerie", "quotidien", "administration", "délégation", "surcharge", "méthode"],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+  {
     id: "inscrire-action-temps-mandat",
     title: "Inscrire son action dans le temps du mandat",
     slug: "inscrire-action-temps-mandat",

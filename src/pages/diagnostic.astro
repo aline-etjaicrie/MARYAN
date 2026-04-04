@@ -72,14 +72,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <!-- Q3 : POIDS DU MOMENT -->
         <div class="diag-step-v4 hidden" id="q3-step">
-          <h2 class="q-label-v4">Qu’est-ce qui vous pèse le plus en ce moment dans votre mandat ?</h2>
-          <p class="q-help-v4">Il ne s’agit pas seulement du sujet du moment, mais de ce qui fragilise réellement votre action.</p>
+          <h2 class="q-label-v4">Qu’est-ce qui vous met le plus en difficulté aujourd’hui dans votre mandat ?</h2>
+          <p class="q-help-v4">Au-delà du sujet du moment, ce qui pèse vraiment sur votre façon d’agir.</p>
           <div class="options-v4">
-            <button class="opt-v4" onclick="pick(this,'tension','flou',3)">Devoir arbitrer dans le flou</button>
-            <button class="opt-v4" onclick="pick(this,'tension','conflit',3)">Gérer une tension ou un conflit</button>
-            <button class="opt-v4" onclick="pick(this,'tension','exposition',3)">Porter un sujet très exposé</button>
-            <button class="opt-v4" onclick="pick(this,'tension','sollicitations',3)">Répondre à trop de sollicitations contradictoires</button>
-            <button class="opt-v4" onclick="pick(this,'tension','duree',3)">Garder une ligne claire dans la durée</button>
+            <button class="opt-v4" onclick="pick(this,'tension','flou',3)">Prendre des décisions sans avoir toutes les informations</button>
+            <button class="opt-v4" onclick="pick(this,'tension','conflit',3)">Gérer des tensions (avec d’autres élus, des habitants ou l’administration)</button>
+            <button class="opt-v4" onclick="pick(this,'tension','exposition',3)">Faire face à une pression ou une exposition forte</button>
+            <button class="opt-v4" onclick="pick(this,'tension','sollicitations',3)">Répondre à trop de sollicitations en même temps</button>
+            <button class="opt-v4" onclick="pick(this,'tension','duree',3)">Tenir une ligne claire dans la durée</button>
+            <button class="opt-v4" onclick="pick(this,'tension','administration',3)">Comprendre ou faire avancer un sujet avec l’administration</button>
           </div>
         </div>
 
@@ -369,7 +370,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           results.priorities = ["Retrouver des relais fiables sur les sujets exposés", "Sécuriser le cadrage des dossiers sensibles", "Déléguer la mise en forme pour garder la main sur le fond"];
        } else if (a.feeling === 'surcharge' || a.lack === 'priorites' || a.tension === 'sollicitations') {
           results.vigilance = "Votre enjeu principal n’est pas seulement de faire face aux sujets, mais de retrouver un ordre clair entre urgence, priorité et cap politique.";
-          results.priorities = ["Mieux hiérarchiser ce qui mérite une vraie décision", "Reprendre la main sur le rythme plutôt que subir l'agenda", "Clarifier votre ligne de conduite sur le semestre"];
+          results.priorities = ["Mieux hiérarchiser ce qui mérite une vraie décision", "Reprendre la main sur le rythme plutôt que subir l’agenda", "Clarifier votre ligne de conduite sur le semestre"];
+       } else if (a.tension === 'administration') {
+          results.vigilance = "Votre point de friction principal se situe à l’interface entre votre rôle politique et l’administration. Savoir ce que vous pouvez exiger, ce que vous devez impulser, et ce qui relève de l’exécution est un levier central pour avancer sans vous épuiser.";
+          results.priorities = ["Clarifier ce que l’administration peut décider sans vous, et ce qui requiert votre arbitrage", "Formuler des commandes claires aux services plutôt que des intentions", "Identifier les blocages administratifs qui méritent votre intervention directe"];
        } else {
           results.vigilance = "Votre vigilance principale porte sur la manière de tenir une position juste, lisible et solide dans un contexte où la parole et le tempo comptent autant que la décision elle-même.";
           results.priorities = ["Sécuriser la manière de porter une décision", "Mieux calibrer le tempo de vos interventions", "Tenir une position ferme sans vous crisper"];
@@ -380,7 +384,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           results.offerType = "formation_irl";
        } else if (a.role === 'interco' || a.tension === 'sollicitations' || a.vigilance === 'impact') {
           results.offerType = "collectivite";
-       } else if (a.tension === 'conflit' || a.tension === 'duree' || a.lack === 'cadre' || a.feeling === 'soutenu_partiel') {
+       } else if (a.tension === 'conflit' || a.tension === 'duree' || a.tension === 'administration' || a.lack === 'cadre' || a.feeling === 'soutenu_partiel') {
           results.offerType = "individuel";
        } else {
           results.offerType = "copilote";
@@ -482,6 +486,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        if (answers.tension === 'conflit') tags.push('tension');
        if (answers.tension === 'exposition') tags.push('exposition');
        if (answers.tension === 'flou') tags.push('arbitrage dans le flou');
+       if (answers.tension === 'administration') tags.push('friction administrative');
        if (answers.lack === 'cadre') tags.push('besoin de cadre');
        if (answers.vigilance === 'parole') tags.push('prise de parole');
        if (!tags.length) tags.push('mandat local');
