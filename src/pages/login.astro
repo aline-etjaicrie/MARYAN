@@ -108,6 +108,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <script>
   import { createClient } from '@supabase/supabase-js';
+  import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -193,6 +194,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       btnLoader.style.display = loading ? 'inline' : 'none';
     }
 
+    async function persistLocalDiagnostic(userId: string) {
+      try {
+        const rawDiag = localStorage.getItem('maryan_v4_diag');
+        if (!rawDiag) return;
+
+        const diag = buildStoredDiagnosticEntry(JSON.parse(rawDiag));
+        localStorage.setItem('maryan_v4_diag', JSON.stringify(diag));
+
+        if (diag?.diagnostic_key && diag?.diagnostic_label) {
+          await supabase
+            .from('profiles')
+            .update({
+              diagnostic_key: diag.diagnostic_key,
+              diagnostic_label: diag.diagnostic_label
+            })
+            .eq('id', userId);
+        }
+      } catch (_) {
+        /* non bloquant */
+      }
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       formError.style.display = 'none';
@@ -265,6 +288,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 .eq('id', signUpData.session.user.id);
             } catch (_) {}
           }
+          if (signUpData.session) {
+            await persistLocalDiagnostic(signUpData.session.user.id);
+          }
           showSuccess('Compte créé ! Redirection vers votre espace…');
 
           // Send welcome email (non-blocking)
@@ -287,22 +313,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (error) {
           showError('Email ou mot de passe incorrect.');
         } else if (data.session) {
-          // Sauvegarde du diagnostic localStorage → Supabase profiles
-          try {
-            const rawDiag = localStorage.getItem('maryan_v4_diag');
-            if (rawDiag) {
-              const diag = JSON.parse(rawDiag);
-              if (diag?.diagnostic_key && diag?.diagnostic_label) {
-                await supabase
-                  .from('profiles')
-                  .update({
-                    diagnostic_key: diag.diagnostic_key,
-                    diagnostic_label: diag.diagnostic_label
-                  })
-                  .eq('id', data.session.user.id);
-              }
-            }
-          } catch (_) { /* non bloquant */ }
+          await persistLocalDiagnostic(data.session.user.id);
           window.location.href = '/mon-compte';
         }
       }

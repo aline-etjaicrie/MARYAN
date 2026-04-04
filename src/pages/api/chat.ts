@@ -11,6 +11,7 @@ import {
 import { maryanResources } from '../../data/resources';
 import { getMotsDeclencheurs } from '../../data/partis';
 import type { DiagnosticProfile, MaryanResource } from '../../data/types';
+import { DIAGNOSTIC_INSTRUCTIONS, resolveDiagnosticProfile } from '../../lib/diagnostic-personalization';
 
 interface CopilotMessage {
   role: 'user' | 'assistant';
@@ -42,13 +43,6 @@ const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
 const DEFAULT_MODEL = 'mistral-large-latest';
 const CONTINUATION_PROMPT =
   "Continuez uniquement à partir du dernier mot, sans répéter le début. Terminez proprement la section en cours. Si nécessaire, ajoutez seulement un bloc « Bon réflexe » très court.";
-
-// Mapping diagnostic_key → adaptation du ton Mistral
-const DIAG_INSTRUCTIONS: Record<string, string> = {
-  'vigilance-institutionnelle': "L'utilisateur·ice est particulièrement sensible à ses droits formels en tant qu'élu·e. Insiste sur les textes réglementaires, les droits statutaires et les procédures officielles.",
-  'isolation-politique': "L'utilisateur·ice souffre d'isolement politique. Insiste sur les stratégies de coalition, les alliances possibles, et les leviers collectifs.",
-  'surcharge-operationnelle': "L'utilisateur·ice est en surcharge. Va à l'essentiel, sois très concis, donne des réponses courtes et actionnables. Pas de développements inutiles.",
-};
 
 export const prerender = false;
 
@@ -166,8 +160,9 @@ export const POST: APIRoute = async ({ request }) => {
   // ── Injection du profil + contexte politique dans le system prompt ──
   let profileSection = '';
   if (supabaseProfile) {
-    const diagKey = supabaseProfile.diagnostic_key || '';
-    const diagInstruction = DIAG_INSTRUCTIONS[diagKey] || '';
+    const resolvedDiagProfile = resolveDiagnosticProfile({ diagnostic_key: supabaseProfile.diagnostic_key || '' });
+    const diagKey = resolvedDiagProfile || supabaseProfile.diagnostic_key || '';
+    const diagInstruction = DIAGNOSTIC_INSTRUCTIONS[diagKey] || '';
 
     // Étiquette politique : parti_id et parti_label stockés en profil
     const partiId = supabaseProfile.parti_id || null;
@@ -206,7 +201,7 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
 
   // ── Profile pour la logique de suggestion de ressources ──
   const profile = body?.profile || (supabaseProfile ? {
-    key: supabaseProfile.diagnostic_key || '',
+    key: resolveDiagnosticProfile({ diagnostic_key: supabaseProfile.diagnostic_key || '' }) || supabaseProfile.diagnostic_key || '',
     summary: supabaseProfile.diagnostic_label || '',
     themeLabel: supabaseProfile.role || '',
     tags: []

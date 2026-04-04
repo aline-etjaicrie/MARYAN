@@ -4,6 +4,7 @@ import InternalHeader from '../components/InternalHeader.astro';
 import { maryanResources } from '../data/resources';
 import { maryanPaths, parcoursExpress } from '../data/paths';
 import { maryanSituations } from '../data/situations';
+import { DIAGNOSTIC_LABELS, LEGACY_DIAGNOSTIC_TO_PROFILE } from '../lib/diagnostic-personalization';
 
 const pillars = [
   { id: 'all', label: 'Tous' },
@@ -366,6 +367,64 @@ const copilotSuggestions = [
     </div>
   </div>
 
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
+
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+    async function syncDiagnosticFromAccount() {
+      if (!SUPABASE_URL || !SUPABASE_KEY) return;
+
+      try {
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user?.id) return;
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('diagnostic_key, diagnostic_label')
+          .eq('id', session.user.id)
+          .single();
+
+        if (!profile?.diagnostic_key && !profile?.diagnostic_label) return;
+
+        let localDiagnostic = {} as Record<string, any>;
+        try {
+          const raw = localStorage.getItem('maryan_v4_diag');
+          if (raw) {
+            localDiagnostic = JSON.parse(raw);
+          }
+        } catch (_) {}
+
+        const diagnosticState = buildStoredDiagnosticEntry({
+          ...localDiagnostic,
+          diagnostic_key: profile?.diagnostic_key || localDiagnostic?.diagnostic_key,
+          diagnostic_label: profile?.diagnostic_label || localDiagnostic?.diagnostic_label
+        });
+
+        localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
+
+        try {
+          const rawProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+          if (diagnosticState.profile) {
+            localStorage.setItem('maryan_profile', JSON.stringify({
+              ...rawProfile,
+              diagnosticProfile: diagnosticState.profile
+            }));
+          }
+        } catch (_) {}
+
+        window.dispatchEvent(new CustomEvent('maryan:diagnostic-sync', { detail: diagnosticState }));
+      } catch (_) {
+        // non bloquant
+      }
+    }
+
+    syncDiagnosticFromAccount();
+  </script>
+
   <script is:inline>
     function toggleParcours(id) {
       const allDetails = document.querySelectorAll('.pe-detail');
@@ -387,7 +446,15 @@ const copilotSuggestions = [
 
   <script
     is:inline
-    define:vars={{ maryanResources, maryanPaths, maryanSituations, pillars, situationFilters }}
+    define:vars={{
+      maryanResources,
+      maryanPaths,
+      maryanSituations,
+      pillars,
+      situationFilters,
+      legacyDiagnosticToProfile: LEGACY_DIAGNOSTIC_TO_PROFILE,
+      diagnosticLabels: DIAGNOSTIC_LABELS
+    }}
   >
     const profilePriorityCopy = {
       mandat_recent: [
@@ -446,6 +513,7 @@ const copilotSuggestions = [
     };
 
     const state = {
+      diagnosticState: null,
       profile: null,
       recommendedPath: null,
       search: '',
@@ -457,6 +525,10 @@ const copilotSuggestions = [
     };
 
     const els = {
+      diagBandeau: document.getElementById('diagBandeau'),
+      diagBandeauLabel: document.getElementById('diagBandeauLabel'),
+      diagBandeauReset: document.getElementById('diagBandeauReset'),
+      recommandationsSection: document.getElementById('recommandationsSection'),
       parcoursExpressSection: document.getElementById('parcoursExpressSection'),
       diagnosticHelper: document.getElementById('diagnosticHelper'),
       prioritiesSection: document.getElementById('prioritiesSection'),
@@ -488,34 +560,83 @@ const copilotSuggestions = [
     initResourcesPage();
 
     function initResourcesPage() {
-      state.profile = resolveProfile();
-      state.recommendedPath = state.profile ? getRecommendedPaths(maryanPaths, state.profile, 1)[0] || null : null;
-
-      renderPersonalizedContent();
       bindFilters();
       bindTracking();
+      els.diagBandeauReset?.addEventListener('click', () => {
+        localStorage.removeItem('maryan_v4_diag');
+        state.diagnosticState = null;
+        state.profile = null;
+        state.recommendedPath = null;
+        renderDiagnosticBandeau();
+        renderPersonalizedContent();
+        renderCatalog();
+      });
+
+      window.addEventListener('maryan:diagnostic-sync', () => {
+        refreshDiagnosticState();
+      });
+
+      refreshDiagnosticState();
+    }
+
+    function readDiagnosticState() {
+      let diag = {} as Record<string, any>;
+      let storedProfile = {} as Record<string, any>;
+
+      try {
+        diag = JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}');
+      } catch (_) {}
+
+      try {
+        storedProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+      } catch (_) {}
+
+      return {
+        ...diag,
+        profile: diag.profile || storedProfile.diagnosticProfile || null
+      };
+    }
+
+    function refreshDiagnosticState() {
+      state.diagnosticState = readDiagnosticState();
+      state.profile = resolveProfile(state.diagnosticState);
+      state.recommendedPath = state.profile ? getRecommendedPaths(maryanPaths, state.profile, 1)[0] || null : null;
+
+      renderDiagnosticBandeau();
+      renderPersonalizedContent();
       renderCatalog();
     }
 
-    function resolveProfile() {
-      const diag = JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}');
-      let profile = diag.tension || diag.vigilance || diag.lack || diag.feeling || '';
+    function resolveProfile(diagnosticState = null) {
+      const diag = diagnosticState || readDiagnosticState();
+      if (diag.profile && diagnosticLabels[diag.profile]) return diag.profile;
+      if (diag.diagnostic_key && legacyDiagnosticToProfile[diag.diagnostic_key]) return legacyDiagnosticToProfile[diag.diagnostic_key];
+      if (diag.diagnostic_key && diagnosticLabels[diag.diagnostic_key]) return diag.diagnostic_key;
+
+      let profile = diag.tension || diag.lack || diag.feeling || diag.vigilance || '';
 
       const mapping = {
-        flou: 'besoin_methode',
+        administration: 'gouvernance',
+        flou: 'arbitrage',
         conflit: 'tension_relationnelle',
         exposition: 'exposition',
         sollicitations: 'surcharge',
+        duree: 'besoin_methode',
         surcharge: 'surcharge',
         seul: 'isolement',
         priorites: 'surcharge',
-        parole: 'prise_de_parole',
+        mots: 'prise_de_parole',
         relation: 'tension_relationnelle',
         cadre: 'besoin_methode',
-        recul: 'arbitrage'
+        recul: 'arbitrage',
+        decision: 'arbitrage',
+        maniere: 'prise_de_parole',
+        tempo: 'exposition',
+        impact: 'exposition'
       };
 
       if (mapping[profile]) profile = mapping[profile];
+      if (!profile && ['maire', 'adjoint', 'interco'].includes(diag.role)) profile = 'gouvernance';
       if (!profile && diag.seniority === 'moins1an') profile = 'mandat_recent';
 
       return profile || null;
@@ -611,7 +732,41 @@ const copilotSuggestions = [
       return 'Un premier point d’appui pour avancer avec plus de clarté, sans vous disperser inutilement.';
     }
 
+    function renderDiagnosticBandeau() {
+      if (els.recommandationsSection) {
+        els.recommandationsSection.style.display = 'none';
+      }
+
+      const label =
+        state.diagnosticState?.diagnostic_label ||
+        (state.profile ? diagnosticLabels[state.profile] : '');
+
+      if (!label) {
+        if (els.diagBandeau) els.diagBandeau.style.display = 'none';
+        return;
+      }
+
+      if (els.diagBandeau) els.diagBandeau.style.display = 'block';
+      if (els.diagBandeauLabel) els.diagBandeauLabel.textContent = label;
+    }
+
+    function resetPersonalizedSections() {
+      els.parcoursExpressSection?.classList.add('hidden');
+      els.diagnosticHelper?.classList.add('hidden');
+      els.prioritiesSection?.classList.add('hidden');
+      if (els.priorityGrid) els.priorityGrid.innerHTML = '';
+      els.prioritySituationBlock?.classList.add('hidden');
+      if (els.prioritySituationGrid) els.prioritySituationGrid.innerHTML = '';
+      els.personalizedResources?.classList.add('hidden');
+      if (els.recommendedGrid) els.recommendedGrid.innerHTML = '';
+      els.personalizedPath?.classList.add('hidden');
+      if (els.pathPrioritiesList) els.pathPrioritiesList.innerHTML = '';
+      if (els.pathResourcesGrid) els.pathResourcesGrid.innerHTML = '';
+    }
+
     function renderPersonalizedContent() {
+      resetPersonalizedSections();
+
       if (!state.profile) {
         els.parcoursExpressSection?.classList.remove('hidden');
         els.diagnosticHelper?.classList.remove('hidden');
@@ -2533,54 +2688,3 @@ const copilotSuggestions = [
   .reco-card-promise { font-size: 0.86rem; color: #54636C; line-height: 1.5; margin: 0; flex: 1; }
   .reco-card-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); margin-top: auto; }
 </style>
-
-<script>
-  // ── Personnalisation bibliothèque depuis localStorage diagnostic ──
-  (function () {
-    try {
-      const raw = localStorage.getItem('maryan_v4_diag');
-      if (!raw) return;
-      const diag = JSON.parse(raw);
-      if (!diag) return;
-
-      const diagLabel = diag.diagnostic_label || diag.diagnostic_key || '';
-      const slugs: string[] = diag.recommended_slugs || diag.priorites || [];
-
-      // Afficher le bandeau
-      if (diagLabel) {
-        const bandeau = document.getElementById('diagBandeau');
-        const bandeauLabel = document.getElementById('diagBandeauLabel');
-        if (bandeau) bandeau.style.display = 'block';
-        if (bandeauLabel) bandeauLabel.textContent = diagLabel;
-      }
-
-      // Bouton reset
-      document.getElementById('diagBandeauReset')?.addEventListener('click', () => {
-        localStorage.removeItem('maryan_v4_diag');
-        const bandeau = document.getElementById('diagBandeau');
-        const recoSection = document.getElementById('recommandationsSection');
-        if (bandeau) bandeau.style.display = 'none';
-        if (recoSection) recoSection.style.display = 'none';
-      });
-
-      // Afficher les recommandations si slugs disponibles
-      if (slugs.length) {
-        const section = document.getElementById('recommandationsSection');
-        const grid = document.getElementById('recommandationsGrid');
-        if (section && grid) {
-          section.style.display = 'block';
-          grid.innerHTML = slugs.slice(0, 3).map((slug: string) => {
-            const title = slug.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-            return `
-              <a href="/ressources/${slug}" class="reco-card">
-                <span class="reco-badge">Recommandé pour vous</span>
-                <p class="reco-card-title">${title}</p>
-                <span class="reco-card-cta">Consulter la fiche →</span>
-              </a>
-            `;
-          }).join('');
-        }
-      }
-    } catch (_) { /* non bloquant */ }
-  })();
-</script>

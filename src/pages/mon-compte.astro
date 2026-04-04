@@ -235,6 +235,8 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 
 <script>
   import { createClient } from '@supabase/supabase-js';
+  import { getRecommendedResources, maryanResources } from '../data/resources';
+  import { buildStoredDiagnosticEntry, getDiagnosticAccroche } from '../lib/diagnostic-personalization';
 
   // ── Payment success banner (when redirected from Stripe checkout) ──
   if (window.location.search.includes('session_id')) {
@@ -247,19 +249,10 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
 
-  // ── Mapping diagnostic_key → accroche ──
-  const DIAG_ACCROCHES: Record<string, string> = {
-    'vigilance-institutionnelle': 'Vous êtes attentif·ve à vos droits et à la régularité des procédures. MARYAN peut vous aider à les faire valoir.',
-    'isolation-politique': 'Vous traversez une période d\'isolement. MARYAN vous aide à identifier vos alliés et à construire des coalitions.',
-    'surcharge-operationnelle': 'Vous êtes en surcharge. MARYAN va à l\'essentiel pour vous aider à prioriser et agir rapidement.',
-    'mandat-recent': 'Vous débutez votre mandat. MARYAN vous accompagne dans la prise de repères et la compréhension de votre rôle.',
-    'tension-relationnelle': 'Des tensions relationnelles compliquent votre mandat. MARYAN vous aide à les désamorcer.',
-  };
-
   // ── Fiches génériques si pas de diagnostic ──
   const FICHES_GENERIQUES = [
-    { slug: 'comprendre-votre-role', title: 'Comprendre votre rôle d\'élu·e' },
-    { slug: 'droits-fondamentaux-elu', title: 'Les droits fondamentaux de l\'élu·e' },
+    { slug: 'qui-decide-quoi-dans-la-collectivite', title: 'Qui décide quoi dans la collectivité ?' },
+    { slug: 'le-conseil-municipal-a-quoi-il-sert-vraiment', title: 'Le conseil municipal : à quoi sert-il vraiment ?' },
     { slug: 'prendre-la-parole-en-conseil', title: 'Prendre la parole en conseil municipal' }
   ];
 
@@ -363,28 +356,43 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
       const diagPresent = document.getElementById('diagPresent');
       const diagAbsent = document.getElementById('diagAbsent');
 
-      // Tente aussi localStorage en fallback
-      let localDiagKey = diagKey;
-      let localDiagLabel = diagLabel;
+      let localDiagnosticRaw = {} as Record<string, any>;
       try {
         const raw = localStorage.getItem('maryan_v4_diag');
         if (raw) {
-          const parsed = JSON.parse(raw);
-          if (!localDiagKey && parsed?.diagnostic_key) localDiagKey = parsed.diagnostic_key;
-          if (!localDiagLabel && parsed?.diagnostic_label) localDiagLabel = parsed.diagnostic_label;
+          localDiagnosticRaw = JSON.parse(raw);
         }
       } catch (_) {}
 
-      if (localDiagKey || localDiagLabel) {
+      const diagnosticState = buildStoredDiagnosticEntry({
+        ...localDiagnosticRaw,
+        diagnostic_key: diagKey || localDiagnosticRaw?.diagnostic_key,
+        diagnostic_label: diagLabel || localDiagnosticRaw?.diagnostic_label
+      }, maryanResources);
+
+      try {
+        if (diagnosticState.diagnostic_key || diagnosticState.profile || diagnosticState.recommended_slugs?.length) {
+          localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
+        }
+        const storedProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+        if (diagnosticState.profile) {
+          localStorage.setItem('maryan_profile', JSON.stringify({
+            ...storedProfile,
+            diagnosticProfile: diagnosticState.profile
+          }));
+        }
+      } catch (_) {}
+
+      if (diagnosticState.diagnostic_key || diagnosticState.diagnostic_label) {
         if (diagPresent) diagPresent.style.display = 'block';
         if (diagAbsent) diagAbsent.style.display = 'none';
         const diagLabelEl = document.getElementById('diagLabel');
-        if (diagLabelEl) diagLabelEl.textContent = localDiagLabel || localDiagKey;
+        if (diagLabelEl) diagLabelEl.textContent = diagnosticState.diagnostic_label || diagnosticState.diagnostic_key;
         const diagBadge = document.getElementById('diagBadge');
-        if (diagBadge) diagBadge.textContent = localDiagKey;
+        if (diagBadge) diagBadge.textContent = (diagnosticState.profile || diagnosticState.diagnostic_key || '').replaceAll('_', ' ');
         const diagAccroche = document.getElementById('diagAccroche');
         if (diagAccroche) {
-          diagAccroche.textContent = DIAG_ACCROCHES[localDiagKey] || 'MARYAN adapte ses réponses à votre profil.';
+          diagAccroche.textContent = getDiagnosticAccroche(diagnosticState);
         }
       } else {
         if (diagPresent) diagPresent.style.display = 'none';
@@ -394,24 +402,27 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
       // ── Ressources recommandées ──
       const ressourcesGrid = document.getElementById('ressourcesGrid');
       if (ressourcesGrid) {
-        let slugs: { slug: string; title: string }[] = [];
+        let resources = diagnosticState.profile
+          ? getRecommendedResources(maryanResources, diagnosticState.profile)
+          : [];
 
-        // Depuis localStorage diagnostic
-        try {
-          const raw = localStorage.getItem('maryan_v4_diag');
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            const keys = parsed?.recommended_slugs || parsed?.priorites || [];
-            slugs = keys.slice(0, 3).map((s: string) => ({ slug: s, title: s.replace(/-/g, ' ') }));
-          }
-        } catch (_) {}
+        if (!resources.length && diagnosticState.recommended_slugs?.length) {
+          resources = diagnosticState.recommended_slugs
+            .slice(0, 3)
+            .map((slug: string) => maryanResources.find((resource) => resource.slug === slug))
+            .filter(Boolean);
+        }
 
-        if (!slugs.length) slugs = FICHES_GENERIQUES;
+        if (!resources.length) {
+          resources = FICHES_GENERIQUES
+            .map(({ slug }) => maryanResources.find((resource) => resource.slug === slug))
+            .filter(Boolean);
+        }
 
-        ressourcesGrid.innerHTML = slugs.map(({ slug, title }) => `
-          <a href="/ressources/${slug}" class="ressource-tile card-v3">
+        ressourcesGrid.innerHTML = resources.map((resource) => `
+          <a href="/ressources/${resource.slug}" class="ressource-tile card-v3">
             <span class="ressource-num">→</span>
-            <p class="ressource-title">${title}</p>
+            <p class="ressource-title">${resource.title}</p>
             <span class="ressource-cta">Consulter →</span>
           </a>
         `).join('');
@@ -565,11 +576,11 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
       });
 
       // 5b. Diagnostic
-      if (localDiagKey || localDiagLabel) {
+      if (diagnosticState.diagnostic_key || diagnosticState.diagnostic_label) {
         const diagItem = document.getElementById('rgpdDiagItem');
         const diagText = document.getElementById('rgpdDiagText');
         if (diagItem) diagItem.style.display = 'flex';
-        if (diagText) diagText.textContent = `Diagnostic actuel : ${localDiagLabel || localDiagKey}`;
+        if (diagText) diagText.textContent = `Diagnostic actuel : ${diagnosticState.diagnostic_label || diagnosticState.diagnostic_key}`;
       }
 
       document.getElementById('rgpdDiagBtn')?.addEventListener('click', async () => {
@@ -587,6 +598,7 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
             body: JSON.stringify({ field: 'diagnostic_label', value: null })
           });
           try { localStorage.removeItem('maryan_v4_diag'); } catch (_) {}
+          try { localStorage.removeItem('maryan_profile'); } catch (_) {}
           const diagItem = document.getElementById('rgpdDiagItem');
           if (diagItem) {
             diagItem.innerHTML = '<p style="color:#2E7D32;font-size:0.9rem;font-weight:600;">Diagnostic effacé.</p>';

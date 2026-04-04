@@ -298,9 +298,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   </style>
 
-  <script is:inline>
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
+
     const state = { answers: {}, step: 0 };
     const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'calc'];
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+    const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     function showStep(id) {
        document.querySelectorAll('.diag-step-v4').forEach(s => {
@@ -342,7 +348,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        }
     };
 
-    function processDiagnosis() {
+    async function persistDiagnosticForLoggedUser(diagnosticState) {
+       if (!supabase || !diagnosticState?.diagnostic_key || !diagnosticState?.diagnostic_label) return;
+
+       try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session?.user?.id) return;
+
+          await supabase
+             .from('profiles')
+             .update({
+                diagnostic_key: diagnosticState.diagnostic_key,
+                diagnostic_label: diagnosticState.diagnostic_label
+             })
+             .eq('id', session.user.id);
+       } catch (_) {
+          // non bloquant
+       }
+    }
+
+    async function processDiagnosis() {
        const a = state.answers;
        
        const results = {
@@ -427,22 +452,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        document.getElementById('resOfferText').textContent = off.text;
        document.getElementById('resCTA').innerHTML = off.ctas;
 
+       const diagnosticState = buildStoredDiagnosticEntry(a);
+
        // Memory persist
-       localStorage.setItem('maryan_v4_diag', JSON.stringify(a));
+       localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
 
        try {
           const existingProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
           const derivedProfile = buildMaryanProfile(a, results);
           const mergedProfile = {
              ...derivedProfile,
+             diagnosticProfile: diagnosticState.profile,
              firstName: existingProfile.firstName || derivedProfile.firstName,
              commune: existingProfile.commune || derivedProfile.commune,
              plan: existingProfile.plan || derivedProfile.plan
           };
           localStorage.setItem('maryan_profile', JSON.stringify(mergedProfile));
        } catch (e) {
-          localStorage.setItem('maryan_profile', JSON.stringify(buildMaryanProfile(a, results)));
+          localStorage.setItem('maryan_profile', JSON.stringify({
+             ...buildMaryanProfile(a, results),
+             diagnosticProfile: diagnosticState.profile
+          }));
        }
+
+       await persistDiagnosticForLoggedUser(diagnosticState);
+       window.dispatchEvent(new CustomEvent('maryan:diagnostic-sync', { detail: diagnosticState }));
 
        // Toggle
        document.getElementById('questionsContainer').classList.add('hidden');
@@ -461,6 +495,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        const roleMap = {
           maire: { title: 'Maire', theme: 'gouvernance', themeLabel: 'Gouvernance et arbitrage' },
           adjoint: { title: 'Adjoint·e municipal·e', theme: 'delegation', themeLabel: 'Délégation et mise en oeuvre' },
+          conseiller_maj: { title: 'Élu·e de majorité', theme: 'mandat', themeLabel: 'Conduite du mandat' },
+          conseiller_opp: { title: 'Élu·e d’opposition', theme: 'positionnement', themeLabel: 'Positionnement politique' },
           majorite: { title: 'Élu·e de majorité', theme: 'mandat', themeLabel: 'Conduite du mandat' },
           opposition: { title: 'Élu·e d’opposition', theme: 'positionnement', themeLabel: 'Positionnement politique' },
           interco: { title: 'Élu·e intercommunal·e', theme: 'coordination', themeLabel: 'Coordination territoriale' }
