@@ -5,6 +5,7 @@ export interface MaryanRadarItem {
   id: string;
   title: string;
   source: string;
+  sourceUrl?: string;
   date: string;
   type: MaryanRadarType;
   level: MaryanRadarLevel;
@@ -44,6 +45,7 @@ export const maryanRadarItems: MaryanRadarItem[] = [
     id: 'radar-absences-elus',
     title: 'Autorisations d’absence : mieux cadrer les demandes des élu·es salariés',
     source: 'Journal officiel',
+    sourceUrl: 'https://www.legifrance.gouv.fr',
     date: '2026-04-05',
     type: 'loi',
     level: 'national',
@@ -69,6 +71,7 @@ export const maryanRadarItems: MaryanRadarItem[] = [
     id: 'radar-eau-interco',
     title: 'Eau et assainissement : relire la chaîne de décision avant toute annonce',
     source: 'Banque des Territoires',
+    sourceUrl: 'https://www.banquedesterritoires.fr',
     date: '2026-04-05',
     type: 'article de presse',
     level: 'interco',
@@ -94,6 +97,7 @@ export const maryanRadarItems: MaryanRadarItem[] = [
     id: 'radar-convocations-delais',
     title: 'Convocations et délais : la forme reste une question de sécurité politique',
     source: 'DGCL',
+    sourceUrl: 'https://www.collectivites-locales.gouv.fr',
     date: '2026-04-04',
     type: 'décret',
     level: 'local',
@@ -119,6 +123,7 @@ export const maryanRadarItems: MaryanRadarItem[] = [
     id: 'radar-subventions-exceptionnelles',
     title: 'Subventions exceptionnelles : resserrer les critères avant l’arbitrage',
     source: 'Signal MARYAN',
+    sourceUrl: 'https://www.maryanapp.fr/radar',
     date: '2026-04-04',
     type: 'signal',
     level: 'local',
@@ -144,6 +149,7 @@ export const maryanRadarItems: MaryanRadarItem[] = [
     id: 'radar-probite-deport',
     title: 'Conflit d’intérêts : mieux documenter les déports et les abstentions',
     source: 'Conseil d’État',
+    sourceUrl: 'https://www.conseil-etat.fr',
     date: '2026-04-03',
     type: 'jurisprudence',
     level: 'national',
@@ -169,6 +175,7 @@ export const maryanRadarItems: MaryanRadarItem[] = [
     id: 'radar-plm-prise-parole',
     title: 'PLM : distinguer parole d’arrondissement, décision centrale et calendrier',
     source: 'Signal MARYAN',
+    sourceUrl: 'https://www.maryanapp.fr/radar',
     date: '2026-04-03',
     type: 'signal',
     level: 'local',

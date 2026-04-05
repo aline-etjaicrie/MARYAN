@@ -1,86 +1,62 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InternalHeader from '../components/InternalHeader.astro';
 import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevels } from '../data/radar';
 ---
 
 <BaseLayout
-  title="Le radar de MARYAN — Veille institutionnelle et politique du mandat"
-  description="Une veille institutionnelle et politique transformée en lecture utile pour les élu·es : ce que ça change, ce qu’il faut surveiller, quoi faire."
+  title="Le Radar de MARYAN — Veille institutionnelle et politique du mandat"
+  description="Comprendre ce que les évolutions institutionnelles changent pour votre mandat, sans bruit ni surcharge."
 >
-  <div class="radar-hero">
-    <div class="container relative-z header-white-force">
-      <InternalHeader
-        label="Radar"
-        title="Le radar de <span class='emphasis'>MARYAN</span>"
-        subtitle="Veille institutionnelle et politique du mandat. 5 à 10 signaux maximum. Une lecture utile, pas une revue de presse."
-      />
-
-      <div class="radar-hero-signals">
-        <div class="radar-signal-card">Lecture institutionnelle</div>
-        <div class="radar-signal-card">Filtres simples</div>
-        <div class="radar-signal-card">Sauvegardes locales</div>
-      </div>
-    </div>
-    <div class="hero-glow glow-red"></div>
-    <div class="hero-glow glow-green"></div>
-  </div>
-
   <main class="radar-page">
-    <div class="container radar-layout">
-      <aside class="radar-sidebar">
-        <section class="card-v3 radar-side-card">
-          <span class="label-v3">Préférence</span>
-          <h2>Recevoir la revue de presse</h2>
-          <p class="radar-side-copy">Préférence enregistrée sur cet appareil. L’envoi réel peut être branché plus tard sans complexifier le module.</p>
+    <section class="radar-hero">
+      <div class="container radar-hero-inner">
+        <span class="label-v3">Veille institutionnelle</span>
+        <h1>LE RADAR DE MARYAN</h1>
+        <p class="radar-hero-title">Veille institutionnelle et politique du mandat</p>
+        <p class="radar-hero-accent">Vous n’avez pas besoin de plus d’informations. Vous avez besoin de comprendre ce que cela implique pour vous.</p>
+        <p class="radar-hero-copy">
+          Le Radar de MARYAN analyse les signaux institutionnels et vous aide à en comprendre les implications concrètes pour votre mandat.
+        </p>
 
-          <label class="radar-field">
-            <span>Rythme d’envoi</span>
-            <select id="radarEmailPref">
-              <option value="aucun">Aucun</option>
-              <option value="quotidien">Quotidien</option>
-              <option value="hebdomadaire">Hebdomadaire</option>
-            </select>
+        <div class="radar-hero-actions">
+          <a href="#radar-list-section" class="btn-primary-v3">Consulter le Radar</a>
+          <a href="#radar-email" class="btn-secondary-v3">Recevoir le Radar</a>
+          <button type="button" id="heroSavedBtn" class="btn-secondary-v3 radar-saved-btn">Mes sujets</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="radar-how">
+      <div class="container radar-how-inner">
+        <div>
+          <span class="label-v3">Comment ça fonctionne</span>
+          <h2>Une lecture courte. Une utilité immédiate.</h2>
+        </div>
+        <div class="radar-how-list">
+          <p>MARYAN analyse les signaux institutionnels.</p>
+          <p>MARYAN identifie ce qui vous concerne.</p>
+          <p>MARYAN met en lien avec votre quotidien d’élu·e.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="radar-controls-section">
+      <div class="container">
+        <div class="radar-controls-head">
+          <div>
+            <span class="label-v3">Filtrer</span>
+            <h2>Affiner sans compliquer</h2>
+          </div>
+          <button type="button" id="toggleFiltersBtn" class="radar-filter-toggle">Filtrer</button>
+        </div>
+
+        <div id="filtersPanel" class="radar-filters-panel">
+          <label class="radar-field radar-search-field">
+            <span>Recherche</span>
+            <input id="radarSearch" type="search" placeholder="Rechercher un sujet…" />
           </label>
 
-          <p id="radarEmailNote" class="radar-helper"></p>
-        </section>
-
-        <section class="card-v3 radar-side-card">
-          <span class="label-v3">Sauvegardes</span>
-          <h2>Vos repères</h2>
-          <p id="savedCount" class="radar-side-copy">0 item sauvegardé</p>
-
-          <div class="radar-button-stack">
-            <button id="exportSavedBtn" class="btn-primary-v3 radar-btn-full">Exporter les sauvegardes</button>
-            <button id="clearSavedBtn" class="btn-secondary-v3 radar-btn-full">Vider les sauvegardes</button>
-          </div>
-        </section>
-
-        <section class="card-v3 radar-side-card">
-          <span class="label-v3">Aperçu email</span>
-          <h2>Format court</h2>
-          <p class="radar-side-copy">Titre, pourquoi c’est important, à faire. Pas de long contenu.</p>
-          <div id="digestPreview" class="radar-digest-preview"></div>
-        </section>
-      </aside>
-
-      <section class="radar-main">
-        <section class="card-v3 radar-controls-card">
-          <div class="radar-controls-header">
-            <div>
-              <span class="label-v3">Filtres</span>
-              <h2>Filtrer les signaux utiles</h2>
-            </div>
-            <p class="radar-controls-note">Alimentation manuelle, prompts Radar MARYAN, lecture directe.</p>
-          </div>
-
-          <div class="radar-controls-grid">
-            <label class="radar-field radar-search-field">
-              <span>Recherche</span>
-              <input id="radarSearch" type="search" placeholder="Rechercher un sujet, une source, un enjeu…" />
-            </label>
-
+          <div class="radar-filters-grid">
             <label class="radar-field">
               <span>Thème</span>
               <select id="radarTheme">
@@ -105,16 +81,66 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
               </select>
             </label>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
-        <div class="radar-list-meta">
-          <p id="radarResultsCount">0 signal</p>
-          <p class="radar-list-note">Le radar de MARYAN ne cherche pas l’exhaustivité. Il isole ce qui peut changer une décision, un cadrage ou une vigilance.</p>
+    <section id="radar-list-section" class="radar-list-section">
+      <div class="container">
+        <div class="radar-list-head">
+          <div>
+            <span class="label-v3">Aujourd’hui</span>
+            <h2>Ce qui compte pour vous aujourd’hui</h2>
+          </div>
+          <p id="radarResultsCount" class="radar-results-count">0 signal</p>
         </div>
 
         <div id="radarList" class="radar-list"></div>
-      </section>
-    </div>
+      </div>
+    </section>
+
+    <section id="radar-email" class="radar-email-section">
+      <div class="container">
+        <div class="card-v3 radar-email-card">
+          <div class="radar-email-copy">
+            <span class="label-v3">Recevoir le Radar</span>
+            <h2>Recevoir le Radar de MARYAN</h2>
+            <p>Une synthèse claire, utile, sans bruit.</p>
+          </div>
+
+          <div class="radar-email-options" role="radiogroup" aria-label="Fréquence du Radar">
+            <label class="radar-email-option">
+              <input type="radio" name="radarEmailPref" value="quotidien" />
+              <span>Quotidien</span>
+            </label>
+            <label class="radar-email-option">
+              <input type="radio" name="radarEmailPref" value="hebdomadaire" />
+              <span>Hebdomadaire</span>
+            </label>
+            <label class="radar-email-option">
+              <input type="radio" name="radarEmailPref" value="aucun" />
+              <span>Non merci</span>
+            </label>
+          </div>
+
+          <div class="radar-email-actions">
+            <button type="button" id="saveEmailPrefBtn" class="btn-primary-v3">S’abonner</button>
+            <p id="radarEmailNote" class="radar-email-note"></p>
+          </div>
+
+          <div class="radar-digest">
+            <p class="radar-digest-title">Aperçu</p>
+            <div id="digestPreview" class="radar-digest-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="radar-signature">
+      <div class="container">
+        <p>MARYAN n’est pas là pour décider à votre place. Il est là pour vous permettre de décider en connaissance de cause.</p>
+      </div>
+    </section>
   </main>
 </BaseLayout>
 
@@ -127,16 +153,16 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
   const EMAIL_PREF_KEY = 'maryan_radar_email_pref';
 
   const els = {
+    heroSavedBtn: document.getElementById('heroSavedBtn'),
+    toggleFiltersBtn: document.getElementById('toggleFiltersBtn'),
+    filtersPanel: document.getElementById('filtersPanel'),
     radarSearch: document.getElementById('radarSearch'),
     radarTheme: document.getElementById('radarTheme'),
     radarLevel: document.getElementById('radarLevel'),
     radarType: document.getElementById('radarType'),
     radarList: document.getElementById('radarList'),
     radarResultsCount: document.getElementById('radarResultsCount'),
-    savedCount: document.getElementById('savedCount'),
-    exportSavedBtn: document.getElementById('exportSavedBtn'),
-    clearSavedBtn: document.getElementById('clearSavedBtn'),
-    radarEmailPref: document.getElementById('radarEmailPref'),
+    saveEmailPrefBtn: document.getElementById('saveEmailPrefBtn'),
     radarEmailNote: document.getElementById('radarEmailNote'),
     digestPreview: document.getElementById('digestPreview')
   };
@@ -147,7 +173,9 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     level: 'all',
     type: 'all',
     saved: [],
-    emailPref: 'aucun'
+    emailPref: 'aucun',
+    savedOnly: false,
+    filtersOpen: false
   };
 
   function esc(value) {
@@ -181,7 +209,7 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
   function formatDate(value) {
     return new Date(value).toLocaleDateString('fr-FR', {
       day: 'numeric',
-      month: 'long',
+      month: 'short',
       year: 'numeric'
     });
   }
@@ -196,8 +224,7 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
       item.summary.whyImportant,
       item.summary.whoConcerned,
       item.summary.whatChanges,
-      item.summary.toWatch,
-      item.summary.toDo.join(' ')
+      item.summary.toWatch
     ].join(' ').toLowerCase();
   }
 
@@ -207,54 +234,53 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
       .filter((item) => state.theme === 'all' || item.theme === state.theme)
       .filter((item) => state.level === 'all' || item.level === state.level)
       .filter((item) => state.type === 'all' || item.type === state.type)
+      .filter((item) => !state.savedOnly || state.saved.includes(item.id))
       .filter((item) => !query || normalizeText(item).includes(query))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }
-
-  function savedItems() {
-    return initialItems.filter((item) => state.saved.includes(item.id));
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 10);
   }
 
   function digestItems() {
-    const preferred = savedItems();
-    const source = preferred.length ? preferred : filteredItems();
+    const source = state.saved.length
+      ? initialItems.filter((item) => state.saved.includes(item.id))
+      : filteredItems();
     const limit = state.emailPref === 'hebdomadaire' ? 5 : 3;
     return source.slice(0, limit);
   }
 
-  function renderEmailNote() {
-    const userEmail = localStorage.getItem('user_email');
-    const byline = state.emailPref === 'aucun'
-      ? 'Aucun envoi automatique pour le moment.'
-      : `Préférence enregistrée : ${state.emailPref}.`;
+  function renderResultsCount() {
+    const count = filteredItems().length;
+    const prefix = state.savedOnly ? 'Mes sujets' : 'Signaux';
+    els.radarResultsCount.textContent = `${prefix} · ${count} ${count > 1 ? 'items' : 'item'}`;
+  }
 
-    els.radarEmailNote.textContent = userEmail
-      ? `${byline} Adresse retenue sur cet appareil : ${userEmail}.`
-      : `${byline} Aucune adresse locale détectée pour l’instant.`;
+  function renderEmailNote(message = '') {
+    if (message) {
+      els.radarEmailNote.textContent = message;
+      return;
+    }
+
+    if (state.emailPref === 'aucun') {
+      els.radarEmailNote.textContent = 'Aucun envoi automatique pour le moment.';
+      return;
+    }
+
+    els.radarEmailNote.textContent = `Préférence enregistrée sur cet appareil : ${state.emailPref}.`;
   }
 
   function renderDigest() {
     const items = digestItems();
     if (!items.length) {
-      els.digestPreview.innerHTML = '<p class="radar-empty-note">Aucun item à afficher dans l’aperçu pour ce filtre.</p>';
+      els.digestPreview.innerHTML = '<p class="radar-empty-copy">Aucun signal sauvegardé pour le moment.</p>';
       return;
     }
 
     els.digestPreview.innerHTML = items.map((item) => `
-      <article class="digest-card">
-        <div class="digest-title">${esc(item.title)}</div>
-        <div class="digest-body">${esc(item.summary.whyImportant)}</div>
-        <div class="digest-action">${esc(item.summary.toDo[0] || 'Aucune action immédiate renseignée.')}</div>
+      <article class="radar-digest-item">
+        <div class="radar-digest-item-title">${esc(item.title)}</div>
+        <p>${esc(item.summary.whatChanges)}</p>
       </article>
     `).join('');
-  }
-
-  function renderCounts() {
-    const count = filteredItems().length;
-    els.radarResultsCount.textContent = `${count} ${count > 1 ? 'signaux' : 'signal'}`;
-
-    const savedCount = state.saved.length;
-    els.savedCount.textContent = `${savedCount} ${savedCount > 1 ? 'items sauvegardés' : 'item sauvegardé'}`;
   }
 
   function renderList() {
@@ -264,7 +290,7 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
       els.radarList.innerHTML = `
         <div class="card-v3 radar-empty-state">
           <h3>Aucun signal pour ce filtre</h3>
-          <p>Essayez une recherche plus large ou revenez à un filtre plus ouvert.</p>
+          <p>Revenez à un filtre plus large ou repassez sur tous les signaux.</p>
         </div>
       `;
       return;
@@ -273,47 +299,39 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     els.radarList.innerHTML = items.map((item) => {
       const isSaved = state.saved.includes(item.id);
       return `
-        <article class="card-v3 radar-card">
-          <div class="radar-card-head">
-            <div class="radar-card-heading">
-              <p class="radar-meta">${esc(formatDate(item.date))} · ${esc(item.source)}</p>
-              <h3>${esc(item.title)}</h3>
+        <article class="card-v3 radar-item">
+          <div class="radar-item-top">
+            <div class="radar-item-badges">
+              <span class="radar-item-badge">${esc(item.type)}</span>
+              <span class="radar-item-badge radar-item-badge--subtle">${esc(item.level)}</span>
             </div>
             <button class="radar-save-btn${isSaved ? ' active' : ''}" data-save-id="${esc(item.id)}">
               ${isSaved ? 'Sauvegardé' : 'Sauvegarder'}
             </button>
           </div>
 
-          <div class="radar-tags">
-            <span class="radar-tag">${esc(item.type)}</span>
-            <span class="radar-tag">${esc(item.level)}</span>
-            <span class="radar-tag">${esc(item.theme)}</span>
-          </div>
+          <h3>${esc(item.title)}</h3>
+          <p class="radar-item-source">${esc(item.source)} — ${esc(formatDate(item.date))}</p>
+          <p class="radar-item-who"><strong>Qui est concerné :</strong> ${esc(item.summary.whoConcerned)}</p>
 
-          <div class="radar-summary-grid">
-            <div class="radar-block">
-              <span class="radar-block-label">Pourquoi c’est important</span>
+          <div class="radar-item-grid">
+            <div class="radar-item-block">
+              <span class="radar-item-label">Impact</span>
               <p>${esc(item.summary.whyImportant)}</p>
             </div>
-            <div class="radar-block">
-              <span class="radar-block-label">Qui est concerné</span>
-              <p>${esc(item.summary.whoConcerned)}</p>
-            </div>
-            <div class="radar-block">
-              <span class="radar-block-label">Ce que ça change</span>
+            <div class="radar-item-block radar-item-block--accent">
+              <span class="radar-item-label">Ce que cela implique</span>
               <p>${esc(item.summary.whatChanges)}</p>
             </div>
-            <div class="radar-block">
-              <span class="radar-block-label">À surveiller</span>
+            <div class="radar-item-block">
+              <span class="radar-item-label">À surveiller</span>
               <p>${esc(item.summary.toWatch)}</p>
             </div>
           </div>
 
-          <div class="radar-actions">
-            <span class="radar-block-label">À faire</span>
-            <ul>
-              ${item.summary.toDo.map((action) => `<li>${esc(action)}</li>`).join('')}
-            </ul>
+          <div class="radar-item-actions">
+            <button class="radar-action-btn" data-save-id="${esc(item.id)}">${isSaved ? 'Retirer' : 'Sauvegarder'}</button>
+            <a class="radar-action-link" href="${esc(item.sourceUrl || '#')}" ${item.sourceUrl ? 'target="_blank" rel="noopener noreferrer"' : 'aria-disabled="true"'}>Voir la source</a>
           </div>
         </article>
       `;
@@ -336,29 +354,32 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     });
   }
 
-  function exportSaved() {
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      emailPreference: state.emailPref,
-      items: savedItems()
-    };
-
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'maryan-radar-sauvegardes.json';
-    anchor.click();
-    URL.revokeObjectURL(url);
+  function syncFilterPanel() {
+    els.filtersPanel.classList.toggle('is-open', state.filtersOpen);
+    els.toggleFiltersBtn.setAttribute('aria-expanded', String(state.filtersOpen));
+    els.heroSavedBtn.textContent = state.savedOnly ? 'Tous les signaux' : 'Mes sujets';
   }
 
-  function clearSaved() {
-    state.saved = [];
-    persistState();
-    renderAll();
+  function renderAll() {
+    renderResultsCount();
+    renderList();
+    renderEmailNote();
+    renderDigest();
+    syncFilterPanel();
   }
 
   function bindEvents() {
+    els.heroSavedBtn.addEventListener('click', () => {
+      state.savedOnly = !state.savedOnly;
+      renderAll();
+      document.getElementById('radar-list-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    els.toggleFiltersBtn.addEventListener('click', () => {
+      state.filtersOpen = !state.filtersOpen;
+      syncFilterPanel();
+    });
+
     els.radarSearch.addEventListener('input', () => {
       state.search = els.radarSearch.value;
       renderAll();
@@ -379,160 +400,146 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
       renderAll();
     });
 
-    els.radarEmailPref.addEventListener('change', () => {
-      state.emailPref = els.radarEmailPref.value;
-      persistState();
-      renderEmailNote();
-      renderDigest();
+    document.querySelectorAll('input[name="radarEmailPref"]').forEach((input) => {
+      input.addEventListener('change', () => {
+        state.emailPref = input.value;
+      });
     });
 
-    els.exportSavedBtn.addEventListener('click', exportSaved);
-    els.clearSavedBtn.addEventListener('click', clearSaved);
-  }
-
-  function renderAll() {
-    renderCounts();
-    renderList();
-    renderEmailNote();
-    renderDigest();
+    els.saveEmailPrefBtn.addEventListener('click', () => {
+      persistState();
+      renderEmailNote('Préférence enregistrée sur cet appareil.');
+      renderDigest();
+    });
   }
 
   loadState();
-  els.radarEmailPref.value = state.emailPref;
+  const selectedEmailPref = document.querySelector(`input[name="radarEmailPref"][value="${state.emailPref}"]`);
+  if (selectedEmailPref) selectedEmailPref.checked = true;
   bindEvents();
   renderAll();
 </script>
 
 <style>
+  .radar-page {
+    background: var(--bg);
+    padding-bottom: 6rem;
+  }
+
   .radar-hero {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(180deg, var(--deep) 0%, #10223f 100%);
-    padding-bottom: 4rem;
+    background: var(--deep);
+    color: white;
+    padding: 5.5rem 0 4rem;
   }
 
-  .header-white-force :global(h1),
-  .header-white-force :global(p),
-  .header-white-force :global(.back-link-v3) {
-    color: white !important;
+  .radar-hero-inner {
+    max-width: 56rem;
   }
 
-  .hero-glow {
-    position: absolute;
-    width: 40vw;
-    height: 40vw;
-    filter: blur(100px);
-    opacity: 0.1;
-    z-index: 1;
-    pointer-events: none;
+  .radar-hero h1 {
+    color: white;
+    font-size: clamp(2.4rem, 7vw, 4.5rem);
+    line-height: 0.95;
+    margin-bottom: 0.9rem;
   }
 
-  .glow-red {
-    top: -10%;
-    left: -10%;
-    background: var(--accent-red);
+  .radar-hero-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.82);
+    margin-bottom: 1.5rem;
   }
 
-  .glow-green {
-    bottom: -10%;
-    right: -10%;
-    background: var(--neon);
+  .radar-hero-accent {
+    max-width: 42rem;
+    font-size: clamp(1.15rem, 2.6vw, 1.55rem);
+    line-height: 1.35;
+    color: white;
+    margin-bottom: 1rem;
   }
 
-  .relative-z {
-    position: relative;
-    z-index: 5;
+  .radar-hero-copy {
+    max-width: 44rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 2rem;
   }
 
-  .radar-hero-signals {
+  .radar-hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
-    justify-content: center;
-    margin: 0 auto;
-    max-width: 48rem;
+    gap: 0.85rem;
   }
 
-  .radar-signal-card {
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 0.8rem 1rem;
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    color: white;
+  .radar-how,
+  .radar-controls-section,
+  .radar-list-section,
+  .radar-email-section,
+  .radar-signature {
+    padding-top: 2rem;
   }
 
-  .radar-page {
-    padding: 4rem 0 7rem;
-  }
-
-  .radar-layout {
+  .radar-how-inner {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: 1.5rem;
     align-items: start;
   }
 
-  .radar-sidebar {
+  .radar-how-inner h2,
+  .radar-list-head h2,
+  .radar-controls-head h2,
+  .radar-email-copy h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--deep);
+    margin-bottom: 0.3rem;
+  }
+
+  .radar-how-list {
     display: grid;
-    gap: 1rem;
-    order: 2;
-    position: sticky;
-    top: 96px;
+    gap: 0.6rem;
   }
 
-  .radar-main {
-    display: grid;
-    gap: 1rem;
-    order: 1;
+  .radar-how-list p {
+    margin: 0;
+    color: #41505B;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
-  .radar-side-card,
-  .radar-controls-card,
-  .radar-card,
-  .radar-empty-state {
-    border-radius: 24px;
-    padding: 1.5rem;
-  }
-
-  .radar-side-card:hover,
-  .radar-controls-card:hover,
-  .radar-card:hover,
-  .radar-empty-state:hover {
-    transform: none;
-    box-shadow: none;
-    border-color: var(--border);
-  }
-
-  .radar-side-card h2,
-  .radar-controls-card h2,
-  .radar-empty-state h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.55rem;
-  }
-
-  .radar-side-copy,
-  .radar-controls-note,
-  .radar-list-note,
-  .radar-empty-state p {
-    color: #54636C;
-    font-size: 0.92rem;
-    line-height: 1.6;
-  }
-
-  .radar-controls-header {
+  .radar-controls-head,
+  .radar-list-head {
     display: flex;
     align-items: end;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
 
-  .radar-controls-grid {
+  .radar-filter-toggle {
+    display: none;
+    padding: 0.95rem 1.15rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--deep);
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .radar-filters-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 1.5rem;
+  }
+
+  .radar-filters-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.85rem;
   }
 
@@ -541,12 +548,16 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     gap: 0.45rem;
   }
 
+  .radar-search-field {
+    margin-bottom: 0.85rem;
+  }
+
   .radar-field span {
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #6b7780;
+    color: #4F5E68;
   }
 
   .radar-field input,
@@ -554,50 +565,30 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     width: 100%;
     border-radius: 14px;
     border: 1px solid var(--border);
-    background: #fcfcfb;
+    background: #FCFCFB;
     padding: 0.95rem 1rem;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     color: var(--deep);
     font-family: inherit;
   }
 
   .radar-field input:focus,
-  .radar-field select:focus {
-    outline: none;
-    border-color: var(--deep);
-    background: white;
+  .radar-field select:focus,
+  .radar-save-btn:focus-visible,
+  .radar-action-btn:focus-visible,
+  .radar-action-link:focus-visible,
+  .radar-filter-toggle:focus-visible,
+  .radar-email-option:focus-within {
+    outline: 2px solid var(--accent-red);
+    outline-offset: 2px;
   }
 
-  .radar-helper {
-    margin-top: 0.75rem;
-    color: #6b7780;
+  .radar-results-count {
+    margin: 0;
     font-size: 0.82rem;
-    line-height: 1.5;
-  }
-
-  .radar-button-stack {
-    display: grid;
-    gap: 0.65rem;
-    margin-top: 1rem;
-  }
-
-  .radar-btn-full {
-    width: 100%;
-  }
-
-  .radar-list-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.35rem 0.15rem;
-  }
-
-  #radarResultsCount {
-    font-size: 0.8rem;
     font-weight: 800;
-    text-transform: uppercase;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--accent-red);
   }
 
@@ -606,80 +597,89 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     gap: 1rem;
   }
 
-  .radar-card-head {
+  .radar-item {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+
+  .radar-item:hover {
+    transform: none;
+    border-color: var(--border);
+    box-shadow: none;
+  }
+
+  .radar-item-top {
     display: flex;
     align-items: start;
     justify-content: space-between;
     gap: 1rem;
+    margin-bottom: 1rem;
   }
 
-  .radar-meta {
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    color: #6b7780;
-    margin-bottom: 0.55rem;
-  }
-
-  .radar-card h3 {
-    font-size: 1.25rem;
-    line-height: 1.2;
-  }
-
-  .radar-save-btn {
-    flex-shrink: 0;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: #fff;
-    color: var(--deep);
-    padding: 0.7rem 0.95rem;
-    font-size: 0.8rem;
-    font-weight: 800;
-    cursor: pointer;
-  }
-
-  .radar-save-btn.active {
-    border-color: var(--deep);
-    background: var(--deep);
-    color: white;
-  }
-
-  .radar-tags {
+  .radar-item-badges {
     display: flex;
-    flex-wrap: wrap;
     gap: 0.5rem;
-    margin: 1rem 0 1.2rem;
+    flex-wrap: wrap;
   }
 
-  .radar-tag {
+  .radar-item-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 0.35rem 0.7rem;
     border-radius: 999px;
-    background: #f5f7f8;
-    border: 1px solid var(--border);
-    color: #55636d;
+    padding: 0.35rem 0.75rem;
+    background: var(--deep);
+    color: white;
     font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
 
-  .radar-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem;
-  }
-
-  .radar-block {
-    padding: 1rem;
-    border-radius: 18px;
-    background: #fbfbfa;
+  .radar-item-badge--subtle {
+    background: #F4F6F7;
+    color: #51606B;
     border: 1px solid var(--border);
   }
 
-  .radar-block-label {
+  .radar-item h3 {
+    font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+    line-height: 1.2;
+    color: var(--deep);
+    margin-bottom: 0.45rem;
+  }
+
+  .radar-item-source,
+  .radar-item-who {
+    margin: 0;
+    color: #4D5B66;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .radar-item-who {
+    margin-top: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .radar-item-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .radar-item-block {
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: #FCFCFB;
+    padding: 1rem;
+  }
+
+  .radar-item-block--accent {
+    background: var(--deep);
+    border-color: transparent;
+  }
+
+  .radar-item-label {
     display: inline-block;
     margin-bottom: 0.45rem;
     font-size: 0.72rem;
@@ -689,110 +689,247 @@ import { maryanRadarItems, maryanRadarThemes, maryanRadarTypes, maryanRadarLevel
     color: var(--accent-red);
   }
 
-  .radar-block p,
-  .radar-actions li,
-  .digest-body,
-  .digest-action {
-    color: #41505b;
-    font-size: 0.92rem;
+  .radar-item-block--accent .radar-item-label {
+    color: var(--neon);
+  }
+
+  .radar-item-block p {
+    margin: 0;
+    color: #3F4D58;
+    font-size: 0.95rem;
     line-height: 1.6;
   }
 
-  .radar-actions {
-    margin-top: 0.95rem;
-    padding: 1rem 1rem 0.2rem;
+  .radar-item-block--accent p {
+    color: white;
+  }
+
+  .radar-item-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .radar-save-btn,
+  .radar-action-btn,
+  .radar-action-link {
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .radar-save-btn,
+  .radar-action-btn {
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--deep);
+  }
+
+  .radar-save-btn.active,
+  .radar-action-btn:hover {
+    background: var(--deep);
+    border-color: var(--deep);
+    color: white;
+  }
+
+  .radar-action-link {
+    border: 1px solid rgba(10, 25, 47, 0.12);
+    color: var(--accent-red);
+    background: transparent;
+  }
+
+  .radar-action-link:hover {
+    border-color: var(--accent-red);
+  }
+
+  .radar-email-card {
+    padding: 1.75rem;
+    border-radius: 24px;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .radar-email-copy p,
+  .radar-email-note,
+  .radar-empty-copy,
+  .radar-signature p {
+    margin: 0;
+    color: #41505B;
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+
+  .radar-email-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .radar-email-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: #FCFCFB;
+    color: var(--deep);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .radar-email-option input {
+    accent-color: var(--deep);
+  }
+
+  .radar-email-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .radar-digest {
+    padding-top: 1rem;
     border-top: 1px solid var(--border);
   }
 
-  .radar-actions ul {
-    padding-left: 1.2rem;
+  .radar-digest-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-red);
   }
 
-  .radar-actions li + li {
-    margin-top: 0.35rem;
-  }
-
-  .radar-digest-preview {
+  .radar-digest-list {
     display: grid;
     gap: 0.75rem;
   }
 
-  .digest-card {
-    padding: 0.95rem 1rem;
-    border-radius: 18px;
-    background: #fbfbfa;
+  .radar-digest-item {
+    border-radius: 16px;
     border: 1px solid var(--border);
+    background: #FCFCFB;
+    padding: 0.95rem 1rem;
   }
 
-  .digest-title {
+  .radar-digest-item-title {
     color: var(--deep);
     font-size: 0.92rem;
     font-weight: 800;
     line-height: 1.35;
+    margin-bottom: 0.35rem;
   }
 
-  .digest-body {
-    margin-top: 0.35rem;
+  .radar-digest-item p {
+    margin: 0;
+    color: #4B5A65;
+    font-size: 0.9rem;
+    line-height: 1.55;
   }
 
-  .digest-action {
-    margin-top: 0.5rem;
+  .radar-signature {
+    padding-bottom: 2rem;
+  }
+
+  .radar-empty-state {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+
+  .radar-empty-state h3 {
     color: var(--deep);
-    font-weight: 700;
+    margin-bottom: 0.35rem;
   }
 
-  .radar-empty-note {
-    color: #6b7780;
-    font-size: 0.88rem;
-    line-height: 1.5;
+  .radar-empty-state p {
+    margin: 0;
+    color: #4B5A65;
   }
 
-  @media (max-width: 1080px) {
-    .radar-layout {
+  @media (max-width: 920px) {
+    .radar-how-inner,
+    .radar-item-grid,
+    .radar-filters-grid {
       grid-template-columns: 1fr;
     }
 
-    .radar-sidebar {
-      order: 1;
-      position: static;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .radar-main {
-      order: 2;
-    }
-  }
-
-  @media (max-width: 860px) {
-    .radar-controls-grid,
-    .radar-summary-grid,
-    .radar-sidebar {
-      grid-template-columns: 1fr;
-    }
-
-    .radar-controls-header,
-    .radar-list-meta,
-    .radar-card-head {
+    .radar-controls-head,
+    .radar-list-head,
+    .radar-item-top {
       align-items: start;
       flex-direction: column;
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 720px) {
     .radar-page {
-      padding: 2.5rem 0 5rem;
+      padding-bottom: 4.5rem;
     }
 
-    .radar-side-card,
-    .radar-controls-card,
-    .radar-card,
-    .radar-empty-state {
+    .radar-hero {
+      padding: 4.5rem 0 3rem;
+    }
+
+    .radar-hero-title {
+      font-size: 1rem;
+    }
+
+    .radar-hero-accent {
+      font-size: 1.05rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .radar-hero-copy {
+      font-size: 0.96rem;
+    }
+
+    .radar-hero-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .radar-filter-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radar-filters-panel {
+      display: none;
+      margin-top: 0.75rem;
+    }
+
+    .radar-filters-panel.is-open {
+      display: block;
+    }
+
+    .radar-item {
       padding: 1.2rem;
-      border-radius: 20px;
     }
 
-    .radar-hero-signals {
-      justify-content: flex-start;
+    .radar-item-source,
+    .radar-item-who,
+    .radar-item-block p,
+    .radar-email-copy p,
+    .radar-email-note,
+    .radar-digest-item p {
+      font-size: 0.92rem;
+    }
+  }
+
+  @media (min-width: 721px) {
+    .radar-filters-panel {
+      display: block !important;
     }
   }
 </style>

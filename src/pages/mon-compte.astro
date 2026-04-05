@@ -1,232 +1,112 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CompteRenduManager from '../components/CompteRenduManager.astro';
-import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 ---
 
 <BaseLayout
   title="Mon Compte — MARYAN"
-  description="Votre espace personnel MARYAN : diagnostic, copilote, ressources et tests.">
+  description="Votre point d’entrée MARYAN : agir, comprendre et reprendre rapidement.">
 
-  <main class="dashboard-v3">
-    <div class="container">
+  <main class="dashboard-page">
+    <div class="container dashboard-layout">
+      <aside class="dashboard-sidebar">
+        <div class="dashboard-account card-v3">
+          <span class="label-v3">Compte</span>
+          <h2 id="profileName">Chargement…</h2>
+          <p id="profileMeta" class="dashboard-account-meta"></p>
 
-      <!-- PAYMENT SUCCESS BANNER (shown when ?session_id is present) -->
-      <div id="paymentSuccessBanner" class="payment-success-banner" style="display:none;">
-        <div class="payment-success-inner">
-          <span class="payment-success-icon">✓</span>
-          <div>
-            <strong>Abonnement activé !</strong>
-            <p>Votre paiement a été validé. Bienvenue dans MARYAN Plus — toutes les fonctionnalités sont maintenant disponibles.</p>
+          <div class="dashboard-account-stats">
+            <div class="dashboard-account-stat">
+              <span>Forfait</span>
+              <strong id="planVal">–</strong>
+            </div>
+            <div class="dashboard-account-stat">
+              <span>Email</span>
+              <strong id="userEmail">–</strong>
+            </div>
+          </div>
+
+          <div class="dashboard-account-actions">
+            <a id="sidebarAnalyseurLink" href="/offres" class="btn-secondary-v3">Décrypter un document</a>
+            <a href="/tests" class="btn-secondary-v3">Voir les tests</a>
+            <button id="exportDataBtn" class="btn-secondary-v3" type="button">Télécharger mes données</button>
+            <button id="logoutBtn" class="dashboard-logout-btn" type="button">Se déconnecter</button>
           </div>
         </div>
-      </div>
+      </aside>
 
-      <!-- SUCCESS BANNER -->
-      <div id="successBanner" class="success-banner" style="display:none;">
-        <strong>Bienvenue dans MARYAN Plus !</strong>
-        Votre abonnement a été activé. Accès illimité au Copilote et à la Bibliothèque.
-      </div>
-
-      <div class="dashboard-grid">
-
-        <!-- ═══ SIDEBAR ═══ -->
-        <aside class="dash-sidebar">
-          <div class="dash-profile card-v3">
-
-            <div class="profile-header">
-              <div class="avatar-circle" id="avatarInitials">–</div>
-              <div class="profile-text">
-                <h3 id="profileName">Chargement…</h3>
-                <p id="profileRole" class="profile-role-line"></p>
-              </div>
-            </div>
-
-            <hr class="dash-sep" />
-
-            <div class="profile-stat">
-              <span class="stat-label">Compte</span>
-              <p id="userEmail" class="stat-email"></p>
-              <button id="logoutBtn" class="logout-btn">Se déconnecter →</button>
-            </div>
-
-            <hr class="dash-sep" />
-
-            <div class="profile-stat">
-              <span class="stat-label">Forfait</span>
-              <p id="planVal" class="stat-val">–</p>
-              <a href="/offres" id="upgradeBtn" class="upgrade-btn" style="display:none;">Passer à MARYAN Plus →</a>
-            </div>
-
-            <div class="profile-stat">
-              <span class="stat-label">Copilote</span>
-              <div class="progress-bar">
-                <div id="progressFill" class="progress-fill" style="width:0%;"></div>
-              </div>
-              <p id="counterText" class="stat-sub"></p>
-            </div>
-
-          </div>
-        </aside>
-
-        <!-- ═══ CONTENU PRINCIPAL ═══ -->
-        <div class="dash-content">
-
-          <!-- 1. BONJOUR -->
-          <section class="dash-section dash-hello">
-            <h1 id="helloTitle" class="hello-title">Bonjour élu·e</h1>
-            <p id="helloSub" class="hello-sub">Que voulez-vous faire aujourd'hui ?</p>
-          </section>
-
-          <!-- 2. DIAGNOSTIC -->
-          <section class="dash-section" id="diagSection">
-            <div class="section-header-row">
-              <h2 class="dash-h2">Votre diagnostic MARYAN</h2>
-              <a href="/diagnostic" class="btn-link">Refaire →</a>
-            </div>
-
-            <!-- Diagnostic présent -->
-            <div id="diagPresent" class="diag-card card-v3" style="display:none;">
-              <div class="diag-header-row">
-                <div>
-                  <span class="diag-kicker">Résultat</span>
-                  <p id="diagLabel" class="diag-val">–</p>
-                </div>
-                <span id="diagBadge" class="diag-badge">–</span>
-              </div>
-              <p id="diagAccroche" class="diag-accroche"></p>
-            </div>
-
-            <!-- Pas de diagnostic -->
-            <div id="diagAbsent" class="diag-cta-card" style="display:none;">
-              <p>Vous n'avez pas encore effectué votre diagnostic MARYAN.</p>
-              <a href="/diagnostic" class="btn-primary-v3" style="margin-top:1.5rem; display:inline-flex;">Faire mon diagnostic</a>
-            </div>
-          </section>
-
-          <!-- 3. RESSOURCES RECOMMANDÉES -->
-          <section class="dash-section" id="ressourcesSection">
-            <div class="section-header-row">
-              <h2 class="dash-h2">Vos ressources recommandées</h2>
-              <a href="/ressources" class="btn-link">Toutes les fiches →</a>
-            </div>
-            <div id="ressourcesGrid" class="ressources-grid">
-              <!-- Injecté côté client -->
-            </div>
-          </section>
-
-          <!-- 4. SESSIONS RÉCENTES -->
-          <section class="dash-section" id="sessionsSection" style="display:none;">
-            <div class="section-header-row">
-              <h2 class="dash-h2">Vos sessions récentes</h2>
-              <div class="sessions-header-actions">
-                <button id="deleteAllSessionsBtn" class="btn-delete-all" title="Supprimer toutes mes sessions">Supprimer toutes mes sessions</button>
-                <a href="/copilote" class="btn-link">Nouveau →</a>
-              </div>
-            </div>
-            <div id="sessionsList" class="sessions-list"></div>
-          </section>
-
-          <!-- 5. RGPD — MES DONNÉES & CONFIDENTIALITÉ -->
-          <section class="dash-section rgpd-section" id="rgpdSection">
-            <h2>Mes données &amp; confidentialité</h2>
-
-            <!-- 5a. Affiliation politique (Article 9) -->
-            <div class="rgpd-item" id="rgpdAffilItem" style="display:none;">
-              <div class="rgpd-item-info">
-                <span class="rgpd-item-label">Affiliation politique</span>
-                <p id="rgpdAffilText"></p>
-              </div>
-              <button class="btn-rgpd btn-rgpd-danger" id="rgpdAffilBtn">Retirer mon affiliation</button>
-            </div>
-
-            <!-- 5b. Diagnostic -->
-            <div class="rgpd-item" id="rgpdDiagItem" style="display:none;">
-              <div class="rgpd-item-info">
-                <span class="rgpd-item-label">Diagnostic MARYAN</span>
-                <p id="rgpdDiagText"></p>
-              </div>
-              <button class="btn-rgpd btn-rgpd-danger" id="rgpdDiagBtn">Effacer mon diagnostic</button>
-            </div>
-
-            <!-- 5c. Export des données -->
-            <div class="rgpd-item">
-              <div class="rgpd-item-info">
-                <span class="rgpd-item-label">Export de mes données</span>
-                <p>Téléchargez une copie de toutes vos données personnelles (RGPD, Art. 20).</p>
-              </div>
-              <button class="btn-rgpd btn-rgpd-primary" id="rgpdExportBtn">Télécharger mes données (RGPD)</button>
-            </div>
-
-            <!-- 5d. Suppression du compte -->
-            <div class="rgpd-item">
-              <div class="rgpd-item-info" style="width:100%;">
-                <div class="rgpd-danger-zone">
-                  <p>La suppression est définitive et irréversible. Toutes vos données, sessions et profil seront supprimés.</p>
-                  <button class="btn-rgpd btn-rgpd-danger" id="rgpdDeleteAccountBtn">Supprimer mon compte définitivement</button>
-                </div>
-              </div>
-            </div>
-
-          </section>
-
-          <!-- 6. TESTS -->
-          <section class="dash-section" id="tests">
-            <div class="section-header-row">
-              <h2 class="dash-h2">Vos tests thématiques</h2>
-              <a href="/tests" class="btn-link">Voir tous →</a>
-            </div>
-            <div class="tests-grid">
-              <a href="/tests/style-decision" class="test-tile card-v3" data-key="maryan_test_decision">
-                <span class="test-num">01</span>
-                <h3>Mon style de décision</h3>
-                <p>Profil décisionnel, forces et angles morts.</p>
-                <span class="test-cta">Faire le test →</span>
-              </a>
-              <a href="/tests/posture-conflit" class="test-tile card-v3" data-key="maryan_test_conflit">
-                <span class="test-num">02</span>
-                <h3>Ma posture face au conflit</h3>
-                <p>Mode de gestion dominant et signaux d'alerte.</p>
-                <span class="test-cta">Faire le test →</span>
-              </a>
-              <a href="/tests/prise-de-parole" class="test-tile card-v3" data-key="maryan_test_parole">
-                <span class="test-num">03</span>
-                <h3>Préparer une prise de parole difficile</h3>
-                <p>Niveau de préparation réelle avant une prise de position.</p>
-                <span class="test-cta">Faire le test →</span>
-              </a>
-              <a href="/tests/travail-equipe" class="test-tile card-v3" data-key="maryan_test_equipe">
-                <span class="test-num">04</span>
-                <h3>Mon rapport au travail en équipe</h3>
-                <p>Profil d'équipe dominant et ce qu'il coûte aux autres.</p>
-                <span class="test-cta">Faire le test →</span>
-              </a>
-              <a href="/tests/deliberation" class="test-tile card-v3" data-key="maryan_test_deliberation">
-                <span class="test-num">05</span>
-                <h3>Préparer une délibération en conseil municipal</h3>
-                <p>Niveau de préparation avant le vote en conseil.</p>
-                <span class="test-cta">Faire le test →</span>
-              </a>
-            </div>
-          </section>
-
-          <!-- 6. COMPTES RENDUS -->
-          <section class="dash-section" id="cr">
-            <div class="section-header-row">
-              <h2 class="dash-h2">Mes Comptes Rendus</h2>
-              <button id="openRecorderBtn" class="upgrade-btn" style="border-bottom-color:var(--accent-red);">🎤 Créer par dictée</button>
-            </div>
-            <div id="recorderModal" class="recorder-modal" style="display:none;">
-              <div class="recorder-modal-overlay" onclick="document.getElementById('recorderModal').style.display='none';"></div>
-              <div class="recorder-modal-content card-v3">
-                <button class="recorder-close-btn" onclick="document.getElementById('recorderModal').style.display='none';">✕</button>
-                <CompteRenduRecorder />
-              </div>
-            </div>
-            <CompteRenduManager readonly={false} />
-          </section>
-
+      <div class="dashboard-main">
+        <div id="paymentBanner" class="dashboard-banner" style="display:none;">
+          <strong>Abonnement activé</strong>
+          <p>Votre accès MARYAN Plus est maintenant disponible.</p>
         </div>
+
+        <section class="dashboard-hero card-v3">
+          <span class="label-v3">Mon espace</span>
+          <h1 id="helloTitle">Bonjour élu·e,</h1>
+          <p id="helloLead" class="dashboard-hero-copy">Chargement…</p>
+        </section>
+
+        <section class="dashboard-block">
+          <div class="dashboard-block-head">
+            <div>
+              <h2>Que souhaitez-vous faire ?</h2>
+            </div>
+          </div>
+
+          <div class="dashboard-action-grid">
+            <a href="/diagnostic" class="dashboard-action-card" data-intent="comprendre">
+              <span>Comprendre une situation</span>
+            </a>
+            <a href="/copilote" class="dashboard-action-card" data-intent="decision">
+              <span>Prendre une décision</span>
+            </a>
+            <a href="/copilote" class="dashboard-action-card" data-intent="sensible">
+              <span>Gérer une situation sensible</span>
+            </a>
+            <a href="/copilote" class="dashboard-action-card" data-intent="reponse">
+              <span>Rédiger une réponse</span>
+            </a>
+          </div>
+
+          <div class="dashboard-support-row">
+            <span id="analyseurSupportBadge" class="dashboard-support-badge">Service abonné</span>
+            <a id="dashboardAnalyseurLink" href="/offres" class="dashboard-support-link">Décrypter un document officiel</a>
+          </div>
+        </section>
+
+        <section class="dashboard-block">
+          <div class="dashboard-block-head">
+            <div>
+              <h2>Le Radar de MARYAN</h2>
+              <p>Trois signaux utiles. Pas plus.</p>
+            </div>
+            <a href="/radar" class="btn-link">Voir le Radar complet →</a>
+          </div>
+
+          <div id="dashboardRadarList" class="dashboard-radar-list"></div>
+        </section>
+
+        <section class="dashboard-block">
+          <div class="dashboard-block-head">
+            <div>
+              <h2>Vos sujets du moment</h2>
+              <p id="topicsLead">Des points d’appui choisis à partir de votre diagnostic.</p>
+            </div>
+            <a href="/ressources" class="btn-link">Explorer les ressources →</a>
+          </div>
+
+          <div id="topicsGrid" class="dashboard-topics-grid"></div>
+        </section>
+
+        <section class="dashboard-block">
+          <div class="dashboard-block-head">
+            <div>
+              <h2>Reprendre</h2>
+            </div>
+          </div>
+
+          <div id="resumeCard" class="dashboard-resume-card card-v3"></div>
+        </section>
       </div>
     </div>
   </main>
@@ -236,425 +116,274 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 <script>
   import { createClient } from '@supabase/supabase-js';
   import { getRecommendedResources, maryanResources } from '../data/resources';
-  import { buildStoredDiagnosticEntry, getDiagnosticAccroche } from '../lib/diagnostic-personalization';
-
-  // ── Payment success banner (when redirected from Stripe checkout) ──
-  if (window.location.search.includes('session_id')) {
-    const paymentBanner = document.getElementById('paymentSuccessBanner');
-    if (paymentBanner) paymentBanner.style.display = 'block';
-    // Clean up URL to avoid showing banner on refresh
-    window.history.replaceState({}, '', '/mon-compte');
-  }
+  import { maryanRadarItems } from '../data/radar';
+  import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
 
-  // ── Fiches génériques si pas de diagnostic ──
-  const FICHES_GENERIQUES = [
-    { slug: 'qui-decide-quoi-dans-la-collectivite', title: 'Qui décide quoi dans la collectivité ?' },
-    { slug: 'le-conseil-municipal-a-quoi-il-sert-vraiment', title: 'Le conseil municipal : à quoi sert-il vraiment ?' },
-    { slug: 'prendre-la-parole-en-conseil', title: 'Prendre la parole en conseil municipal' }
+  const ANGLES_BY_PROFILE = {
+    mandat_recent: ['compréhension', 'repères', 'décision'],
+    arbitrage: ['compréhension', 'arbitrage', 'décision'],
+    isolement: ['clarification', 'appuis', 'sécurisation'],
+    surcharge: ['priorisation', 'sécurisation', 'décision'],
+    exposition: ['vigilance', 'parole', 'sécurisation'],
+    tension_relationnelle: ['relation', 'cadre', 'décision'],
+    besoin_methode: ['compréhension', 'méthode', 'décision'],
+    prise_de_parole: ['parole', 'vigilance', 'décision'],
+    gouvernance: ['circuits', 'sécurisation', 'décision']
+  } as const;
+
+  const GENERIC_RESOURCES = [
+    'qui-decide-quoi-dans-la-collectivite',
+    'le-conseil-municipal-a-quoi-il-sert-vraiment',
+    'prendre-la-parole-en-conseil',
+    'comment-se-prend-une-decision-dans-une-commune'
   ];
 
-  // ── Formatage de date ──
-  function formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
-    } catch { return ''; }
+  function escapeHtml(value: unknown): string {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
   }
 
-  // ── Badge session type ──
-  function sessionTypeBadge(type: string): string {
+  function formatShortDate(iso: string): string {
+    try {
+      return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    } catch {
+      return '';
+    }
+  }
+
+  function sessionLabel(type: string): string {
     const labels: Record<string, string> = {
       copilote: 'Copilote',
-      cr_reunion: 'CR réunion',
+      cr_reunion: 'Compte rendu',
       analyse: 'Analyse'
     };
-    return labels[type] || type;
+    return labels[type] || 'Session';
+  }
+
+  function sessionHref(session: { id: string; session_type: string }): string {
+    if (session.session_type === 'analyse') return '/analyseur';
+    return `/copilote?session_id=${session.id}`;
   }
 
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     window.location.href = '/login';
   } else {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    const { data: { session } } = await supabase.auth.getSession();
 
+    if (window.location.search.includes('session_id')) {
+      const paymentBanner = document.getElementById('paymentBanner');
+      if (paymentBanner) paymentBanner.style.display = 'block';
+      window.history.replaceState({}, '', '/mon-compte');
+    }
+
+    const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       window.location.href = '/login';
     } else {
       const user = session.user;
       const token = session.access_token;
 
-      // ── Email & avatar ──
-      const emailEl = document.getElementById('userEmail');
-      if (emailEl) emailEl.textContent = user.email || '';
-      const initials = (user.email || 'EU').slice(0, 2).toUpperCase();
-      const avatarEl = document.getElementById('avatarInitials');
-      if (avatarEl) avatarEl.textContent = initials;
-
-      // ── Déconnexion ──
-      document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = '/login';
-      });
-
-      // ── Profil Supabase ──
       const { data: profile } = await supabase
         .from('profiles')
-        .select('first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label')
+        .select('first_name, commune, role, diagnostic_key, diagnostic_label, plan')
         .eq('id', user.id)
         .single();
 
       const firstName = profile?.first_name || '';
-      const diagKey = profile?.diagnostic_key || '';
-      const diagLabel = profile?.diagnostic_label || '';
+      const role = profile?.role || 'élu·e local·e';
+      const commune = profile?.commune || '';
       const plan = profile?.plan || 'gratuit';
+      const isSubscriber = plan === 'plus' || plan === 'admin';
 
-      // ── Bonjour ──
-      const helloTitle = document.getElementById('helloTitle');
-      if (helloTitle) {
-        helloTitle.textContent = firstName ? `Bonjour ${firstName}` : 'Bonjour élu·e';
-      }
-      const helloSub = document.getElementById('helloSub');
-      if (helloSub && profile?.role) {
-        helloSub.textContent = `${profile.role}${profile.commune ? ' — ' + profile.commune : ''}`;
-      }
-
-      // ── Profil sidebar ──
-      const profileNameEl = document.getElementById('profileName');
-      if (profileNameEl) profileNameEl.textContent = firstName || user.email?.split('@')[0] || 'Mon compte';
-      const profileRoleEl = document.getElementById('profileRole');
-      if (profileRoleEl && (profile?.role || profile?.commune)) {
-        profileRoleEl.textContent = [profile.role, profile.commune].filter(Boolean).join(' — ');
-      }
-
-      // ── Plan ──
-      const planVal = document.getElementById('planVal');
-      if (planVal) planVal.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
-      const upgradeBtn = document.getElementById('upgradeBtn');
-      if (upgradeBtn && plan !== 'plus' && plan !== 'admin') {
-        (upgradeBtn as HTMLElement).style.display = 'inline-block';
-      }
-
-      // ── Avatar initiales depuis prénom ──
-      if (firstName && avatarEl) {
-        avatarEl.textContent = firstName.slice(0, 2).toUpperCase();
-      }
-
-      // ── Crédit copilote (simulé) ──
-      const progressFill = document.getElementById('progressFill') as HTMLElement | null;
-      const counterText = document.getElementById('counterText');
-      if (plan === 'plus' || plan === 'admin') {
-        if (progressFill) progressFill.style.width = '100%';
-        if (counterText) counterText.textContent = 'Accès illimité';
-      } else {
-        if (progressFill) progressFill.style.width = '60%';
-        if (counterText) counterText.textContent = '3 messages restants aujourd\'hui';
-      }
-
-      // ── Diagnostic ──
-      const diagPresent = document.getElementById('diagPresent');
-      const diagAbsent = document.getElementById('diagAbsent');
+      document.getElementById('profileName')!.textContent = firstName || user.email?.split('@')[0] || 'Mon compte';
+      document.getElementById('profileMeta')!.textContent = [role, commune].filter(Boolean).join(' — ');
+      document.getElementById('userEmail')!.textContent = user.email || '';
+      document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
 
       let localDiagnosticRaw = {} as Record<string, any>;
       try {
         const raw = localStorage.getItem('maryan_v4_diag');
-        if (raw) {
-          localDiagnosticRaw = JSON.parse(raw);
-        }
-      } catch (_) {}
+        if (raw) localDiagnosticRaw = JSON.parse(raw);
+      } catch {
+        // noop
+      }
 
       const diagnosticState = buildStoredDiagnosticEntry({
         ...localDiagnosticRaw,
-        diagnostic_key: diagKey || localDiagnosticRaw?.diagnostic_key,
-        diagnostic_label: diagLabel || localDiagnosticRaw?.diagnostic_label
+        diagnostic_key: profile?.diagnostic_key || localDiagnosticRaw?.diagnostic_key,
+        diagnostic_label: profile?.diagnostic_label || localDiagnosticRaw?.diagnostic_label
       }, maryanResources);
 
       try {
         if (diagnosticState.diagnostic_key || diagnosticState.profile || diagnosticState.recommended_slugs?.length) {
           localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
         }
-        const storedProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-        if (diagnosticState.profile) {
-          localStorage.setItem('maryan_profile', JSON.stringify({
-            ...storedProfile,
-            diagnosticProfile: diagnosticState.profile
-          }));
-        }
-      } catch (_) {}
-
-      if (diagnosticState.diagnostic_key || diagnosticState.diagnostic_label) {
-        if (diagPresent) diagPresent.style.display = 'block';
-        if (diagAbsent) diagAbsent.style.display = 'none';
-        const diagLabelEl = document.getElementById('diagLabel');
-        if (diagLabelEl) diagLabelEl.textContent = diagnosticState.diagnostic_label || diagnosticState.diagnostic_key;
-        const diagBadge = document.getElementById('diagBadge');
-        if (diagBadge) diagBadge.textContent = (diagnosticState.profile || diagnosticState.diagnostic_key || '').replaceAll('_', ' ');
-        const diagAccroche = document.getElementById('diagAccroche');
-        if (diagAccroche) {
-          diagAccroche.textContent = getDiagnosticAccroche(diagnosticState);
-        }
-      } else {
-        if (diagPresent) diagPresent.style.display = 'none';
-        if (diagAbsent) diagAbsent.style.display = 'block';
+      } catch {
+        // noop
       }
 
-      // ── Ressources recommandées ──
-      const ressourcesGrid = document.getElementById('ressourcesGrid');
-      if (ressourcesGrid) {
+      const helloTitle = document.getElementById('helloTitle');
+      if (helloTitle) {
+        helloTitle.textContent = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
+      }
+
+      const profileAngles = diagnosticState.profile
+        ? ANGLES_BY_PROFILE[diagnosticState.profile as keyof typeof ANGLES_BY_PROFILE]
+        : null;
+
+      const angles = profileAngles
+        ? profileAngles
+        : ['compréhension', 'sécurisation', 'décision'];
+
+      const helloLead = document.getElementById('helloLead');
+      if (helloLead) {
+        const roleSentence = [role, commune ? `à ${commune}` : 'dans votre collectivité'].join(' ');
+        helloLead.textContent = `Vous êtes ${roleSentence}. MARYAN privilégie aujourd’hui : ${angles.join(', ')}.`;
+      }
+
+      const sidebarAnalyseurLink = document.getElementById('sidebarAnalyseurLink') as HTMLAnchorElement;
+      const dashboardAnalyseurLink = document.getElementById('dashboardAnalyseurLink') as HTMLAnchorElement;
+      const analyseurSupportBadge = document.getElementById('analyseurSupportBadge');
+
+      if (isSubscriber) {
+        sidebarAnalyseurLink.href = '/analyseur';
+        dashboardAnalyseurLink.href = '/analyseur';
+        analyseurSupportBadge!.textContent = 'Inclus dans votre abonnement';
+      } else {
+        sidebarAnalyseurLink.href = '/offres';
+        dashboardAnalyseurLink.href = '/offres';
+        sidebarAnalyseurLink.textContent = 'Décrypter un document (Plus)';
+        analyseurSupportBadge!.textContent = 'Réservé aux abonné·es';
+        analyseurSupportBadge?.classList.add('dashboard-support-badge--locked');
+      }
+
+      const radarList = document.getElementById('dashboardRadarList');
+      if (radarList) {
+        const radarItems = [...maryanRadarItems]
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 3);
+
+        radarList.innerHTML = radarItems.map((item) => `
+          <article class="dashboard-radar-card">
+            <div class="dashboard-radar-top">
+              <span class="dashboard-radar-badge">${escapeHtml(item.type)}</span>
+              <span class="dashboard-radar-date">${escapeHtml(formatShortDate(item.date))}</span>
+            </div>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p><strong>Impact</strong> ${escapeHtml(item.summary.whyImportant)}</p>
+            <p><strong>Implication</strong> ${escapeHtml(item.summary.whatChanges)}</p>
+          </article>
+        `).join('');
+      }
+
+      const topicsGrid = document.getElementById('topicsGrid');
+      const topicsLead = document.getElementById('topicsLead');
+      if (topicsGrid) {
         let resources = diagnosticState.profile
-          ? getRecommendedResources(maryanResources, diagnosticState.profile)
+          ? getRecommendedResources(maryanResources, diagnosticState.profile).slice(0, 5)
           : [];
 
         if (!resources.length && diagnosticState.recommended_slugs?.length) {
           resources = diagnosticState.recommended_slugs
-            .slice(0, 3)
+            .slice(0, 5)
             .map((slug: string) => maryanResources.find((resource) => resource.slug === slug))
             .filter(Boolean);
         }
 
         if (!resources.length) {
-          resources = FICHES_GENERIQUES
-            .map(({ slug }) => maryanResources.find((resource) => resource.slug === slug))
+          resources = GENERIC_RESOURCES
+            .map((slug) => maryanResources.find((resource) => resource.slug === slug))
             .filter(Boolean);
         }
 
-        ressourcesGrid.innerHTML = resources.map((resource) => `
-          <a href="/ressources/${resource.slug}" class="ressource-tile card-v3">
-            <span class="ressource-num">→</span>
-            <p class="ressource-title">${resource.title}</p>
-            <span class="ressource-cta">Consulter →</span>
+        if (topicsLead && !diagnosticState.profile) {
+          topicsLead.textContent = 'Des points d’appui sobres pour avancer tout de suite.';
+        }
+
+        topicsGrid.innerHTML = resources.map((resource) => `
+          <a href="/ressources/${escapeHtml(resource.slug)}" class="dashboard-topic-card">
+            <span>${escapeHtml(resource.title)}</span>
           </a>
         `).join('');
       }
 
-      // ── Sessions récentes ──
+      const resumeCard = document.getElementById('resumeCard');
+      if (resumeCard) {
+        resumeCard.innerHTML = `
+          <div class="dashboard-resume-empty">
+            <p class="dashboard-resume-label">Point d’entrée</p>
+            <h3>Commencer par le diagnostic</h3>
+            <p>En quelques minutes, vous obtenez une première direction claire.</p>
+            <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+          </div>
+        `;
+      }
+
       try {
-        const res = await fetch('/api/sessions', {
+        const response = await fetch('/api/sessions', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (res.ok) {
-          const { sessions } = await res.json();
-          const sessionsSection = document.getElementById('sessionsSection');
-          const sessionsList = document.getElementById('sessionsList');
-          if (sessions?.length && sessionsSection && sessionsList) {
-            sessionsSection.style.display = 'block';
 
-            function renderSessions(list: { id: string; session_type: string; titre: string; updated_at: string; }[]) {
-              if (!sessionsList) return;
-              sessionsList.innerHTML = list.slice(0, 5).map((s) => `
-                <div class="session-row" data-session-id="${s.id}">
-                  <a href="/copilote?session_id=${s.id}" class="session-item">
-                    <div class="session-meta">
-                      <span class="session-badge session-badge-${s.session_type}">${sessionTypeBadge(s.session_type)}</span>
-                      <span class="session-date">${formatDate(s.updated_at)}</span>
-                    </div>
-                    <p class="session-titre">${s.titre || 'Session sans titre'}</p>
-                    <span class="session-cta">Reprendre →</span>
-                  </a>
-                  <button class="btn-delete-session" data-session-id="${s.id}" title="Supprimer cette session" aria-label="Supprimer cette session">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                    Supprimer
-                  </button>
-                </div>
-              `).join('');
+        if (response.ok) {
+          const { sessions } = await response.json();
+          const latestSession = Array.isArray(sessions) ? sessions[0] : null;
 
-              // Attacher les écouteurs sur les boutons de suppression
-              sessionsList.querySelectorAll('.btn-delete-session').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                  e.preventDefault();
-                  const sessionId = (btn as HTMLElement).dataset.sessionId;
-                  if (!sessionId) return;
-                  if (!confirm('Supprimer cette session ? Cette action est irréversible.')) return;
-                  try {
-                    const delRes = await fetch('/api/sessions', {
-                      method: 'DELETE',
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({ session_id: sessionId })
-                    });
-                    if (delRes.ok) {
-                      const row = sessionsList?.querySelector(`.session-row[data-session-id="${sessionId}"]`);
-                      if (row) row.remove();
-                      if (!sessionsList?.querySelector('.session-row')) {
-                        if (sessionsSection) sessionsSection.style.display = 'none';
-                      }
-                    }
-                  } catch (_) { /* non bloquant */ }
-                });
-              });
-            }
-
-            renderSessions(sessions);
-
-            // Bouton "Supprimer toutes mes sessions"
-            document.getElementById('deleteAllSessionsBtn')?.addEventListener('click', async () => {
-              if (!confirm('Supprimer toutes vos sessions ? Cette action est irréversible.')) return;
-              try {
-                const delRes = await fetch('/api/sessions', {
-                  method: 'DELETE',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ delete_all: true })
-                });
-                if (delRes.ok) {
-                  if (sessionsList) sessionsList.innerHTML = '';
-                  if (sessionsSection) sessionsSection.style.display = 'none';
-                }
-              } catch (_) { /* non bloquant */ }
-            });
+          if (latestSession && resumeCard) {
+            resumeCard.innerHTML = `
+              <div class="dashboard-resume-live">
+                <p class="dashboard-resume-label">${escapeHtml(sessionLabel(latestSession.session_type))}</p>
+                <h3>${escapeHtml(latestSession.titre || 'Reprendre votre dernière action')}</h3>
+                <p>Dernière mise à jour : ${escapeHtml(formatShortDate(latestSession.updated_at))}</p>
+                <a href="${escapeHtml(sessionHref(latestSession))}" class="btn-primary-v3">Reprendre</a>
+              </div>
+            `;
           }
         }
-      } catch (_) { /* non bloquant */ }
-
-      // ── Activation abonnement via session_id Stripe ──
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('session_id')) {
-        const banner = document.getElementById('successBanner');
-        if (banner) banner.style.display = 'block';
-        if (planVal) planVal.textContent = 'MARYAN Plus';
-        if (upgradeBtn) (upgradeBtn as HTMLElement).style.display = 'none';
-        if (progressFill) progressFill.style.width = '100%';
-        if (counterText) counterText.textContent = 'Accès illimité';
+      } catch {
+        // noop
       }
 
-      // ── Tests : marquer ceux déjà faits ──
-      document.querySelectorAll('.test-tile[data-key]').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (key && localStorage.getItem(key)) {
-          el.classList.add('test-done');
-          const cta = el.querySelector('.test-cta');
-          if (cta) cta.textContent = '✓ Refaire →';
-        }
+      document.querySelectorAll('[data-intent]').forEach((link) => {
+        link.addEventListener('click', () => {
+          const intent = link.getAttribute('data-intent');
+          if (intent) localStorage.setItem('maryan_copilot_intent', intent);
+        });
       });
 
-      // ── Recorder modal ──
-      document.getElementById('openRecorderBtn')?.addEventListener('click', () => {
-        const modal = document.getElementById('recorderModal');
-        if (modal) modal.style.display = 'flex';
+      document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.href = '/login';
       });
 
-      // ══════════════════════════════════════════
-      // ── RGPD — Mes données & confidentialité ──
-      // ══════════════════════════════════════════
-
-      // 5a. Affiliation politique (Article 9)
-      const partiLabel = profile?.parti_label || '';
-      const partiId = profile?.parti_id || '';
-      if (partiLabel || partiId) {
-        const affilItem = document.getElementById('rgpdAffilItem');
-        const affilText = document.getElementById('rgpdAffilText');
-        if (affilItem) affilItem.style.display = 'flex';
-        if (affilText) affilText.textContent = `Affiliation renseignée : ${partiLabel || partiId}`;
-      }
-
-      document.getElementById('rgpdAffilBtn')?.addEventListener('click', async () => {
-        const confirmed = confirm('Retirer votre affiliation politique ? Cette donnée sera supprimée de votre profil et ne sera plus utilisée par le copilote.');
-        if (!confirmed) return;
+      document.getElementById('exportDataBtn')?.addEventListener('click', async () => {
         try {
-          await fetch('/api/profile-update', {
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ field: 'parti_id', value: null })
-          });
-          await fetch('/api/profile-update', {
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ field: 'parti_label', value: null })
-          });
-          const affilItem = document.getElementById('rgpdAffilItem');
-          if (affilItem) {
-            affilItem.innerHTML = '<p style="color:#2E7D32;font-size:0.9rem;font-weight:600;">Affiliation retirée.</p>';
-          }
-        } catch (_) {
-          alert('Une erreur est survenue. Veuillez réessayer.');
-        }
-      });
-
-      // 5b. Diagnostic
-      if (diagnosticState.diagnostic_key || diagnosticState.diagnostic_label) {
-        const diagItem = document.getElementById('rgpdDiagItem');
-        const diagText = document.getElementById('rgpdDiagText');
-        if (diagItem) diagItem.style.display = 'flex';
-        if (diagText) diagText.textContent = `Diagnostic actuel : ${diagnosticState.diagnostic_label || diagnosticState.diagnostic_key}`;
-      }
-
-      document.getElementById('rgpdDiagBtn')?.addEventListener('click', async () => {
-        const confirmed = confirm('Effacer votre diagnostic ? Cette donnée sera supprimée de votre profil.');
-        if (!confirmed) return;
-        try {
-          await fetch('/api/profile-update', {
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ field: 'diagnostic_key', value: null })
-          });
-          await fetch('/api/profile-update', {
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ field: 'diagnostic_label', value: null })
-          });
-          try { localStorage.removeItem('maryan_v4_diag'); } catch (_) {}
-          try { localStorage.removeItem('maryan_profile'); } catch (_) {}
-          const diagItem = document.getElementById('rgpdDiagItem');
-          if (diagItem) {
-            diagItem.innerHTML = '<p style="color:#2E7D32;font-size:0.9rem;font-weight:600;">Diagnostic effacé.</p>';
-          }
-        } catch (_) {
-          alert('Une erreur est survenue. Veuillez réessayer.');
-        }
-      });
-
-      // 5c. Export des données (Article 20)
-      document.getElementById('rgpdExportBtn')?.addEventListener('click', async () => {
-        try {
-          const res = await fetch('/api/export-data', {
+          const response = await fetch('/api/export-data', {
             headers: { Authorization: `Bearer ${token}` }
           });
-          if (!res.ok) {
+
+          if (!response.ok) {
             alert("Erreur lors de l'export. Veuillez réessayer.");
             return;
           }
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'maryan-mes-donnees.json';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
-        } catch (_) {
-          alert("Erreur lors de l'export. Veuillez réessayer.");
-        }
-      });
 
-      // 5d. Suppression du compte (Article 17)
-      document.getElementById('rgpdDeleteAccountBtn')?.addEventListener('click', async () => {
-        const input = prompt('Pour confirmer la suppression définitive de votre compte, tapez SUPPRIMER :');
-        if (input !== 'SUPPRIMER') {
-          if (input !== null) alert('Suppression annulée. Vous devez taper exactement SUPPRIMER.');
-          return;
-        }
-        try {
-          const res = await fetch('/api/delete-account', {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (res.ok) {
-            // Effacement de toutes les données locales
-            try { localStorage.clear(); } catch (_) {}
-            try { sessionStorage.clear(); } catch (_) {}
-            window.location.href = '/?compte=supprime';
-          } else {
-            const data = await res.json().catch(() => ({}));
-            alert(data?.error || 'Une erreur est survenue. Veuillez contacter le support.');
-          }
-        } catch (_) {
-          alert('Une erreur est survenue. Veuillez contacter le support.');
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          const anchor = document.createElement('a');
+          anchor.href = url;
+          anchor.download = 'maryan-mes-donnees.json';
+          document.body.appendChild(anchor);
+          anchor.click();
+          anchor.remove();
+          URL.revokeObjectURL(url);
+        } catch {
+          alert("Erreur lors de l'export. Veuillez réessayer.");
         }
       });
     }
@@ -662,406 +391,403 @@ import CompteRenduRecorder from '../components/CompteRenduRecorder.astro';
 </script>
 
 <style>
-  .payment-success-banner {
-    background: linear-gradient(135deg, #0A192F, #0d2140);
-    border: 1.5px solid #64FFDA;
-    border-radius: 12px;
-    padding: 1.5rem 2rem;
-    margin-bottom: 2rem;
-  }
-  .payment-success-inner {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-  }
-  .payment-success-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    background: #64FFDA;
-    color: #0A192F;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
-  .payment-success-banner strong {
-    color: #64FFDA;
-    font-size: 1rem;
-    display: block;
-    margin-bottom: 0.25rem;
-  }
-  .payment-success-banner p {
-    color: rgba(255,255,255,0.8);
-    font-size: 0.9rem;
-    margin: 0;
-  }
-
-  .dashboard-v3 {
-    padding: 4rem 0 8rem;
+  .dashboard-page {
     background: var(--bg);
-    min-height: 80vh;
+    min-height: 100vh;
+    padding: 3rem 0 5rem;
   }
 
-  .dashboard-grid {
+  .dashboard-layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 4rem;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: 1.5rem;
     align-items: start;
   }
 
-  /* ── Success banner ── */
-  .success-banner {
-    background: #F0FFF4;
-    border: 1px solid #A5D6A7;
-    color: #2E7D32;
-    padding: 1.25rem 1.75rem;
-    border-radius: 12px;
-    margin-bottom: 2.5rem;
+  .dashboard-sidebar {
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  .dashboard-account {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+
+  .dashboard-account:hover,
+  .dashboard-hero:hover,
+  .dashboard-resume-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border);
+  }
+
+  .dashboard-account h2 {
+    font-size: 1.35rem;
+    color: var(--deep);
+    margin-bottom: 0.35rem;
+  }
+
+  .dashboard-account-meta {
+    margin: 0;
+    color: #45545F;
     font-size: 0.95rem;
     line-height: 1.5;
   }
 
-  /* ── Sidebar ── */
-  .dash-sidebar { position: sticky; top: 2rem; }
-  .dash-profile { padding: 2rem; background: white; }
-
-  .profile-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.75rem;
-  }
-
-  .avatar-circle {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--deep);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-
-  .profile-text h3 { font-size: 1.05rem; margin-bottom: 0.2rem; }
-  .profile-role-line { font-size: 0.85rem; color: #54636C; }
-
-  .dash-sep { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
-
-  .profile-stat { margin-bottom: 1.5rem; }
-  .stat-label {
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #54636C;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  .stat-email { font-size: 0.82rem; color: var(--deep); font-weight: 500; word-break: break-all; }
-  .stat-val { font-size: 1rem; font-weight: 700; color: var(--deep); }
-  .stat-sub { font-size: 0.82rem; color: #54636C; margin-top: 0.4rem; }
-
-  .upgrade-btn {
-    display: inline-block;
-    margin-top: 0.75rem;
-    color: var(--accent-red);
-    font-weight: 800;
-    font-size: 0.85rem;
-    text-decoration: none;
-    border-bottom: 2px solid var(--accent-red);
-  }
-
-  .logout-btn {
-    display: inline-block;
-    margin-top: 0.6rem;
-    background: none;
-    border: none;
-    padding: 0;
-    color: #54636C;
-    font-weight: 700;
-    font-size: 0.82rem;
-    font-family: inherit;
-    cursor: pointer;
-    border-bottom: 1px solid #ccc;
-  }
-  .logout-btn:hover { color: var(--accent-red); border-bottom-color: var(--accent-red); }
-
-  .progress-bar {
-    width: 100%;
-    height: 7px;
-    background: var(--bg);
-    border-radius: 99px;
-    overflow: hidden;
-    margin-top: 0.75rem;
-  }
-  .progress-fill { height: 100%; background: var(--accent-red); border-radius: 99px; transition: width 0.4s; }
-
-  /* ── Contenu principal ── */
-  .dash-content { display: flex; flex-direction: column; gap: 4rem; }
-  .dash-section {}
-
-  .dash-h2 { font-size: 1.4rem; color: var(--deep); }
-  .section-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.75rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .section-header-row .dash-h2 { margin: 0; }
-
-  .btn-link {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--accent-red);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.15s;
-  }
-  .btn-link:hover { border-bottom-color: var(--accent-red); }
-
-  /* ── Bonjour ── */
-  .dash-hello { padding-bottom: 0; }
-  .hello-title { font-size: clamp(2rem, 4vw, 2.8rem); color: var(--deep); margin-bottom: 0.5rem; }
-  .hello-sub { font-size: 1rem; color: #54636C; }
-
-  /* ── Diagnostic ── */
-  .diag-card { padding: 2.5rem; }
-  .diag-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.25rem;
-    gap: 1rem;
-  }
-  .diag-kicker {
-    font-size: 0.7rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #54636C;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  .diag-val { font-size: 1.5rem; font-weight: 800; color: var(--deep); line-height: 1.2; }
-  .diag-badge {
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: rgba(10,25,47,0.06);
-    color: var(--deep);
-    padding: 0.35rem 0.75rem;
-    border-radius: 99px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .diag-accroche { font-size: 0.97rem; color: #54636C; line-height: 1.6; }
-
-  .diag-cta-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 1.5rem;
-    padding: 2.5rem;
-    text-align: center;
-    color: #54636C;
-  }
-
-  /* ── Ressources ── */
-  .ressources-grid {
+  .dashboard-account-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
+    gap: 0.85rem;
+    margin: 1.4rem 0;
   }
-  .ressource-tile {
-    text-decoration: none;
-    padding: 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    transition: all 0.2s;
-  }
-  .ressource-tile:hover { transform: translateY(-3px); border-color: var(--border-neon); }
-  .ressource-num { font-size: 1.1rem; color: var(--neon); }
-  .ressource-title { font-size: 0.95rem; font-weight: 700; color: var(--deep); line-height: 1.4; flex: 1; margin: 0; text-transform: capitalize; }
-  .ressource-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); margin-top: auto; }
 
-  /* ── Sessions ── */
-  .sessions-list { display: flex; flex-direction: column; gap: 1rem; }
-  .sessions-header-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
-  .session-row {
-    display: flex;
-    align-items: stretch;
+  .dashboard-account-stat {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .dashboard-account-stat span,
+  .dashboard-resume-label {
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #55646F;
+  }
+
+  .dashboard-account-stat strong {
+    color: var(--deep);
+    font-size: 0.96rem;
+    font-weight: 700;
+    word-break: break-word;
+  }
+
+  .dashboard-account-actions {
+    display: grid;
     gap: 0.75rem;
   }
-  .session-row .session-item { flex: 1; }
-  .session-item {
-    text-decoration: none;
+
+  .dashboard-account-actions .btn-secondary-v3 {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .dashboard-logout-btn {
+    border: none;
+    background: transparent;
+    padding: 0.2rem 0;
+    color: var(--accent-red);
+    font-size: 0.92rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .dashboard-main {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .dashboard-banner {
+    background: #F0FFF4;
+    border: 1px solid #B7E4C7;
+    border-radius: 18px;
+    padding: 1rem 1.2rem;
+  }
+
+  .dashboard-banner strong {
+    display: block;
+    color: #1F5F3E;
+    margin-bottom: 0.2rem;
+  }
+
+  .dashboard-banner p {
+    margin: 0;
+    color: #2C5D46;
+    font-size: 0.92rem;
+  }
+
+  .dashboard-hero,
+  .dashboard-block,
+  .dashboard-resume-card {
+    border-radius: 24px;
+  }
+
+  .dashboard-hero {
+    padding: 1.5rem;
+  }
+
+  .dashboard-hero h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    color: var(--deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .dashboard-hero-copy {
+    margin: 0;
+    color: #41505B;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 48rem;
+  }
+
+  .dashboard-block {
     background: white;
     border: 1px solid var(--border);
-    border-radius: 1.25rem;
-    padding: 1.5rem 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    transition: all 0.2s;
+    padding: 1.5rem;
   }
-  .session-item:hover { border-color: var(--accent-red); transform: translateY(-2px); }
-  .session-meta { display: flex; align-items: center; gap: 0.75rem; }
-  .session-badge {
+
+  .dashboard-block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-block-head h2 {
+    font-size: 1.45rem;
+    color: var(--deep);
+    margin-bottom: 0.2rem;
+  }
+
+  .dashboard-block-head p {
+    margin: 0;
+    color: #52616B;
+    font-size: 0.95rem;
+  }
+
+  .dashboard-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .dashboard-action-card {
+    display: flex;
+    align-items: center;
+    min-height: 84px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: #FCFCFB;
+    padding: 1rem 1.1rem;
+    color: var(--deep);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.35;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .dashboard-action-card:hover,
+  .dashboard-action-card:focus-visible {
+    border-color: var(--deep);
+    outline: none;
+    transform: translateY(-1px);
+  }
+
+  .dashboard-support-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .dashboard-support-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    background: rgba(173,255,47,0.16);
+    color: var(--deep);
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .dashboard-support-badge--locked {
+    background: rgba(230,57,70,0.12);
+    color: var(--accent-red);
+  }
+
+  .dashboard-support-link {
+    color: var(--accent-red);
+    font-weight: 800;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(230,57,70,0.25);
+  }
+
+  .dashboard-support-link:hover,
+  .dashboard-support-link:focus-visible {
+    border-bottom-color: var(--accent-red);
+    outline: none;
+  }
+
+  .dashboard-logout-btn:focus-visible,
+  .dashboard-account-actions .btn-secondary-v3:focus-visible {
+    outline: 2px solid var(--accent-red);
+    outline-offset: 2px;
+  }
+
+  .dashboard-radar-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .dashboard-radar-card {
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: #FCFCFB;
+    padding: 1rem;
+  }
+
+  .dashboard-radar-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .dashboard-radar-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.3rem 0.65rem;
+    background: var(--deep);
+    color: white;
     font-size: 0.68rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.25rem 0.65rem;
-    border-radius: 99px;
-    background: rgba(10,25,47,0.07);
+    letter-spacing: 0.05em;
+  }
+
+  .dashboard-radar-date {
+    color: #596874;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .dashboard-radar-card h3 {
     color: var(--deep);
+    font-size: 1rem;
+    line-height: 1.3;
+    margin-bottom: 0.7rem;
   }
-  .session-badge-cr_reunion { background: rgba(230,57,70,0.1); color: var(--accent-red); }
-  .session-badge-analyse { background: rgba(173,255,47,0.2); color: #4a7a00; }
-  .session-date { font-size: 0.8rem; color: #54636C; }
-  .session-titre { font-size: 0.97rem; font-weight: 600; color: var(--deep); margin: 0; }
-  .session-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); }
 
-  .btn-delete-session {
+  .dashboard-radar-card p {
+    margin: 0;
+    color: #42515C;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .dashboard-radar-card p + p {
+    margin-top: 0.5rem;
+  }
+
+  .dashboard-topics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .dashboard-topic-card {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
-    background: none;
-    border: 1px solid #FFCDD2;
-    border-radius: 1.25rem;
-    padding: 0.75rem 1rem;
-    color: #C62828;
-    font-size: 0.72rem;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    white-space: nowrap;
-    min-width: 72px;
-  }
-  .btn-delete-session:hover { background: #FFF0F0; border-color: #C62828; }
-
-  .btn-delete-all {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #C62828;
-    font-size: 0.82rem;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    border-bottom: 1px solid #FFCDD2;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .btn-delete-all:hover { border-bottom-color: #C62828; }
-
-  /* ── Tests ── */
-  .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
-  .test-tile {
+    min-height: 72px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: #FCFCFB;
+    padding: 0.95rem 1rem;
+    color: var(--deep);
     text-decoration: none;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    transition: all 0.2s;
-  }
-  .test-tile:hover { transform: translateY(-3px); border-color: var(--border-neon); }
-  .test-num { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #bbb; }
-  .test-tile h3 { font-size: 1rem; color: var(--deep); margin: 0; line-height: 1.3; }
-  .test-tile p { font-size: 0.88rem; color: #54636C; margin: 0; line-height: 1.5; flex: 1; }
-  .test-cta { font-size: 0.82rem; font-weight: 800; color: var(--deep); }
-  .test-done .test-cta { color: var(--neon); }
-  .test-done { border-color: var(--border-neon); }
-
-  /* ── Recorder ── */
-  .recorder-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-  .recorder-modal-overlay { position: absolute; inset: 0; background: rgba(10,25,47,0.5); cursor: pointer; }
-  .recorder-modal-content { position: relative; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; z-index: 1001; padding: 2rem; }
-  .recorder-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #999; }
-  .recorder-close-btn:hover { color: var(--deep); }
-
-  /* ── RGPD — Mes données & confidentialité ── */
-  .rgpd-section {
-    background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-  .rgpd-section h2 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--deep);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .rgpd-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0;
-    border-bottom: 1px solid #f0f0f0;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .rgpd-item:last-child { border-bottom: none; }
-  .rgpd-item-info { flex: 1; }
-  .rgpd-item-info p { font-size: 0.9rem; color: #54636C; margin: 0.2rem 0 0; }
-  .rgpd-item-label { font-size: 0.85rem; font-weight: 700; color: var(--deep); }
-  .btn-rgpd {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.96rem;
     font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    border: 1.5px solid var(--deep);
-    background: white;
+    line-height: 1.45;
+  }
+
+  .dashboard-topic-card:hover,
+  .dashboard-topic-card:focus-visible {
+    border-color: var(--border-neon);
+    outline: none;
+  }
+
+  .dashboard-resume-card {
+    padding: 1.5rem;
+  }
+
+  .dashboard-resume-live h3,
+  .dashboard-resume-empty h3 {
     color: var(--deep);
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .btn-rgpd:hover { background: var(--deep); color: white; }
-  .btn-rgpd-danger {
-    border-color: #C62828;
-    color: #C62828;
-  }
-  .btn-rgpd-danger:hover { background: #C62828; color: white; }
-  .btn-rgpd-primary {
-    background: var(--deep);
-    color: white;
-    border-color: var(--deep);
-  }
-  .btn-rgpd-primary:hover { background: #0d2140; }
-  .rgpd-danger-zone {
-    background: #FFF8F8;
-    border: 1.5px solid #FFCDD2;
-    border-radius: 8px;
-    padding: 1.25rem;
-    margin-top: 1rem;
-    width: 100%;
-  }
-  .rgpd-danger-zone p { font-size: 0.85rem; color: #C62828; margin-bottom: 1rem; }
-
-  /* ── Responsive ── */
-  @media (max-width: 992px) {
-    .dashboard-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .dash-sidebar { position: static; }
-    .tests-grid { grid-template-columns: 1fr 1fr; }
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
   }
 
-  @media (max-width: 600px) {
-    .tests-grid { grid-template-columns: 1fr; }
-    .ressources-grid { grid-template-columns: 1fr; }
+  .dashboard-resume-live p,
+  .dashboard-resume-empty p {
+    margin: 0 0 1rem;
+    color: #45545F;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 1080px) {
+    .dashboard-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-sidebar {
+      position: static;
+    }
+
+    .dashboard-radar-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .dashboard-page {
+      padding: 2rem 0 4rem;
+    }
+
+    .dashboard-account,
+    .dashboard-hero,
+    .dashboard-block,
+    .dashboard-resume-card {
+      padding: 1.2rem;
+      border-radius: 20px;
+    }
+
+    .dashboard-action-grid,
+    .dashboard-topics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-action-card,
+    .dashboard-topic-card {
+      min-height: auto;
+    }
+  }
+
+  @media print {
+    .dashboard-sidebar,
+    .dashboard-support-row,
+    .btn-link {
+      display: none !important;
+    }
+
+    .dashboard-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-page {
+      background: white;
+      padding: 0;
+    }
   }
 </style>

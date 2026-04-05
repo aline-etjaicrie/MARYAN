@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { createClient } from '@supabase/supabase-js';
 
 const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
 const MISTRAL_OCR_URL = 'https://api.mistral.ai/v1/ocr';
@@ -44,7 +45,61 @@ function json(payload: Record<string, unknown>, status = 200): Response {
   });
 }
 
+function normalizePlan(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const plan = value.trim().toLowerCase();
+  return plan || null;
+}
+
+async function getAuthenticatedPlan(request: Request): Promise<{ plan: string | null } | null> {
+  const authHeader = request.headers.get('authorization') || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+
+  const supabaseUrl =
+    (import.meta.env.PUBLIC_SUPABASE_URL as string) ||
+    (process.env.PUBLIC_SUPABASE_URL as string);
+  const supabaseServiceKey =
+    (import.meta.env.SUPABASE_SERVICE_KEY as string) ||
+    (process.env.SUPABASE_SERVICE_KEY as string);
+
+  if (!token || !supabaseUrl || !supabaseServiceKey) {
+    return null;
+  }
+
+  try {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const { data: { user } } = await supabase.auth.getUser(token);
+    if (!user) return null;
+
+    let plan =
+      normalizePlan(user.user_metadata?.plan) ||
+      normalizePlan(user.app_metadata?.plan);
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', user.id)
+      .single();
+
+    plan = normalizePlan(profile?.plan) || plan;
+
+    return { plan };
+  } catch {
+    return null;
+  }
+}
+
 export const POST: APIRoute = async ({ request }) => {
+  const auth = await getAuthenticatedPlan(request);
+  if (!auth) {
+    return json({ error: 'Connexion requise pour utiliser ce service.' }, 401);
+  }
+
+  const hasAccess = auth.plan === 'plus' || auth.plan === 'admin';
+  if (!hasAccess) {
+    return json({ error: 'Ce service est réservé aux abonné·es MARYAN Plus.' }, 403);
+  }
+
   const apiKey =
     (import.meta.env.MISTRAL_API_KEY as string) ||
     (process.env.MISTRAL_API_KEY as string);

@@ -3,19 +3,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Décrypte mon document — MARYAN"
-  description="Uploadez un document officiel — MARYAN vous dit l'essentiel en 30 secondes.">
+  title="Décrypter un document officiel — MARYAN"
+  description="Service abonné MARYAN Plus pour obtenir une première lecture claire d’un document officiel.">
 
   <main class="analyseur-page">
     <div class="container-narrow">
 
-      <a href="/" class="back-link">← Accueil</a>
+      <a href="/mon-compte" class="back-link">← Mon compte</a>
 
       <div class="page-header">
-        <p class="kicker">Outil MARYAN</p>
-        <h1>Décrypte mon document</h1>
-        <p class="subtitle">Uploadez un document officiel — MARYAN vous dit l'essentiel en 30 secondes.</p>
+        <p class="kicker">Service abonné</p>
+        <h1>Décrypter un document officiel</h1>
+        <p class="subtitle">Importez un document, obtenez une première lecture claire, puis décidez si vous devez approfondir, transmettre ou arbitrer.</p>
       </div>
+
+      <div id="accessLoading" class="access-card">
+        <p class="access-title">Vérification de votre accès</p>
+        <p class="access-text">MARYAN vérifie votre session avant d’ouvrir le service.</p>
+      </div>
+
+      <div id="loginRequired" class="access-card" style="display:none;">
+        <p class="access-title">Connectez-vous pour accéder au service</p>
+        <p class="access-text">L’analyseur s’utilise depuis votre espace MARYAN, avec vos services abonnés et votre historique.</p>
+        <div class="access-actions">
+          <a href="/login" class="btn-primary">Se connecter</a>
+          <a href="/diagnostic" class="btn-secondary-link">Faire le diagnostic</a>
+        </div>
+      </div>
+
+      <div id="subscriptionRequired" class="access-card" style="display:none;">
+        <p class="access-title">Service réservé aux abonné·es MARYAN Plus</p>
+        <p class="access-text">L’analyseur n’est plus une rubrique publique. Il fait partie des services accessibles depuis votre dashboard abonné.</p>
+        <div class="access-actions">
+          <a href="/offres" class="btn-primary">Découvrir MARYAN Plus</a>
+          <a href="/mon-compte" class="btn-secondary-link">Retour au dashboard</a>
+        </div>
+      </div>
+
+      <div id="serviceShell" style="display:none;">
 
       <!-- UPLOAD FORM -->
       <div id="uploadSection" class="upload-card">
@@ -43,16 +68,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <option value="courrier">Courrier reçu</option>
             <option value="autre">Autre</option>
           </select>
-        </div>
-
-        <div id="limitBanner" class="limit-banner" style="display:none;">
-          <p>⚡ Version libre : <strong id="remainingCount">2</strong> analyse(s) restante(s) sur 2 par session.</p>
-        </div>
-
-        <div id="quotaReached" class="quota-card" style="display:none;">
-          <p>Vous avez atteint la limite de 2 analyses par session.</p>
-          <p>Passez à <strong>MARYAN Plus</strong> pour des analyses illimitées.</p>
-          <a href="/offres" class="btn-primary">Voir les offres</a>
         </div>
 
         <button type="button" id="analyseBtn" class="btn-analyse" disabled>
@@ -98,57 +113,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       </div>
 
+      </div>
+
     </div>
   </main>
 
 </BaseLayout>
 
 <script>
-  import { createClient } from '@supabase/supabase-js';
-
-  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
-  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
-  const FREE_LIMIT = 2;
-
-  // Session counter
-  let sessionCount = parseInt(sessionStorage.getItem('maryan_analyse_count') || '0', 10);
+  import { getCurrentSessionPlan } from '../lib/client-plan';
   let userPlan: string | null = null;
+  let accessToken: string | null = null;
+  let hasServiceAccess = false;
   let selectedFile: File | null = null;
 
-  // Check plan
-  if (SUPABASE_URL && SUPABASE_KEY) {
-    const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-    sb.auth.getSession().then(({ data: { session } }) => {
-      userPlan = session?.user?.user_metadata?.plan ?? null;
-      updateLimitUI();
-    });
-  } else {
-    updateLimitUI();
+  const accessLoading = document.getElementById('accessLoading')!;
+  const loginRequired = document.getElementById('loginRequired')!;
+  const subscriptionRequired = document.getElementById('subscriptionRequired')!;
+  const serviceShell = document.getElementById('serviceShell')!;
+
+  function showAccessState(state: 'loading' | 'login' | 'subscription' | 'ready') {
+    accessLoading.style.display = state === 'loading' ? 'block' : 'none';
+    loginRequired.style.display = state === 'login' ? 'block' : 'none';
+    subscriptionRequired.style.display = state === 'subscription' ? 'block' : 'none';
+    serviceShell.style.display = state === 'ready' ? 'block' : 'none';
   }
 
-  function updateLimitUI() {
-    const isPlus = userPlan === 'plus' || userPlan === 'admin';
-    const remaining = Math.max(0, FREE_LIMIT - sessionCount);
-    const limitBanner = document.getElementById('limitBanner')!;
-    const quotaReached = document.getElementById('quotaReached')!;
+  function updateAnalyseButtonState() {
     const analyseBtn = document.getElementById('analyseBtn') as HTMLButtonElement;
-    const remainingCount = document.getElementById('remainingCount')!;
+    analyseBtn.disabled = !hasServiceAccess || !selectedFile;
+  }
 
-    if (!isPlus) {
-      if (remaining <= 0) {
-        quotaReached.style.display = 'block';
-        limitBanner.style.display = 'none';
-        analyseBtn.disabled = true;
-      } else {
-        remainingCount.textContent = String(remaining);
-        limitBanner.style.display = 'block';
-        quotaReached.style.display = 'none';
-        analyseBtn.disabled = !selectedFile;
+  async function initAccess() {
+    showAccessState('loading');
+
+    try {
+      const { session, plan } = await getCurrentSessionPlan();
+      userPlan = plan;
+      accessToken = session?.access_token || null;
+
+      if (!session || !accessToken) {
+        showAccessState('login');
+        return;
       }
-    } else {
-      limitBanner.style.display = 'none';
-      quotaReached.style.display = 'none';
-      analyseBtn.disabled = !selectedFile;
+
+      const isSubscriber = userPlan === 'plus' || userPlan === 'admin';
+      if (!isSubscriber) {
+        showAccessState('subscription');
+        return;
+      }
+
+      hasServiceAccess = true;
+      showAccessState('ready');
+      updateAnalyseButtonState();
+    } catch {
+      showAccessState('login');
     }
   }
 
@@ -181,7 +200,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     fileInput.value = '';
     filePreview.style.display = 'none';
     dropZone.style.display = 'flex';
-    updateLimitUI();
+    updateAnalyseButtonState();
   });
 
   function handleFile(file: File) {
@@ -200,7 +219,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     filePreview.style.display = 'flex';
     dropZone.style.display = 'none';
     hideError();
-    updateLimitUI();
+    updateAnalyseButtonState();
   }
 
   // Analyse
@@ -209,10 +228,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const btnSpinner = document.getElementById('btnSpinner')!;
 
   analyseBtn.addEventListener('click', async () => {
-    if (!selectedFile) return;
-
-    const isPlus = userPlan === 'plus' || userPlan === 'admin';
-    if (!isPlus && sessionCount >= FREE_LIMIT) return;
+    if (!selectedFile || !hasServiceAccess || !accessToken) return;
 
     const docType = (document.getElementById('docType') as HTMLSelectElement).value;
 
@@ -225,7 +241,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const base64 = await fileToBase64(selectedFile);
       const res = await fetch('/api/analyse', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({ fileData: base64, mimeType: selectedFile.type, docType }),
       });
 
@@ -238,10 +257,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         btnSpinner.style.display = 'none';
         return;
       }
-
-      // Increment counter
-      sessionCount++;
-      sessionStorage.setItem('maryan_analyse_count', String(sessionCount));
 
       showResults(data);
     } catch (e) {
@@ -295,7 +310,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     btnLabel.style.display = 'inline';
     btnSpinner.style.display = 'none';
     hideError();
-    updateLimitUI();
+    updateAnalyseButtonState();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
@@ -307,6 +322,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   function hideError() {
     document.getElementById('formError')!.style.display = 'none';
   }
+
+  initAccess();
 </script>
 
 <style>
@@ -335,6 +352,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .back-link:hover { opacity: 1; }
 
   .page-header { margin-bottom: 3rem; }
+
+  .access-card {
+    background: white;
+    border-radius: 18px;
+    border: 1.5px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+  }
+  .access-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--deep);
+  }
+  .access-text {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: #54636C;
+  }
+  .access-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
 
   .kicker {
     font-size: 0.75rem;
@@ -440,28 +487,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
   .form-group select:focus { border-color: var(--deep); background-color: white; }
 
-  .limit-banner {
-    background: rgba(173, 255, 47, 0.12);
-    border: 1px solid rgba(173, 255, 47, 0.4);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-    color: var(--deep);
-  }
-
-  .quota-card {
-    background: rgba(10, 25, 47, 0.04);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: center;
-  }
-  .quota-card p { font-size: 0.9rem; color: var(--deep); opacity: 0.8; margin: 0; }
-
   .btn-analyse {
     background: var(--deep);
     color: white;
@@ -516,6 +541,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     transition: background 0.2s;
   }
   .btn-primary:hover { background: #0d2140; }
+
+  .btn-secondary-link {
+    display: inline-block;
+    color: var(--accent-red);
+    text-decoration: none;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(230,57,70,0.3);
+  }
+  .btn-secondary-link:hover { border-bottom-color: var(--accent-red); }
 
   .btn-secondary {
     background: transparent;
@@ -605,6 +639,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .cta-bloc p { font-size: 1rem; color: var(--deep); opacity: 0.7; margin: 0; }
 
   @media (max-width: 600px) {
+    .access-card { padding: 1.5rem; }
     .upload-card { padding: 1.5rem; }
     .drop-zone { padding: 2rem 1rem; }
     .result-block { padding: 1.5rem; }
