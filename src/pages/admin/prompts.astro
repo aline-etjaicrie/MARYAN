@@ -3,34 +3,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   MARYAN_PROMPT_STUDIO_NAME,
   MARYAN_PROMPT_STUDIO_PROMISE,
-  MARYAN_PROMPT_STUDIO_SEARCH_PLACEHOLDER,
-  MARYAN_PROMPT_STUDIO_VARIABLES,
-  MARYAN_PROMPT_STUDIO_ENGINE_PRINCIPLE,
-  MARYAN_PROMPT_STUDIO_ENGINE_SOURCES,
-  MARYAN_PROMPT_STUDIO_METHOD_STEPS,
-  MARYAN_PROMPT_STUDIO_RESPONSE_MODES,
-  MARYAN_PROMPT_STUDIO_MVP_GROUPS,
-  MARYAN_PROMPT_STUDIO_TIPS,
-  MARYAN_PROMPT_STUDIO_SEEDS
+  MARYAN_PROMPT_STUDIO_SEARCH_PLACEHOLDER
 } from '../../lib/prompt-studio';
 
 export const prerender = false;
-
-const initialPrompts = MARYAN_PROMPT_STUDIO_SEEDS.map((prompt) => ({
-  id: prompt.slug,
-  slug: prompt.slug,
-  title: prompt.title,
-  description: prompt.description,
-  category: prompt.category,
-  segment: prompt.segment,
-  tags: prompt.tags,
-  variables: prompt.variables,
-  body: prompt.body,
-  custom: false,
-  version: 0,
-  versions: [],
-  sourcePromptId: null
-}));
 ---
 
 <BaseLayout title="MARYAN Prompt Studio — Admin" description="Studio interne de prompts MARYAN">
@@ -221,20 +197,7 @@ const initialPrompts = MARYAN_PROMPT_STUDIO_SEEDS.map((prompt) => ({
   </main>
 </BaseLayout>
 
-<script
-  define:vars={{
-    studioName: MARYAN_PROMPT_STUDIO_NAME,
-    studioPromise: MARYAN_PROMPT_STUDIO_PROMISE,
-    initialPrompts,
-    variableDefinitions: MARYAN_PROMPT_STUDIO_VARIABLES,
-    enginePrinciple: MARYAN_PROMPT_STUDIO_ENGINE_PRINCIPLE,
-    engineSources: MARYAN_PROMPT_STUDIO_ENGINE_SOURCES,
-    methodSteps: MARYAN_PROMPT_STUDIO_METHOD_STEPS,
-    responseModes: MARYAN_PROMPT_STUDIO_RESPONSE_MODES,
-    mvpGroups: MARYAN_PROMPT_STUDIO_MVP_GROUPS,
-    tipCards: MARYAN_PROMPT_STUDIO_TIPS
-  }}
->
+<script>
   import { createClient } from '@supabase/supabase-js';
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
@@ -310,6 +273,14 @@ const initialPrompts = MARYAN_PROMPT_STUDIO_SEEDS.map((prompt) => ({
   let draftsStore = {};
   let variableValues = {};
   let toastTimer = null;
+  let initialPrompts = [];
+  let variableDefinitions = [];
+  let enginePrinciple = '';
+  let engineSources = [];
+  let methodSteps = [];
+  let responseModes = [];
+  let mvpGroups = [];
+  let tipCards = [];
 
   const sectionState = {
     vars: true,
@@ -1119,16 +1090,30 @@ const initialPrompts = MARYAN_PROMPT_STUDIO_SEEDS.map((prompt) => ({
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('plan')
-      .eq('id', session.user.id)
-      .single();
+    const bootstrapRes = await fetch('/api/admin/prompt-studio', {
+      headers: {
+        Authorization: `Bearer ${session.access_token}`
+      }
+    });
 
-    if (profile?.plan !== 'admin') {
+    if (bootstrapRes.status === 403) {
       window.location.href = '/mon-compte';
       return;
     }
+
+    if (!bootstrapRes.ok) {
+      throw new Error('Impossible de charger le studio.');
+    }
+
+    const bootstrap = await bootstrapRes.json();
+    initialPrompts = Array.isArray(bootstrap.prompts) ? bootstrap.prompts : [];
+    variableDefinitions = Array.isArray(bootstrap.variables) ? bootstrap.variables : [];
+    enginePrinciple = bootstrap.enginePrinciple || '';
+    engineSources = Array.isArray(bootstrap.engineSources) ? bootstrap.engineSources : [];
+    methodSteps = Array.isArray(bootstrap.methodSteps) ? bootstrap.methodSteps : [];
+    responseModes = Array.isArray(bootstrap.responseModes) ? bootstrap.responseModes : [];
+    mvpGroups = Array.isArray(bootstrap.mvpGroups) ? bootstrap.mvpGroups : [];
+    tipCards = Array.isArray(bootstrap.tips) ? bootstrap.tips : [];
 
     studioLoader.style.display = 'none';
     studioApp.style.display = 'grid';

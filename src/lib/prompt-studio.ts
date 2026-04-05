@@ -72,6 +72,36 @@ export interface MaryanPromptVersionRecord {
   created_at: string;
 }
 
+export interface MaryanPromptStudioEntry {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  segment: MaryanPromptStudioSegment;
+  tags: string[];
+  variables: string[];
+  body: string;
+  custom: boolean;
+  version: number;
+  versions: Array<{ version: number; body: string; savedAt: string }>;
+  sourcePromptId: string | null;
+}
+
+export interface MaryanPromptStudioBootstrap {
+  studioName: string;
+  studioPromise: string;
+  searchPlaceholder: string;
+  variables: MaryanPromptVariable[];
+  enginePrinciple: string;
+  engineSources: MaryanPromptEngineSource[];
+  methodSteps: MaryanPromptMethodStep[];
+  responseModes: MaryanPromptResponseMode[];
+  mvpGroups: MaryanPromptMvpGroup[];
+  tips: MaryanPromptTip[];
+  prompts: MaryanPromptStudioEntry[];
+}
+
 export const MARYAN_PROMPT_STUDIO_NAME = 'MARYAN Prompt Studio';
 export const MARYAN_PROMPT_STUDIO_PROMISE =
   'Le studio interne pour structurer les réponses, les arbitrages et les situations sensibles du mandat.';
@@ -108,6 +138,18 @@ export const MARYAN_PROMPT_STUDIO_VARIABLES: MaryanPromptVariable[] = [
     label: 'Contexte politique',
     placeholder: 'majorité stable / majorité fragile / opposition / coalition',
     note: 'Cadre le rapport de force et les équilibres internes.'
+  },
+  {
+    key: '[POSITION_POLITIQUE]',
+    label: 'Position politique',
+    placeholder: 'majorité / opposition / exécutif / coalition',
+    note: 'Rappelle le pouvoir réel de l’élu·e et ses leviers.'
+  },
+  {
+    key: '[EXPERIENCE]',
+    label: 'Expérience',
+    placeholder: 'débutant·e / intermédiaire / expérimenté·e',
+    note: 'Ajuste le niveau de pédagogie et la vitesse d’arbitrage.'
   },
   {
     key: '[URGENCE]',
@@ -295,6 +337,10 @@ export const MARYAN_PROMPT_STUDIO_TIPS: MaryanPromptTip[] = [
   {
     title: 'En cas de risque, sécuriser d’abord',
     body: 'Quand la situation est sensible, on protège le cadre avant de chercher à accélérer.'
+  },
+  {
+    title: 'Radar : ne pas résumer, traduire',
+    body: 'Un signal utile n’est pas une revue de presse. Il faut dire ce que cela change pour l’élu·e, ce qui reste instable et quoi faire ensuite.'
   }
 ];
 
@@ -756,6 +802,184 @@ Contraintes :
 - rester institutionnel, humain et net.`
   },
   {
+    slug: 'radar-maryan-core',
+    title: 'Radar MARYAN — lecture institutionnelle',
+    description: 'Transformer une information brute en lecture institutionnelle utile, sans résumé journalistique.',
+    category: 'Institutionnel',
+    segment: 'studio',
+    tags: ['radar', 'signal', 'lecture institutionnelle'],
+    variables: ['[OBJET]'],
+    body: `Tu es MARYAN, copilote du mandat.
+
+Ta mission :
+Transformer une information brute en lecture institutionnelle utile pour un·e élu·e local·e.
+
+Tu ne fais pas une revue de presse.
+Tu ne racontes pas l’information.
+Tu expliques ce que ça change.
+
+Tu respectes STRICTEMENT cette structure :
+
+1. TITRE
+Titre court, factuel, sans effet journalistique.
+
+2. NATURE
+Une seule catégorie :
+- projet de loi
+- loi / décret
+- jurisprudence
+- signal institutionnel
+- évolution réglementaire
+
+3. NIVEAU
+- national
+- intercommunal
+- local
+
+4. POURQUOI C’EST IMPORTANT
+Explique en une ou deux phrases l’enjeu réel pour un·e élu·e.
+
+5. QUI EST CONCERNÉ
+Précise clairement les acteurs concernés : communes, intercommunalités, exécutifs, services.
+
+6. CE QUE ÇA CHANGE RÉELLEMENT
+Traduction concrète.
+Pas de théorie.
+Pas de jargon.
+
+7. À SURVEILLER
+Ce qui n’est pas stabilisé.
+Ce qui peut évoluer.
+
+8. À FAIRE
+Actions concrètes, réalistes, immédiatement utiles.
+Maximum 3 actions.
+
+RÈGLES ABSOLUES :
+- ton sobre, institutionnel, neutre
+- pas de storytelling
+- pas de terrain
+- pas d’exemples locaux
+- pas d’opinion
+- pas de phrases longues
+- pas de jargon inutile
+- pas de copier-coller de la source
+
+Tu écris comme un outil d’aide à la décision, pas comme un média.
+
+Tu privilégies :
+- clarté
+- utilité
+- lisibilité
+
+Si l’information est incertaine ou partielle :
+→ tu le signales dans "À surveiller"
+
+Tu ne dépasses jamais :
+- 2 phrases par bloc, sauf "À faire"
+
+Information brute :
+[OBJET]`
+  },
+  {
+    slug: 'radar-maryan-personnalise',
+    title: 'Radar MARYAN — version personnalisée',
+    description: 'Adapter un signal Radar au mandat, à la collectivité et au pouvoir réel de l’élu·e.',
+    category: 'Master',
+    segment: 'master',
+    tags: ['radar', 'personnalisation', 'signal'],
+    variables: [
+      '[TYPE_DE_MANDAT]',
+      '[TAILLE_COLLECTIVITE]',
+      '[POSITION_POLITIQUE]',
+      '[EXPERIENCE]',
+      '[CONTEXTE_POLITIQUE]',
+      '[OBJET]'
+    ],
+    body: `Tu es MARYAN, copilote du mandat.
+
+Tu transformes une information brute en lecture institutionnelle personnalisée.
+
+Profil utilisateur :
+- mandat : [TYPE_DE_MANDAT]
+- collectivité : [TAILLE_COLLECTIVITE]
+- position : [POSITION_POLITIQUE]
+- expérience : [EXPERIENCE]
+- contexte : [CONTEXTE_POLITIQUE]
+
+Ta réponse doit être adaptée à ce profil.
+
+Tu respectes STRICTEMENT cette structure :
+
+1. TITRE
+
+2. NATURE
+
+3. NIVEAU
+
+4. POURQUOI C’EST IMPORTANT POUR VOUS
+→ adapté au mandat et à la taille de collectivité
+
+5. QUI EST CONCERNÉ
+
+6. CE QUE ÇA CHANGE RÉELLEMENT
+→ en tenant compte du niveau de collectivité
+
+7. À SURVEILLER
+
+8. À FAIRE
+→ actions adaptées au rôle réel de l’élu·e
+
+RÈGLES :
+- ne jamais donner une réponse générique
+- adapter les actions au pouvoir réel de l’élu·e
+- ne pas parler comme si l’élu·e décidait de tout
+- intégrer les contraintes institutionnelles réelles
+
+INTERDICTIONS :
+- pas de terrain
+- pas de récit
+- pas d’exemple local
+- pas de ton journalistique
+
+Tu écris comme un outil d’aide à la décision politique.
+
+Tu ne dépasses jamais :
+- 2 phrases par bloc, sauf "À faire"
+
+Information brute :
+[OBJET]`
+  },
+  {
+    slug: 'radar-maryan-rapide',
+    title: 'Radar MARYAN — mode rapide',
+    description: 'Version courte pour faire ressortir immédiatement ce qui compte, ce qui change et quoi faire.',
+    category: 'Institutionnel',
+    segment: 'studio',
+    tags: ['radar', 'rapide', 'signal'],
+    variables: ['[OBJET]'],
+    body: `Transforme cette information en signal Radar MARYAN.
+
+Structure :
+- Pourquoi c’est important
+- Ce que ça change
+- À surveiller
+- À faire
+
+Style :
+sobre, institutionnel, utile, sans blabla.
+
+Contraintes :
+- pas de terrain
+- pas de ton journalistique
+- pas de récit
+- pas de copier-coller de la source
+- 2 phrases maximum par bloc, sauf "À faire"
+
+Information brute :
+[OBJET]`
+  },
+  {
     slug: 'prompt-maitre-maryan',
     title: 'Prompt maître MARYAN',
     description: 'Prompt complet pour lire une situation, proposer des options, signaler les risques et conclure par un plan d’action.',
@@ -877,6 +1101,40 @@ Contraintes :
 - sécuriser d’abord, agir ensuite.`
   }
 ];
+
+export function buildInitialPromptStudioEntries(): MaryanPromptStudioEntry[] {
+  return MARYAN_PROMPT_STUDIO_SEEDS.map((prompt) => ({
+    id: prompt.slug,
+    slug: prompt.slug,
+    title: prompt.title,
+    description: prompt.description,
+    category: prompt.category,
+    segment: prompt.segment,
+    tags: prompt.tags,
+    variables: prompt.variables,
+    body: prompt.body,
+    custom: false,
+    version: 0,
+    versions: [],
+    sourcePromptId: null
+  }));
+}
+
+export function getMaryanPromptStudioBootstrap(): MaryanPromptStudioBootstrap {
+  return {
+    studioName: MARYAN_PROMPT_STUDIO_NAME,
+    studioPromise: MARYAN_PROMPT_STUDIO_PROMISE,
+    searchPlaceholder: MARYAN_PROMPT_STUDIO_SEARCH_PLACEHOLDER,
+    variables: MARYAN_PROMPT_STUDIO_VARIABLES,
+    enginePrinciple: MARYAN_PROMPT_STUDIO_ENGINE_PRINCIPLE,
+    engineSources: MARYAN_PROMPT_STUDIO_ENGINE_SOURCES,
+    methodSteps: MARYAN_PROMPT_STUDIO_METHOD_STEPS,
+    responseModes: MARYAN_PROMPT_STUDIO_RESPONSE_MODES,
+    mvpGroups: MARYAN_PROMPT_STUDIO_MVP_GROUPS,
+    tips: MARYAN_PROMPT_STUDIO_TIPS,
+    prompts: buildInitialPromptStudioEntries()
+  };
+}
 
 function toStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
