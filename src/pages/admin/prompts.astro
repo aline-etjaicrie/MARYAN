@@ -1,0 +1,2059 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  MARYAN_PROMPT_STUDIO_NAME,
+  MARYAN_PROMPT_STUDIO_PROMISE,
+  MARYAN_PROMPT_STUDIO_SEARCH_PLACEHOLDER,
+  MARYAN_PROMPT_STUDIO_VARIABLES,
+  MARYAN_PROMPT_STUDIO_ENGINE_PRINCIPLE,
+  MARYAN_PROMPT_STUDIO_ENGINE_SOURCES,
+  MARYAN_PROMPT_STUDIO_METHOD_STEPS,
+  MARYAN_PROMPT_STUDIO_RESPONSE_MODES,
+  MARYAN_PROMPT_STUDIO_MVP_GROUPS,
+  MARYAN_PROMPT_STUDIO_TIPS,
+  MARYAN_PROMPT_STUDIO_SEEDS
+} from '../../lib/prompt-studio';
+
+export const prerender = false;
+
+const initialPrompts = MARYAN_PROMPT_STUDIO_SEEDS.map((prompt) => ({
+  id: prompt.slug,
+  slug: prompt.slug,
+  title: prompt.title,
+  description: prompt.description,
+  category: prompt.category,
+  segment: prompt.segment,
+  tags: prompt.tags,
+  variables: prompt.variables,
+  body: prompt.body,
+  custom: false,
+  version: 0,
+  versions: [],
+  sourcePromptId: null
+}));
+---
+
+<BaseLayout title="MARYAN Prompt Studio — Admin" description="Studio interne de prompts MARYAN">
+  <main class="studio-admin-page">
+    <div class="studio-admin-wrap">
+      <div id="studioLoader" class="studio-loader">Vérification des accès…</div>
+      <div id="studioError" class="studio-error" style="display:none;"></div>
+
+      <div class="studio-app" id="studioApp" style="display:none;">
+        <header class="studio-topbar">
+          <div class="studio-brand">
+            <a href="/admin" class="studio-back-link">← Dashboard Admin</a>
+            <div class="studio-logo">{MARYAN_PROMPT_STUDIO_NAME}</div>
+            <p class="studio-promise">{MARYAN_PROMPT_STUDIO_PROMISE}</p>
+          </div>
+
+          <div class="studio-search">
+            <span class="studio-search-icon">⌕</span>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder={MARYAN_PROMPT_STUDIO_SEARCH_PLACEHOLDER}
+            />
+          </div>
+
+          <div class="studio-actions">
+            <div class="segment-toggle">
+              <button class="segment-btn" data-segment="studio" id="segmentStudioBtn">Studio</button>
+              <button class="segment-btn" data-segment="master" id="segmentMasterBtn">Master</button>
+            </div>
+            <button class="icon-btn" id="themeBtn">◑</button>
+            <button class="icon-btn" id="printBtn">Imprimer</button>
+          </div>
+        </header>
+
+        <div class="studio-body">
+          <aside class="studio-sidebar">
+            <div class="sidebar-filters">
+              <div class="filter-label">Catégories</div>
+              <div class="filter-chips" id="categoryRow"></div>
+              <div class="filter-chips quick-filters" id="quickFilters">
+                <button class="chip active" data-filter="all">Tous</button>
+                <button class="chip" data-filter="favorites">★ Favoris</button>
+                <button class="chip" data-filter="custom">Mes versions</button>
+              </div>
+            </div>
+
+            <div class="prompt-list" id="promptList"></div>
+
+            <div class="sidebar-footer">
+              <div class="sidebar-stats">
+                <div class="stat-item">
+                  <span class="stat-num" id="statTotal">0</span>
+                  <span class="stat-lbl">Prompts</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num" id="statCats">0</span>
+                  <span class="stat-lbl">Catégs</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num" id="statFavs">0</span>
+                  <span class="stat-lbl">Favoris</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num" id="statCustom">0</span>
+                  <span class="stat-lbl">Versions</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <section class="studio-workspace">
+            <div class="workspace-header">
+              <div class="workspace-title" id="wsTitle">Sélectionnez un prompt</div>
+              <div class="workspace-desc" id="wsDesc">Choisissez un prompt MARYAN pour structurer une réponse, un arbitrage ou une situation sensible.</div>
+              <div class="workspace-meta" id="wsMeta"></div>
+            </div>
+
+            <div class="workspace-body">
+              <div class="editor-pane">
+                <div class="pane-toolbar">
+                  <span class="pane-label">Éditeur</span>
+                  <button class="btn" id="resetBtn">↺ Réinitialiser</button>
+                  <button class="btn ok" id="saveVersionBtn">✓ Sauvegarder</button>
+                  <button class="btn" id="dupBtn">⧉ Dupliquer</button>
+                  <button class="btn" id="favBtn">★ Favori</button>
+                  <button class="btn danger hidden" id="delBtn">✕ Supprimer</button>
+                  <button class="btn primary" id="copyBtn">⎘ Copier</button>
+                </div>
+
+                <div class="editor-area">
+                  <textarea id="editor" spellcheck="false" placeholder="Sélectionnez un prompt pour commencer…"></textarea>
+                </div>
+              </div>
+
+              <aside class="right-panel">
+                <div class="panel-scroll">
+                  <div id="segmentHintBox" class="segment-hint-box"></div>
+
+                  <section class="panel-section">
+                    <button class="panel-section-head" type="button" data-section="vars">
+                      <span class="panel-section-title">Variables</span>
+                      <span class="panel-section-toggle" id="vars-toggle">▾</span>
+                    </button>
+                    <div class="panel-body" id="vars-body">
+                      <div class="var-grid" id="varsGrid"></div>
+                    </div>
+                  </section>
+
+                  <section class="panel-section">
+                    <button class="panel-section-head" type="button" data-section="engine">
+                      <span class="panel-section-title">Moteur MARYAN</span>
+                      <span class="panel-section-toggle" id="engine-toggle">▾</span>
+                    </button>
+                    <div class="panel-body" id="engine-body">
+                      <div id="engineContent"></div>
+                    </div>
+                  </section>
+
+                  <section class="panel-section">
+                    <button class="panel-section-head" type="button" data-section="export">
+                      <span class="panel-section-title">Export &amp; Partage</span>
+                      <span class="panel-section-toggle" id="export-toggle">▾</span>
+                    </button>
+                    <div class="panel-body" id="export-body">
+                      <div class="button-row">
+                        <button class="btn" id="exportTxtBtn">↓ .txt</button>
+                        <button class="btn" id="exportJsonBtn">↓ .json</button>
+                        <button class="btn" id="shareBtn">⇪ Partager</button>
+                      </div>
+                      <div class="button-row">
+                        <button class="btn" id="sortTitleBtn">Trier A–Z</button>
+                        <button class="btn" id="sortCatBtn">Par catég.</button>
+                        <button class="btn" id="sortFavBtn">Favoris ↑</button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="panel-section">
+                    <button class="panel-section-head" type="button" data-section="versions">
+                      <span class="panel-section-title">Versions</span>
+                      <span class="panel-section-toggle" id="versions-toggle">▾</span>
+                    </button>
+                    <div class="panel-body" id="versions-body">
+                      <div id="versionsContent" class="versions-content"></div>
+                    </div>
+                  </section>
+
+                  <section class="panel-section">
+                    <button class="panel-section-head" type="button" data-section="notes">
+                      <span class="panel-section-title">Notes perso</span>
+                      <span class="panel-section-toggle" id="notes-toggle">▾</span>
+                    </button>
+                    <div class="panel-body" id="notes-body">
+                      <textarea id="notesArea" placeholder="Vos notes sur ce prompt…"></textarea>
+                      <div class="notes-actions">
+                        <button class="btn ok" id="saveNotesBtn">Sauvegarder</button>
+                        <button class="btn" id="clearNotesBtn">Vider</button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="panel-section">
+                    <button class="panel-section-head" type="button" data-section="tips">
+                      <span class="panel-section-title">Bonnes pratiques</span>
+                      <span class="panel-section-toggle" id="tips-toggle">▸</span>
+                    </button>
+                    <div class="panel-body collapsed" id="tips-body">
+                      <div id="tipsContent"></div>
+                    </div>
+                  </section>
+                </div>
+              </aside>
+            </div>
+
+            <footer class="workspace-footer">
+              <span class="footer-stats" id="footerStats">—</span>
+              <div class="footer-actions">
+                <button class="btn" id="resetBtnF">↺</button>
+                <button class="btn ok" id="saveVersionBtnF">✓ Sauvegarder</button>
+                <button class="btn primary" id="copyBtnF">⎘ Copier avec variables</button>
+              </div>
+            </footer>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script
+  define:vars={{
+    studioName: MARYAN_PROMPT_STUDIO_NAME,
+    studioPromise: MARYAN_PROMPT_STUDIO_PROMISE,
+    initialPrompts,
+    variableDefinitions: MARYAN_PROMPT_STUDIO_VARIABLES,
+    enginePrinciple: MARYAN_PROMPT_STUDIO_ENGINE_PRINCIPLE,
+    engineSources: MARYAN_PROMPT_STUDIO_ENGINE_SOURCES,
+    methodSteps: MARYAN_PROMPT_STUDIO_METHOD_STEPS,
+    responseModes: MARYAN_PROMPT_STUDIO_RESPONSE_MODES,
+    mvpGroups: MARYAN_PROMPT_STUDIO_MVP_GROUPS,
+    tipCards: MARYAN_PROMPT_STUDIO_TIPS
+  }}
+>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  const STATE_KEY = 'maryan_prompt_studio_state';
+  const CUSTOM_KEY = 'maryan_prompt_studio_custom';
+  const NOTES_KEY = 'maryan_prompt_studio_notes';
+  const DRAFTS_KEY = 'maryan_prompt_studio_drafts';
+
+  const $ = (id) => document.getElementById(id);
+  const studioLoader = $('studioLoader');
+  const studioError = $('studioError');
+  const studioApp = $('studioApp');
+
+  const els = {
+    searchInput: $('searchInput'),
+    categoryRow: $('categoryRow'),
+    quickFilters: $('quickFilters'),
+    promptList: $('promptList'),
+    statTotal: $('statTotal'),
+    statCats: $('statCats'),
+    statFavs: $('statFavs'),
+    statCustom: $('statCustom'),
+    wsTitle: $('wsTitle'),
+    wsDesc: $('wsDesc'),
+    wsMeta: $('wsMeta'),
+    editor: $('editor'),
+    copyBtn: $('copyBtn'),
+    copyBtnF: $('copyBtnF'),
+    resetBtn: $('resetBtn'),
+    resetBtnF: $('resetBtnF'),
+    saveVersionBtn: $('saveVersionBtn'),
+    saveVersionBtnF: $('saveVersionBtnF'),
+    dupBtn: $('dupBtn'),
+    favBtn: $('favBtn'),
+    delBtn: $('delBtn'),
+    exportTxtBtn: $('exportTxtBtn'),
+    exportJsonBtn: $('exportJsonBtn'),
+    shareBtn: $('shareBtn'),
+    sortTitleBtn: $('sortTitleBtn'),
+    sortCatBtn: $('sortCatBtn'),
+    sortFavBtn: $('sortFavBtn'),
+    varsGrid: $('varsGrid'),
+    engineContent: $('engineContent'),
+    segmentHintBox: $('segmentHintBox'),
+    notesArea: $('notesArea'),
+    saveNotesBtn: $('saveNotesBtn'),
+    clearNotesBtn: $('clearNotesBtn'),
+    tipsContent: $('tipsContent'),
+    footerStats: $('footerStats'),
+    themeBtn: $('themeBtn'),
+    printBtn: $('printBtn'),
+    segmentStudioBtn: $('segmentStudioBtn'),
+    segmentMasterBtn: $('segmentMasterBtn'),
+    versionsContent: $('versionsContent'),
+    toast: null
+  };
+
+  let state = {
+    segment: 'studio',
+    theme: 'light',
+    category: 'Tous',
+    filter: 'all',
+    search: '',
+    sort: 'title',
+    activeId: null,
+    favorites: []
+  };
+
+  let customPrompts = [];
+  let notesStore = {};
+  let draftsStore = {};
+  let variableValues = {};
+  let toastTimer = null;
+
+  const sectionState = {
+    vars: true,
+    engine: true,
+    export: true,
+    versions: true,
+    notes: true,
+    tips: false
+  };
+
+  function showError(message) {
+    studioError.textContent = message;
+    studioError.style.display = 'block';
+    studioLoader.style.display = 'none';
+  }
+
+  function esc(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
+  function loadSaved() {
+    try {
+      const savedState = localStorage.getItem(STATE_KEY);
+      if (savedState) Object.assign(state, JSON.parse(savedState));
+
+      const savedCustom = localStorage.getItem(CUSTOM_KEY);
+      if (savedCustom) customPrompts = JSON.parse(savedCustom);
+
+      const savedNotes = localStorage.getItem(NOTES_KEY);
+      if (savedNotes) notesStore = JSON.parse(savedNotes);
+
+      const savedDrafts = localStorage.getItem(DRAFTS_KEY);
+      if (savedDrafts) draftsStore = JSON.parse(savedDrafts);
+    } catch {
+      // noop
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    } catch {
+      // noop
+    }
+  }
+
+  function saveCustom() {
+    try {
+      localStorage.setItem(CUSTOM_KEY, JSON.stringify(customPrompts));
+    } catch {
+      // noop
+    }
+  }
+
+  function saveNotesStore() {
+    try {
+      localStorage.setItem(NOTES_KEY, JSON.stringify(notesStore));
+    } catch {
+      // noop
+    }
+  }
+
+  function saveDraftsStore() {
+    try {
+      localStorage.setItem(DRAFTS_KEY, JSON.stringify(draftsStore));
+    } catch {
+      // noop
+    }
+  }
+
+  function allPrompts() {
+    return [...initialPrompts, ...customPrompts];
+  }
+
+  function activePrompt() {
+    return allPrompts().find((prompt) => prompt.id === state.activeId) || filteredPrompts()[0] || allPrompts()[0] || null;
+  }
+
+  function filteredPrompts() {
+    const query = state.search.toLowerCase().trim();
+    let items = allPrompts().filter((prompt) => prompt.segment === state.segment);
+
+    if (state.category !== 'Tous') {
+      items = items.filter((prompt) => prompt.category === state.category);
+    }
+
+    if (state.filter === 'favorites') {
+      items = items.filter((prompt) => state.favorites.includes(prompt.id));
+    }
+
+    if (state.filter === 'custom') {
+      items = items.filter((prompt) => prompt.custom);
+    }
+
+    if (query) {
+      items = items.filter((prompt) =>
+        [prompt.title, prompt.description, prompt.category, ...(prompt.tags || []), prompt.body]
+          .join(' ')
+          .toLowerCase()
+          .includes(query)
+      );
+    }
+
+    if (state.sort === 'category') {
+      items.sort((a, b) => a.category.localeCompare(b.category) || a.title.localeCompare(b.title));
+    } else if (state.sort === 'favorites') {
+      items.sort((a, b) => {
+        const favA = state.favorites.includes(a.id);
+        const favB = state.favorites.includes(b.id);
+        return favA === favB ? a.title.localeCompare(b.title) : favA ? -1 : 1;
+      });
+    } else {
+      items.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    return items;
+  }
+
+  function categories() {
+    const visible = allPrompts().filter((prompt) => prompt.segment === state.segment);
+    return ['Tous', ...new Set(visible.map((prompt) => prompt.category))];
+  }
+
+  function promptVariables(prompt) {
+    const keys = Array.isArray(prompt?.variables) && prompt.variables.length
+      ? prompt.variables
+      : variableDefinitions.map((definition) => definition.key);
+    return variableDefinitions.filter((definition) => keys.includes(definition.key));
+  }
+
+  function renderedPromptText(prompt) {
+    let content = els.editor.value;
+    promptVariables(prompt).forEach((definition) => {
+      const value = variableValues[definition.key];
+      if (value) {
+        content = content.replaceAll(definition.key, value);
+      }
+    });
+    return content;
+  }
+
+  function currentDraft(prompt) {
+    if (!prompt) return '';
+    return draftsStore[prompt.id] ?? prompt.body ?? '';
+  }
+
+  function setCurrentDraft(prompt, value) {
+    if (!prompt) return;
+    draftsStore[prompt.id] = value;
+    saveDraftsStore();
+  }
+
+  function clearCurrentDraft(prompt) {
+    if (!prompt) return;
+    delete draftsStore[prompt.id];
+    saveDraftsStore();
+  }
+
+  function toast(message) {
+    if (!els.toast) {
+      els.toast = document.createElement('div');
+      els.toast.className = 'toast';
+      document.body.appendChild(els.toast);
+    }
+
+    els.toast.textContent = message;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2200);
+  }
+
+  function toggleSection(section) {
+    sectionState[section] = !sectionState[section];
+    $(`${section}-body`).classList.toggle('collapsed', !sectionState[section]);
+    $(`${section}-toggle`).textContent = sectionState[section] ? '▾' : '▸';
+  }
+
+  function applyTheme() {
+    document.documentElement.setAttribute('data-theme', state.theme);
+    document.documentElement.setAttribute('data-segment', state.segment);
+    els.themeBtn.textContent = state.theme === 'dark' ? '☀' : '◑';
+    els.segmentStudioBtn.classList.toggle('active', state.segment === 'studio');
+    els.segmentMasterBtn.classList.toggle('active', state.segment === 'master');
+  }
+
+  function renderCategoryRow() {
+    els.categoryRow.innerHTML = categories()
+      .map((category) => `<button class="chip${state.category === category ? ' active' : ''}" data-cat="${esc(category)}">${esc(category)}</button>`)
+      .join('');
+
+    els.categoryRow.querySelectorAll('[data-cat]').forEach((button) => {
+      button.addEventListener('click', () => {
+        state.category = button.dataset.cat;
+        renderAll();
+        saveState();
+      });
+    });
+  }
+
+  function renderQuickFilters() {
+    els.quickFilters.querySelectorAll('[data-filter]').forEach((button) => {
+      button.classList.toggle('active', button.dataset.filter === state.filter);
+    });
+  }
+
+  function renderPromptList() {
+    const prompts = filteredPrompts();
+    if (!prompts.length) {
+      els.promptList.innerHTML = '<div class="empty-state">Aucun prompt pour cette recherche.</div>';
+      return;
+    }
+
+    els.promptList.innerHTML = prompts.map((prompt) => {
+      const isFavorite = state.favorites.includes(prompt.id);
+      return `
+        <article class="prompt-card${state.activeId === prompt.id ? ' active' : ''}" data-id="${esc(prompt.id)}">
+          <div class="prompt-card-title">${isFavorite ? '★ ' : ''}${esc(prompt.title)}</div>
+          <div class="prompt-card-desc">${esc(prompt.description)}</div>
+          <div class="prompt-card-tags">
+            <span class="tag tag-segment">${prompt.segment === 'master' ? 'Master' : 'Studio'}</span>
+            <span class="tag">${esc(prompt.category)}</span>
+            ${(prompt.tags || []).slice(0, 2).map((tag) => `<span class="tag">${esc(tag)}</span>`).join('')}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    els.promptList.querySelectorAll('[data-id]').forEach((card) => {
+      card.addEventListener('click', () => {
+        state.activeId = card.dataset.id;
+        loadActivePrompt();
+        renderPromptList();
+        saveState();
+      });
+    });
+  }
+
+  function renderStats() {
+    const prompts = filteredPrompts();
+    els.statTotal.textContent = String(prompts.length);
+    els.statCats.textContent = String(categories().length - 1);
+    els.statFavs.textContent = String(state.favorites.length);
+    els.statCustom.textContent = String(customPrompts.length);
+  }
+
+  function renderSegmentHint() {
+    if (state.segment === 'master') {
+      els.segmentHintBox.innerHTML = `
+        <div class="segment-hint master">
+          <strong>Mode Master</strong>
+          Pour les prompts-cadres, les garde-fous et les réponses complètes à forte responsabilité.
+        </div>
+      `;
+      return;
+    }
+
+    els.segmentHintBox.innerHTML = `
+      <div class="segment-hint studio">
+        <strong>Mode Studio</strong>
+        Pour traiter un cas concret du mandat avec une structure claire, des options courtes et des points de vigilance.
+      </div>
+    `;
+  }
+
+  function renderVariables() {
+    const prompt = activePrompt();
+    const definitions = promptVariables(prompt);
+
+    els.varsGrid.innerHTML = definitions.map((definition) => {
+      const value = variableValues[definition.key] || '';
+      return `
+        <label class="var-row">
+          <span class="var-label">
+            ${esc(definition.label)}
+            <span class="var-key">${esc(definition.key)}</span>
+          </span>
+          <input
+            class="var-input"
+            type="text"
+            data-key="${esc(definition.key)}"
+            value="${esc(value)}"
+            placeholder="${esc(definition.placeholder)}"
+          />
+          <span class="var-note">${esc(definition.note)}</span>
+        </label>
+      `;
+    }).join('');
+
+    els.varsGrid.querySelectorAll('[data-key]').forEach((input) => {
+      input.addEventListener('input', () => {
+        variableValues[input.dataset.key] = input.value;
+      });
+    });
+  }
+
+  function renderTips() {
+    els.tipsContent.innerHTML = tipCards.map((tip) => `
+      <article class="tip-card">
+        <div class="tip-title">${esc(tip.title)}</div>
+        <div class="tip-body">${esc(tip.body)}</div>
+      </article>
+    `).join('');
+  }
+
+  function renderEngine() {
+    els.engineContent.innerHTML = `
+      <div class="engine-principle">${esc(enginePrinciple)}</div>
+
+      <div class="engine-source-grid">
+        ${engineSources.map((source) => `
+          <article class="engine-card">
+            <div class="engine-card-title">${esc(source.title)}</div>
+            <div class="engine-card-question">${esc(source.question)}</div>
+            <div class="engine-card-list">
+              ${source.fields.map((field) => `<span class="engine-pill">${esc(field)}</span>`).join('')}
+            </div>
+            <div class="engine-card-effect">${esc(source.effect)}</div>
+          </article>
+        `).join('')}
+      </div>
+
+      <div class="engine-subsection">
+        <div class="engine-subtitle">Structure de réponse</div>
+        <div class="engine-steps">
+          ${methodSteps.map((step) => `
+            <article class="engine-step">
+              <div class="engine-step-title">${esc(step.title)}</div>
+              <div class="engine-step-body">${esc(step.body)}</div>
+            </article>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="engine-subsection">
+        <div class="engine-subtitle">Modes de réponse</div>
+        <div class="engine-modes">
+          ${responseModes.map((mode) => `
+            <article class="engine-mode">
+              <div class="engine-mode-condition">${esc(mode.condition)}</div>
+              <div class="engine-mode-tone">${esc(mode.tone)}</div>
+              <div class="engine-mode-format">${esc(mode.format)}</div>
+            </article>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="engine-subsection">
+        <div class="engine-subtitle">MVP de personnalisation</div>
+        <div class="engine-mvp-grid">
+          ${mvpGroups.map((group) => `
+            <article class="engine-mvp-card">
+              <div class="engine-step-title">${esc(group.title)}</div>
+              <div class="engine-card-list">
+                ${group.items.map((item) => `<span class="engine-pill">${esc(item)}</span>`).join('')}
+              </div>
+            </article>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderVersions() {
+    const prompt = activePrompt();
+
+    if (!prompt?.custom) {
+      els.versionsContent.innerHTML = `
+        <div class="empty-side-note">
+          Créez une version perso pour historiser vos adaptations, vos arbitrages et vos variantes prêtes à l’usage.
+        </div>
+      `;
+      return;
+    }
+
+    const versions = Array.isArray(prompt.versions) ? prompt.versions : [];
+    if (!versions.length) {
+      els.versionsContent.innerHTML = '<div class="empty-side-note">Aucune version sauvegardée pour le moment.</div>';
+      return;
+    }
+
+    els.versionsContent.innerHTML = versions.map((version) => `
+      <div class="version-card">
+        <div class="version-meta">
+          <strong>Version ${version.version}</strong>
+          <span>${new Date(version.savedAt).toLocaleString('fr-FR')}</span>
+        </div>
+        <button class="btn" data-restore-version="${version.version}">Restaurer</button>
+      </div>
+    `).join('');
+
+    els.versionsContent.querySelectorAll('[data-restore-version]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const versionNumber = Number(button.dataset.restoreVersion);
+        const found = versions.find((version) => version.version === versionNumber);
+        if (!found) return;
+        els.editor.value = found.body;
+        setCurrentDraft(prompt, found.body);
+        updateFooter();
+        toast(`Version ${versionNumber} restaurée.`);
+      });
+    });
+  }
+
+  function renderWorkspaceMeta(prompt) {
+    const isFavorite = state.favorites.includes(prompt.id);
+    const meta = [
+      `<span class="badge primary">${esc(prompt.category)}</span>`,
+      `<span class="badge">${prompt.segment === 'master' ? 'Master' : 'Studio'}</span>`,
+      ...(prompt.tags || []).map((tag) => `<span class="badge">${esc(tag)}</span>`)
+    ];
+
+    if (isFavorite) {
+      meta.push('<span class="badge fav">★ Favori</span>');
+    }
+
+    if (prompt.custom) {
+      meta.push('<span class="badge custom-badge">Version perso</span>');
+      meta.push(`<span class="badge">v${esc(prompt.version || 1)}</span>`);
+    }
+
+    els.wsMeta.innerHTML = meta.join('');
+  }
+
+  function loadActivePrompt() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+
+    els.wsTitle.textContent = prompt.title;
+    els.wsDesc.textContent = prompt.description;
+    renderWorkspaceMeta(prompt);
+    els.favBtn.textContent = state.favorites.includes(prompt.id) ? '★ Retirer' : '★ Favori';
+    els.delBtn.classList.toggle('hidden', !prompt.custom);
+    els.saveVersionBtn.textContent = prompt.custom ? '✓ Sauvegarder v+' : '✓ Créer une version';
+    els.saveVersionBtnF.textContent = prompt.custom ? '✓ Sauvegarder v+' : '✓ Créer une version';
+    els.editor.value = currentDraft(prompt);
+    els.notesArea.value = notesStore[prompt.id] || '';
+    renderVariables();
+    renderVersions();
+    updateFooter();
+  }
+
+  function updateFooter() {
+    const prompt = activePrompt();
+    if (!prompt) {
+      els.footerStats.textContent = '—';
+      return;
+    }
+
+    const raw = els.editor.value;
+    els.footerStats.textContent = `${raw.length} car. · ${raw.split(/\s+/).filter(Boolean).length} mots · ${prompt.category}`;
+  }
+
+  function renderAll() {
+    if (!state.activeId || !allPrompts().some((prompt) => prompt.id === state.activeId && prompt.segment === state.segment)) {
+      state.activeId = filteredPrompts()[0]?.id || allPrompts().find((prompt) => prompt.segment === state.segment)?.id || null;
+    }
+
+    els.searchInput.value = state.search;
+    applyTheme();
+    renderSegmentHint();
+    renderCategoryRow();
+    renderQuickFilters();
+    renderPromptList();
+    renderStats();
+    renderEngine();
+    renderTips();
+    loadActivePrompt();
+  }
+
+  function duplicatePrompt() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+
+    const timestamp = new Date().toISOString();
+    const copy = {
+      ...prompt,
+      id: `${prompt.slug}-copy-${Date.now()}`,
+      slug: `${prompt.slug}-copie-${Date.now()}`,
+      title: `${prompt.title} (copie perso)`,
+      custom: true,
+      sourcePromptId: prompt.id,
+      body: els.editor.value,
+      version: 1,
+      versions: [
+        {
+          version: 1,
+          body: els.editor.value,
+          savedAt: timestamp
+        }
+      ],
+      updatedAt: timestamp
+    };
+
+    customPrompts.unshift(copy);
+    state.activeId = copy.id;
+    draftsStore[copy.id] = copy.body;
+    saveCustom();
+    saveDraftsStore();
+    renderAll();
+    saveState();
+    toast('Copie personnelle créée.');
+  }
+
+  function saveVersion() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+
+    const content = els.editor.value.trim();
+    if (!content) {
+      toast('Impossible de sauvegarder une version vide.');
+      return;
+    }
+
+    const timestamp = new Date().toISOString();
+
+    if (!prompt.custom) {
+      const copy = {
+        ...prompt,
+        id: `${prompt.slug}-version-${Date.now()}`,
+        slug: `${prompt.slug}-version-${Date.now()}`,
+        title: `${prompt.title} (version perso)`,
+        custom: true,
+        sourcePromptId: prompt.id,
+        body: content,
+        version: 1,
+        versions: [
+          {
+            version: 1,
+            body: content,
+            savedAt: timestamp
+          }
+        ],
+        updatedAt: timestamp
+      };
+
+      customPrompts.unshift(copy);
+      state.activeId = copy.id;
+      draftsStore[copy.id] = content;
+      saveCustom();
+      saveDraftsStore();
+      renderAll();
+      saveState();
+      toast('Version personnelle créée.');
+      return;
+    }
+
+    const index = customPrompts.findIndex((entry) => entry.id === prompt.id);
+    if (index === -1) return;
+
+    const nextVersionNumber = Number(customPrompts[index].version || 1) + 1;
+    customPrompts[index] = {
+      ...customPrompts[index],
+      body: content,
+      version: nextVersionNumber,
+      updatedAt: timestamp,
+      versions: [
+        {
+          version: nextVersionNumber,
+          body: content,
+          savedAt: timestamp
+        },
+        ...(customPrompts[index].versions || [])
+      ].slice(0, 12)
+    };
+
+    draftsStore[prompt.id] = content;
+    saveCustom();
+    saveDraftsStore();
+    renderAll();
+    toast(`Version ${nextVersionNumber} sauvegardée.`);
+  }
+
+  function deletePrompt() {
+    const prompt = activePrompt();
+    if (!prompt?.custom) return;
+
+    const index = customPrompts.findIndex((entry) => entry.id === prompt.id);
+    if (index >= 0) {
+      customPrompts.splice(index, 1);
+      delete notesStore[prompt.id];
+      delete draftsStore[prompt.id];
+      saveCustom();
+      saveNotesStore();
+      saveDraftsStore();
+    }
+
+    state.activeId = filteredPrompts()[0]?.id || allPrompts().find((entry) => entry.segment === state.segment)?.id || null;
+    renderAll();
+    saveState();
+    toast('Version personnelle supprimée.');
+  }
+
+  function toggleFavorite() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+
+    if (state.favorites.includes(prompt.id)) {
+      state.favorites = state.favorites.filter((id) => id !== prompt.id);
+      toast('Retiré des favoris.');
+    } else {
+      state.favorites.push(prompt.id);
+      toast('Ajouté aux favoris.');
+    }
+
+    renderAll();
+    saveState();
+  }
+
+  function resetPrompt() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+    clearCurrentDraft(prompt);
+    els.editor.value = prompt.body;
+    updateFooter();
+    toast('Réinitialisé.');
+  }
+
+  async function copyPrompt() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+
+    const text = renderedPromptText(prompt);
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('Prompt copié avec variables.');
+    } catch {
+      toast('Copie impossible.');
+    }
+  }
+
+  function exportPromptTxt() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+    const blob = new Blob([renderedPromptText(prompt)], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${prompt.slug}.txt`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    toast('.txt exporté.');
+  }
+
+  function exportPromptJson() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+    const payload = {
+      prompt,
+      rawText: els.editor.value,
+      renderedText: renderedPromptText(prompt),
+      notes: notesStore[prompt.id] || '',
+      variables: variableValues,
+      exportedAt: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${prompt.slug}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    toast('.json exporté.');
+  }
+
+  async function sharePrompt() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+
+    const content = `${prompt.title}\n${prompt.category}\n\n${renderedPromptText(prompt)}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: prompt.title, text: content });
+        return;
+      } catch {
+        // fallback clipboard below
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(content);
+      toast('Version partagée copiée.');
+    } catch {
+      toast('Partage impossible.');
+    }
+  }
+
+  function saveNotes() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+    notesStore[prompt.id] = els.notesArea.value;
+    saveNotesStore();
+    toast('Notes sauvegardées.');
+  }
+
+  function clearNotes() {
+    const prompt = activePrompt();
+    if (!prompt) return;
+    delete notesStore[prompt.id];
+    els.notesArea.value = '';
+    saveNotesStore();
+    toast('Notes vidées.');
+  }
+
+  function bindEvents() {
+    document.querySelectorAll('[data-section]').forEach((button) => {
+      button.addEventListener('click', () => toggleSection(button.dataset.section));
+    });
+
+    els.searchInput.addEventListener('input', () => {
+      state.search = els.searchInput.value;
+      renderPromptList();
+      renderStats();
+      saveState();
+    });
+
+    els.quickFilters.querySelectorAll('[data-filter]').forEach((button) => {
+      button.addEventListener('click', () => {
+        state.filter = button.dataset.filter;
+        renderAll();
+        saveState();
+      });
+    });
+
+    els.segmentStudioBtn.addEventListener('click', () => {
+      state.segment = 'studio';
+      state.category = 'Tous';
+      renderAll();
+      saveState();
+    });
+
+    els.segmentMasterBtn.addEventListener('click', () => {
+      state.segment = 'master';
+      state.category = 'Tous';
+      renderAll();
+      saveState();
+    });
+
+    els.themeBtn.addEventListener('click', () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      saveState();
+    });
+
+    els.printBtn.addEventListener('click', () => window.print());
+
+    els.editor.addEventListener('input', () => {
+      const prompt = activePrompt();
+      if (!prompt) return;
+      setCurrentDraft(prompt, els.editor.value);
+      updateFooter();
+    });
+
+    els.copyBtn.addEventListener('click', copyPrompt);
+    els.copyBtnF.addEventListener('click', copyPrompt);
+    els.resetBtn.addEventListener('click', resetPrompt);
+    els.resetBtnF.addEventListener('click', resetPrompt);
+    els.saveVersionBtn.addEventListener('click', saveVersion);
+    els.saveVersionBtnF.addEventListener('click', saveVersion);
+    els.dupBtn.addEventListener('click', duplicatePrompt);
+    els.favBtn.addEventListener('click', toggleFavorite);
+    els.delBtn.addEventListener('click', deletePrompt);
+    els.exportTxtBtn.addEventListener('click', exportPromptTxt);
+    els.exportJsonBtn.addEventListener('click', exportPromptJson);
+    els.shareBtn.addEventListener('click', sharePrompt);
+    els.saveNotesBtn.addEventListener('click', saveNotes);
+    els.clearNotesBtn.addEventListener('click', clearNotes);
+
+    els.sortTitleBtn.addEventListener('click', () => {
+      state.sort = 'title';
+      renderAll();
+      saveState();
+      toast('Tri par titre.');
+    });
+
+    els.sortCatBtn.addEventListener('click', () => {
+      state.sort = 'category';
+      renderAll();
+      saveState();
+      toast('Tri par catégorie.');
+    });
+
+    els.sortFavBtn.addEventListener('click', () => {
+      state.sort = 'favorites';
+      renderAll();
+      saveState();
+      toast('Favoris en premier.');
+    });
+  }
+
+  async function initAccess() {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      showError('Configuration manquante.');
+      return;
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', session.user.id)
+      .single();
+
+    if (profile?.plan !== 'admin') {
+      window.location.href = '/mon-compte';
+      return;
+    }
+
+    studioLoader.style.display = 'none';
+    studioApp.style.display = 'grid';
+
+    loadSaved();
+    bindEvents();
+    renderAll();
+  }
+
+  initAccess().catch(() => {
+    showError('Accès admin impossible à vérifier.');
+  });
+</script>
+
+<style>
+  :root {
+    --studio-bg: #f8f9fa;
+    --studio-surface: #ffffff;
+    --studio-surface-2: #f2f5f7;
+    --studio-border: rgba(10, 25, 47, 0.08);
+    --studio-border-strong: rgba(10, 25, 47, 0.18);
+    --studio-text: #0a192f;
+    --studio-text-2: #4e5d68;
+    --studio-text-3: #7d8992;
+    --studio-accent: #0a192f;
+    --studio-accent-soft: rgba(10, 25, 47, 0.08);
+    --studio-master: #e63946;
+    --studio-master-soft: rgba(230, 57, 70, 0.12);
+    --studio-neon: #adff2f;
+    --studio-radius: 12px;
+    --studio-radius-lg: 18px;
+    --studio-shadow-sm: 0 1px 3px rgba(10, 25, 47, 0.06), 0 1px 2px rgba(10, 25, 47, 0.04);
+    --studio-mode-color: var(--studio-accent);
+    --studio-mode-soft: var(--studio-accent-soft);
+  }
+
+  html[data-theme='dark'] {
+    --studio-bg: #0d1520;
+    --studio-surface: #111d2b;
+    --studio-surface-2: #162434;
+    --studio-border: rgba(255, 255, 255, 0.08);
+    --studio-border-strong: rgba(255, 255, 255, 0.16);
+    --studio-text: #eef3f8;
+    --studio-text-2: #b8c4cf;
+    --studio-text-3: #7f8d98;
+    --studio-accent-soft: rgba(173, 255, 47, 0.08);
+    --studio-master-soft: rgba(230, 57, 70, 0.18);
+  }
+
+  html[data-segment='master'] {
+    --studio-mode-color: var(--studio-master);
+    --studio-mode-soft: var(--studio-master-soft);
+  }
+
+  html[data-segment='studio'] {
+    --studio-mode-color: var(--studio-accent);
+    --studio-mode-soft: var(--studio-accent-soft);
+  }
+
+  .studio-admin-page {
+    background: var(--studio-bg);
+    min-height: calc(100vh - 80px);
+    padding: 1.75rem;
+  }
+
+  .studio-admin-wrap {
+    max-width: 1480px;
+    margin: 0 auto;
+  }
+
+  .studio-loader {
+    padding: 4rem 1rem;
+    text-align: center;
+    color: var(--studio-text-3);
+  }
+
+  .studio-error {
+    background: #fff0f0;
+    border: 1px solid rgba(198, 40, 40, 0.2);
+    color: #c62828;
+    padding: 0.95rem 1rem;
+    border-radius: 10px;
+    font-size: 0.92rem;
+  }
+
+  .studio-app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 82vh;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--studio-shadow-sm);
+    border: 1px solid var(--studio-border);
+    background: var(--studio-surface);
+  }
+
+  .studio-topbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--studio-border);
+    background: linear-gradient(180deg, rgba(10, 25, 47, 0.02), rgba(10, 25, 47, 0)), var(--studio-surface);
+  }
+
+  .studio-brand {
+    min-width: 19rem;
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .studio-back-link {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+
+  .studio-logo {
+    color: var(--studio-text);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .studio-promise {
+    color: var(--studio-text-2);
+    font-size: 0.84rem;
+    line-height: 1.45;
+    max-width: 28rem;
+  }
+
+  .studio-search {
+    flex: 1;
+    position: relative;
+  }
+
+  .studio-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--studio-text-3);
+    pointer-events: none;
+  }
+
+  .studio-search input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.2rem;
+    background: var(--studio-bg);
+    color: var(--studio-text);
+    border: 1px solid var(--studio-border-strong);
+    border-radius: var(--studio-radius);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .studio-search input:focus {
+    border-color: var(--studio-mode-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-mode-color) 12%, transparent);
+  }
+
+  .studio-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .segment-toggle {
+    display: inline-flex;
+    background: var(--studio-bg);
+    border: 1px solid var(--studio-border-strong);
+    border-radius: var(--studio-radius);
+    overflow: hidden;
+  }
+
+  .segment-btn {
+    padding: 0.7rem 0.95rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--studio-text-2);
+    font-weight: 700;
+  }
+
+  .segment-btn.active {
+    color: white;
+    background: var(--studio-mode-color);
+  }
+
+  .icon-btn {
+    border: 1px solid var(--studio-border-strong);
+    background: var(--studio-surface);
+    border-radius: var(--studio-radius);
+    padding: 0.7rem 0.9rem;
+    cursor: pointer;
+    color: var(--studio-text-2);
+    font-weight: 700;
+  }
+
+  .studio-body {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: 0;
+  }
+
+  .studio-sidebar {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--studio-border);
+    background: var(--studio-surface);
+    min-height: 0;
+  }
+
+  .sidebar-filters {
+    padding: 1rem;
+    border-bottom: 1px solid var(--studio-border);
+  }
+
+  .filter-label {
+    font-size: 0.72rem;
+    color: var(--studio-text-3);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.7rem;
+  }
+
+  .quick-filters {
+    margin-top: 0.8rem;
+  }
+
+  .chip {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--studio-border-strong);
+    border-radius: 999px;
+    background: var(--studio-surface-2);
+    color: var(--studio-text-2);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .chip.active {
+    color: white;
+    border-color: var(--studio-mode-color);
+    background: var(--studio-mode-color);
+  }
+
+  .prompt-list {
+    padding: 0.75rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .prompt-card {
+    border-radius: var(--studio-radius);
+    padding: 0.85rem 0.95rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .prompt-card:hover {
+    background: var(--studio-surface-2);
+    border-color: var(--studio-border);
+  }
+
+  .prompt-card.active {
+    background: var(--studio-mode-soft);
+    border-color: var(--studio-mode-color);
+  }
+
+  .prompt-card-title {
+    color: var(--studio-text);
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .prompt-card-desc {
+    color: var(--studio-text-3);
+    font-size: 0.73rem;
+    line-height: 1.45;
+    margin-top: 0.25rem;
+  }
+
+  .prompt-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background: var(--studio-bg);
+    color: var(--studio-text-3);
+    font-weight: 700;
+  }
+
+  .tag-segment {
+    background: var(--studio-mode-soft);
+    color: var(--studio-mode-color);
+  }
+
+  .sidebar-footer {
+    padding: 0.9rem 1rem 1rem;
+    border-top: 1px solid var(--studio-border);
+  }
+
+  .sidebar-stats {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: space-between;
+  }
+
+  .stat-item {
+    text-align: center;
+    min-width: 0;
+  }
+
+  .stat-num {
+    display: block;
+    color: var(--studio-text);
+    font-weight: 800;
+    font-size: 1.05rem;
+  }
+
+  .stat-lbl {
+    font-size: 0.62rem;
+    color: var(--studio-text-3);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .studio-workspace {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 0;
+  }
+
+  .workspace-header {
+    padding: 1.15rem 1.35rem;
+    border-bottom: 1px solid var(--studio-border);
+    background: var(--studio-surface);
+  }
+
+  .workspace-title {
+    color: var(--studio-text);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .workspace-desc {
+    color: var(--studio-text-2);
+    font-size: 0.86rem;
+    margin-top: 0.25rem;
+    line-height: 1.5;
+  }
+
+  .workspace-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.7rem;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--studio-border-strong);
+    color: var(--studio-text-2);
+    background: var(--studio-surface-2);
+  }
+
+  .badge.primary {
+    color: var(--studio-mode-color);
+    border-color: var(--studio-mode-color);
+    background: var(--studio-mode-soft);
+  }
+
+  .badge.fav {
+    color: #92400e;
+    border-color: #ca8a04;
+    background: #fef3c7;
+  }
+
+  .badge.custom-badge {
+    color: #166534;
+    border-color: rgba(22, 101, 52, 0.2);
+    background: #f0fdf4;
+  }
+
+  .workspace-body {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    min-height: 0;
+  }
+
+  .editor-pane {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid var(--studio-border);
+  }
+
+  .pane-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--studio-border);
+    background: var(--studio-surface-2);
+  }
+
+  .pane-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--studio-text-3);
+    flex: 1;
+  }
+
+  .btn {
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--studio-radius);
+    border: 1px solid var(--studio-border-strong);
+    background: var(--studio-surface);
+    color: var(--studio-text-2);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    border-color: var(--studio-mode-color);
+    color: var(--studio-mode-color);
+  }
+
+  .btn.primary {
+    color: white;
+    background: var(--studio-mode-color);
+    border-color: var(--studio-mode-color);
+  }
+
+  .btn.ok {
+    color: #166534;
+    border-color: rgba(22, 101, 52, 0.28);
+    background: #f0fdf4;
+  }
+
+  .btn.danger {
+    color: #b42318;
+    border-color: rgba(180, 35, 24, 0.2);
+    background: #fff5f5;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .editor-area {
+    flex: 1;
+    min-height: 0;
+    padding: 1rem;
+    background: var(--studio-surface);
+  }
+
+  #editor {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    resize: none;
+    background: var(--studio-surface-2);
+    color: var(--studio-text);
+    border: 1px solid var(--studio-border-strong);
+    border-radius: var(--studio-radius-lg);
+    padding: 1rem 1.05rem;
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.81rem;
+    line-height: 1.7;
+    outline: none;
+  }
+
+  #editor:focus {
+    border-color: var(--studio-mode-color);
+  }
+
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--studio-surface-2);
+  }
+
+  .panel-scroll {
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .segment-hint-box {
+    padding: 0.95rem 0.95rem 0;
+  }
+
+  .segment-hint {
+    border-radius: var(--studio-radius);
+    padding: 0.9rem 1rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--studio-text-2);
+  }
+
+  .segment-hint strong {
+    display: block;
+    color: var(--studio-text);
+    margin-bottom: 0.2rem;
+  }
+
+  .segment-hint.studio {
+    background: rgba(10, 25, 47, 0.06);
+    border-left: 3px solid var(--studio-accent);
+  }
+
+  .segment-hint.master {
+    background: rgba(230, 57, 70, 0.08);
+    border-left: 3px solid var(--studio-master);
+  }
+
+  .panel-section {
+    border-bottom: 1px solid var(--studio-border);
+  }
+
+  .panel-section-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 0.95rem;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    text-align: left;
+  }
+
+  .panel-section-title {
+    flex: 1;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--studio-text-3);
+  }
+
+  .panel-section-toggle {
+    color: var(--studio-text-3);
+  }
+
+  .panel-body {
+    padding: 0 0.95rem 0.95rem;
+  }
+
+  .panel-body.collapsed {
+    display: none;
+  }
+
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+  }
+
+  .var-grid {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .var-row {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .var-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--studio-text-3);
+  }
+
+  .var-key {
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    color: var(--studio-mode-color);
+    font-size: 0.65rem;
+  }
+
+  .var-input {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border-radius: var(--studio-radius);
+    border: 1px solid var(--studio-border-strong);
+    background: var(--studio-surface);
+    color: var(--studio-text);
+    outline: none;
+  }
+
+  .var-input:focus {
+    border-color: var(--studio-mode-color);
+  }
+
+  .var-note {
+    font-size: 0.68rem;
+    line-height: 1.45;
+    color: var(--studio-text-3);
+  }
+
+  .engine-principle {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--studio-text-2);
+    background: var(--studio-surface);
+    border-radius: var(--studio-radius);
+    padding: 0.8rem 0.9rem;
+    border-left: 3px solid var(--studio-mode-color);
+    margin-bottom: 0.75rem;
+  }
+
+  .engine-source-grid,
+  .engine-steps,
+  .engine-modes,
+  .engine-mvp-grid {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .engine-card,
+  .engine-step,
+  .engine-mode,
+  .engine-mvp-card {
+    background: var(--studio-surface);
+    border: 1px solid var(--studio-border);
+    border-radius: var(--studio-radius);
+    padding: 0.85rem 0.9rem;
+  }
+
+  .engine-card-title,
+  .engine-step-title,
+  .engine-mode-condition {
+    color: var(--studio-text);
+    font-size: 0.77rem;
+    font-weight: 800;
+  }
+
+  .engine-card-question,
+  .engine-subtitle,
+  .engine-mode-tone {
+    color: var(--studio-mode-color);
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 0.18rem;
+  }
+
+  .engine-card-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.6rem;
+  }
+
+  .engine-pill {
+    font-size: 0.64rem;
+    line-height: 1.2;
+    padding: 0.22rem 0.5rem;
+    border-radius: 999px;
+    background: var(--studio-bg);
+    color: var(--studio-text-2);
+    border: 1px solid var(--studio-border);
+    font-weight: 700;
+  }
+
+  .engine-card-effect,
+  .engine-step-body,
+  .engine-mode-format {
+    color: var(--studio-text-2);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    margin-top: 0.45rem;
+  }
+
+  .engine-subsection {
+    margin-top: 0.9rem;
+  }
+
+  #notesArea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border-radius: var(--studio-radius);
+    border: 1px solid var(--studio-border-strong);
+    background: var(--studio-surface);
+    color: var(--studio-text);
+    padding: 0.8rem 0.9rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    outline: none;
+  }
+
+  #notesArea:focus {
+    border-color: var(--studio-mode-color);
+  }
+
+  .notes-actions {
+    display: flex;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+  }
+
+  .tip-card,
+  .version-card {
+    background: var(--studio-surface);
+    border-radius: var(--studio-radius);
+    padding: 0.85rem 0.9rem;
+    border-left: 3px solid var(--studio-mode-color);
+    margin-bottom: 0.6rem;
+  }
+
+  .tip-title {
+    color: var(--studio-text);
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+  }
+
+  .tip-body {
+    color: var(--studio-text-2);
+    font-size: 0.73rem;
+    line-height: 1.5;
+  }
+
+  .version-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--studio-text-2);
+    margin-bottom: 0.55rem;
+  }
+
+  .empty-state,
+  .empty-side-note {
+    color: var(--studio-text-3);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    padding: 1rem 0.2rem;
+  }
+
+  .workspace-footer {
+    padding: 0.8rem 1.15rem;
+    border-top: 1px solid var(--studio-border);
+    background: var(--studio-surface);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-stats {
+    flex: 1;
+    min-width: 12rem;
+    color: var(--studio-text-3);
+    font-size: 0.72rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 2rem;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--studio-text);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: var(--studio-radius);
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+    z-index: 1000;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 1280px) {
+    .workspace-body {
+      grid-template-columns: 1fr 330px;
+    }
+  }
+
+  @media (max-width: 1140px) {
+    .studio-body {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  @media (max-width: 980px) {
+    .studio-topbar {
+      flex-wrap: wrap;
+    }
+
+    .studio-brand {
+      min-width: 100%;
+    }
+
+    .studio-body {
+      grid-template-columns: 1fr;
+    }
+
+    .studio-sidebar {
+      border-right: none;
+      border-bottom: 1px solid var(--studio-border);
+      max-height: 38vh;
+    }
+
+    .workspace-body {
+      grid-template-columns: 1fr;
+    }
+
+    .right-panel {
+      border-top: 1px solid var(--studio-border);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .studio-admin-page {
+      padding: 1rem;
+    }
+
+    .studio-app {
+      min-height: auto;
+    }
+
+    .studio-topbar {
+      padding: 0.9rem;
+    }
+
+    .workspace-header,
+    .workspace-footer,
+    .pane-toolbar,
+    .sidebar-filters,
+    .sidebar-footer {
+      padding-left: 0.9rem;
+      padding-right: 0.9rem;
+    }
+
+    .editor-area {
+      padding: 0.9rem;
+    }
+
+    #editor {
+      min-height: 360px;
+    }
+  }
+
+  @media print {
+    .site-header,
+    .site-footer,
+    .studio-sidebar,
+    .right-panel,
+    .workspace-footer,
+    .pane-toolbar,
+    .studio-actions,
+    .studio-search,
+    .studio-back-link {
+      display: none !important;
+    }
+
+    .studio-admin-page {
+      padding: 0;
+    }
+
+    .studio-app,
+    .workspace-body,
+    .studio-body {
+      display: block;
+      min-height: auto;
+      border: none;
+      box-shadow: none;
+    }
+
+    #editor {
+      border: none;
+      min-height: auto;
+      padding: 0;
+      background: white;
+      color: black;
+    }
+  }
+</style>

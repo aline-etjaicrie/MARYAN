@@ -37,6 +37,15 @@ export const prerender = false;
           </div>
         </div>
 
+        <div class="admin-tools">
+          <a href="/admin/prompts" class="admin-tool-card">
+            <div class="admin-tool-eyebrow">Studio interne</div>
+            <div class="admin-tool-title">MARYAN Prompt Studio</div>
+            <p class="admin-tool-body">Structurer les réponses, les arbitrages et les situations sensibles du mandat.</p>
+            <span class="admin-tool-cta">Ouvrir le studio →</span>
+          </a>
+        </div>
+
         <!-- Tabs -->
         <div class="admin-tabs">
           <button class="admin-tab active" data-tab="users">Utilisateurs</button>
@@ -90,6 +99,15 @@ export const prerender = false;
     adminLoader.style.display = 'none';
   }
 
+  function escapeHtml(value: unknown) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
   async function init() {
     if (!SUPABASE_URL || !SUPABASE_KEY) { showError('Configuration manquante.'); return; }
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -139,13 +157,13 @@ export const prerender = false;
     const tbody = document.getElementById('usersTableBody')!;
     tbody.innerHTML = users.map((u: any) => `
       <tr>
-        <td>${u.first_name || '—'}</td>
-        <td>${u.commune || '—'}</td>
-        <td>${u.role || '—'}</td>
-        <td>${u.parti_label || '—'}</td>
-        <td>${u.diagnostic_label ? `<span class="diag-badge">${u.diagnostic_label.slice(0, 20)}…</span>` : '—'}</td>
+        <td>${escapeHtml(u.first_name || '—')}</td>
+        <td>${escapeHtml(u.commune || '—')}</td>
+        <td>${escapeHtml(u.role || '—')}</td>
+        <td>${escapeHtml(u.parti_label || '—')}</td>
+        <td>${u.diagnostic_label ? `<span class="diag-badge">${escapeHtml(u.diagnostic_label.slice(0, 20))}…</span>` : '—'}</td>
         <td>${u.session_count || 0}</td>
-        <td><span class="plan-badge plan-${u.plan || 'gratuit'}">${u.plan || 'gratuit'}</span></td>
+        <td><span class="plan-badge plan-${u.plan || 'gratuit'}">${escapeHtml(u.plan || 'gratuit')}</span></td>
         <td>
           <select class="plan-select" data-user-id="${u.id}" data-token="${token}">
             <option value="gratuit" ${(!u.plan || u.plan === 'gratuit') ? 'selected' : ''}>Gratuit</option>
@@ -199,12 +217,12 @@ export const prerender = false;
     list.innerHTML = contributions.map((c: any) => `
       <div class="contrib-card" id="contrib-${c.id}">
         <div class="contrib-meta">
-          <span class="contrib-statut statut-${c.statut}">${c.statut}</span>
+          <span class="contrib-statut statut-${c.statut}">${escapeHtml(c.statut)}</span>
           <span class="contrib-date">${new Date(c.created_at).toLocaleDateString('fr-FR')}</span>
         </div>
         <div class="contrib-body">
-          <strong>${c.mot || c.terme || c.title || '(sans titre)'}</strong>
-          <p>${c.definition || c.content || c.message || c.pourquoi || ''}</p>
+          <strong>${escapeHtml(c.mot || c.terme || c.title || '(sans titre)')}</strong>
+          <p>${escapeHtml(c.definition || c.content || c.message || c.pourquoi || '')}</p>
         </div>
         ${c.statut === 'en_attente' ? `
           <div class="contrib-actions">
@@ -302,6 +320,58 @@ export const prerender = false;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
+  }
+
+  .admin-tools {
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-tool-card {
+    display: block;
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem 1.3rem;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .admin-tool-card:hover {
+    border-color: var(--deep);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.06);
+  }
+
+  .admin-tool-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-red);
+  }
+
+  .admin-tool-title {
+    margin-top: 0.3rem;
+    color: var(--deep);
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
+
+  .admin-tool-body {
+    margin: 0.45rem 0 0;
+    color: #54636C;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    max-width: 42rem;
+  }
+
+  .admin-tool-cta {
+    display: inline-block;
+    margin-top: 0.8rem;
+    color: var(--deep);
+    font-size: 0.82rem;
+    font-weight: 800;
   }
 
   .stat-card {
