@@ -155,19 +155,36 @@ export const POST: APIRoute = async ({ request }) => {
       : [];
 
     if (diagnosticKey) {
+      const nowIso = new Date().toISOString();
+      const existingContext =
+        result.profile?.profile_context &&
+        typeof result.profile.profile_context === 'object' &&
+        !Array.isArray(result.profile.profile_context)
+          ? (result.profile.profile_context as Record<string, unknown>)
+          : {};
+
+      const existingDiagnosticContext =
+        existingContext.diagnostic &&
+        typeof existingContext.diagnostic === 'object' &&
+        !Array.isArray(existingContext.diagnostic)
+          ? (existingContext.diagnostic as Record<string, unknown>)
+          : {};
+
       updates.diagnostic_key = diagnosticKey;
       updates.diagnostic_label = diagnosticLabel;
       updates.diagnostic_completed = true;
       updates.profile_context = {
+        ...existingContext,
         diagnostic: {
+          ...existingDiagnosticContext,
           key: diagnosticKey,
           label: diagnosticLabel || null,
           priorities,
           fiches,
-          completed_at: new Date().toISOString()
+          completed_at: nowIso
         }
       };
-      updates.profile_context_updated_at = new Date().toISOString();
+      updates.profile_context_updated_at = nowIso;
       if (summary) updates.last_diagnostic_summary = summary;
     }
   }

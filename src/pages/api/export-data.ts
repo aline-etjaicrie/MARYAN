@@ -37,7 +37,7 @@ export const GET: APIRoute = async ({ request }) => {
   // Récupération du profil
   const { data: profileData, error: profileError } = await supabase
     .from('profiles')
-    .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_profile, diagnostic_payload, diagnostic_completed_at, plan, parti_id, parti_label, stripe_customer_id, stripe_subscription_id, stripe_price_id, created_at')
+    .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_completed, last_diagnostic_summary, profile_context, profile_context_updated_at, diagnostic_profile, diagnostic_payload, diagnostic_completed_at, plan, parti_id, parti_label, stripe_customer_id, stripe_subscription_id, stripe_price_id, created_at')
     .eq('id', userId)
     .single();
 
@@ -58,6 +58,27 @@ export const GET: APIRoute = async ({ request }) => {
     return json({ error: 'Erreur lors de la récupération des sessions.' }, 500);
   }
 
+  const profile = profileData as Record<string, unknown> | null;
+  const normalizedProfile = profile
+    ? (() => {
+        const {
+          diagnostic_profile,
+          diagnostic_payload,
+          diagnostic_completed_at,
+          ...currentProfile
+        } = profile;
+
+        return {
+          ...currentProfile,
+          legacy_diagnostic: {
+            diagnostic_profile: diagnostic_profile ?? null,
+            diagnostic_payload: diagnostic_payload ?? null,
+            diagnostic_completed_at: diagnostic_completed_at ?? null
+          }
+        };
+      })()
+    : null;
+
   const exportPayload = {
     exported_at: new Date().toISOString(),
     rgpd_note: "Export de vos données personnelles conformément à l'article 20 du RGPD.",
@@ -65,7 +86,7 @@ export const GET: APIRoute = async ({ request }) => {
       email: user.email,
       created_at: user.created_at
     },
-    profile: profileData || null,
+    profile: normalizedProfile,
     copilote_sessions: sessionsData || []
   };
 

@@ -7,8 +7,10 @@ export const prerender = false;
 const SUPABASE_URL = (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
 const SUPABASE_SERVICE_KEY = (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
 
-const ALLOWED_FIELDS = ['parti_id', 'parti_label', 'diagnostic_key', 'diagnostic_label', 'first_name', 'commune', 'role'] as const;
+const ALLOWED_FIELDS = ['parti_id', 'parti_label', 'first_name', 'commune', 'role'] as const;
 type AllowedField = typeof ALLOWED_FIELDS[number];
+
+const LEGACY_DIAGNOSTIC_FIELDS = new Set(['diagnostic_key', 'diagnostic_label']);
 
 function json(payload: unknown, status = 200): Response {
   return new Response(JSON.stringify(payload), {
@@ -48,6 +50,16 @@ export const PATCH: APIRoute = async ({ request }) => {
   const field = body?.field;
   const value = body?.value;
 
+  if (typeof field === 'string' && LEGACY_DIAGNOSTIC_FIELDS.has(field)) {
+    return json(
+      {
+        error:
+          'Mise à jour refusée. Utilisez /api/profile-context avec diagnosticState pour synchroniser le diagnostic.'
+      },
+      409
+    );
+  }
+
   // Validation du champ — seuls les champs autorisés peuvent être modifiés
   if (typeof field !== 'string' || !(ALLOWED_FIELDS as readonly string[]).includes(field)) {
     return json({ error: 'Champ non autorisé.' }, 403);
@@ -58,9 +70,11 @@ export const PATCH: APIRoute = async ({ request }) => {
     return json({ error: 'Valeur invalide. Attendu : string ou null.' }, 400);
   }
 
+  const normalizedValue = typeof value === 'string' ? value.trim() || null : null;
+
   const { error: updateError } = await supabase
     .from('profiles')
-    .update({ [field as AllowedField]: value })
+    .update({ [field as AllowedField]: normalizedValue })
     .eq('id', user.id);
 
   if (updateError) {

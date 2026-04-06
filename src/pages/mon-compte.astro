@@ -206,7 +206,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const profile = profileContext?.profile || (await supabase
         .from('profiles')
-        .select('first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_profile, diagnostic_payload, plan')
+        .select('first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_completed, last_diagnostic_summary, profile_context, profile_context_updated_at, plan')
         .eq('id', user.id)
         .single()).data;
 
