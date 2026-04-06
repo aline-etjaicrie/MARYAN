@@ -2,57 +2,66 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
 import { maryanResources } from '../data/resources';
-import { maryanPaths, parcoursExpress } from '../data/paths';
-import { maryanSituations } from '../data/situations';
-import { DIAGNOSTIC_LABELS, LEGACY_DIAGNOSTIC_TO_PROFILE } from '../lib/diagnostic-personalization';
 
-const pillars = [
-  { id: 'all', label: 'Tous' },
-  { id: 'se_situer', label: 'Se situer' },
-  { id: 'comprendre', label: 'Comprendre' },
-  { id: 'agir', label: 'Agir' },
-  { id: 'se_proteger', label: 'Se protéger / se positionner' }
-];
+const pillarLabels: Record<string, string> = {
+  se_situer: 'Se repérer',
+  comprendre: 'Comprendre',
+  agir: 'Agir',
+  se_proteger: 'Se protéger'
+};
 
-const situationFilters = [
-  { id: 'all', label: 'Toutes' },
-  { id: 'prise_de_fonction', label: 'Prise de fonction', markers: ['prise_de_fonction', 'posture', 'legitimite', 'repères', 'conseil_municipal'] },
-  { id: 'arbitrage', label: 'Arbitrage', markers: ['arbitrage', 'decision', 'dossier', 'priorisation', 'budget', 'finances'] },
-  { id: 'tension_locale', label: 'Tension locale', markers: ['tension', 'conflit', 'tension_locale', 'situation_sensible', 'crise', 'relations_internes'] },
-  { id: 'prise_de_parole', label: 'Prise de parole', markers: ['prise_de_parole', 'parole', 'reponse', 'communication_publique', 'reunion_publique', 'annonce'] },
-  { id: 'reseaux_sociaux', label: 'Réseaux sociaux', markers: ['facebook', 'reseaux', 'réseaux', 'publication', 'commentaires', 'communication'] },
-  { id: 'participation', label: 'Participation', markers: ['participation', 'concertation', 'co_construction', 'reunion_publique', 'habitants', 'restitution'] },
-  { id: 'porteurs_de_projet', label: 'Porteurs de projet', markers: ['projet_citoyen', 'projet_entreprise', 'collectif_habitants', 'initiative_locale', 'relation_partenaire', 'implantation', 'projet'] },
-  { id: 'budget', label: 'Budget', markers: ['budget', 'finances', 'arbitrage budgetaire', 'finances locales'] },
-  { id: 'services', label: 'Relations avec les services', markers: ['services', 'administration', 'gouvernance', 'relations_internes', 'blocage'] },
-  { id: 'ia', label: 'IA / outils numériques', markers: ['ia', 'chatgpt', 'outil', 'numerique', 'numérique'] }
-];
+const pillarDescriptions: Record<string, string> = {
+  se_situer: 'Trouver sa place, clarifier son rôle et ses marges de manoeuvre.',
+  comprendre: 'Lire les situations, les enjeux, les rapports de force.',
+  agir: 'Passer a l\'action avec methode et clarte.',
+  se_proteger: 'Tenir dans la duree, gerer la pression, poser ses limites.'
+};
+
+const formatLabels: Record<string, string> = {
+  fiche: 'Fiche pratique',
+  checklist: 'Checklist',
+  guide: 'Guide',
+  repere: 'Repere'
+};
+
+const pillars = ['all', 'se_situer', 'comprendre', 'agir', 'se_proteger'] as const;
+
+function getTeaser(resource: typeof maryanResources[0]): string {
+  if (resource.understand && resource.understand.length > 0) {
+    const first = resource.understand[0];
+    return first.length > 120 ? first.slice(0, 117) + '...' : first;
+  }
+  if (resource.intro) {
+    return resource.intro.length > 120 ? resource.intro.slice(0, 117) + '...' : resource.intro;
+  }
+  return '';
+}
+
+const sortedResources = [...maryanResources].sort((a, b) => {
+  if (a.priority === 'haute' && b.priority !== 'haute') return -1;
+  if (a.priority !== 'haute' && b.priority === 'haute') return 1;
+  return 0;
+});
 
 const copilotSuggestions = [
-  'Aide-moi à préparer une prise de parole sensible',
-  'Aide-moi à cadrer un arbitrage',
-  'Aide-moi à répondre à une tension locale',
-  'Aide-moi à relire une réunion participative',
-  'Aide-moi à préparer mon premier conseil'
+  'Aide-moi a preparer une prise de parole sensible',
+  'Aide-moi a cadrer un arbitrage difficile',
+  'Aide-moi a repondre a une tension locale',
+  'Aide-moi a preparer mon premier conseil municipal'
 ];
 ---
 
 <BaseLayout
-  title="Vos ressources MARYAN"
-  description="Des repères concrets pour comprendre, décider et agir selon votre réalité de mandat."
+  title="Ressources pour les elus — MARYAN"
+  description="Des fiches pratiques, des reperes concrets et des methodes pour agir dans votre mandat. Explorez la bibliotheque MARYAN."
 >
   <div class="res-hero-bg">
     <div class="container relative-z header-white-force">
       <InternalHeader
-        label="Vos ressources"
-        title="Vos ressources <span class='emphasis text-neon'>MARYAN</span>"
-        subtitle="Des repères concrets pour comprendre une situation, décider plus clairement et avancer."
+        label="Bibliotheque"
+        title="Des reperes concrets <span class='emphasis text-neon'>pour votre mandat</span>"
+        subtitle="Chaque fiche vous aide a comprendre une situation, eviter les pieges courants et savoir quoi faire concretement."
       />
-
-      <div class="hero-note-card">
-        <p class="hero-note-lead">Le diagnostic personnalise vos premières ressources.</p>
-        <p class="hero-note-text">Sans diagnostic, toute la bibliothèque reste accessible.</p>
-      </div>
     </div>
     <div class="hero-glow glow-red"></div>
     <div class="hero-glow glow-green"></div>
@@ -60,278 +69,112 @@ const copilotSuggestions = [
 
   <main class="resources-main">
 
-    <!-- ══ BANDEAU PERSONNALISATION (injecté côté client) ══ -->
-    <div id="diagBandeau" style="display:none;" class="diag-bandeau-wrap">
+    <!-- ══ FILTRES PAR UNIVERS ══ -->
+    <section class="filter-section">
       <div class="container">
-        <div class="diag-bandeau">
-          <span class="diag-bandeau-icon">🎯</span>
-          <p class="diag-bandeau-text">
-            Bibliothèque personnalisée pour : <strong id="diagBandeauLabel"></strong>
-          </p>
-          <button id="diagBandeauReset" class="diag-bandeau-reset">Réinitialiser le filtre</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ RESSOURCES RECOMMANDÉES (injecté côté client) ══ -->
-    <div id="recommandationsSection" style="display:none;">
-      <div class="container">
-        <div class="reco-header">
-          <span class="label-v3">Recommandées pour vous</span>
-          <h2 class="reco-title">Vos fiches prioritaires</h2>
-        </div>
-        <div id="recommandationsGrid" class="reco-grid"></div>
-      </div>
-    </div>
-
-    <!-- ══ ENTRÉE SITUATIONNELLE ══ -->
-    <section id="parcoursExpressSection" class="parcours-express-section">
-      <div class="container container-medium">
-        <div class="pe-header">
-          <span class="label-v3">Entrer par une situation</span>
-          <h2>Commencer par un cas</h2>
-          <p class="pe-lead">Si vous n’avez pas encore fait le diagnostic, choisissez ici un point d’entrée concret.</p>
-        </div>
-        <div class="pe-grid">
-          {parcoursExpress.map(p => (
-            <button
-              class="pe-card"
-              style={`--pe-color: ${p.color};`}
-              onclick={`toggleParcours('${p.id}')`}
-              data-id={p.id}
-            >
-              <span class="pe-title">{p.title}</span>
-              <span class="pe-accroche">{p.accroche}</span>
-              <span class="pe-arrow">→</span>
+        <div class="filter-bar">
+          <span class="filter-bar-label">Filtrer par theme :</span>
+          <div class="filter-pills" id="pillarFilter">
+            <button type="button" class="filter-pill active" data-pillar="all">
+              Tout voir <span class="pill-count">{sortedResources.length}</span>
             </button>
-          ))}
-        </div>
-
-        {parcoursExpress.map(p => {
-          const fiches = maryanResources.filter(r => p.resourceIds.includes(r.id));
-          return (
-            <div class="pe-detail hidden" id={`pe-${p.id}`} style={`--pe-color: ${p.color};`}>
-              <div class="pe-detail-inner">
-                <p class="pe-detail-accroche">{p.accroche}</p>
-                <div class="pe-fiches">
-                  {fiches.map(f => (
-                    <a href={`/ressources/${f.slug}`} class="pe-fiche-card">
-                      <span class="pe-fiche-pillar">{f.pillar.replace('_', ' ')}</span>
-                      <span class="pe-fiche-title">{f.title}</span>
-                      <span class="pe-fiche-promise">{f.promise}</span>
-                    </a>
-                  ))}
-                </div>
-                <div class="pe-actions">
-                  {p.actions.map(a => (
-                    <a href={`/copilote?q=${encodeURIComponent(a)}`} class="pe-action-btn">{a} →</a>
-                  ))}
-                  <a href={`/copilote?q=${encodeURIComponent(p.cta)}`} class="pe-cta-btn">
-                    💬 {p.cta}
-                  </a>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-
-    <section id="diagnosticHelper" class="section-v3 hidden">
-      <div class="container container-medium">
-        <div class="diagnostic-helper-card card-v3">
-          <div class="diagnostic-helper-copy">
-            <span class="label-v3">Personnalisation</span>
-            <h2>Commencez par le diagnostic</h2>
-            <p>
-              En quelques minutes, MARYAN peut faire remonter les ressources et parcours les plus utiles pour vous.
-            </p>
-          </div>
-
-          <div class="diagnostic-helper-actions">
-            <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
-            <a href="/copilote" class="btn-secondary-v3">Ouvrir le copilote</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="prioritiesSection" class="section-v3 hidden priorities-section">
-      <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Pour vous, en priorité</span>
-          <h2 class="section-title-standard">Vos priorités du moment</h2>
-          <p class="section-subtitle-v4">
-            Trois points d’appui pour avancer sans vous disperser.
-          </p>
-        </header>
-
-        <div id="priorityGrid" class="priority-grid"></div>
-
-        <div id="prioritySituationBlock" class="priority-situation-block hidden">
-          <a href="#situationsSection" class="priority-situation-cta">Situations proches de votre réalité actuelle</a>
-          <div id="prioritySituationGrid" class="priority-situation-grid"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="personalizedResources" class="section-v3 hidden recommended-section">
-      <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Sélectionnées à partir de votre diagnostic</span>
-          <h2 class="section-title-standard">À commencer par là</h2>
-          <p class="section-subtitle-v4">Trois ressources choisies pour entrer dans le sujet sans vous perdre dans l’ensemble.</p>
-        </header>
-
-        <div id="recommendedGrid" class="rec-v4-grid"></div>
-      </div>
-    </section>
-
-    <section id="personalizedPath" class="section-v3 hidden path-section">
-      <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Parcours conseillé</span>
-          <h2 class="section-title-standard">Un parcours utile pour votre situation</h2>
-          <p class="section-subtitle-v4">Si vous voulez avancer de manière plus structurée, commencez ici.</p>
-        </header>
-
-        <div class="path-highlight-card card-v3">
-          <div class="path-content">
-            <span class="path-badge">Parcours recommandé</span>
-            <h2 id="pathTitle" class="path-title-v4">—</h2>
-            <p id="pathPromise" class="path-promise-v4">—</p>
-            <p id="pathDescription" class="path-description-v4"></p>
-
-            <div class="path-priorities-box">
-              <h3>Vos 3 priorités dans ce parcours</h3>
-              <ul id="pathPrioritiesList" class="res-check-list-small"></ul>
-            </div>
-
-            <div class="path-resources-box">
-              <h3>Ressources liées</h3>
-              <div id="pathResourcesGrid" class="path-mini-grid"></div>
-            </div>
-
-            <div class="path-actions">
-              <a id="pathCta" href="/ressources" class="btn-secondary-v3">Commencer ce parcours</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-v3 explore-section">
-      <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Explorer</span>
-          <h2 class="section-title-standard">Explorer toute la bibliothèque</h2>
-          <p class="section-subtitle-v4">
-            Votre profil peut vous orienter, mais toutes les ressources restent ouvertes à l’exploration.
-          </p>
-        </header>
-
-        <div class="filter-shell">
-          <div class="filter-search">
-            <input id="resourceSearch" type="search" class="search-input" placeholder="Rechercher un sujet, un format, une situation…" />
-          </div>
-
-          <div class="filter-pills-section">
-            <span class="filter-label">Univers</span>
-            <div class="filter-pills" id="pillarFilter">
-              {pillars.map((pillar) => (
-                <button type="button" class={`filter-pill${pillar.id === 'all' ? ' active' : ''}`} data-value={pillar.id}>
-                  {pillar.label}
+            {pillars.filter(p => p !== 'all').map((p) => {
+              const count = sortedResources.filter(r => r.pillar === p).length;
+              return (
+                <button type="button" class="filter-pill" data-pillar={p}>
+                  {pillarLabels[p]} <span class="pill-count">{count}</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
-
-          <div class="filter-selects-row">
-            <label class="filter-field">
-              <span class="filter-label">Situation</span>
-              <select id="situationFilter">
-                {situationFilters.map((item) => <option value={item.id}>{item.label}</option>)}
-              </select>
-            </label>
-
-            <label class="filter-field">
-              <span class="filter-label">Format</span>
-              <select id="formatFilter">
-                <option value="all">Tous</option>
-                <option value="fiche">Fiches</option>
-                <option value="checklist">Checklists</option>
-                <option value="guide">Guides</option>
-                <option value="repere">Repères</option>
-              </select>
-            </label>
-
-            <label class="filter-field">
-              <span class="filter-label">Trier par</span>
-              <select id="sortFilter">
-                <option value="recommended">Recommandé</option>
-                <option value="useful">Les plus utiles</option>
-                <option value="recent">Les plus récentes</option>
-                <option value="consulted">Les plus consultées</option>
-              </select>
-            </label>
-          </div>
-        </div>
-
-        <div class="catalogue-head">
-          <p id="resourceCount" class="resource-count">—</p>
-        </div>
-
-        <div id="resourceGrid" class="res-grid"></div>
-        <div id="catalogActions" class="catalog-actions hidden">
-          <button type="button" class="btn-secondary-v3" id="toggleCatalogBtn">Voir plus de ressources</button>
-        </div>
-        <div id="emptyState" class="empty-state hidden">
-          <p>Aucune ressource ne correspond à cette combinaison de filtres pour l’instant.</p>
-          <button type="button" class="btn-secondary-v3" id="resetFiltersBtn">Réinitialiser les filtres</button>
         </div>
       </div>
     </section>
 
-    <section id="situationsSection" class="section-v3 situations-section">
+    <!-- ══ GRILLE DE RESSOURCES ══ -->
+    <section class="catalog-section">
       <div class="container">
-        <header class="section-header-v4">
-          <span class="label-v3">Cas concrets</span>
-          <h2 class="section-title-standard">Entrer par un cas concret</h2>
-          <p class="section-subtitle-v4">
-            Quand vous cherchez moins un thème qu’une situation à traverser.
-          </p>
-        </header>
 
-        <div class="sit-grid">
-          {maryanSituations.map((sit) => (
-            <button type="button" class="sit-card" onclick={`openSituation('${sit.id}')`}>
-              <div class="sit-card-content">
-                <h3 class="sit-title">{sit.title}</h3>
-                <p class="sit-desc">{sit.shortDescription}</p>
-              </div>
-              <span class="sit-arrow">↗</span>
-            </button>
-          ))}
+        <p class="catalog-count" id="catalogCount">{sortedResources.length} ressources disponibles</p>
+
+        <div class="res-grid" id="resourceGrid">
+          {sortedResources.map((resource) => {
+            const teaser = getTeaser(resource);
+            return (
+              <a
+                href={`/ressources/${resource.slug}`}
+                class="res-card"
+                data-pillar={resource.pillar}
+              >
+                <div class="res-card-top">
+                  <span class={`res-card-pillar pillar-${resource.pillar}`}>
+                    {pillarLabels[resource.pillar] || resource.pillar}
+                  </span>
+                  <span class="res-card-format">
+                    {formatLabels[resource.format] || resource.format}
+                  </span>
+                </div>
+
+                <h3 class="res-card-title">{resource.title}</h3>
+                <p class="res-card-promise">{resource.promise}</p>
+
+                {teaser && (
+                  <div class="res-card-teaser">
+                    <span class="teaser-icon">💡</span>
+                    <p>{teaser}</p>
+                  </div>
+                )}
+
+                <div class="res-card-footer">
+                  <span class="res-card-cta">Lire la fiche</span>
+                  <span class="res-card-arrow">→</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display:none;">
+          <p>Aucune ressource dans cette categorie pour l'instant.</p>
+          <button type="button" class="btn-secondary-v3" id="resetFiltersBtn">Tout voir</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ DIAGNOSTIC CTA ══ -->
+    <section class="diagnostic-cta-section">
+      <div class="container container-medium">
+        <div class="diagnostic-cta-card">
+          <div class="diagnostic-cta-content">
+            <span class="label-v3">Personnalisation</span>
+            <h2>Pas sure par ou commencer ?</h2>
+            <p>Le diagnostic MARYAN identifie vos priorites en quelques minutes et vous recommande les fiches les plus utiles pour votre situation.</p>
+          </div>
+          <div class="diagnostic-cta-actions">
+            <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ══ COPILOTE CTA ══ -->
     <section class="copilot-dark-section">
       <div class="container container-medium">
         <div class="copilot-dark-inner">
           <div class="copilot-dark-header">
-            <span class="copilot-dark-kicker">Poser une question à MARYAN</span>
-            <h2 class="copilot-dark-title">Vous ne trouvez pas exactement votre cas ?</h2>
+            <span class="copilot-dark-kicker">Le copilote MARYAN</span>
+            <h2 class="copilot-dark-title">Vous avez une question precise ?</h2>
             <p class="copilot-dark-desc">
-              MARYAN peut vous aider à cadrer la situation et identifier les ressources utiles.
+              Posez votre question directement au copilote. Il s'appuie sur toutes les fiches de la bibliotheque pour vous repondre.
             </p>
           </div>
 
           <div class="copilot-suggestions">
             {copilotSuggestions.map((prompt) => (
-              <button type="button" class="copilot-chip" onclick={`openCopilotPrompt(${JSON.stringify(prompt)})`}>
+              <a href={`/copilote?q=${encodeURIComponent(prompt)}`} class="copilot-chip">
                 {prompt}
-              </button>
+              </a>
             ))}
           </div>
 
@@ -342,852 +185,70 @@ const copilotSuggestions = [
       </div>
     </section>
 
+    <!-- ══ ALLER PLUS LOIN ══ -->
     <section class="section-v3 subtle-support-section">
       <div class="container container-medium">
         <div class="subtle-support-card">
           <div class="subtle-support-copy">
             <span class="label-v3">Aller plus loin</span>
-            <h3>Besoin d’un autre niveau d’appui ?</h3>
-            <p>Selon votre situation, MARYAN peut aussi vous orienter vers une offre individuelle, une offre collectivité ou un échange direct.</p>
+            <h3>Besoin d'un autre niveau d'appui ?</h3>
+            <p>Selon votre situation, MARYAN peut aussi vous orienter vers un accompagnement individuel, une offre pour votre collectivite ou un echange direct.</p>
           </div>
 
           <div class="subtle-support-actions">
             <a href="/offres" class="btn-secondary-v3">Voir les offres</a>
-            <a href="/contact" class="btn-secondary-v3">Être rappelé</a>
+            <a href="/contact" class="btn-secondary-v3">Nous contacter</a>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <div id="sitModal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <button type="button" class="modal-close" onclick="closeSituation()">×</button>
-      <div id="sitModalContent"></div>
-    </div>
-  </div>
-
-  <script>
-    import { createClient } from '@supabase/supabase-js';
-    import {
-      buildDiagnosticStateFromProfileRow,
-      buildMaryanProfileFromDiagnosticState
-    } from '../lib/user-personalization';
-
-    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
-    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
-
-    async function syncDiagnosticFromAccount() {
-      if (!SUPABASE_URL || !SUPABASE_KEY) return;
-
-      try {
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user?.id || !session.access_token) return;
-
-        let profileContext = null;
-        try {
-          const response = await fetch('/api/profile-context', {
-            headers: { Authorization: `Bearer ${session.access_token}` }
-          });
-          if (response.ok) {
-            profileContext = await response.json();
-          }
-        } catch (_) {}
-
-        const profile = profileContext?.profile || (await supabase
-          .from('profiles')
-          .select('diagnostic_key, diagnostic_label, diagnostic_profile, diagnostic_payload, first_name, commune, plan')
-          .eq('id', session.user.id)
-          .single()).data;
-
-        const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
-
-        if (!diagnosticState?.diagnostic_key && !diagnosticState?.diagnostic_label && !diagnosticState?.profile) {
-          return;
-        }
-
-        localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
-
-        try {
-          const maryanProfile = profileContext?.maryanProfile || buildMaryanProfileFromDiagnosticState(diagnosticState, {
-            firstName: profile?.first_name,
-            commune: profile?.commune,
-            plan: profile?.plan
-          });
-
-          if (maryanProfile) {
-            localStorage.setItem('maryan_profile', JSON.stringify({
-              ...maryanProfile,
-              diagnosticProfile: diagnosticState.profile
-            }));
-          }
-        } catch (_) {}
-
-        window.dispatchEvent(new CustomEvent('maryan:diagnostic-sync', { detail: diagnosticState }));
-      } catch (_) {
-        // non bloquant
-      }
-    }
-
-    syncDiagnosticFromAccount();
-  </script>
-
+  <!-- ══ FILTRAGE CÔTÉ CLIENT ══ -->
   <script is:inline>
-    function toggleParcours(id) {
-      const allDetails = document.querySelectorAll('.pe-detail');
-      const allCards = document.querySelectorAll('.pe-card');
-      const detail = document.getElementById('pe-' + id);
-      const card = document.querySelector('[data-id="' + id + '"]');
-      const isOpen = !detail.classList.contains('hidden');
+    (function() {
+      var activePillar = 'all';
+      var pills = document.querySelectorAll('#pillarFilter .filter-pill');
+      var cards = document.querySelectorAll('#resourceGrid .res-card');
+      var countEl = document.getElementById('catalogCount');
+      var emptyEl = document.getElementById('emptyState');
+      var resetBtn = document.getElementById('resetFiltersBtn');
 
-      allDetails.forEach(d => d.classList.add('hidden'));
-      allCards.forEach(c => c.classList.remove('active'));
+      function filterCards() {
+        var visible = 0;
+        cards.forEach(function(card) {
+          var show = activePillar === 'all' || card.getAttribute('data-pillar') === activePillar;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
 
-      if (!isOpen) {
-        detail.classList.remove('hidden');
-        card.classList.add('active');
-        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-  </script>
-
-  <script
-    is:inline
-    define:vars={{
-      maryanResources,
-      maryanPaths,
-      maryanSituations,
-      pillars,
-      situationFilters,
-      legacyDiagnosticToProfile: LEGACY_DIAGNOSTIC_TO_PROFILE,
-      diagnosticLabels: DIAGNOSTIC_LABELS
-    }}
-  >
-    const profilePriorityCopy = {
-      mandat_recent: [
-        'prendre vos repères sans vous disperser',
-        'mieux comprendre qui fait quoi dans la collectivité',
-        'tenir une posture juste sans surjouer la fonction'
-      ],
-      arbitrage: [
-        'retrouver du recul avant les décisions sensibles',
-        'clarifier ce qui mérite un vrai arbitrage',
-        'éviter que l’urgence décide à votre place'
-      ],
-      isolement: [
-        'sortir du sentiment de devoir tout porter seul·e',
-        'retrouver des repères stables pour le mandat',
-        'remettre de la clarté dans votre manière d’agir'
-      ],
-      surcharge: [
-        'reprendre la main sur ce qui mérite vraiment votre énergie',
-        'retrouver un ordre d’action plus lisible',
-        'ne pas laisser toutes les urgences se valoir'
-      ],
-      exposition: [
-        'tenir une parole publique plus lisible',
-        'mieux distinguer réaction rapide et réponse juste',
-        'protéger votre clarté dans les séquences exposées'
-      ],
-      tension_relationnelle: [
-        'relire la situation avant de personnaliser le conflit',
-        'distinguer ce qui relève du fond, de la méthode ou de la relation',
-        'retrouver du cadre pour agir sans sur-réagir'
-      ],
-      besoin_methode: [
-        'clarifier les étapes avant d’entrer dans la complexité',
-        'retrouver une méthode simple pour cadrer les sujets',
-        'mieux distinguer compréhension, décision et mise en œuvre'
-      ],
-      prise_de_parole: [
-        'tenir une parole plus lisible et plus sobre',
-        'préparer vos prises de parole sans les surcharger',
-        'trouver le bon tempo dans les séquences visibles'
-      ],
-      gouvernance: [
-        'clarifier les rôles et les marges de manœuvre',
-        'mieux lire les tensions de fonctionnement',
-        'rendre la conduite du mandat plus stable et plus lisible'
-      ]
-    };
-
-    const pillarLabels = Object.fromEntries(pillars.filter((pillar) => pillar.id !== 'all').map((pillar) => [pillar.id, pillar.label]));
-    const formatLabels = {
-      fiche: 'Fiche',
-      checklist: 'Checklist',
-      guide: 'Guide',
-      repere: 'Repère'
-    };
-
-    const state = {
-      diagnosticState: null,
-      profile: null,
-      recommendedPath: null,
-      search: '',
-      pillar: 'all',
-      situation: 'all',
-      format: 'all',
-      sort: 'recommended',
-      expandedCatalog: false
-    };
-
-    const els = {
-      diagBandeau: document.getElementById('diagBandeau'),
-      diagBandeauLabel: document.getElementById('diagBandeauLabel'),
-      diagBandeauReset: document.getElementById('diagBandeauReset'),
-      recommandationsSection: document.getElementById('recommandationsSection'),
-      parcoursExpressSection: document.getElementById('parcoursExpressSection'),
-      diagnosticHelper: document.getElementById('diagnosticHelper'),
-      prioritiesSection: document.getElementById('prioritiesSection'),
-      priorityGrid: document.getElementById('priorityGrid'),
-      prioritySituationBlock: document.getElementById('prioritySituationBlock'),
-      prioritySituationGrid: document.getElementById('prioritySituationGrid'),
-      personalizedResources: document.getElementById('personalizedResources'),
-      recommendedGrid: document.getElementById('recommendedGrid'),
-      personalizedPath: document.getElementById('personalizedPath'),
-      pathTitle: document.getElementById('pathTitle'),
-      pathPromise: document.getElementById('pathPromise'),
-      pathDescription: document.getElementById('pathDescription'),
-      pathPrioritiesList: document.getElementById('pathPrioritiesList'),
-      pathResourcesGrid: document.getElementById('pathResourcesGrid'),
-      pathCta: document.getElementById('pathCta'),
-      resourceGrid: document.getElementById('resourceGrid'),
-      resourceCount: document.getElementById('resourceCount'),
-      emptyState: document.getElementById('emptyState'),
-      catalogActions: document.getElementById('catalogActions'),
-      toggleCatalogBtn: document.getElementById('toggleCatalogBtn'),
-      resourceSearch: document.getElementById('resourceSearch'),
-      pillarFilter: document.getElementById('pillarFilter'),
-      situationFilter: document.getElementById('situationFilter'),
-      formatFilter: document.getElementById('formatFilter'),
-      sortFilter: document.getElementById('sortFilter'),
-      resetFiltersBtn: document.getElementById('resetFiltersBtn')
-    };
-
-    initResourcesPage();
-
-    function initResourcesPage() {
-      bindFilters();
-      bindTracking();
-      els.diagBandeauReset?.addEventListener('click', () => {
-        localStorage.removeItem('maryan_v4_diag');
-        state.diagnosticState = null;
-        state.profile = null;
-        state.recommendedPath = null;
-        renderDiagnosticBandeau();
-        renderPersonalizedContent();
-        renderCatalog();
-      });
-
-      window.addEventListener('maryan:diagnostic-sync', () => {
-        refreshDiagnosticState();
-      });
-
-      refreshDiagnosticState();
-    }
-
-    function readDiagnosticState() {
-      let diag = {} as Record<string, any>;
-      let storedProfile = {} as Record<string, any>;
-
-      try {
-        diag = JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}');
-      } catch (_) {}
-
-      try {
-        storedProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-      } catch (_) {}
-
-      return {
-        ...diag,
-        profile: diag.profile || storedProfile.diagnosticProfile || null
-      };
-    }
-
-    function refreshDiagnosticState() {
-      state.diagnosticState = readDiagnosticState();
-      state.profile = resolveProfile(state.diagnosticState);
-      state.recommendedPath = state.profile ? getRecommendedPaths(maryanPaths, state.profile, 1)[0] || null : null;
-
-      renderDiagnosticBandeau();
-      renderPersonalizedContent();
-      renderCatalog();
-    }
-
-    function resolveProfile(diagnosticState = null) {
-      const diag = diagnosticState || readDiagnosticState();
-      if (diag.profile && diagnosticLabels[diag.profile]) return diag.profile;
-      if (diag.diagnostic_key && legacyDiagnosticToProfile[diag.diagnostic_key]) return legacyDiagnosticToProfile[diag.diagnostic_key];
-      if (diag.diagnostic_key && diagnosticLabels[diag.diagnostic_key]) return diag.diagnostic_key;
-
-      let profile = diag.tension || diag.lack || diag.feeling || diag.vigilance || '';
-
-      const mapping = {
-        administration: 'gouvernance',
-        flou: 'arbitrage',
-        conflit: 'tension_relationnelle',
-        exposition: 'exposition',
-        sollicitations: 'surcharge',
-        duree: 'besoin_methode',
-        surcharge: 'surcharge',
-        seul: 'isolement',
-        priorites: 'surcharge',
-        mots: 'prise_de_parole',
-        relation: 'tension_relationnelle',
-        cadre: 'besoin_methode',
-        recul: 'arbitrage',
-        decision: 'arbitrage',
-        maniere: 'prise_de_parole',
-        tempo: 'exposition',
-        impact: 'exposition'
-      };
-
-      if (mapping[profile]) profile = mapping[profile];
-      if (!profile && ['maire', 'adjoint', 'interco'].includes(diag.role)) profile = 'gouvernance';
-      if (!profile && diag.seniority === 'moins1an') profile = 'mandat_recent';
-
-      return profile || null;
-    }
-
-    function getRecommendedResources(resources, profile, limit = 3) {
-      return resources
-        .filter((resource) => resource.diagnosticProfiles.includes(profile))
-        .sort((a, b) => {
-          if (a.priority === 'haute' && b.priority !== 'haute') return -1;
-          if (a.priority !== 'haute' && b.priority === 'haute') return 1;
-          return 0;
-        })
-        .slice(0, limit);
-    }
-
-    function getRecommendedPaths(paths, profile, limit = 1) {
-      return paths.filter((path) => path.diagnosticProfiles.includes(profile)).slice(0, limit);
-    }
-
-    function getRecommendedSituations(profile, limit = 2) {
-      return maryanSituations.filter((item) => item.diagnosticProfiles.includes(profile)).slice(0, limit);
-    }
-
-    function humanizeTaxonomy(value) {
-      const normalized = String(value || '').trim();
-      if (!normalized) return '';
-
-      const overrides = {
-        projet_citoyen: 'projet citoyen',
-        projet_entreprise: "projet d’entreprise",
-        collectif_habitants: "collectif d’habitants",
-        initiative_locale: 'initiative locale',
-        relation_partenaire: 'relation partenaire',
-        co_construction: 'co-construction',
-        reunion_publique: 'réunion publique',
-        communication_publique: 'communication publique',
-        prise_de_parole: 'prise de parole',
-        tension_locale: 'tension locale',
-        situation_sensible: 'situation sensible',
-        finances_locales: 'finances locales',
-        relations_internes: 'relations internes',
-        conseil_municipal: 'conseil municipal',
-        ia: 'IA',
-        chatgpt: 'ChatGPT'
-      };
-
-      if (overrides[normalized]) return overrides[normalized];
-
-      return normalized
-        .replaceAll('_', ' ')
-        .replaceAll('-', ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function capitalizeFirst(value) {
-      if (!value) return '';
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    }
-
-    function describePriority(priority) {
-      const normalized = normalizeText(priority);
-
-      if (normalized.includes('dispersion')) {
-        return 'Remettre de l’ordre dans ce qui mérite vraiment votre attention, sans courir après tous les fronts à la fois.';
-      }
-
-      if (normalized.includes('recul')) {
-        return 'Ralentir juste assez pour relire les enjeux, avant de décider trop vite sous la pression.';
-      }
-
-      if (normalized.includes('priorit')) {
-        return 'Distinguer ce qui demande un vrai arbitrage, ce qui peut attendre, et ce qui n’a pas à peser autant.';
-      }
-
-      if (normalized.includes('repere') || normalized.includes('place')) {
-        return 'Retrouver un cadre simple pour mieux comprendre votre rôle, votre marge d’action et vos points d’appui.';
-      }
-
-      if (normalized.includes('parole')) {
-        return 'Clarifier ce qui doit être dit, à quel moment, et avec quel niveau d’exposition.';
-      }
-
-      if (normalized.includes('tension') || normalized.includes('conflit')) {
-        return 'Lire ce qui se joue vraiment avant de réagir, pour éviter d’aggraver une situation déjà sensible.';
-      }
-
-      if (normalized.includes('methode') || normalized.includes('cadre')) {
-        return 'Retrouver une méthode stable pour cadrer les sujets avant qu’ils ne deviennent trop diffus.';
-      }
-
-      return 'Un premier point d’appui pour avancer avec plus de clarté, sans vous disperser inutilement.';
-    }
-
-    function renderDiagnosticBandeau() {
-      if (els.recommandationsSection) {
-        els.recommandationsSection.style.display = 'none';
-      }
-
-      const label =
-        state.diagnosticState?.diagnostic_label ||
-        (state.profile ? diagnosticLabels[state.profile] : '');
-
-      if (!label) {
-        if (els.diagBandeau) els.diagBandeau.style.display = 'none';
-        return;
-      }
-
-      if (els.diagBandeau) els.diagBandeau.style.display = 'block';
-      if (els.diagBandeauLabel) els.diagBandeauLabel.textContent = label;
-    }
-
-    function resetPersonalizedSections() {
-      els.parcoursExpressSection?.classList.add('hidden');
-      els.diagnosticHelper?.classList.add('hidden');
-      els.prioritiesSection?.classList.add('hidden');
-      if (els.priorityGrid) els.priorityGrid.innerHTML = '';
-      els.prioritySituationBlock?.classList.add('hidden');
-      if (els.prioritySituationGrid) els.prioritySituationGrid.innerHTML = '';
-      els.personalizedResources?.classList.add('hidden');
-      if (els.recommendedGrid) els.recommendedGrid.innerHTML = '';
-      els.personalizedPath?.classList.add('hidden');
-      if (els.pathPrioritiesList) els.pathPrioritiesList.innerHTML = '';
-      if (els.pathResourcesGrid) els.pathResourcesGrid.innerHTML = '';
-    }
-
-    function renderPersonalizedContent() {
-      resetPersonalizedSections();
-
-      if (!state.profile) {
-        els.parcoursExpressSection?.classList.remove('hidden');
-        els.diagnosticHelper?.classList.remove('hidden');
-        return;
-      }
-
-      els.parcoursExpressSection?.classList.add('hidden');
-      els.diagnosticHelper?.classList.add('hidden');
-
-      const priorities = state.recommendedPath?.priorities?.slice(0, 3)?.length
-        ? state.recommendedPath.priorities.slice(0, 3)
-        : (profilePriorityCopy[state.profile] || []).slice(0, 3);
-      const recommendedResources = getRecommendedResources(maryanResources, state.profile);
-      const recommendedSituations = getRecommendedSituations(state.profile, 2);
-
-      if (priorities.length) {
-        els.prioritiesSection?.classList.remove('hidden');
-        els.priorityGrid.innerHTML = priorities
-          .map((item, index) => {
-            const title = capitalizeFirst(item);
-            const description = describePriority(item);
-
-            return `
-              <article class="priority-card">
-                <div class="priority-card-top">
-                  <span class="priority-index">Priorité ${String(index + 1).padStart(2, '0')}</span>
-                </div>
-                <h3 class="priority-title">${title}</h3>
-                <p class="priority-description">${description}</p>
-              </article>
-            `
-          })
-          .join('');
-      }
-
-      if (recommendedSituations.length) {
-        els.prioritySituationBlock?.classList.remove('hidden');
-        els.prioritySituationGrid.innerHTML = recommendedSituations
-          .map(
-            (item) => `
-              <button type="button" class="priority-situation-card" onclick="openSituation('${item.id}')">
-                <div class="priority-situation-body">
-                  <h3 class="priority-situation-title">${item.title}</h3>
-                  <p class="priority-situation-text">${item.shortDescription}</p>
-                </div>
-                <div class="priority-situation-footer">
-                  <span class="priority-situation-link">Voir la situation</span>
-                  <span class="priority-situation-arrow">↗</span>
-                </div>
-              </button>
-            `
-          )
-          .join('');
-      }
-
-      if (recommendedResources.length) {
-        els.personalizedResources?.classList.remove('hidden');
-        const recommendationLabels = ['Commencer ici', 'À lire ensuite', 'À garder sous la main'];
-        els.recommendedGrid.innerHTML = recommendedResources
-          .map(
-            (resource, index) => `
-              <a href="/ressources/${resource.slug}" class="rec-lux-card-v4" data-pillar="${resource.pillar}" data-resource-link data-slug="${resource.slug}">
-                <div class="rec-card-top">
-                  <span class="rec-step">${recommendationLabels[index] || `Sélection ${index + 1}`}</span>
-                </div>
-                <div class="rec-content">
-                  <h3 class="rec-title-v4">${resource.title}</h3>
-                  <p class="rec-promise-v4">${resource.promise}</p>
-                </div>
-                <div class="rec-card-footer">
-                  <span class="rec-pillar-label">${pillarLabels[resource.pillar] || resource.pillar} · ${formatLabels[resource.format] || resource.format}</span>
-                  <span class="rec-arrow">→</span>
-                </div>
-              </a>
-            `
-          )
-          .join('');
-      }
-
-      if (state.recommendedPath) {
-        els.personalizedPath?.classList.remove('hidden');
-        const pathResources = state.recommendedPath.resourceIds
-          .map((id) => maryanResources.find((resource) => resource.id === id))
-          .filter(Boolean);
-
-        els.pathTitle.textContent = state.recommendedPath.title;
-        els.pathPromise.textContent = state.recommendedPath.promise;
-        els.pathDescription.textContent = state.recommendedPath.description;
-        els.pathPrioritiesList.innerHTML = state.recommendedPath.priorities
-          .slice(0, 3)
-          .map((priority) => `<li><span class="check-icon-small" aria-hidden="true"></span>${priority}</li>`)
-          .join('');
-        els.pathResourcesGrid.innerHTML = pathResources
-          .map(
-            (resource) => `
-              <a href="/ressources/${resource.slug}" class="path-mini-card" data-resource-link data-slug="${resource.slug}">
-                <span class="mini-format">${formatLabels[resource.format] || resource.format}</span>
-                <h4>${resource.title}</h4>
-              </a>
-            `
-          )
-          .join('');
-
-        if (pathResources[0]) {
-          els.pathCta.setAttribute('href', `/ressources/${pathResources[0].slug}`);
+        if (countEl) {
+          countEl.textContent = visible + ' ressource' + (visible > 1 ? 's' : '') + (activePillar === 'all' ? ' disponibles' : '');
+        }
+        if (emptyEl) {
+          emptyEl.style.display = visible === 0 ? 'block' : 'none';
         }
       }
-    }
 
-    function bindFilters() {
-      els.resourceSearch?.addEventListener('input', (event) => {
-        state.search = event.currentTarget.value || '';
-        state.expandedCatalog = false;
-        renderCatalog();
-      });
-
-      document.querySelectorAll('#pillarFilter .filter-pill').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('#pillarFilter .filter-pill').forEach(function(b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          state.pillar = btn.dataset.value;
-          state.expandedCatalog = false;
-          renderCatalog();
+      pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+          activePillar = pill.getAttribute('data-pillar') || 'all';
+          filterCards();
         });
       });
 
-      els.situationFilter?.addEventListener('change', (event) => {
-        state.situation = event.currentTarget.value;
-        state.expandedCatalog = false;
-        renderCatalog();
-      });
-
-      els.formatFilter?.addEventListener('change', (event) => {
-        state.format = event.currentTarget.value;
-        state.expandedCatalog = false;
-        renderCatalog();
-      });
-
-      els.sortFilter?.addEventListener('change', (event) => {
-        state.sort = event.currentTarget.value;
-        state.expandedCatalog = false;
-        renderCatalog();
-      });
-
-      els.toggleCatalogBtn?.addEventListener('click', () => {
-        state.expandedCatalog = !state.expandedCatalog;
-        renderCatalog();
-      });
-
-      els.resetFiltersBtn?.addEventListener('click', () => {
-        state.search = '';
-        state.pillar = 'all';
-        state.situation = 'all';
-        state.format = 'all';
-        state.sort = 'recommended';
-        state.expandedCatalog = false;
-
-        if (els.resourceSearch) els.resourceSearch.value = '';
-        document.querySelectorAll('#pillarFilter .filter-pill').forEach(function(b) { b.classList.remove('active'); });
-        var allPill = document.querySelector('#pillarFilter [data-value="all"]');
-        if (allPill) allPill.classList.add('active');
-        if (els.situationFilter) els.situationFilter.value = 'all';
-        if (els.formatFilter) els.formatFilter.value = 'all';
-        if (els.sortFilter) els.sortFilter.value = 'recommended';
-
-        renderCatalog();
-      });
-    }
-
-    function renderCatalog() {
-      const filtered = sortResources(
-        maryanResources.filter(matchesActiveFilters),
-        state.sort
-      );
-      const defaultVisible = 3;
-      const visibleResources = state.expandedCatalog ? filtered : filtered.slice(0, defaultVisible);
-
-      els.resourceCount.textContent = `${filtered.length} ressource${filtered.length > 1 ? 's' : ''}`;
-      els.resourceGrid.innerHTML = visibleResources.map(renderResourceCard).join('');
-      els.emptyState.classList.toggle('hidden', filtered.length > 0);
-
-      const showToggle = filtered.length > defaultVisible;
-      els.catalogActions?.classList.toggle('hidden', !showToggle || filtered.length === 0);
-      if (els.toggleCatalogBtn) {
-        els.toggleCatalogBtn.textContent = state.expandedCatalog
-          ? 'Afficher moins'
-          : `Voir plus de ressources`;
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); });
+          var allPill = document.querySelector('#pillarFilter [data-pillar="all"]');
+          if (allPill) allPill.classList.add('active');
+          activePillar = 'all';
+          filterCards();
+        });
       }
-    }
-
-    function matchesActiveFilters(resource) {
-      if (state.pillar !== 'all' && resource.pillar !== state.pillar) return false;
-      if (state.format !== 'all' && resource.format !== state.format) return false;
-      if (state.search && !matchesSearch(resource, state.search)) return false;
-      if (state.situation !== 'all' && !matchesSituation(resource, state.situation)) return false;
-      return true;
-    }
-
-    function matchesSearch(resource, query) {
-      const corpus = [resource.title, resource.promise, resource.intro, ...(resource.tags || []), ...(resource.useCases || [])].join(' ');
-      return normalizeText(corpus).includes(normalizeText(query));
-    }
-
-    function matchesSituation(resource, filterId) {
-      const filter = situationFilters.find((item) => item.id === filterId);
-      if (!filter || filter.id === 'all') return true;
-
-      const corpus = normalizeText([resource.title, resource.promise, resource.intro, ...(resource.tags || []), ...(resource.useCases || [])].join(' '));
-      return filter.markers.some((marker) => corpus.includes(normalizeText(marker)));
-    }
-
-    function sortResources(resources, sortValue) {
-      const profile = state.profile;
-      const score = (resource) => {
-        let total = 0;
-        if (resource.priority === 'haute') total += 2;
-        if (profile && resource.diagnosticProfiles.includes(profile)) total += 6;
-        if (state.recommendedPath && state.recommendedPath.resourceIds.includes(resource.id)) total += 4;
-        return total;
-      };
-
-      const viewCounts = JSON.parse(localStorage.getItem('maryan_resource_views') || '{}');
-
-      const sorted = [...resources];
-      sorted.sort((a, b) => {
-        if (sortValue === 'consulted') {
-          const viewedDiff = (viewCounts[b.slug] || 0) - (viewCounts[a.slug] || 0);
-          if (viewedDiff !== 0) return viewedDiff;
-        }
-
-        if (sortValue === 'recent') {
-          return (
-            maryanResources.findIndex((item) => item.id === b.id) -
-            maryanResources.findIndex((item) => item.id === a.id)
-          );
-        }
-
-        if (sortValue === 'useful') {
-          const usefulDiff = (b.priority === 'haute') - (a.priority === 'haute');
-          if (usefulDiff !== 0) return usefulDiff;
-        }
-
-        const recommendedDiff = score(b) - score(a);
-        if (recommendedDiff !== 0) return recommendedDiff;
-
-        return a.title.localeCompare(b.title, 'fr');
-      });
-
-      return sorted;
-    }
-
-    function renderResourceCard(resource) {
-      const prettyPillar = pillarLabels[resource.pillar] || resource.pillar;
-      const prettyFormat = formatLabels[resource.format] || resource.format;
-      const tagList = (resource.tags || [])
-        .slice(0, 2)
-        .map((tag) => humanizeTaxonomy(tag))
-        .filter(Boolean);
-
-      return `
-        <a href="/ressources/${resource.slug}" class="res-lux-card" data-pillar="${resource.pillar}" data-resource-link data-slug="${resource.slug}">
-          <div class="res-card-content">
-            <div class="res-card-meta">
-              <span class="res-card-kicker">${prettyPillar}</span>
-              <span class="res-card-format-badge">${prettyFormat}</span>
-            </div>
-            <h3 class="res-card-title">${resource.title}</h3>
-            <p class="res-card-promise">${resource.promise}</p>
-          </div>
-          <span class="res-card-arrow">→</span>
-        </a>
-      `;
-    }
-
-    function bindTracking() {
-      document.addEventListener('click', (event) => {
-        const link = event.target.closest('[data-resource-link]');
-        if (!link) return;
-
-        const slug = link.getAttribute('data-slug');
-        if (!slug) return;
-
-        const viewCounts = JSON.parse(localStorage.getItem('maryan_resource_views') || '{}');
-        viewCounts[slug] = (viewCounts[slug] || 0) + 1;
-        localStorage.setItem('maryan_resource_views', JSON.stringify(viewCounts));
-      });
-    }
-
-    function normalizeText(value) {
-      return value
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9'\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    const ctaContent = {
-      copilote: {
-        label: 'Ouvrir le copilote',
-        href: '/copilote',
-        note: "Besoin d'un premier cadrage rapide sur cette situation ? Le copilote peut vous aider à faire un point."
-      },
-      offre_individuelle: {
-        label: "Découvrir l'offre individuelle",
-        href: '/offres#avancer',
-        note: "Si la situation demande un regard plus ajusté, MARYAN peut orienter vers un appui individuel."
-      },
-      offre_collectivite: {
-        label: "Voir l'offre collectivité",
-        href: '/offres#collectivites',
-        note: "Si le sujet dépasse un besoin individuel, un format collectivité peut être plus cohérent."
-      },
-      formation_irl: {
-        label: 'Découvrir les formations',
-        href: '/methode',
-        note: "Quand le besoin appelle un travail plus structuré, un appui ou une formation en présentiel peut être utile."
-      }
-    };
-
-    window.openCopilotPrompt = (prompt) => {
-      sessionStorage.setItem('maryan_copilot_prefill', prompt);
-      window.location.href = '/copilote';
-    };
-
-    window.openSituation = (id) => {
-      const sit = maryanSituations.find((item) => item.id === id);
-      if (!sit) return;
-
-      const resources = sit.resourceIds.map((rid) => maryanResources.find((resource) => resource.id === rid)).filter(Boolean);
-      const paths = sit.pathIds.map((pid) => maryanPaths.find((path) => path.id === pid)).filter(Boolean);
-      const cta = ctaContent[sit.ctaType] || ctaContent.copilote;
-
-      const html = `
-        <div class="modal-header">
-          <span class="label-v3">Situation fréquente</span>
-          <h2 class="modal-title">${sit.title}</h2>
-          <p class="modal-intro">${sit.longDescription}</p>
-        </div>
-
-        <div class="modal-body-grid">
-          <div class="modal-main">
-            <div class="modal-section">
-              <h3 class="modal-sub">Vos priorités</h3>
-              <ul class="modal-list">
-                ${sit.priorities.map((priority) => `<li>${priority}</li>`).join('')}
-              </ul>
-            </div>
-
-            <div class="modal-section">
-              <h3 class="modal-sub">Ressources indispensables</h3>
-              <div class="modal-res-grid">
-                ${resources
-                  .map(
-                    (resource) => `
-                      <a href="/ressources/${resource.slug}" class="modal-res-link" data-resource-link data-slug="${resource.slug}">
-                        <span class="mini-format">${formatLabels[resource.format] || resource.format}</span>
-                        <span class="mini-title">${resource.title}</span>
-                      </a>
-                    `
-                  )
-                  .join('')}
-              </div>
-            </div>
-          </div>
-
-          <aside class="modal-aside">
-            ${
-              paths.length
-                ? `
-              <div class="modal-section">
-                <h3 class="modal-sub">Parcours lié</h3>
-                ${paths
-                  .map(
-                    (path) => `
-                      <div class="aside-path-card">
-                        <h4>${path.title}</h4>
-                        <p>${path.promise}</p>
-                      </div>
-                    `
-                  )
-                  .join('')}
-              </div>
-            `
-                : ''
-            }
-
-            <div class="modal-section">
-              <h3 class="modal-sub">Appui conseillé</h3>
-              <div class="cta-mini-box">
-                <span class="cta-label">${sit.ctaType.replaceAll('_', ' ')}</span>
-                <p>${cta.note}</p>
-                <a href="${cta.href}" class="btn-primary-v3 btn-tiny">${cta.label}</a>
-              </div>
-            </div>
-          </aside>
-        </div>
-      `;
-
-      document.getElementById('sitModalContent').innerHTML = html;
-      document.getElementById('sitModal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    };
-
-    window.closeSituation = () => {
-      document.getElementById('sitModal').classList.add('hidden');
-      document.body.style.overflow = '';
-    };
-
-    document.getElementById('sitModal').onclick = (event) => {
-      if (event.target === document.getElementById('sitModal')) closeSituation();
-    };
+    })();
   </script>
 </BaseLayout>
 
@@ -1198,16 +259,17 @@ const copilotSuggestions = [
     --red: #e63946;
     --bg: #f8f9fa;
     --border: rgba(10, 25, 47, 0.08);
+    --pillar-se_situer: #3B82F6;
+    --pillar-comprendre: #8B5CF6;
+    --pillar-agir: #10B981;
+    --pillar-se_proteger: #E63946;
   }
 
-  .hidden {
-    display: none !important;
-  }
-
+  /* ── HERO ── */
   .res-hero-bg {
     background: var(--deep);
     color: white;
-    padding-bottom: 5.5rem;
+    padding-bottom: 4rem;
     position: relative;
     overflow: hidden;
   }
@@ -1228,586 +290,36 @@ const copilotSuggestions = [
     z-index: 1;
     pointer-events: none;
   }
-
-  .glow-red {
-    top: -10%;
-    left: -10%;
-    background: var(--red);
-  }
-
-  .glow-green {
-    bottom: -10%;
-    right: -10%;
-    background: var(--neon);
-  }
-
-  .relative-z {
-    position: relative;
-    z-index: 5;
-  }
-
-  .hero-note-card {
-    max-width: 46rem;
-    margin: 0 auto;
-    padding: 1.2rem 1.35rem;
-    border-radius: 1.4rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
-  }
-
-  .hero-note-lead,
-  .hero-note-text {
-    margin: 0;
-    color: white;
-  }
-
-  .hero-note-lead {
-    font-size: 1.02rem;
-    font-weight: 700;
-    line-height: 1.45;
-  }
-
-  .hero-note-text {
-    margin-top: 0.3rem;
-    font-size: 0.95rem;
-    opacity: 0.8;
-  }
+  .glow-red { top: -10%; left: -10%; background: var(--red); }
+  .glow-green { bottom: -10%; right: -10%; background: var(--neon); }
+  .relative-z { position: relative; z-index: 5; }
 
   .resources-main {
-    padding-bottom: 5rem;
+    padding-bottom: 0;
   }
 
-  .diagnostic-helper-card {
+  /* ── FILTRE ── */
+  .filter-section {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .filter-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1.4rem;
-    padding: 1.7rem 1.8rem;
-    background: linear-gradient(180deg, #fff 0%, #f5f8fc 100%);
-    border-radius: 1.8rem;
-    box-shadow: 0 16px 36px rgba(10, 25, 47, 0.05);
-  }
-
-  .diagnostic-helper-copy h2 {
-    margin: 0.4rem 0 0.7rem;
-    color: var(--deep);
-    font-size: clamp(1.6rem, 3vw, 2.25rem);
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-  }
-
-  .diagnostic-helper-copy p {
-    margin: 0;
-    max-width: 42rem;
-    color: #54636c;
-    line-height: 1.55;
-    font-size: 1rem;
-  }
-
-  .diagnostic-helper-actions {
-    display: flex;
+    gap: 1rem;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: flex-end;
   }
 
-  .section-header-v4 {
-    text-align: left;
-    margin-bottom: 2.6rem;
-  }
-
-  .section-title-standard {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    margin: 0.55rem 0 0.7rem;
-    letter-spacing: -0.03em;
-  }
-
-  .section-subtitle-v4 {
-    max-width: 48rem;
-    opacity: 0.82;
-    font-size: 1.08rem;
-    line-height: 1.55;
-    color: #54636c;
-  }
-
-  .priorities-section {
-    background: linear-gradient(180deg, #fbf8f2 0%, #fffdfa 100%);
-  }
-
-  .priority-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
-  }
-
-  .priority-card {
-    position: relative;
-    overflow: hidden;
-    padding: 1.75rem;
-    border-radius: 1.55rem;
-    background: #fff;
-    border: 1px solid var(--border);
-    box-shadow: 0 14px 34px rgba(10, 25, 47, 0.04);
-    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-  }
-
-  .priority-card::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, rgba(230, 57, 70, 0.92) 0%, rgba(173, 255, 47, 0.8) 100%);
-  }
-
-  .priority-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 1rem;
-  }
-
-  .priority-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(10, 25, 47, 0.16);
-    box-shadow: 0 18px 38px rgba(10, 25, 47, 0.06);
-  }
-
-  .priority-index {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.48);
-  }
-
-  .priority-title {
-    margin: 0 0 0.7rem;
-    color: var(--deep);
-    font-size: 1.22rem;
-    line-height: 1.2;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .priority-description {
-    margin: 0;
-    color: #54636c;
-    font-size: 0.96rem;
-    line-height: 1.55;
-  }
-
-  .priority-situation-block {
-    margin-top: 1.55rem;
-  }
-
-  .priority-situation-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 0 1rem;
-    padding: 0.95rem 1.5rem;
-    border-radius: 999px;
-    background: var(--deep);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    text-decoration: none;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.14);
-    transition: all 0.22s ease;
-  }
-
-  .priority-situation-cta:hover,
-  .priority-situation-cta:focus-visible {
-    background: var(--red);
-    border-color: var(--red);
-    color: white;
-    transform: translateY(-2px);
-    outline: none;
-  }
-
-  .priority-situation-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem;
-  }
-
-  .priority-situation-card {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    width: 100%;
-    min-height: 100%;
-    padding: 1.5rem;
-    border: 1px solid var(--border);
-    background: #fff;
-    color: var(--deep);
-    border-radius: 1.5rem;
-    font: inherit;
-    cursor: pointer;
-    transition: all 0.28s ease;
-  }
-
-  .priority-situation-card:hover,
-  .priority-situation-card:focus-visible {
-    border-color: var(--neon);
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    outline: none;
-  }
-
-  .priority-situation-body {
-    display: grid;
-    gap: 0.6rem;
-  }
-
-  .priority-situation-title {
-    margin: 0;
-    font-size: 1.08rem;
-    line-height: 1.24;
-    font-weight: 800;
-    color: var(--deep);
-  }
-
-  .priority-situation-text {
-    margin: 0;
-    font-size: 0.92rem;
-    line-height: 1.45;
-    color: #54636c;
-  }
-
-  .priority-situation-footer {
-    margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .priority-situation-link {
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--red);
-  }
-
-  .priority-situation-arrow {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    background: rgba(10, 25, 47, 0.05);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--deep);
-    transition: all 0.28s ease;
-  }
-
-  .priority-situation-card:hover .priority-situation-arrow,
-  .priority-situation-card:focus-visible .priority-situation-arrow {
-    background: var(--red);
-    color: white;
-  }
-
-  .recommended-section {
-    padding: 5.5rem 0;
-    background: white;
-  }
-
-  .rec-v4-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
-  .rec-lux-card-v4 {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    min-height: 100%;
-    padding: 1.5rem;
-    background: white;
-    border: 1px solid var(--border);
-    border-top: 3px solid rgba(10, 25, 47, 0.15);
-    border-radius: 14px;
-    text-decoration: none;
-    color: var(--deep);
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(10, 25, 47, 0.04);
-  }
-
-  .rec-lux-card-v4[data-pillar="se_situer"]   { border-top-color: var(--pillar-se_situer); }
-  .rec-lux-card-v4[data-pillar="comprendre"]  { border-top-color: var(--pillar-comprendre); }
-  .rec-lux-card-v4[data-pillar="agir"]        { border-top-color: var(--pillar-agir); }
-  .rec-lux-card-v4[data-pillar="se_proteger"] { border-top-color: var(--pillar-se_proteger); }
-
-  .rec-lux-card-v4:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(10, 25, 47, 0.08);
-    border-color: rgba(10, 25, 47, 0.18);
-  }
-
-  .rec-card-top {
-    margin-bottom: 1rem;
-  }
-
-  .rec-step {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.4);
-    background: rgba(10, 25, 47, 0.04);
-    padding: 0.25rem 0.65rem;
-    border-radius: 999px;
-  }
-
-  .rec-lux-card-v4[data-pillar="se_situer"]   .rec-step { color: var(--pillar-se_situer); background: rgba(59,130,246,0.08); }
-  .rec-lux-card-v4[data-pillar="comprendre"]  .rec-step { color: var(--pillar-comprendre); background: rgba(139,92,246,0.08); }
-  .rec-lux-card-v4[data-pillar="agir"]        .rec-step { color: var(--pillar-agir); background: rgba(16,185,129,0.08); }
-  .rec-lux-card-v4[data-pillar="se_proteger"] .rec-step { color: var(--pillar-se_proteger); background: rgba(230,57,70,0.08); }
-
-  .rec-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .rec-title-v4 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--deep);
-    line-height: 1.2;
-    margin: 0;
-    letter-spacing: -0.02em;
-  }
-
-  .rec-promise-v4 {
-    margin: 0;
-    font-size: 0.88rem;
-    color: #54636c;
-    line-height: 1.5;
-  }
-
-  .rec-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--border);
-    margin-top: auto;
-  }
-
-  .rec-pillar-label {
-    font-size: 0.68rem;
+  .filter-bar-label {
+    font-size: 0.82rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.38);
-  }
-
-  .rec-arrow {
-    font-size: 1rem;
-    color: rgba(10, 25, 47, 0.35);
-    transition: all 0.2s;
-  }
-
-  .rec-lux-card-v4:hover .rec-arrow {
-    color: var(--deep);
-    transform: translateX(3px);
-  }
-
-  .path-section {
-    background: white;
-  }
-
-  .path-highlight-card {
-    background: var(--deep);
-    color: #fff;
-    padding: 3.6rem;
-    border-radius: 40px;
-    border: none;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
-  }
-
-  .path-badge {
-    background: var(--neon);
-    color: var(--deep);
-    font-size: 0.7rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 0.5rem 1rem;
-    border-radius: 99px;
-    display: inline-block;
-    margin-bottom: 1.6rem;
-  }
-
-  .path-title-v4 {
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    font-weight: 900;
-    margin-bottom: 0.8rem;
-    color: #fff;
-    letter-spacing: -0.03em;
-  }
-
-  .path-promise-v4 {
-    font-size: 1.15rem;
-    color: #fff;
-    opacity: 0.96;
-    margin-bottom: 1rem;
-    max-width: 42rem;
-    line-height: 1.45;
-  }
-
-  .path-description-v4 {
-    max-width: 42rem;
-    color: rgba(255, 255, 255, 0.76);
-    line-height: 1.6;
-    margin-bottom: 2.4rem;
-  }
-
-  .path-priorities-box h3,
-  .path-resources-box h3 {
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--neon);
-    letter-spacing: 0.1em;
-    margin-bottom: 1.3rem;
-  }
-
-  .res-check-list-small {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    margin-bottom: 2.6rem;
-  }
-
-  .res-check-list-small li {
-    display: flex;
-    gap: 0.8rem;
-    align-items: flex-start;
-    font-size: 1.06rem;
-    font-weight: 600;
-    color: #fff;
-  }
-
-  .check-icon-small {
-    width: 0.48rem;
-    height: 0.48rem;
-    flex-shrink: 0;
-    border-radius: 999px;
-    background: var(--neon);
-    display: inline-block;
-    margin-top: 0.38rem;
-  }
-
-  .path-mini-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
-  .path-mini-card {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 1.25rem;
-    border-radius: 16px;
-    text-decoration: none;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s;
-  }
-
-  .path-mini-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-3px);
-  }
-
-  .mini-format {
-    font-size: 0.62rem;
-    text-transform: uppercase;
-    opacity: 0.56;
-    font-weight: 800;
-    margin-bottom: 0.3rem;
-    display: block;
-    letter-spacing: 0.08em;
-  }
-
-  .path-mini-card h4 {
-    margin: 0;
-    font-size: 0.96rem;
-    line-height: 1.3;
-  }
-
-  .path-actions {
-    margin-top: 2rem;
-  }
-
-  .explore-section {
-    background: #F5F6F8;
-  }
-
-  .filter-shell {
-    padding: 1.5rem;
-    margin-bottom: 1.6rem;
-    background: white;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 12px rgba(10, 25, 47, 0.04);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .filter-search {
-    position: relative;
-  }
-
-  .search-input {
-    width: 100%;
-    border: 1.5px solid rgba(10, 25, 47, 0.12);
-    border-radius: 10px;
-    background: #FAFAF8;
-    color: var(--deep);
-    font: inherit;
-    font-size: 0.97rem;
-    padding: 0.85rem 1rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .search-input:focus {
-    border-color: var(--deep);
-    background: white;
-  }
-
-  .filter-pills-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .filter-label {
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.45);
+    color: rgba(10, 25, 47, 0.5);
+    white-space: nowrap;
   }
 
   .filter-pills {
@@ -1817,10 +329,10 @@ const copilotSuggestions = [
   }
 
   .filter-pill {
-    padding: 0.45rem 1rem;
+    padding: 0.5rem 1.1rem;
     border-radius: 999px;
-    border: 1.5px solid rgba(10, 25, 47, 0.12);
-    background: #FAFAF8;
+    border: 1.5px solid rgba(10, 25, 47, 0.1);
+    background: white;
     color: #54636C;
     font: inherit;
     font-size: 0.88rem;
@@ -1828,12 +340,14 @@ const copilotSuggestions = [
     cursor: pointer;
     transition: all 0.18s;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   .filter-pill:hover {
     border-color: var(--deep);
     color: var(--deep);
-    background: white;
   }
 
   .filter-pill.active {
@@ -1842,302 +356,245 @@ const copilotSuggestions = [
     border-color: var(--deep);
   }
 
-  .filter-selects-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.9rem;
-  }
-
-  .filter-field {
-    display: grid;
-    gap: 0.45rem;
-  }
-
-  .filter-field select {
-    width: 100%;
-    border: 1.5px solid rgba(10, 25, 47, 0.12);
-    border-radius: 10px;
-    background: #FAFAF8;
-    color: var(--deep);
-    font: inherit;
-    font-size: 0.9rem;
-    padding: 0.7rem 0.9rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-
-  .filter-field select:focus {
-    border-color: var(--deep);
-    background: white;
-  }
-
-  .catalogue-head {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin: 1.5rem 0 1.2rem;
-  }
-
-  .resource-count {
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.4rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid rgba(10, 25, 47, 0.1);
-    background: white;
-    font-size: 0.8rem;
+  .pill-count {
+    font-size: 0.72rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    opacity: 0.5;
+  }
+
+  .filter-pill.active .pill-count {
+    opacity: 0.7;
+  }
+
+  /* ── CATALOGUE ── */
+  .catalog-section {
+    padding: 2.5rem 0 4rem;
+    background: var(--bg);
+  }
+
+  .catalog-count {
+    margin: 0 0 1.5rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(10, 25, 47, 0.45);
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.55);
-    white-space: nowrap;
-  }
-
-  .catalog-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-  }
-
-  /* Pillar color palette */
-  :root {
-    --pillar-se_situer: #3B82F6;
-    --pillar-comprendre: #8B5CF6;
-    --pillar-agir: #10B981;
-    --pillar-se_proteger: #E63946;
+    letter-spacing: 0.06em;
   }
 
   .res-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ── CARTE RESSOURCE ── */
+  .res-card {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    overflow: visible;
-    box-shadow: none;
-  }
-
-  .res-lux-card {
-    text-decoration: none !important;
     background: white;
-    border: 1px solid var(--border);
-    border-left: 3px solid transparent;
-    border-radius: 10px;
-    box-shadow: 0 1px 6px rgba(10, 25, 47, 0.05);
-    transition: box-shadow 0.18s, transform 0.18s, background 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    padding: 0.85rem 1.1rem 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 1.75rem;
+    text-decoration: none;
     color: var(--deep);
+    transition: all 0.22s ease;
+    box-shadow: 0 2px 8px rgba(10, 25, 47, 0.03);
+    position: relative;
+    overflow: hidden;
   }
 
-  .res-lux-card[data-pillar="se_situer"]   { border-left-color: var(--pillar-se_situer); }
-  .res-lux-card[data-pillar="comprendre"]  { border-left-color: var(--pillar-comprendre); }
-  .res-lux-card[data-pillar="agir"]        { border-left-color: var(--pillar-agir); }
-  .res-lux-card[data-pillar="se_proteger"] { border-left-color: var(--pillar-se_proteger); }
-
-  .res-lux-card:hover {
-    background: #F9FAFB;
-    box-shadow: 0 3px 14px rgba(10, 25, 47, 0.09);
-    transform: translateY(-1px);
+  .res-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--border);
+    transition: background 0.22s;
   }
 
-  .res-card-content {
-    flex: 1;
-    min-width: 0;
+  .res-card[data-pillar="se_situer"]::before   { background: var(--pillar-se_situer); }
+  .res-card[data-pillar="comprendre"]::before  { background: var(--pillar-comprendre); }
+  .res-card[data-pillar="agir"]::before        { background: var(--pillar-agir); }
+  .res-card[data-pillar="se_proteger"]::before { background: var(--pillar-se_proteger); }
+
+  .res-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(10, 25, 47, 0.08);
+    border-color: rgba(10, 25, 47, 0.15);
   }
 
-  .res-card-meta {
+  .res-card-top {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: 1rem;
   }
 
-  .res-card-kicker {
-    font-size: 0.62rem;
+  .res-card-pillar {
+    font-size: 0.68rem;
     font-weight: 800;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(10, 25, 47, 0.5);
-    background: rgba(10, 25, 47, 0.05);
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
     white-space: nowrap;
   }
 
-  .res-lux-card[data-pillar="se_situer"]   .res-card-kicker { color: var(--pillar-se_situer);   background: rgba(59,130,246,0.1); }
-  .res-lux-card[data-pillar="comprendre"]  .res-card-kicker { color: var(--pillar-comprendre);  background: rgba(139,92,246,0.1); }
-  .res-lux-card[data-pillar="agir"]        .res-card-kicker { color: var(--pillar-agir);        background: rgba(16,185,129,0.1); }
-  .res-lux-card[data-pillar="se_proteger"] .res-card-kicker { color: var(--pillar-se_proteger); background: rgba(230,57,70,0.1); }
+  .pillar-se_situer   { color: var(--pillar-se_situer);   background: rgba(59, 130, 246, 0.1); }
+  .pillar-comprendre  { color: var(--pillar-comprendre);  background: rgba(139, 92, 246, 0.1); }
+  .pillar-agir        { color: var(--pillar-agir);        background: rgba(16, 185, 129, 0.1); }
+  .pillar-se_proteger { color: var(--pillar-se_proteger); background: rgba(230, 57, 70, 0.1); }
 
-  .res-card-format-badge {
-    font-size: 0.62rem;
+  .res-card-format {
+    font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: rgba(10, 25, 47, 0.35);
     background: rgba(10, 25, 47, 0.04);
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: 999px;
   }
 
   .res-card-title {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: var(--deep);
-    margin: 0;
     line-height: 1.2;
-    letter-spacing: -0.01em;
-    text-decoration: none;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
   }
 
   .res-card-promise {
-    font-size: 0.83rem;
-    line-height: 1.4;
+    font-size: 0.92rem;
+    line-height: 1.5;
     color: #54636c;
-    margin: 0.15rem 0 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    margin: 0 0 1rem;
+  }
+
+  .res-card-teaser {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    background: rgba(10, 25, 47, 0.025);
+    border-radius: 10px;
+    padding: 0.8rem 0.9rem;
+    margin-bottom: 1.25rem;
+    flex: 1;
+  }
+
+  .teaser-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .res-card-teaser p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: rgba(10, 25, 47, 0.65);
+    margin: 0;
+    font-style: italic;
+  }
+
+  .res-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  .res-card-cta {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--deep);
+    letter-spacing: -0.01em;
   }
 
   .res-card-arrow {
-    font-size: 0.95rem;
-    color: rgba(10, 25, 47, 0.28);
-    flex-shrink: 0;
-    transition: color 0.15s, transform 0.15s;
-  }
-
-  .res-lux-card:hover .res-card-arrow {
-    color: var(--deep);
-    transform: translateX(3px);
-  }
-
-  .empty-state {
-    margin-top: 1.2rem;
-    padding: 1.6rem;
-    border-radius: 1.4rem;
-    border: 1px dashed rgba(10, 25, 47, 0.12);
-    background: rgba(255, 255, 255, 0.72);
-    text-align: center;
-  }
-
-  .empty-state p {
-    margin: 0 0 1rem;
-    color: #54636c;
-  }
-
-  .situations-section {
-    background: white;
-  }
-
-  .sit-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(10, 25, 47, 0.04);
-  }
-
-  .sit-card {
-    background: white;
-    border: none;
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-    padding: 1.35rem 1.75rem;
-    text-align: left;
-    cursor: pointer;
-    transition: background 0.15s;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1.25rem;
-    width: 100%;
-    font: inherit;
-    color: var(--deep);
-  }
-
-  .sit-card:last-child {
-    border-bottom: none;
-  }
-
-  .sit-card:hover {
-    background: #F5F6F8;
-    transform: none;
-    box-shadow: none;
-  }
-
-  .sit-card-content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .sit-title {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--deep);
-    margin: 0 0 0.3rem;
-    line-height: 1.24;
-  }
-
-  .sit-desc {
-    font-size: 0.875rem;
-    color: #54636c;
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  .sit-footer {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
-  .sit-link {
-    display: none;
-  }
-
-  .sit-arrow {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background: rgba(10, 25, 47, 0.05);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--deep);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     flex-shrink: 0;
-    transition: all 0.18s;
+    transition: all 0.22s;
   }
 
-  .sit-card:hover .sit-arrow {
+  .res-card:hover .res-card-arrow {
     background: var(--deep);
     color: white;
+    transform: translateX(2px);
   }
 
+  .res-card:hover .res-card-cta {
+    color: var(--red);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    padding: 3rem 2rem;
+    border-radius: 1.4rem;
+    border: 1px dashed rgba(10, 25, 47, 0.12);
+    background: white;
+    text-align: center;
+  }
+
+  .empty-state p {
+    margin: 0 0 1rem;
+    color: #54636c;
+    font-size: 1.05rem;
+  }
+
+  /* ── DIAGNOSTIC CTA ── */
+  .diagnostic-cta-section {
+    padding: 4rem 0;
+    background: white;
+  }
+
+  .diagnostic-cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(173,255,47,0.06) 0%, rgba(10,25,47,0.03) 100%);
+    border: 1.5px solid rgba(173,255,47,0.2);
+    border-radius: 24px;
+  }
+
+  .diagnostic-cta-content h2 {
+    margin: 0.5rem 0 0.75rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--deep);
+    letter-spacing: -0.02em;
+  }
+
+  .diagnostic-cta-content p {
+    margin: 0;
+    color: #54636c;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 36rem;
+  }
+
+  .diagnostic-cta-actions {
+    flex-shrink: 0;
+  }
+
+  /* ── COPILOTE DARK ── */
   .copilot-dark-section {
     background: var(--deep);
     padding: 5rem 0;
-  }
-
-  .copilot-dark-inner {
-    padding: 0;
   }
 
   .copilot-dark-kicker {
@@ -2189,6 +646,7 @@ const copilotSuggestions = [
     font-weight: 600;
     cursor: pointer;
     text-align: left;
+    text-decoration: none;
     transition: all 0.18s;
   }
 
@@ -2218,6 +676,7 @@ const copilotSuggestions = [
     box-shadow: 0 8px 24px rgba(173, 255, 47, 0.25);
   }
 
+  /* ── ALLER PLUS LOIN ── */
   .subtle-support-card {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
@@ -2249,277 +708,47 @@ const copilotSuggestions = [
     justify-content: flex-start;
   }
 
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 25, 47, 0.8);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
-  .modal-card {
-    background: white;
-    width: 100%;
-    max-width: 900px;
-    max-height: 90vh;
-    border-radius: 32px;
-    position: relative;
-    overflow-y: auto;
-    padding: 4rem;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: var(--bg);
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .modal-close:hover {
-    background: var(--red);
-    color: white;
-  }
-
-  .modal-title {
-    font-size: 2.5rem;
-    font-weight: 900;
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
-  }
-
-  .modal-intro {
-    font-size: 1.1rem;
-    opacity: 0.8;
-    line-height: 1.6;
-    margin-bottom: 3rem;
-  }
-
-  .modal-body-grid {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 4rem;
-  }
-
-  .modal-sub {
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.1em;
-  }
-
-  .modal-list {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 3rem;
-  }
-
-  .modal-list li {
-    position: relative;
-    padding-left: 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-  }
-
-  .modal-list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.65rem;
-    width: 0.42rem;
-    height: 0.42rem;
-    border-radius: 999px;
-    background: var(--neon);
-    transform: translateY(-50%);
-  }
-
-  .modal-res-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .modal-res-link {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    background: var(--bg);
-    border-radius: 12px;
-    text-decoration: none;
-    border: 1px solid var(--border);
-    transition: 0.2s;
-  }
-
-  .modal-res-link:hover {
-    border-color: var(--red);
-    background: white;
-  }
-
-  .modal-res-link .mini-title {
-    font-weight: 700;
-    color: var(--deep);
-  }
-
-  .aside-path-card {
-    background: var(--deep);
-    color: white;
-    padding: 1.5rem;
-    border-radius: 16px;
-    margin-bottom: 2rem;
-  }
-
-  .aside-path-card h4 {
-    font-size: 1.1rem;
-    color: var(--neon);
-    margin-bottom: 0.5rem;
-  }
-
-  .aside-path-card p {
-    font-size: 0.85rem;
-    opacity: 0.8;
-    line-height: 1.45;
-  }
-
-  .cta-mini-box {
-    background: #e6f3ff;
-    padding: 2rem;
-    border-radius: 20px;
-  }
-
-  .cta-label {
-    font-size: 0.62rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #0077ed;
-    margin-bottom: 0.5rem;
-    display: block;
-    letter-spacing: 0.08em;
-  }
-
-  .cta-mini-box p {
-    font-size: 0.92rem;
-    color: var(--deep);
-    margin-bottom: 1.5rem;
-  }
-
-  .btn-tiny {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.8rem;
-  }
-
+  /* ── RESPONSIVE ── */
   @media (max-width: 1100px) {
-    .diagnostic-helper-card {
+    .res-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .diagnostic-cta-card {
       flex-direction: column;
       align-items: flex-start;
-    }
-
-    .diagnostic-helper-actions {
-      justify-content: flex-start;
-    }
-
-    .priority-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .filter-selects-row {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .path-mini-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 900px) {
-    .priority-grid,
-    .rec-v4-grid,
-    .res-grid,
-    .filter-selects-row,
-    .path-mini-grid,
-    .modal-body-grid,
-    .subtle-support-card {
-      grid-template-columns: 1fr;
-    }
-
-    .catalogue-head {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .path-highlight-card,
-    .filter-shell {
-      padding: 1.25rem;
-    }
-
-    .modal-card {
-      padding: 2rem;
-      border-radius: 20px;
-      width: 95%;
-    }
-
-    .priority-situation-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .modal-title {
-      font-size: 1.85rem;
     }
   }
 
   @media (max-width: 768px) {
-    .section-v3 {
-      padding: 4rem 0;
-    }
-
     .res-hero-bg {
-      padding-bottom: 4rem;
+      padding-bottom: 3rem;
     }
 
-    .diagnostic-helper-card {
-      padding: 1.3rem;
-      border-radius: 1.4rem;
-    }
-
-    .diagnostic-helper-actions {
-      width: 100%;
-    }
-
-    .diagnostic-helper-actions .btn-primary-v3,
-    .diagnostic-helper-actions .btn-secondary-v3 {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .hero-note-card {
-      padding: 1rem 1rem 1.05rem;
-      border-radius: 1.2rem;
-    }
-
-    .priority-grid,
-    .rec-v4-grid {
+    .res-grid {
       grid-template-columns: 1fr;
     }
 
-    .sit-card {
-      padding: 1.15rem 1.25rem;
+    .filter-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
     }
 
-    .filter-shell {
-      padding: 1.1rem;
+    .filter-bar-label {
+      display: none;
+    }
+
+    .filter-pills {
+      width: 100%;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .subtle-support-card {
+      grid-template-columns: 1fr;
     }
 
     .subtle-support-actions {
@@ -2528,171 +757,34 @@ const copilotSuggestions = [
 
     .subtle-support-actions .btn-secondary-v3 {
       width: 100%;
+      justify-content: center;
     }
 
-    .priority-situation-cta {
-      width: 100%;
+    .copilot-dark-section {
+      padding: 3.5rem 0;
+    }
+
+    .section-v3 {
+      padding: 3.5rem 0;
+    }
+
+    .diagnostic-cta-card {
+      padding: 1.75rem;
     }
   }
 
-  /* ── PARCOURS EXPRESS ── */
-  .parcours-express-section { padding: 5rem 0 3rem; background: var(--bg); }
-  .pe-header { text-align: center; margin-bottom: 3rem; }
-  .pe-header h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin: 0.75rem 0; color: var(--deep); }
-  .pe-lead { font-size: 1.05rem; opacity: 0.65; max-width: 540px; margin: 0 auto; line-height: 1.6; }
+  @media (max-width: 480px) {
+    .filter-pill {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.85rem;
+    }
 
-  .pe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .res-card {
+      padding: 1.35rem;
+    }
 
-  .pe-card {
-    background: white;
-    border: 2px solid transparent;
-    border-radius: 20px;
-    padding: 1.75rem 1.5rem;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    position: relative;
-    overflow: hidden;
+    .res-card-title {
+      font-size: 1.05rem;
+    }
   }
-  .pe-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: var(--pe-color);
-    border-radius: 20px 20px 0 0;
-  }
-  .pe-card:hover, .pe-card.active {
-    border-color: var(--pe-color);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  }
-  .pe-card.active { background: #FAFBFF; }
-  .pe-title { font-size: 1rem; font-weight: 800; color: var(--deep); line-height: 1.2; }
-  .pe-accroche { font-size: 0.82rem; color: #666; line-height: 1.4; flex: 1; }
-  .pe-arrow { font-size: 1rem; color: var(--pe-color); font-weight: 800; margin-top: auto; }
-
-  .pe-detail { margin-bottom: 3rem; }
-  .pe-detail-inner {
-    background: white;
-    border-radius: 24px;
-    border: 2px solid var(--pe-color);
-    padding: 2.5rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-  }
-  .pe-detail-accroche { font-size: 1.2rem; font-weight: 700; color: var(--deep); margin-bottom: 2rem; }
-  .pe-fiches { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-  .pe-fiche-card {
-    background: var(--bg);
-    border: 1.5px solid rgba(10,25,47,0.08);
-    border-radius: 16px;
-    padding: 1.25rem;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    transition: all 0.2s;
-  }
-  .pe-fiche-card:hover { border-color: var(--pe-color); background: white; transform: translateY(-2px); }
-  .pe-fiche-pillar { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--pe-color); }
-  .pe-fiche-title { font-size: 0.95rem; font-weight: 800; color: var(--deep); line-height: 1.2; }
-  .pe-fiche-promise { font-size: 0.82rem; color: #666; line-height: 1.4; }
-
-  .pe-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; padding-top: 1.5rem; border-top: 1px solid rgba(10,25,47,0.07); }
-  .pe-action-btn {
-    font-size: 0.9rem; font-weight: 700; color: var(--deep);
-    text-decoration: none; border-bottom: 2px solid var(--pe-color);
-    padding-bottom: 2px; transition: opacity 0.2s;
-  }
-  .pe-action-btn:hover { opacity: 0.7; }
-  .pe-cta-btn {
-    margin-left: auto;
-    background: var(--deep); color: white;
-    padding: 0.8rem 1.6rem; border-radius: 12px;
-    font-size: 0.9rem; font-weight: 800;
-    text-decoration: none; transition: all 0.2s;
-  }
-  .pe-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-
-  @media (max-width: 700px) {
-    .pe-grid { grid-template-columns: 1fr 1fr; }
-    .pe-cta-btn { margin-left: 0; width: 100%; text-align: center; }
-  }
-  @media (max-width: 420px) {
-    .pe-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ── Bandeau diagnostic personnalisé ── */
-  .diag-bandeau-wrap {
-    background: linear-gradient(90deg, rgba(173,255,47,0.08) 0%, rgba(10,25,47,0.04) 100%);
-    border-bottom: 1px solid rgba(173,255,47,0.25);
-    padding: 0.9rem 0;
-  }
-  .diag-bandeau {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .diag-bandeau-icon { font-size: 1.1rem; }
-  .diag-bandeau-text { font-size: 0.92rem; color: var(--deep); flex: 1; margin: 0; }
-  .diag-bandeau-text strong { color: var(--deep); }
-  .diag-bandeau-reset {
-    font-size: 0.8rem;
-    font-weight: 700;
-    background: none;
-    border: 1px solid rgba(10,25,47,0.2);
-    border-radius: 99px;
-    padding: 0.35rem 0.9rem;
-    cursor: pointer;
-    color: #54636C;
-    transition: all 0.15s;
-  }
-  .diag-bandeau-reset:hover { border-color: var(--accent-red); color: var(--accent-red); }
-
-  /* ── Section recommandations ── */
-  #recommandationsSection {
-    padding: 4rem 0 2rem;
-    background: linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
-  }
-  .reco-header { margin-bottom: 2rem; }
-  .reco-title { font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--deep); }
-  .reco-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.25rem;
-  }
-  .reco-card {
-    background: white;
-    border: 1.5px solid var(--neon);
-    border-radius: 1.5rem;
-    padding: 1.75rem;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .reco-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(173,255,47,0.15); }
-  .reco-badge {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    background: var(--neon);
-    color: var(--deep);
-    padding: 0.25rem 0.65rem;
-    border-radius: 99px;
-    width: fit-content;
-    margin-bottom: 0.25rem;
-  }
-  .reco-card-title { font-size: 1rem; font-weight: 800; color: var(--deep); line-height: 1.3; margin: 0; }
-  .reco-card-promise { font-size: 0.86rem; color: #54636C; line-height: 1.5; margin: 0; flex: 1; }
-  .reco-card-cta { font-size: 0.82rem; font-weight: 700; color: var(--accent-red); margin-top: auto; }
 </style>
