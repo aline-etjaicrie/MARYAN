@@ -284,6 +284,7 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
 
     // ── Sauvegarde de la session dans copilote_sessions ──
     let persistedSessionId = body?.session_id || null;
+    let updatedMessagesForMemory: CopilotMessage[] = [];
 
     if (supabaseProfile?.id && supabaseUrl && supabaseServiceKey) {
       try {
@@ -294,6 +295,7 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
           ...messages,
           { role: 'assistant', content: reply }
         ];
+        updatedMessagesForMemory = updatedMessages as CopilotMessage[];
 
         if (sessionId) {
           const { data: updatedSession } = await supabase
@@ -326,6 +328,19 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
       } catch (_) { /* non bloquant */ }
     }
 
+    // ── Extraction mémoire (fire-and-forget, toutes les 5 paires de messages) ──
+    const userMessageCount = updatedMessagesForMemory.filter(m => m.role === 'user').length;
+    if (supabaseProfile?.id && persistedSessionId && userMessageCount > 0 && userMessageCount % 5 === 0) {
+      extractAndSaveCopiloteMemory(
+        supabaseUrl,
+        supabaseServiceKey,
+        apiKey,
+        supabaseProfile.id,
+        persistedSessionId,
+        updatedMessagesForMemory
+      ).catch(() => { /* non bloquant */ });
+    }
+
     return json({
       reply,
       resources: getSuggestedResources(latestUserMessage, profile, resolvedMode),
@@ -339,6 +354,73 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
 };
 
 export const ALL: APIRoute = async () => json({ error: 'Méthode non autorisée.' }, 405);
+
+const MEMORY_LIMIT = 10;
+
+async function extractAndSaveCopiloteMemory(
+  supabaseUrl: string,
+  supabaseServiceKey: string,
+  mistralApiKey: string,
+  userId: string,
+  _sessionId: string,
+  messages: CopilotMessage[]
+): Promise<void> {
+  const conversation = messages
+    .slice(-12)
+    .map((m) => `${m.role === 'user' ? 'Élu·e' : 'MARYAN'}: ${m.content}`)
+    .join('\n');
+
+  const prompt = `Résume en 1 à 3 topics courts (5 mots max chacun) les sujets principaux abordés dans cette conversation d'élu local. Retourne UNIQUEMENT un tableau JSON valide, sans markdown ni explication : [{"topic": "...", "context": "résumé en 1 phrase"}]`;
+
+  const res = await fetch(MISTRAL_CHAT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${mistralApiKey}` },
+    body: JSON.stringify({
+      model: 'mistral-small-latest',
+      messages: [{ role: 'user', content: `${prompt}\n\nConversation :\n${conversation}` }],
+      max_tokens: 200,
+      temperature: 0.2
+    })
+  });
+
+  if (!res.ok) return;
+
+  const data = (await res.json()) as Record<string, unknown>;
+  const raw = (data?.choices as any)?.[0]?.message?.content || '';
+  const match = raw.match(/\[[\s\S]*\]/);
+  if (!match) return;
+
+  let topics: { topic: string; context: string }[] = [];
+  try {
+    const parsed = JSON.parse(match[0]) as unknown[];
+    topics = parsed
+      .filter(
+        (item): item is { topic: string; context: string } =>
+          typeof (item as any)?.topic === 'string' && typeof (item as any)?.context === 'string'
+      )
+      .slice(0, 3);
+  } catch {
+    return;
+  }
+
+  if (!topics.length) return;
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  await supabase.from('copilote_memory').insert(
+    topics.map((t) => ({ user_id: userId, topic: t.topic, context: t.context }))
+  );
+
+  const { data: allMemory } = await supabase
+    .from('copilote_memory')
+    .select('id, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (allMemory && allMemory.length > MEMORY_LIMIT) {
+    const toDelete = allMemory.slice(MEMORY_LIMIT).map((m: { id: string }) => m.id);
+    await supabase.from('copilote_memory').delete().in('id', toDelete);
+  }
+}
 
 async function requestCompletion(
   url: string,
