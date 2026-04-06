@@ -140,7 +140,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
                 <h3>Recevoir ce profil</h3>
                 <p>Pour y revenir, le partager avec un pair ou le comparer dans quelques mois.</p>
                 <div class="email-input-v4">
-                   <input type="email" id="emailInput" placeholder="vous@collectivite.fr" />
+                   <input type="email" id="emailInput" placeholder="Adresse email" />
                    <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
                 </div>
              </section>
@@ -341,6 +341,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
        `;
 
        localStorage.setItem('maryan_test_equipe', JSON.stringify({ answers: a, profil: maxProfil, title: p.title, date: new Date().toLocaleDateString('fr-FR') }));
+       window.dispatchEvent(new CustomEvent('maryan:test-result', { detail: { test_slug: 'travail-equipe', level: maxProfil, score: null } }));
        document.getElementById('questionsContainer').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
        window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -356,12 +357,24 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   <script>
     import { createClient } from '@supabase/supabase-js';
-    const sb = createClient(
-      import.meta.env.PUBLIC_SUPABASE_URL as string,
-      import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string
-    );
-    sb.auth.getSession().then(({ data: { session } }) => {
-      const plan = session?.user?.user_metadata?.plan;
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+    const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    window.addEventListener('maryan:test-result', async (e: Event) => {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      fetch('/api/save-test-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify((e as CustomEvent).detail)
+      }).catch(() => {});
+    });
+  </script>
+
+  <script>
+    import { getCurrentSessionPlan } from '../../lib/client-plan';
+    getCurrentSessionPlan().then(({ plan }) => {
       if (plan !== 'plus' && plan !== 'admin') {
         window.location.href = '/offres?message=abonne';
       }
