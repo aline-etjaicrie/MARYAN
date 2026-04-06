@@ -12,6 +12,11 @@ import { maryanResources } from '../../data/resources';
 import { getMotsDeclencheurs } from '../../data/partis';
 import type { DiagnosticProfile, MaryanResource } from '../../data/types';
 import { DIAGNOSTIC_INSTRUCTIONS, resolveDiagnosticProfile } from '../../lib/diagnostic-personalization';
+import { ensureProfileRecord } from '../../lib/profiles';
+import {
+  buildDiagnosticStateFromProfileRow,
+  buildMaryanProfileFromDiagnosticState
+} from '../../lib/user-personalization';
 
 interface CopilotMessage {
   role: 'user' | 'assistant';
@@ -88,6 +93,8 @@ export const POST: APIRoute = async ({ request }) => {
     plan?: string;
     parti_id?: string;
     parti_label?: string;
+    profile_context?: Record<string, unknown> | null;
+    last_diagnostic_summary?: string | null;
     id?: string;
     political_label?: string; // depuis user_metadata Supabase Auth
   } | null = null;
@@ -116,9 +123,10 @@ export const POST: APIRoute = async ({ request }) => {
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
       const { data: { user } } = await supabase.auth.getUser(userToken);
       if (user) {
+        await ensureProfileRecord(supabase, user);
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label')
+          .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label, profile_context, last_diagnostic_summary')
           .eq('id', user.id)
           .single();
         // Récupère aussi l'étiquette politique depuis user_metadata Auth
@@ -200,12 +208,18 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
   }
 
   // ── Profile pour la logique de suggestion de ressources ──
-  const profile = body?.profile || (supabaseProfile ? {
-    key: resolveDiagnosticProfile({ diagnostic_key: supabaseProfile.diagnostic_key || '' }) || supabaseProfile.diagnostic_key || '',
-    summary: supabaseProfile.diagnostic_label || '',
-    themeLabel: supabaseProfile.role || '',
-    tags: []
-  } as MaryanProfile : null);
+  const profile = body?.profile || (supabaseProfile ? (
+    buildMaryanProfileFromDiagnosticState(buildDiagnosticStateFromProfileRow(supabaseProfile), {
+      firstName: supabaseProfile.first_name || null,
+      commune: supabaseProfile.commune || null,
+      plan: supabaseProfile.plan || null
+    }) || {
+      key: resolveDiagnosticProfile({ diagnostic_key: supabaseProfile.diagnostic_key || '' }) || supabaseProfile.diagnostic_key || '',
+      summary: supabaseProfile.diagnostic_label || '',
+      themeLabel: supabaseProfile.role || '',
+      tags: []
+    } as MaryanProfile
+  ) : null);
 
   const resolvedMode = inferMaryanSituationMode(latestUserMessage, profile);
 
@@ -269,6 +283,8 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
     }
 
     // ── Sauvegarde de la session dans copilote_sessions ──
+    let persistedSessionId = body?.session_id || null;
+
     if (supabaseProfile?.id && supabaseUrl && supabaseServiceKey) {
       try {
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -280,16 +296,20 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
         ];
 
         if (sessionId) {
-          await supabase
+          const { data: updatedSession } = await supabase
             .from('copilote_sessions')
             .update({
               messages: updatedMessages,
               updated_at: new Date().toISOString()
             })
             .eq('id', sessionId)
-            .eq('user_id', supabaseProfile.id);
+            .eq('user_id', supabaseProfile.id)
+            .select('id')
+            .single();
+
+          persistedSessionId = updatedSession?.id || sessionId;
         } else {
-          await supabase
+          const { data: createdSession } = await supabase
             .from('copilote_sessions')
             .insert({
               user_id: supabaseProfile.id,
@@ -297,7 +317,11 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
               titre,
               messages: updatedMessages,
               diagnostic_key: supabaseProfile.diagnostic_key || null
-            });
+            })
+            .select('id')
+            .single();
+
+          persistedSessionId = createdSession?.id || null;
         }
       } catch (_) { /* non bloquant */ }
     }
@@ -305,7 +329,8 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
     return json({
       reply,
       resources: getSuggestedResources(latestUserMessage, profile, resolvedMode),
-      detectedMode: resolvedMode
+      detectedMode: resolvedMode,
+      sessionId: persistedSessionId
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;
