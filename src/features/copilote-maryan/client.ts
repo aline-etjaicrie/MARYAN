@@ -7,6 +7,7 @@ import {
   type MaryanProfile,
   type MaryanSituationMode
 } from './config';
+import { getCurrentSessionPlan } from '../../lib/client-plan';
 
 const _supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string;
 const _supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -27,6 +28,7 @@ type AssistantReply = {
   html: string;
   plainText: string;
   resources: SuggestedResource[];
+  sessionId: string | null;
 };
 
 type DiagnosticAnswers = Record<string, string>;
@@ -82,6 +84,8 @@ function initCopilot(rootElement: HTMLElement) {
     paywallShown: false,
     isLoggedIn: false,
     hasPaidPlan: false,
+    accessToken: null as string | null,
+    sessionId: new URL(window.location.href).searchParams.get('session_id'),
     history: [] as HistoryMessage[],
     userProfile: loadProfile(),
     pendingAttachment: null as PendingAttachment
@@ -91,25 +95,7 @@ function initCopilot(rootElement: HTMLElement) {
     return state.hasPaidPlan || hasPlusAccess(state.userProfile);
   }
 
-  // Check Supabase session — grants unlimited access only if user metadata has plan = "plus"
-  if (_supabase) {
-    _supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        state.isLoggedIn = true;
-        const metaPlan = (session.user.user_metadata?.plan || session.user.app_metadata?.plan || '') as string;
-        if (metaPlan === 'plus' || metaPlan === 'admin') {
-          state.hasPaidPlan = true;
-          if (state.isBlocked) {
-            state.isBlocked = false;
-            state.paywallShown = false;
-          }
-          if (modeBadge) modeBadge.textContent = 'MARYAN · Accès illimité';
-        }
-        renderCounter();
-        syncInputUi();
-      }
-    });
-  }
+  void bootstrapAuthenticatedContext();
 
   renderProfile();
   renderCounter();
@@ -121,6 +107,117 @@ function initCopilot(rootElement: HTMLElement) {
   bindDrawer();
   bindSpeechRecognition();
   bindAttachment();
+
+  async function bootstrapAuthenticatedContext() {
+    if (!_supabase) return;
+
+    try {
+      const { session, plan } = await getCurrentSessionPlan();
+      if (!session) return;
+
+      state.isLoggedIn = true;
+      state.accessToken = session.access_token;
+
+      if (plan === 'plus' || plan === 'admin') {
+        state.hasPaidPlan = true;
+        if (state.isBlocked) {
+          state.isBlocked = false;
+          state.paywallShown = false;
+        }
+        if (modeBadge) modeBadge.textContent = 'MARYAN · Accès illimité';
+      }
+
+      await syncProfileContext(session.access_token);
+
+      if (state.sessionId) {
+        await hydrateSavedSession(session.access_token, state.sessionId);
+      }
+    } catch {
+      // non bloquant
+    } finally {
+      renderProfile();
+      renderCounter();
+      toggleSuggestions();
+      syncInputUi();
+    }
+  }
+
+  async function syncProfileContext(accessToken: string) {
+    try {
+      const response = await fetch('/api/profile-context', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      if (!response.ok) return;
+
+      const data = (await response.json()) as {
+        profile?: { plan?: string | null };
+        diagnosticState?: Record<string, unknown> | null;
+        maryanProfile?: MaryanProfile | null;
+      };
+
+      if (data.profile?.plan === 'plus' || data.profile?.plan === 'admin') {
+        state.hasPaidPlan = true;
+      }
+
+      if (data.diagnosticState) {
+        localStorage.setItem('maryan_v4_diag', JSON.stringify(data.diagnosticState));
+      }
+
+      if (data.maryanProfile) {
+        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(data.maryanProfile));
+        state.userProfile = data.maryanProfile;
+      } else {
+        state.userProfile = loadProfile();
+      }
+    } catch {
+      // non bloquant
+    }
+  }
+
+  async function hydrateSavedSession(accessToken: string, sessionId: string) {
+    try {
+      const response = await fetch(`/api/sessions?session_id=${encodeURIComponent(sessionId)}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      if (!response.ok) return;
+
+      const data = (await response.json()) as {
+        session?: { id: string; messages?: HistoryMessage[] | null };
+      };
+
+      const storedMessages = Array.isArray(data.session?.messages)
+        ? data.session.messages.filter(
+            (message): message is HistoryMessage =>
+              !!message &&
+              (message.role === 'user' || message.role === 'assistant') &&
+              typeof message.content === 'string'
+          )
+        : [];
+
+      if (!storedMessages.length) return;
+
+      state.sessionId = data.session?.id || sessionId;
+      state.history = storedMessages;
+      state.msgCount = storedMessages.filter((message) => message.role === 'user').length;
+      messages.innerHTML = '';
+
+      storedMessages.forEach((message) => {
+        addMessage(
+          message.role,
+          message.role === 'assistant' ? formatAssistantReply(message.content) : escapeHtml(message.content),
+          true
+        );
+      });
+    } catch {
+      // non bloquant
+    }
+  }
 
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -532,18 +629,29 @@ function initCopilot(rootElement: HTMLElement) {
         profile: state.userProfile,
         history: state.history,
         message: apiText,
-        mode
+        mode,
+        accessToken: state.accessToken,
+        sessionId: state.sessionId
       });
 
       removeTyping(typing);
       addMessage('assistant', reply.html, true);
       state.history.push({ role: 'assistant', content: reply.plainText });
 
+      if (reply.sessionId) {
+        state.sessionId = reply.sessionId;
+        syncSessionUrl(reply.sessionId);
+      }
+
       if (!hasUnlimitedAccess() && state.msgCount >= FREE_LIMIT) {
         showPaywall();
       }
     } catch (error) {
       removeTyping(typing);
+      if ((error as Error & { code?: string }).code === 'free_limit_reached') {
+        showPaywall();
+        return;
+      }
       addMessage('assistant', formatAssistantReply(getErrorMessage(error)), true);
     } finally {
       state.isBusy = false;
@@ -614,6 +722,12 @@ function initCopilot(rootElement: HTMLElement) {
     chatThread.scrollTo({ top: chatThread.scrollHeight, behavior: 'smooth' });
     syncInputUi();
   }
+
+  function syncSessionUrl(sessionId: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('session_id', sessionId);
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }
 }
 
 async function getAssistantReply({
@@ -621,33 +735,47 @@ async function getAssistantReply({
   profile,
   history,
   message,
-  mode
+  mode,
+  accessToken,
+  sessionId
 }: {
   endpoint: string;
   profile: MaryanProfile | null;
   history: HistoryMessage[];
   message: string;
   mode: MaryanSituationMode;
+  accessToken: string | null;
+  sessionId: string | null;
 }): Promise<AssistantReply> {
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+    },
     body: JSON.stringify({
       profile,
       messages: history,
       message,
-      mode
+      mode,
+      session_id: sessionId
     })
   });
 
   const data = (await response.json().catch(() => ({}))) as {
     reply?: string;
     error?: string;
+    message?: string;
     resources?: SuggestedResource[];
+    sessionId?: string | null;
   };
 
   if (!response.ok) {
-    throw new Error(data.error || 'Le copilote ne répond pas pour le moment.');
+    const error = new Error(data.message || data.error || 'Le copilote ne répond pas pour le moment.') as Error & {
+      code?: string;
+    };
+    if (data.error) error.code = data.error;
+    throw error;
   }
 
   const reply = data.reply || "Je n’ai pas pu générer de réponse.";
@@ -656,7 +784,8 @@ async function getAssistantReply({
   return {
     html: formatAssistantReply(reply, resources),
     plainText: reply,
-    resources
+    resources,
+    sessionId: typeof data.sessionId === 'string' ? data.sessionId : null
   };
 }
 

@@ -2,6 +2,7 @@
 // Graceful degradation if RESEND_API_KEY not set
 
 import { Resend } from 'resend';
+import type { MaryanRadarItem } from '../data/radar';
 
 const RESEND_API_KEY = (import.meta.env.RESEND_API_KEY as string) || (process.env.RESEND_API_KEY as string);
 const RESEND_AUDIENCE_ID = (import.meta.env.RESEND_AUDIENCE_ID as string) || (process.env.RESEND_AUDIENCE_ID as string);
@@ -14,6 +15,10 @@ function getResend(): Resend | null {
     return null;
   }
   return new Resend(RESEND_API_KEY);
+}
+
+export function isEmailSendingAvailable(): boolean {
+  return !!RESEND_API_KEY;
 }
 
 // ── Templates HTML ──────────────────────────────────────────────────────────
@@ -50,6 +55,15 @@ function baseTemplate(content: string): string {
   </div>
 </body>
 </html>`;
+}
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
 // ── Email functions ──────────────────────────────────────────────────────────
@@ -104,6 +118,74 @@ export async function sendPaymentConfirmationEmail(email: string, firstName?: st
     });
   } catch (e) {
     console.error('[email] sendPaymentConfirmationEmail failed:', e);
+  }
+}
+
+export async function sendDiagnosticSummaryEmail(
+  email: string,
+  diagnosticState: {
+    diagnostic_label?: unknown;
+    summary?: unknown;
+    situation?: unknown;
+    priorities?: unknown;
+    recommended_slugs?: unknown;
+  }
+): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const diagnosticLabel = typeof diagnosticState.diagnostic_label === 'string'
+    ? diagnosticState.diagnostic_label
+    : 'Votre lecture de mandat';
+  const summary = typeof diagnosticState.summary === 'string'
+    ? diagnosticState.summary
+    : 'MARYAN a préparé une première lecture de votre situation de mandat.';
+  const situation = typeof diagnosticState.situation === 'string'
+    ? diagnosticState.situation
+    : '';
+  const priorities = Array.isArray(diagnosticState.priorities)
+    ? diagnosticState.priorities
+        .map((item) => (typeof item === 'string' ? item.trim() : ''))
+        .filter(Boolean)
+        .slice(0, 3)
+    : [];
+  const recommendedSlugs = Array.isArray(diagnosticState.recommended_slugs)
+    ? diagnosticState.recommended_slugs
+        .map((item) => (typeof item === 'string' ? item.trim() : ''))
+        .filter(Boolean)
+        .slice(0, 3)
+    : [];
+
+  const prioritiesHtml = priorities.length
+    ? `<ul>${priorities.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+    : '';
+
+  const recommendationsHtml = recommendedSlugs.length
+    ? `<p><strong>Pour aller plus loin :</strong><br>${recommendedSlugs
+        .map(
+          (slug) =>
+            `<a href="https://maryanapp.fr/ressources/${encodeURIComponent(slug)}">${escapeHtml(slug)}</a>`
+        )
+        .join('<br>')}</p>`
+    : '';
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      replyTo: REPLY_TO,
+      subject: 'Votre diagnostic MARYAN',
+      html: baseTemplate(`
+        <h1>${escapeHtml(diagnosticLabel)}</h1>
+        <p>${escapeHtml(summary)}</p>
+        ${situation ? `<p>${escapeHtml(situation)}</p>` : ''}
+        ${prioritiesHtml ? `<p><strong>Ce qui peut vous aider maintenant :</strong></p>${prioritiesHtml}` : ''}
+        ${recommendationsHtml}
+        <a href="https://maryanapp.fr/login" class="btn">Retrouver mon espace →</a>
+      `)
+    });
+  } catch (e) {
+    console.error('[email] sendDiagnosticSummaryEmail failed:', e);
   }
 }
 
@@ -264,5 +346,75 @@ export async function sendContactEmail(data: {
     });
   } catch (e) {
     console.error('[email] sendContactEmail failed:', e);
+  }
+}
+
+export async function sendRadarDigestEmail(data: {
+  email: string;
+  firstName?: string;
+  frequency: 'quotidien' | 'hebdomadaire';
+  items: MaryanRadarItem[];
+}): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const name = data.firstName || 'élu·e';
+  const items = data.items.slice(0, data.frequency === 'hebdomadaire' ? 5 : 3);
+
+  if (!items.length) return;
+
+  const subject = data.frequency === 'hebdomadaire'
+    ? 'Radar MARYAN — les évolutions à suivre cette semaine'
+    : 'Radar MARYAN — ce qui vous concerne aujourd’hui';
+
+  const headerTitle = data.frequency === 'hebdomadaire'
+    ? 'Votre synthèse de la semaine'
+    : 'LE RADAR DE MARYAN';
+
+  const headerLead = data.frequency === 'hebdomadaire'
+    ? 'Les évolutions à suivre pour garder une lecture claire du mandat.'
+    : 'Ce que l’actualité implique pour votre mandat.';
+
+  const renderItem = (item: MaryanRadarItem) => `
+    <div style="padding:16px 0;border-top:1px solid #eee;">
+      <p style="font-size:0.8rem;color:#6B7280;margin:0 0 0.4rem;">${item.type.toUpperCase()} · ${item.source.publisher}</p>
+      <p style="font-size:1rem;font-weight:700;color:#0A192F;margin:0 0 0.65rem;">${item.title}</p>
+      <p style="font-size:0.92rem;margin:0 0 0.35rem;"><strong>Ce que dit la source</strong><br>${item.factSummary}</p>
+      <p style="font-size:0.92rem;margin:0 0 0.35rem;"><strong>Lecture MARYAN</strong><br>${item.analysis.whyImportant || ''}</p>
+      <p style="font-size:0.92rem;margin:0;"><strong>À surveiller</strong><br>${item.analysis.watchpoints || ''}</p>
+    </div>
+  `;
+
+  const weeklyBlocks = [
+    { title: 'À retenir', items: items.slice(0, 2) },
+    { title: 'En évolution', items: items.slice(2, 4) },
+    { title: 'À garder en tête', items: items.slice(4, 5) }
+  ].filter((block) => block.items.length > 0);
+
+  const dailyHtml = items.map(renderItem).join('');
+  const weeklyHtml = weeklyBlocks.map((block) => `
+    <div style="margin-bottom:1.5rem;">
+      <p style="font-size:0.82rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#E63946;margin:0 0 0.5rem;">${block.title}</p>
+      ${block.items.map(renderItem).join('')}
+    </div>
+  `).join('');
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: data.email,
+      replyTo: REPLY_TO,
+      subject,
+      html: baseTemplate(`
+        <h1>${headerTitle}</h1>
+        <p>Bonjour ${name},</p>
+        <p>${headerLead}</p>
+        ${data.frequency === 'hebdomadaire' ? weeklyHtml : dailyHtml}
+        <a href="https://maryanapp.fr/radar" class="btn">${data.frequency === 'hebdomadaire' ? 'Accéder au Radar complet' : 'Voir tous les signaux'}</a>
+        <p style="font-size:0.85rem;color:#888;">MARYAN vous aide à comprendre avant de décider.</p>
+      `)
+    });
+  } catch (e) {
+    console.error('[email] sendRadarDigestEmail failed:', e);
   }
 }

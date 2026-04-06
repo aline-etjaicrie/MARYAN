@@ -78,9 +78,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="dashboard-block-head">
             <div>
               <h2>Le Radar de MARYAN</h2>
-              <p>Trois signaux utiles. Pas plus.</p>
+              <p>À venir.</p>
             </div>
-            <a href="/radar" class="btn-link">Voir le Radar complet →</a>
+            <a href="/radar" class="btn-link">Voir la page →</a>
           </div>
 
           <div id="dashboardRadarList" class="dashboard-radar-list"></div>
@@ -116,8 +116,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
   import { createClient } from '@supabase/supabase-js';
   import { getRecommendedResources, maryanResources } from '../data/resources';
-  import { maryanRadarItems } from '../data/radar';
-  import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
+  import {
+    buildDiagnosticStateFromProfileRow,
+    buildMaryanProfileFromDiagnosticState
+  } from '../lib/user-personalization';
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -177,7 +179,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   } else {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    if (window.location.search.includes('session_id')) {
+    if (window.location.search.includes('checkout=success')) {
       const paymentBanner = document.getElementById('paymentBanner');
       if (paymentBanner) paymentBanner.style.display = 'block';
       window.history.replaceState({}, '', '/mon-compte');
@@ -190,11 +192,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const user = session.user;
       const token = session.access_token;
 
-      const { data: profile } = await supabase
+      let profileContext = null;
+      try {
+        const response = await fetch('/api/profile-context', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.ok) {
+          profileContext = await response.json();
+        }
+      } catch {
+        // noop
+      }
+
+      const profile = profileContext?.profile || (await supabase
         .from('profiles')
-        .select('first_name, commune, role, diagnostic_key, diagnostic_label, plan')
+        .select('first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_profile, diagnostic_payload, plan')
         .eq('id', user.id)
-        .single();
+        .single()).data;
 
       const firstName = profile?.first_name || '';
       const role = profile?.role || 'élu·e local·e';
@@ -207,23 +221,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('userEmail')!.textContent = user.email || '';
       document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
 
-      let localDiagnosticRaw = {} as Record<string, any>;
-      try {
-        const raw = localStorage.getItem('maryan_v4_diag');
-        if (raw) localDiagnosticRaw = JSON.parse(raw);
-      } catch {
-        // noop
-      }
-
-      const diagnosticState = buildStoredDiagnosticEntry({
-        ...localDiagnosticRaw,
-        diagnostic_key: profile?.diagnostic_key || localDiagnosticRaw?.diagnostic_key,
-        diagnostic_label: profile?.diagnostic_label || localDiagnosticRaw?.diagnostic_label
-      }, maryanResources);
+      const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
 
       try {
         if (diagnosticState.diagnostic_key || diagnosticState.profile || diagnosticState.recommended_slugs?.length) {
           localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
+        }
+
+        const maryanProfile = profileContext?.maryanProfile || buildMaryanProfileFromDiagnosticState(diagnosticState, {
+          firstName,
+          commune,
+          plan
+        });
+
+        if (maryanProfile) {
+          localStorage.setItem('maryan_profile', JSON.stringify({
+            ...maryanProfile,
+            diagnosticProfile: diagnosticState.profile
+          }));
         }
       } catch {
         // noop
@@ -266,21 +281,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const radarList = document.getElementById('dashboardRadarList');
       if (radarList) {
-        const radarItems = [...maryanRadarItems]
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 3);
-
-        radarList.innerHTML = radarItems.map((item) => `
+        radarList.innerHTML = `
           <article class="dashboard-radar-card">
-            <div class="dashboard-radar-top">
-              <span class="dashboard-radar-badge">${escapeHtml(item.type)}</span>
-              <span class="dashboard-radar-date">${escapeHtml(formatShortDate(item.date))}</span>
-            </div>
-            <h3>${escapeHtml(item.title)}</h3>
-            <p><strong>Impact</strong> ${escapeHtml(item.summary.whyImportant)}</p>
-            <p><strong>Implication</strong> ${escapeHtml(item.summary.whatChanges)}</p>
+            <h3>À venir.</h3>
+            <p>Le Radar de MARYAN sera mis en ligne prochainement.</p>
           </article>
-        `).join('');
+        `;
       }
 
       const topicsGrid = document.getElementById('topicsGrid');

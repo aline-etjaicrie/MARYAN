@@ -7,17 +7,14 @@ export const prerender = false;
 <BaseLayout title="Dashboard Admin — MARYAN" description="Administration MARYAN">
   <main class="admin-page">
     <div class="admin-wrap">
-
       <div class="admin-header">
         <h1>Dashboard Admin</h1>
-        <p class="admin-sub">Gestion des utilisateurs, abonnements et modération.</p>
+        <p class="admin-sub">Gestion des utilisateurs, abonnements, modération et pilotage éditorial du Radar.</p>
         <div id="adminError" class="admin-error" style="display:none;"></div>
       </div>
 
       <div id="adminLoader" class="admin-loader">Vérification des accès…</div>
       <div id="adminContent" style="display:none;">
-
-        <!-- Stats -->
         <div class="stats-grid" id="statsGrid">
           <div class="stat-card">
             <div class="stat-value" id="statTotal">—</div>
@@ -46,13 +43,15 @@ export const prerender = false;
           </a>
         </div>
 
-        <!-- Tabs -->
         <div class="admin-tabs">
           <button class="admin-tab active" data-tab="users">Utilisateurs</button>
-          <button class="admin-tab" data-tab="glossaire">Glossaire <span id="pendingBadge" class="badge" style="display:none;"></span></button>
+          <button class="admin-tab" data-tab="glossaire">
+            Glossaire
+            <span id="pendingBadge" class="badge" style="display:none;"></span>
+          </button>
+          <button class="admin-tab" data-tab="radar">Radar</button>
         </div>
 
-        <!-- Users tab -->
         <div id="tab-users" class="tab-content">
           <div class="table-wrap">
             <table class="admin-table" id="usersTable">
@@ -73,11 +72,51 @@ export const prerender = false;
           </div>
         </div>
 
-        <!-- Glossaire tab -->
         <div id="tab-glossaire" class="tab-content" style="display:none;">
           <div id="glossaireList"></div>
         </div>
 
+        <div id="tab-radar" class="tab-content" style="display:none;">
+          <section class="radar-admin-shell">
+            <div class="radar-admin-toolbar">
+              <div>
+                <div class="radar-admin-eyebrow">Pilotage éditorial</div>
+                <h2 class="radar-admin-title">Radar</h2>
+                <p class="radar-admin-copy">
+                  Vérifier les sources, distinguer le factuel de la lecture MARYAN et préparer une publication propre.
+                </p>
+              </div>
+              <div class="radar-admin-toolbar__actions">
+                <button id="radarRefreshBtn" type="button" class="admin-secondary-btn">Actualiser</button>
+                <button id="radarSeedBtn" type="button" class="admin-secondary-btn">Importer le seed local</button>
+                <button id="radarCreateBtn" type="button" class="admin-primary-btn">Nouveau signal</button>
+              </div>
+            </div>
+
+            <div id="radarStatusNotice" class="radar-admin-notice" style="display:none;"></div>
+            <div id="radarStats" class="radar-admin-stats"></div>
+
+            <div class="radar-admin-grid">
+              <aside class="radar-admin-panel radar-admin-panel--list">
+                <div class="radar-admin-panel__head">
+                  <div>
+                    <strong>Catalogue</strong>
+                    <p id="radarModeLabel" class="radar-admin-panel__sub">Chargement…</p>
+                  </div>
+                  <span id="radarModeBadge" class="radar-mode-badge">—</span>
+                </div>
+                <div id="radarList" class="radar-admin-list"></div>
+              </aside>
+
+              <section class="radar-admin-panel radar-admin-panel--editor">
+                <div id="radarEditorEmpty" class="empty-state">
+                  Sélectionnez un signal pour compléter la source, la preuve et l’analyse.
+                </div>
+                <div id="radarEditor" style="display:none;"></div>
+              </section>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   </main>
@@ -89,9 +128,38 @@ export const prerender = false;
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
 
-  const adminError = document.getElementById('adminError')!;
-  const adminLoader = document.getElementById('adminLoader')!;
-  const adminContent = document.getElementById('adminContent')!;
+  const adminError = document.getElementById('adminError') as HTMLDivElement;
+  const adminLoader = document.getElementById('adminLoader') as HTMLDivElement;
+  const adminContent = document.getElementById('adminContent') as HTMLDivElement;
+
+  const radarList = document.getElementById('radarList') as HTMLDivElement;
+  const radarEditor = document.getElementById('radarEditor') as HTMLDivElement;
+  const radarEditorEmpty = document.getElementById('radarEditorEmpty') as HTMLDivElement;
+  const radarStats = document.getElementById('radarStats') as HTMLDivElement;
+  const radarStatusNotice = document.getElementById('radarStatusNotice') as HTMLDivElement;
+  const radarModeLabel = document.getElementById('radarModeLabel') as HTMLParagraphElement;
+  const radarModeBadge = document.getElementById('radarModeBadge') as HTMLSpanElement;
+  const radarRefreshBtn = document.getElementById('radarRefreshBtn') as HTMLButtonElement;
+  const radarSeedBtn = document.getElementById('radarSeedBtn') as HTMLButtonElement;
+  const radarCreateBtn = document.getElementById('radarCreateBtn') as HTMLButtonElement;
+
+  const radarState = {
+    token: '',
+    mode: 'seed',
+    persistenceAvailable: false,
+    warning: '',
+    signals: [] as any[],
+    selectedId: null as string | null,
+    options: {
+      statuses: ['draft', 'review', 'ready', 'published', 'archived'],
+      sourceKinds: ['external', 'internal_maryan'],
+      proofStatuses: ['verified', 'internal', 'unverified'],
+      types: ['loi', 'décret', 'jurisprudence', 'signal', 'article de presse'],
+      levels: ['national', 'interco', 'local'],
+      themes: [] as string[]
+    },
+    feedback: null as null | { message: string; tone: 'info' | 'success' | 'error' }
+  };
 
   function showError(msg: string) {
     adminError.textContent = msg;
@@ -108,39 +176,549 @@ export const prerender = false;
       .replaceAll("'", '&#39;');
   }
 
-  async function init() {
-    if (!SUPABASE_URL || !SUPABASE_KEY) { showError('Configuration manquante.'); return; }
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { window.location.href = '/login'; return; }
+  function formatDate(value: string | null | undefined) {
+    if (!value) return 'Date non renseignée';
 
-    const token = session.access_token;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
 
-    // Check admin access
-    const profileRes = await supabase.from('profiles').select('plan').eq('id', session.user.id).single();
-    if (profileRes.data?.plan !== 'admin') {
-      window.location.href = '/mon-compte';
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }).format(date);
+  }
+
+  function proofLabel(proofStatus: string) {
+    if (proofStatus === 'verified') return 'Source vérifiée';
+    if (proofStatus === 'internal') return 'Signal éditorial MARYAN';
+    return 'Source à vérifier';
+  }
+
+  function setRadarFeedback(message: string, tone: 'info' | 'success' | 'error' = 'info') {
+    radarState.feedback = { message, tone };
+    renderRadarNotice();
+  }
+
+  function renderRadarNotice() {
+    const activeMessage = radarState.feedback || (radarState.warning ? { message: radarState.warning, tone: 'info' as const } : null);
+
+    if (!activeMessage) {
+      radarStatusNotice.style.display = 'none';
+      radarStatusNotice.textContent = '';
+      radarStatusNotice.className = 'radar-admin-notice';
       return;
     }
 
-    adminLoader.style.display = 'none';
-    adminContent.style.display = 'block';
+    radarStatusNotice.style.display = 'block';
+    radarStatusNotice.textContent = activeMessage.message;
+    radarStatusNotice.className = `radar-admin-notice radar-admin-notice--${activeMessage.tone}`;
+  }
 
-    // Load users
-    await loadUsers(token);
-    await loadGlossaire(token);
+  function renderSelectOptions(options: string[], current: string | null | undefined) {
+    return options.map((entry) => `
+      <option value="${escapeHtml(entry)}" ${entry === current ? 'selected' : ''}>${escapeHtml(entry)}</option>
+    `).join('');
+  }
 
-    // Tabs
-    document.querySelectorAll('.admin-tab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(t => (t as HTMLElement).style.display = 'none');
-        btn.classList.add('active');
-        const tab = btn.getAttribute('data-tab');
-        const el = document.getElementById(`tab-${tab}`);
-        if (el) el.style.display = 'block';
+  function getSelectedRadarSignal() {
+    return radarState.signals.find((signal: any) => signal.id === radarState.selectedId) || null;
+  }
+
+  function renderRadarStats() {
+    const total = radarState.signals.length;
+    const published = radarState.signals.filter((signal: any) => signal.isPublished).length;
+    const ready = radarState.signals.filter((signal: any) => signal.canPublish && signal.status === 'ready').length;
+    const verified = radarState.signals.filter((signal: any) => signal.proofStatus === 'verified').length;
+    const withIssues = radarState.signals.filter((signal: any) => signal.issues?.length).length;
+
+    radarStats.innerHTML = `
+      <div class="radar-stat-card">
+        <div class="radar-stat-card__value">${total}</div>
+        <div class="radar-stat-card__label">Signaux</div>
+      </div>
+      <div class="radar-stat-card">
+        <div class="radar-stat-card__value">${published}</div>
+        <div class="radar-stat-card__label">Publiés</div>
+      </div>
+      <div class="radar-stat-card">
+        <div class="radar-stat-card__value">${ready}</div>
+        <div class="radar-stat-card__label">Prêts</div>
+      </div>
+      <div class="radar-stat-card">
+        <div class="radar-stat-card__value">${verified}</div>
+        <div class="radar-stat-card__label">Sources vérifiées</div>
+      </div>
+      <div class="radar-stat-card">
+        <div class="radar-stat-card__value">${withIssues}</div>
+        <div class="radar-stat-card__label">À corriger</div>
+      </div>
+    `;
+  }
+
+  function renderRadarList() {
+    if (!radarState.signals.length) {
+      radarList.innerHTML = '<p class="empty-state empty-state--compact">Aucun signal pour le moment.</p>';
+      return;
+    }
+
+    radarList.innerHTML = radarState.signals.map((signal: any) => {
+      const isSelected = signal.id === radarState.selectedId;
+      const metaLine = [signal.source?.publisher || 'Source à renseigner', formatDate(signal.source?.publishedAt || signal.capturedAt)]
+        .filter(Boolean)
+        .join(' · ');
+      const issueLabel = signal.issues?.length
+        ? `${signal.issues.length} point${signal.issues.length > 1 ? 's' : ''} à corriger`
+        : signal.isPublished
+        ? 'Publié'
+        : signal.canPublish
+        ? 'Prêt à publier'
+        : 'À compléter';
+
+      return `
+        <button type="button" class="radar-list-item ${isSelected ? 'is-selected' : ''}" data-radar-select="${escapeHtml(signal.id)}">
+          <div class="radar-list-item__top">
+            <span class="mini-badge mini-badge--status">${escapeHtml(signal.status)}</span>
+            <span class="mini-badge mini-badge--proof ${signal.proofStatus === 'verified' ? 'mini-badge--verified' : ''}">
+              ${escapeHtml(proofLabel(signal.proofStatus))}
+            </span>
+          </div>
+          <strong>${escapeHtml(signal.title)}</strong>
+          <p>${escapeHtml(metaLine)}</p>
+          <div class="radar-list-item__meta">
+            <span>${escapeHtml(signal.type)}</span>
+            <span>${escapeHtml(signal.level)}</span>
+            <span>${escapeHtml(signal.theme)}</span>
+          </div>
+          <div class="radar-list-item__footer">${escapeHtml(issueLabel)}</div>
+        </button>
+      `;
+    }).join('');
+
+    radarList.querySelectorAll('[data-radar-select]').forEach((button) => {
+      button.addEventListener('click', () => {
+        radarState.selectedId = button.getAttribute('data-radar-select');
+        renderRadarList();
+        renderRadarEditor();
       });
     });
+  }
+
+  function buildRadarPreview(signal: any) {
+    const sourceLine = [signal.source?.publisher || 'Source à renseigner', formatDate(signal.source?.publishedAt || signal.capturedAt), signal.source?.documentType]
+      .filter(Boolean)
+      .join(' · ');
+    const proof = proofLabel(signal.proofStatus);
+    const actions = Array.isArray(signal.analysis?.actions) ? signal.analysis.actions : [];
+
+    return `
+      <article class="radar-preview-card">
+        <div class="radar-preview-card__meta">
+          <div class="radar-preview-card__badges">
+            <span class="radar-preview-pill radar-preview-pill--proof ${signal.proofStatus === 'verified' ? 'is-verified' : ''}">
+              ${escapeHtml(proof)}
+            </span>
+            <span class="radar-preview-pill">${escapeHtml(signal.type)}</span>
+            <span class="radar-preview-pill">${escapeHtml(signal.level)}</span>
+            <span class="radar-preview-pill">${escapeHtml(signal.theme)}</span>
+          </div>
+          <div class="radar-preview-card__source">${escapeHtml(sourceLine)}</div>
+        </div>
+
+        <div class="radar-preview-card__body">
+          <div class="radar-preview-card__section">
+            <h3>${escapeHtml(signal.title || 'Signal sans titre')}</h3>
+            <p>${escapeHtml(signal.publicSummary || 'Résumé public à renseigner.')}</p>
+          </div>
+
+          <div class="radar-preview-card__section">
+            <div class="radar-preview-card__label">Ce que dit la source</div>
+            <p>${escapeHtml(signal.factSummary || 'Résumé factuel à renseigner.')}</p>
+            ${signal.source?.title ? `<p class="radar-preview-card__source-title">Texte repéré : ${escapeHtml(signal.source.title)}</p>` : ''}
+          </div>
+
+          <div class="radar-preview-card__grid">
+            <section class="radar-preview-card__section">
+              <div class="radar-preview-card__label">Lecture MARYAN</div>
+              <p>${escapeHtml(signal.analysis?.whyImportant || 'Analyse MARYAN à renseigner.')}</p>
+            </section>
+            <section class="radar-preview-card__section">
+              <div class="radar-preview-card__label">Qui est concerné</div>
+              <p>${escapeHtml(signal.analysis?.whoIsConcerned || 'Champ à renseigner.')}</p>
+            </section>
+          </div>
+
+          <div class="radar-preview-card__grid">
+            <section class="radar-preview-card__section">
+              <div class="radar-preview-card__label">Ce que cela change</div>
+              <p>${escapeHtml(signal.analysis?.mandateImpact || 'Champ à renseigner.')}</p>
+            </section>
+            <section class="radar-preview-card__section">
+              <div class="radar-preview-card__label">À surveiller</div>
+              <p>${escapeHtml(signal.analysis?.watchpoints || 'Champ à renseigner.')}</p>
+            </section>
+          </div>
+
+          ${actions.length ? `
+            <section class="radar-preview-card__section">
+              <div class="radar-preview-card__label">Ce que MARYAN conseille</div>
+              <ul class="radar-preview-card__list">
+                ${actions.map((entry: string) => `<li>${escapeHtml(entry)}</li>`).join('')}
+              </ul>
+            </section>
+          ` : ''}
+        </div>
+
+        <div class="radar-preview-card__actions">
+          ${signal.source?.url
+            ? `<a class="radar-preview-card__primary" href="${escapeHtml(signal.source.url)}" target="_blank" rel="noopener noreferrer">Lire la source complète</a>`
+            : `<span class="radar-preview-card__note">${signal.sourceKind === 'internal_maryan' ? 'Signal éditorial MARYAN, sans source externe directe.' : 'Source exacte non encore validée pour publication.'}</span>`}
+          <span class="radar-preview-card__secondary">Accès abonné : analyse MARYAN complète</span>
+        </div>
+      </article>
+    `;
+  }
+
+  function collectRadarFormPayload(form: HTMLFormElement) {
+    const formData = new FormData(form);
+
+    const sourceKind = String(formData.get('sourceKind') || 'external');
+    const actions = String(formData.get('analysisActions') || '')
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+
+    return {
+      id: String(formData.get('id') || ''),
+      slug: String(formData.get('slug') || ''),
+      status: String(formData.get('status') || 'draft'),
+      capturedAt: String(formData.get('capturedAt') || ''),
+      title: String(formData.get('title') || ''),
+      type: String(formData.get('type') || 'signal'),
+      level: String(formData.get('level') || 'local'),
+      theme: String(formData.get('theme') || ''),
+      isPriority: formData.get('isPriority') === 'on',
+      priorityRank: String(formData.get('priorityRank') || ''),
+      importanceScore: String(formData.get('importanceScore') || '0'),
+      mandateScore: String(formData.get('mandateScore') || '0'),
+      sourceKind,
+      proofStatus: sourceKind === 'internal_maryan' ? 'internal' : String(formData.get('proofStatus') || 'unverified'),
+      source: {
+        title: String(formData.get('sourceTitle') || ''),
+        publisher: String(formData.get('sourcePublisher') || ''),
+        url: String(formData.get('sourceUrl') || ''),
+        domain: '',
+        publishedAt: String(formData.get('sourcePublishedAt') || ''),
+        checkedAt: String(formData.get('sourceCheckedAt') || ''),
+        documentType: String(formData.get('sourceDocumentType') || '')
+      },
+      factSummary: String(formData.get('factSummary') || ''),
+      publicSummary: String(formData.get('publicSummary') || ''),
+      analysis: {
+        whyImportant: String(formData.get('analysisWhyImportant') || ''),
+        whoIsConcerned: String(formData.get('analysisWhoIsConcerned') || ''),
+        mandateImpact: String(formData.get('analysisMandateImpact') || ''),
+        watchpoints: String(formData.get('analysisWatchpoints') || ''),
+        actions
+      },
+      promptKey: String(formData.get('promptKey') || ''),
+      reviewerName: String(formData.get('reviewerName') || ''),
+      internalNotes: String(formData.get('internalNotes') || ''),
+      publishedAt: String(formData.get('publishedAt') || '')
+    };
+  }
+
+  function bindRadarEditorEvents() {
+    const form = document.getElementById('radarEditorForm') as HTMLFormElement | null;
+    const preview = document.getElementById('radarPreview') as HTMLDivElement | null;
+    const sourceKind = document.getElementById('radarSourceKind') as HTMLSelectElement | null;
+    const proofStatus = document.getElementById('radarProofStatus') as HTMLSelectElement | null;
+
+    if (!form || !preview) return;
+
+    const refreshPreview = () => {
+      const payload = collectRadarFormPayload(form);
+      preview.innerHTML = buildRadarPreview(payload);
+
+      if (sourceKind && proofStatus) {
+        const isInternal = sourceKind.value === 'internal_maryan';
+        proofStatus.value = isInternal ? 'internal' : proofStatus.value === 'internal' ? 'unverified' : proofStatus.value;
+        proofStatus.disabled = isInternal;
+      }
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!radarState.persistenceAvailable) {
+        setRadarFeedback('La base Radar n’est pas encore persistée. Applique la migration puis réessaie.', 'error');
+        return;
+      }
+
+      const payload = collectRadarFormPayload(form);
+      const saveButton = form.querySelector('[data-radar-save]') as HTMLButtonElement | null;
+      if (saveButton) saveButton.disabled = true;
+
+      try {
+        const res = await fetch('/api/admin/radar', {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${radarState.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ signal: payload })
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.signal) {
+          throw new Error(data.error || 'Sauvegarde impossible.');
+        }
+
+        setRadarFeedback('Signal enregistré.', 'success');
+        await loadRadar(radarState.token, data.signal.id);
+      } catch (error) {
+        setRadarFeedback(error instanceof Error ? error.message : 'Sauvegarde impossible.', 'error');
+      } finally {
+        if (saveButton) saveButton.disabled = false;
+      }
+    });
+
+    form.addEventListener('input', refreshPreview);
+    form.addEventListener('change', refreshPreview);
+    refreshPreview();
+  }
+
+  function renderRadarEditor() {
+    const signal = getSelectedRadarSignal();
+
+    if (!signal) {
+      radarEditor.style.display = 'none';
+      radarEditorEmpty.style.display = 'block';
+      radarEditorEmpty.textContent = radarState.signals.length
+        ? 'Sélectionnez un signal pour compléter la source, la preuve et l’analyse.'
+        : radarState.persistenceAvailable
+        ? 'La base Radar est prête mais vide. Créez un brouillon ou importez le seed local.'
+        : 'La base Radar n’est pas encore branchée. Appliquez la migration Supabase pour activer l’édition.';
+      return;
+    }
+
+    radarEditorEmpty.style.display = 'none';
+    radarEditor.style.display = 'block';
+
+    radarEditor.innerHTML = `
+      <div class="radar-editor-head">
+        <div>
+          <div class="radar-editor-head__eyebrow">Édition du signal</div>
+          <h3>${escapeHtml(signal.title)}</h3>
+          <p>La publication reste bloquée tant que la source, la preuve et les blocs MARYAN ne sont pas propres.</p>
+        </div>
+        <button type="submit" form="radarEditorForm" class="admin-primary-btn" data-radar-save ${!radarState.persistenceAvailable ? 'disabled' : ''}>
+          Enregistrer
+        </button>
+      </div>
+
+      <div class="radar-editor-issues ${signal.issues?.length ? 'has-issues' : 'is-clear'}">
+        <strong>${signal.issues?.length ? 'Points à corriger avant publication' : signal.isPublished ? 'Signal publié proprement' : signal.canPublish ? 'Signal prêt à publier' : 'Signal encore en préparation'}</strong>
+        ${signal.issues?.length
+          ? `<ul>${signal.issues.map((issue: string) => `<li>${escapeHtml(issue)}</li>`).join('')}</ul>`
+          : `<p>Aucun blocage détecté côté contrat éditorial.</p>`}
+      </div>
+
+      <form id="radarEditorForm" class="radar-editor-form">
+        <div class="form-grid form-grid--compact">
+          <label class="field">
+            <span>ID technique</span>
+            <input type="text" name="id" value="${escapeHtml(signal.id)}" readonly />
+          </label>
+          <label class="field">
+            <span>Slug</span>
+            <input type="text" name="slug" value="${escapeHtml(signal.slug)}" />
+          </label>
+          <label class="field">
+            <span>Statut</span>
+            <select name="status">${renderSelectOptions(radarState.options.statuses, signal.status)}</select>
+          </label>
+          <label class="field">
+            <span>Type</span>
+            <select name="type">${renderSelectOptions(radarState.options.types, signal.type)}</select>
+          </label>
+          <label class="field">
+            <span>Niveau</span>
+            <select name="level">${renderSelectOptions(radarState.options.levels, signal.level)}</select>
+          </label>
+          <label class="field">
+            <span>Thème</span>
+            <input list="radarThemes" name="theme" value="${escapeHtml(signal.theme)}" />
+          </label>
+          <label class="field">
+            <span>Date de repérage</span>
+            <input type="date" name="capturedAt" value="${escapeHtml(signal.capturedAt)}" />
+          </label>
+          <label class="field">
+            <span>Publié le</span>
+            <input type="text" name="publishedAt" value="${escapeHtml(signal.publishedAt || '')}" placeholder="2026-04-06T09:00:00.000Z" />
+          </label>
+          <label class="field">
+            <span>Importance</span>
+            <input type="number" min="0" max="5" name="importanceScore" value="${escapeHtml(signal.importanceScore)}" />
+          </label>
+          <label class="field">
+            <span>Proximité mandat</span>
+            <input type="number" min="0" max="5" name="mandateScore" value="${escapeHtml(signal.mandateScore)}" />
+          </label>
+          <label class="field">
+            <span>Source</span>
+            <select id="radarSourceKind" name="sourceKind">${renderSelectOptions(radarState.options.sourceKinds, signal.sourceKind)}</select>
+          </label>
+          <label class="field">
+            <span>Preuve</span>
+            <select id="radarProofStatus" name="proofStatus">${renderSelectOptions(radarState.options.proofStatuses, signal.proofStatus)}</select>
+          </label>
+          <label class="field">
+            <span>Prioritaire</span>
+            <input type="checkbox" name="isPriority" ${signal.isPriority ? 'checked' : ''} />
+          </label>
+          <label class="field">
+            <span>Rang priorité</span>
+            <input type="number" min="1" name="priorityRank" value="${escapeHtml(signal.priorityRank ?? '')}" />
+          </label>
+          <label class="field">
+            <span>Reviewer</span>
+            <input type="text" name="reviewerName" value="${escapeHtml(signal.reviewerName || '')}" />
+          </label>
+          <label class="field">
+            <span>Prompt key</span>
+            <input type="text" name="promptKey" value="${escapeHtml(signal.promptKey || '')}" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Titre</span>
+          <input type="text" name="title" value="${escapeHtml(signal.title)}" />
+        </label>
+
+        <div class="form-section">
+          <div class="form-section__title">Source vérifiable</div>
+          <div class="form-grid">
+            <label class="field">
+              <span>Titre exact du texte ou de l’article</span>
+              <input type="text" name="sourceTitle" value="${escapeHtml(signal.source?.title || '')}" />
+            </label>
+            <label class="field">
+              <span>Éditeur / institution</span>
+              <input type="text" name="sourcePublisher" value="${escapeHtml(signal.source?.publisher || '')}" />
+            </label>
+            <label class="field">
+              <span>URL directe</span>
+              <input type="url" name="sourceUrl" value="${escapeHtml(signal.source?.url || '')}" placeholder="https://..." />
+            </label>
+            <label class="field">
+              <span>Type de document</span>
+              <input type="text" name="sourceDocumentType" value="${escapeHtml(signal.source?.documentType || '')}" />
+            </label>
+            <label class="field">
+              <span>Date source</span>
+              <input type="date" name="sourcePublishedAt" value="${escapeHtml(signal.source?.publishedAt || '')}" />
+            </label>
+            <label class="field">
+              <span>Date de vérification</span>
+              <input type="date" name="sourceCheckedAt" value="${escapeHtml(signal.source?.checkedAt || '')}" />
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section__title">Couches éditoriales</div>
+          <label class="field">
+            <span>Résumé factuel de la source</span>
+            <textarea name="factSummary" rows="4">${escapeHtml(signal.factSummary || '')}</textarea>
+          </label>
+          <label class="field">
+            <span>Résumé public</span>
+            <textarea name="publicSummary" rows="3">${escapeHtml(signal.publicSummary || '')}</textarea>
+          </label>
+          <div class="form-grid">
+            <label class="field">
+              <span>Lecture MARYAN</span>
+              <textarea name="analysisWhyImportant" rows="5">${escapeHtml(signal.analysis?.whyImportant || '')}</textarea>
+            </label>
+            <label class="field">
+              <span>Qui est concerné</span>
+              <textarea name="analysisWhoIsConcerned" rows="5">${escapeHtml(signal.analysis?.whoIsConcerned || '')}</textarea>
+            </label>
+            <label class="field">
+              <span>Ce que cela change</span>
+              <textarea name="analysisMandateImpact" rows="5">${escapeHtml(signal.analysis?.mandateImpact || '')}</textarea>
+            </label>
+            <label class="field">
+              <span>À surveiller</span>
+              <textarea name="analysisWatchpoints" rows="5">${escapeHtml(signal.analysis?.watchpoints || '')}</textarea>
+            </label>
+          </div>
+          <label class="field">
+            <span>Actions MARYAN (une ligne = une action)</span>
+            <textarea name="analysisActions" rows="4">${escapeHtml((signal.analysis?.actions || []).join('\n'))}</textarea>
+          </label>
+          <label class="field">
+            <span>Notes internes</span>
+            <textarea name="internalNotes" rows="4">${escapeHtml(signal.internalNotes || '')}</textarea>
+          </label>
+        </div>
+      </form>
+
+      <datalist id="radarThemes">
+        ${radarState.options.themes.map((theme: string) => `<option value="${escapeHtml(theme)}"></option>`).join('')}
+      </datalist>
+
+      <div class="radar-preview-shell">
+        <div class="radar-preview-shell__head">
+          <strong>Aperçu premium interne</strong>
+          <span>Prévisualisation de la carte une fois le Radar rouvert</span>
+        </div>
+        <div id="radarPreview"></div>
+      </div>
+    `;
+
+    bindRadarEditorEvents();
+  }
+
+  function renderRadar() {
+    radarModeBadge.textContent = radarState.mode === 'database' ? 'Base Supabase' : 'Seed local';
+    radarModeLabel.textContent = radarState.persistenceAvailable
+      ? 'Catalogue persisté et éditable.'
+      : 'Lecture seule tant que la migration Radar n’est pas appliquée.';
+
+    radarSeedBtn.disabled = !radarState.persistenceAvailable;
+    radarCreateBtn.disabled = !radarState.persistenceAvailable;
+
+    renderRadarNotice();
+    renderRadarStats();
+    renderRadarList();
+    renderRadarEditor();
+  }
+
+  async function loadRadar(token: string, preferredId?: string | null) {
+    const res = await fetch('/api/admin/radar', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || 'Erreur chargement Radar.');
+    }
+
+    radarState.token = token;
+    radarState.mode = data.mode || 'seed';
+    radarState.persistenceAvailable = Boolean(data.persistenceAvailable);
+    radarState.warning = data.warning || '';
+    radarState.signals = data.signals || [];
+    radarState.options = data.options || radarState.options;
+
+    const nextSelectedId = preferredId || radarState.selectedId;
+    radarState.selectedId = radarState.signals.some((signal: any) => signal.id === nextSelectedId)
+      ? nextSelectedId
+      : radarState.signals[0]?.id || null;
+
+    renderRadar();
   }
 
   async function loadUsers(token: string) {
@@ -174,9 +752,9 @@ export const prerender = false;
       </tr>
     `).join('');
 
-    tbody.querySelectorAll('.plan-select').forEach(sel => {
-      sel.addEventListener('change', async (e) => {
-        const target = e.target as HTMLSelectElement;
+    tbody.querySelectorAll('.plan-select').forEach((sel) => {
+      sel.addEventListener('change', async (event) => {
+        const target = event.target as HTMLSelectElement;
         const userId = target.getAttribute('data-user-id')!;
         const t = target.getAttribute('data-token')!;
         const plan = target.value;
@@ -186,7 +764,6 @@ export const prerender = false;
           body: JSON.stringify({ user_id: userId, plan })
         });
         if (!res.ok) { alert('Erreur lors de la mise à jour.'); return; }
-        // Update badge
         const row = target.closest('tr')!;
         const badge = row.querySelector('.plan-badge')!;
         badge.className = `plan-badge plan-${plan}`;
@@ -233,14 +810,15 @@ export const prerender = false;
       </div>
     `).join('');
 
-    list.querySelectorAll('.btn-valider').forEach(btn => {
+    list.querySelectorAll('.btn-valider').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id')!;
         const t = btn.getAttribute('data-token')!;
         await moderateContrib(id, 'valide', t);
       });
     });
-    list.querySelectorAll('.btn-rejeter').forEach(btn => {
+
+    list.querySelectorAll('.btn-rejeter').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id')!;
         const t = btn.getAttribute('data-token')!;
@@ -268,6 +846,96 @@ export const prerender = false;
     }
   }
 
+  async function init() {
+    if (!SUPABASE_URL || !SUPABASE_KEY) { showError('Configuration manquante.'); return; }
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { window.location.href = '/login'; return; }
+
+    const token = session.access_token;
+
+    const profileRes = await supabase.from('profiles').select('plan').eq('id', session.user.id).single();
+    if (profileRes.data?.plan !== 'admin') {
+      window.location.href = '/mon-compte';
+      return;
+    }
+
+    adminLoader.style.display = 'none';
+    adminContent.style.display = 'block';
+
+    await loadUsers(token);
+    await loadGlossaire(token);
+    await loadRadar(token);
+
+    document.querySelectorAll('.admin-tab').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach((entry) => entry.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach((panel) => ((panel as HTMLElement).style.display = 'none'));
+        button.classList.add('active');
+        const tab = button.getAttribute('data-tab');
+        const panel = document.getElementById(`tab-${tab}`);
+        if (panel) panel.style.display = 'block';
+      });
+    });
+
+    radarRefreshBtn.addEventListener('click', async () => {
+      try {
+        await loadRadar(token, radarState.selectedId);
+        setRadarFeedback('Catalogue Radar actualisé.', 'info');
+      } catch (error) {
+        setRadarFeedback(error instanceof Error ? error.message : 'Actualisation impossible.', 'error');
+      }
+    });
+
+    radarSeedBtn.addEventListener('click', async () => {
+      if (!radarState.persistenceAvailable) {
+        setRadarFeedback('La table Radar n’est pas encore disponible. Applique d’abord la migration Supabase.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/radar', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'seed' })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Import impossible.');
+        setRadarFeedback(`Seed local importé: ${data.result?.inserted || 0} signal(s) ajouté(s).`, 'success');
+        await loadRadar(token, radarState.selectedId);
+      } catch (error) {
+        setRadarFeedback(error instanceof Error ? error.message : 'Import impossible.', 'error');
+      }
+    });
+
+    radarCreateBtn.addEventListener('click', async () => {
+      if (!radarState.persistenceAvailable) {
+        setRadarFeedback('La table Radar n’est pas encore disponible. Applique d’abord la migration Supabase.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/radar', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action: 'create' })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.signal) throw new Error(data.error || 'Création impossible.');
+        setRadarFeedback('Nouveau brouillon créé.', 'success');
+        await loadRadar(token, data.signal.id);
+      } catch (error) {
+        setRadarFeedback(error instanceof Error ? error.message : 'Création impossible.', 'error');
+      }
+    });
+  }
+
   init();
 </script>
 
@@ -279,7 +947,7 @@ export const prerender = false;
   }
 
   .admin-wrap {
-    max-width: 1100px;
+    max-width: 1260px;
     margin: 0 auto;
   }
 
@@ -310,7 +978,7 @@ export const prerender = false;
     border: 1px solid #FFCDD2;
     color: #C62828;
     padding: 0.85rem 1rem;
-    border-radius: 6px;
+    border-radius: 12px;
     font-size: 0.9rem;
     margin-top: 1rem;
   }
@@ -322,6 +990,30 @@ export const prerender = false;
     margin-bottom: 2rem;
   }
 
+  .stat-card,
+  .radar-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem 1.3rem;
+    border: 1px solid var(--border);
+  }
+
+  .stat-value,
+  .radar-stat-card__value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--deep);
+  }
+
+  .stat-label,
+  .radar-stat-card__label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-top: 0.25rem;
+  }
+
   .admin-tools {
     margin-bottom: 1.5rem;
   }
@@ -329,7 +1021,7 @@ export const prerender = false;
   .admin-tool-card {
     display: block;
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 1.2rem 1.3rem;
     border: 1px solid var(--border);
     text-decoration: none;
@@ -343,7 +1035,9 @@ export const prerender = false;
     box-shadow: 0 10px 24px rgba(10, 25, 47, 0.06);
   }
 
-  .admin-tool-eyebrow {
+  .admin-tool-eyebrow,
+  .radar-admin-eyebrow,
+  .radar-editor-head__eyebrow {
     font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
@@ -374,30 +1068,9 @@ export const prerender = false;
     font-weight: 800;
   }
 
-  .stat-card {
-    background: white;
-    border-radius: 10px;
-    padding: 1.5rem;
-    border: 1px solid var(--border);
-    text-align: center;
-  }
-
-  .stat-value {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--deep);
-  }
-
-  .stat-label {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #888;
-    margin-top: 0.25rem;
-  }
-
   .admin-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--border);
@@ -434,7 +1107,7 @@ export const prerender = false;
 
   .table-wrap {
     background: white;
-    border-radius: 10px;
+    border-radius: 16px;
     border: 1px solid var(--border);
     overflow-x: auto;
   }
@@ -463,27 +1136,53 @@ export const prerender = false;
     vertical-align: middle;
   }
 
-  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:last-child td {
+    border-bottom: none;
+  }
 
   .plan-badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
-    border-radius: 4px;
+    border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
   }
 
-  .plan-gratuit { background: #f0f0ee; color: #888; }
-  .plan-plus { background: #E3F2FD; color: #1565C0; }
-  .plan-admin { background: #0A192F; color: #64FFDA; }
+  .plan-gratuit {
+    background: #f0f0ee;
+    color: #888;
+  }
+
+  .plan-plus {
+    background: #E3F2FD;
+    color: #1565C0;
+  }
+
+  .plan-admin {
+    background: #0A192F;
+    color: #64FFDA;
+  }
+
+  .plan-select,
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.68rem 0.8rem;
+    font-size: 0.92rem;
+    font-family: inherit;
+    background: white;
+    color: var(--deep);
+  }
 
   .plan-select {
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    width: auto;
+    border-radius: 8px;
     padding: 0.3rem 0.5rem;
     font-size: 0.82rem;
-    font-family: inherit;
     cursor: pointer;
   }
 
@@ -494,7 +1193,7 @@ export const prerender = false;
 
   .contrib-card {
     background: white;
-    border-radius: 10px;
+    border-radius: 16px;
     border: 1px solid var(--border);
     padding: 1.25rem 1.5rem;
     margin-bottom: 1rem;
@@ -512,17 +1211,42 @@ export const prerender = false;
     font-weight: 700;
     text-transform: uppercase;
     padding: 0.2rem 0.6rem;
-    border-radius: 4px;
+    border-radius: 999px;
   }
 
-  .statut-en_attente { background: #FFF8E1; color: #F57F17; }
-  .statut-valide { background: #E8F5E9; color: #2E7D32; }
-  .statut-rejete { background: #FFF0F0; color: #C62828; }
+  .statut-en_attente {
+    background: #FFF8E1;
+    color: #F57F17;
+  }
 
-  .contrib-date { font-size: 0.8rem; color: #888; }
+  .statut-valide {
+    background: #E8F5E9;
+    color: #2E7D32;
+  }
 
-  .contrib-body strong { color: var(--deep); font-size: 1rem; display: block; margin-bottom: 0.25rem; }
-  .contrib-body p { color: #54636C; font-size: 0.88rem; line-height: 1.5; margin: 0; }
+  .statut-rejete {
+    background: #FFF0F0;
+    color: #C62828;
+  }
+
+  .contrib-date {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  .contrib-body strong {
+    color: var(--deep);
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .contrib-body p {
+    color: #54636C;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin: 0;
+  }
 
   .contrib-actions {
     display: flex;
@@ -530,25 +1254,516 @@ export const prerender = false;
     margin-top: 1rem;
   }
 
-  .btn-valider, .btn-rejeter {
-    padding: 0.4rem 0.9rem;
-    border-radius: 5px;
+  .btn-valider,
+  .btn-rejeter,
+  .admin-primary-btn,
+  .admin-secondary-btn {
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .btn-valider,
+  .btn-rejeter {
     border: none;
   }
 
-  .btn-valider { background: #E8F5E9; color: #2E7D32; }
-  .btn-valider:hover { background: #2E7D32; color: white; }
+  .btn-valider {
+    background: #E8F5E9;
+    color: #2E7D32;
+  }
 
-  .btn-rejeter { background: #FFF0F0; color: #C62828; }
-  .btn-rejeter:hover { background: #C62828; color: white; }
+  .btn-valider:hover {
+    background: #2E7D32;
+    color: white;
+  }
+
+  .btn-rejeter {
+    background: #FFF0F0;
+    color: #C62828;
+  }
+
+  .btn-rejeter:hover {
+    background: #C62828;
+    color: white;
+  }
+
+  .admin-primary-btn {
+    border: 1px solid #0A192F;
+    background: #0A192F;
+    color: white;
+  }
+
+  .admin-primary-btn:hover:not(:disabled),
+  .admin-secondary-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .admin-secondary-btn {
+    border: 1px solid rgba(10, 25, 47, 0.14);
+    background: white;
+    color: var(--deep);
+  }
+
+  .admin-primary-btn:disabled,
+  .admin-secondary-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
 
   .empty-state {
     text-align: center;
     padding: 3rem;
     color: #888;
+  }
+
+  .empty-state--compact {
+    padding: 1.2rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .radar-admin-shell {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .radar-admin-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.2rem 1.3rem;
+  }
+
+  .radar-admin-title {
+    margin: 0.25rem 0 0;
+    font-size: 1.2rem;
+    color: var(--deep);
+  }
+
+  .radar-admin-copy {
+    margin: 0.35rem 0 0;
+    color: #54636C;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    max-width: 42rem;
+  }
+
+  .radar-admin-toolbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: flex-end;
+  }
+
+  .radar-admin-notice {
+    border-radius: 16px;
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    background: rgba(10, 25, 47, 0.04);
+    color: #41525D;
+  }
+
+  .radar-admin-notice--success {
+    background: rgba(46, 125, 50, 0.08);
+    color: #2E7D32;
+    border-color: rgba(46, 125, 50, 0.16);
+  }
+
+  .radar-admin-notice--error {
+    background: rgba(198, 40, 40, 0.08);
+    color: #C62828;
+    border-color: rgba(198, 40, 40, 0.16);
+  }
+
+  .radar-admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .radar-admin-grid {
+    display: grid;
+    grid-template-columns: 340px minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .radar-admin-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1rem;
+  }
+
+  .radar-admin-panel__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .radar-admin-panel__sub {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: #6A7B85;
+  }
+
+  .radar-mode-badge,
+  .mini-badge,
+  .radar-preview-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.35rem 0.72rem;
+    font-size: 0.73rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  .radar-mode-badge,
+  .mini-badge,
+  .radar-preview-pill {
+    background: rgba(10, 25, 47, 0.08);
+    color: var(--deep);
+  }
+
+  .mini-badge--proof,
+  .radar-preview-pill--proof {
+    color: #51616B;
+  }
+
+  .mini-badge--verified,
+  .radar-preview-pill--proof.is-verified {
+    background: rgba(173, 255, 47, 0.16);
+    color: #365100;
+  }
+
+  .radar-admin-list {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 80vh;
+    overflow: auto;
+    padding-right: 0.1rem;
+  }
+
+  .radar-list-item {
+    text-align: left;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    background: #fbfcfd;
+    border-radius: 16px;
+    padding: 0.95rem;
+    display: grid;
+    gap: 0.55rem;
+    cursor: pointer;
+  }
+
+  .radar-list-item.is-selected {
+    border-color: rgba(10, 25, 47, 0.22);
+    background: white;
+    box-shadow: 0 12px 28px rgba(10, 25, 47, 0.07);
+  }
+
+  .radar-list-item__top,
+  .radar-list-item__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .radar-list-item strong {
+    color: var(--deep);
+    font-size: 0.97rem;
+    line-height: 1.35;
+  }
+
+  .radar-list-item p,
+  .radar-list-item__footer {
+    margin: 0;
+    color: #5A6A74;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .radar-list-item__meta span {
+    font-size: 0.75rem;
+    color: #6A7B85;
+  }
+
+  .radar-editor-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .radar-editor-head h3 {
+    margin: 0.25rem 0 0;
+    font-size: 1.2rem;
+    color: var(--deep);
+  }
+
+  .radar-editor-head p {
+    margin: 0.35rem 0 0;
+    color: #54636C;
+    line-height: 1.55;
+  }
+
+  .radar-editor-issues {
+    margin-top: 1rem;
+    border-radius: 16px;
+    padding: 0.95rem 1rem;
+  }
+
+  .radar-editor-issues.has-issues {
+    background: rgba(198, 40, 40, 0.06);
+    border: 1px solid rgba(198, 40, 40, 0.14);
+  }
+
+  .radar-editor-issues.is-clear {
+    background: rgba(46, 125, 50, 0.06);
+    border: 1px solid rgba(46, 125, 50, 0.14);
+  }
+
+  .radar-editor-issues strong {
+    display: block;
+    color: var(--deep);
+  }
+
+  .radar-editor-issues p,
+  .radar-editor-issues ul {
+    margin: 0.55rem 0 0;
+    color: #54636C;
+    line-height: 1.55;
+  }
+
+  .radar-editor-form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .form-grid--compact {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .form-section {
+    border-top: 1px solid rgba(10, 25, 47, 0.08);
+    padding-top: 1rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .form-section__title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6A7B85;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .field span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #41525D;
+  }
+
+  .field textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .field input[readonly] {
+    background: #f6f8f9;
+    color: #6A7B85;
+  }
+
+  .radar-preview-shell {
+    margin-top: 1.25rem;
+    border-top: 1px solid rgba(10, 25, 47, 0.08);
+    padding-top: 1.1rem;
+  }
+
+  .radar-preview-shell__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 0.9rem;
+  }
+
+  .radar-preview-shell__head strong {
+    color: var(--deep);
+  }
+
+  .radar-preview-shell__head span {
+    color: #6A7B85;
+    font-size: 0.84rem;
+  }
+
+  .radar-preview-card {
+    background: #fcfdfd;
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-radius: 24px;
+    padding: 1.25rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .radar-preview-card__meta {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .radar-preview-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .radar-preview-card__source {
+    color: #5A6A74;
+    font-size: 0.85rem;
+  }
+
+  .radar-preview-card__body,
+  .radar-preview-card__grid {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .radar-preview-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .radar-preview-card__section {
+    background: white;
+    border: 1px solid rgba(10, 25, 47, 0.07);
+    border-radius: 18px;
+    padding: 0.95rem;
+  }
+
+  .radar-preview-card__section h3 {
+    margin: 0 0 0.55rem;
+    color: var(--deep);
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+
+  .radar-preview-card__section p,
+  .radar-preview-card__list {
+    margin: 0;
+    color: #41525D;
+    line-height: 1.65;
+  }
+
+  .radar-preview-card__label {
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6A7B85;
+    margin-bottom: 0.5rem;
+  }
+
+  .radar-preview-card__source-title {
+    margin-top: 0.55rem !important;
+    color: #6A7B85 !important;
+    font-size: 0.84rem;
+  }
+
+  .radar-preview-card__list {
+    padding-left: 1rem;
+  }
+
+  .radar-preview-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .radar-preview-card__primary,
+  .radar-preview-card__secondary {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.68rem 0.95rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .radar-preview-card__primary {
+    background: #0A192F;
+    color: white;
+  }
+
+  .radar-preview-card__secondary {
+    background: rgba(10, 25, 47, 0.06);
+    color: var(--deep);
+  }
+
+  .radar-preview-card__note {
+    color: #6A7B85;
+    font-size: 0.84rem;
+  }
+
+  @media (max-width: 1080px) {
+    .form-grid--compact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .radar-admin-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .admin-page {
+      padding-inline: 1rem;
+    }
+
+    .radar-admin-toolbar,
+    .radar-editor-head,
+    .radar-preview-shell__head {
+      grid-template-columns: 1fr;
+      display: grid;
+    }
+
+    .radar-admin-toolbar__actions {
+      justify-content: stretch;
+    }
+
+    .radar-admin-toolbar__actions > * {
+      flex: 1 1 auto;
+    }
+
+    .form-grid,
+    .form-grid--compact,
+    .radar-preview-card__grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

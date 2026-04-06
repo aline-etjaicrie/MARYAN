@@ -1,0 +1,364 @@
+---
+import RadarLockedPanel from './RadarLockedPanel.astro';
+import { formatRadarDate, type RadarFeedItem, type RadarViewerMode } from '../../lib/radar-utils';
+
+interface Props {
+  item: RadarFeedItem;
+  viewer: RadarViewerMode;
+  featured?: boolean;
+  compact?: boolean;
+  paywallHref?: string;
+}
+
+const {
+  item,
+  viewer,
+  featured = false,
+  compact = false,
+  paywallHref = '/offres'
+} = Astro.props;
+
+const hasAnalysis = viewer === 'subscriber' && item.analysis;
+const directSourceUrl = item.source.url;
+const cardId = `radar-card-${item.id}`;
+const detailsId = `${cardId}-details`;
+const sourceDate = item.source.publishedAt || item.date;
+const sourceMeta = [item.source.publisher, sourceDate ? formatRadarDate(sourceDate) : null, item.source.documentType]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<article
+  class:list={[
+    'radar-card',
+    featured && 'radar-card--featured',
+    compact && 'radar-card--compact',
+    hasAnalysis && 'radar-card--subscriber'
+  ]}
+  data-radar-card
+  data-radar-id={item.id}
+  data-viewer={viewer}
+  data-featured={featured ? 'true' : 'false'}
+  data-compact={compact ? 'true' : 'false'}
+>
+  <div class="radar-card__meta">
+    <div class="radar-card__badges">
+      <span class:list={['radar-card__proof', item.proofStatus === 'verified' && 'radar-card__proof--verified']}>
+        {item.proofLabel}
+      </span>
+      <span class="radar-card__badge radar-card__badge--type">{item.type}</span>
+      <span class="radar-card__badge radar-card__badge--level">{item.level}</span>
+      <span class="radar-card__theme">{item.theme}</span>
+    </div>
+    <div class="radar-card__source">
+      <span>{sourceMeta}</span>
+    </div>
+  </div>
+
+  <div class="radar-card__body">
+    <div class="radar-card__intro">
+      <h3>{item.title}</h3>
+      <p>{item.publicSummary}</p>
+    </div>
+
+    <section class="radar-card__source-panel" aria-labelledby={`${cardId}-source`}>
+      <div class="radar-card__section-label" id={`${cardId}-source`}>Ce que dit la source</div>
+      <p>{item.factSummary}</p>
+      {item.source.title ? <p class="radar-card__source-title">Texte repéré : {item.source.title}</p> : null}
+    </section>
+
+    {hasAnalysis ? (
+      <div class="radar-card__details" id={detailsId} data-radar-details>
+        <div class="radar-card__analysis-grid">
+          <section class="radar-card__analysis-panel">
+            <h4>Lecture MARYAN</h4>
+            <p>{item.analysis.whyImportant}</p>
+          </section>
+          <section class="radar-card__analysis-panel">
+            <h4>Qui est concerné</h4>
+            <p>{item.analysis.whoConcerned}</p>
+          </section>
+        </div>
+        <div class="radar-card__analysis-grid">
+          <section class="radar-card__analysis-panel">
+            <h4>Ce que cela change</h4>
+            <p>{item.analysis.mandateImpact}</p>
+          </section>
+          <section class="radar-card__analysis-panel">
+            <h4>À surveiller</h4>
+            <p>{item.analysis.toWatch}</p>
+          </section>
+        </div>
+        {item.analysis.toDo.length ? (
+          <section class="radar-card__watch-panel">
+            <h4>Ce que MARYAN conseille</h4>
+            <ul class="radar-card__todo-list">
+              {item.analysis.toDo.map((entry) => <li>{entry}</li>)}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+    ) : (
+      <RadarLockedPanel
+        featured={featured}
+        ctaHref={paywallHref}
+        title="Analyse réservée aux abonnés MARYAN"
+        copy="Le détail MARYAN distingue l’impact pour le mandat, les points de vigilance et les actions à envisager."
+      />
+    )}
+  </div>
+
+  <div class="radar-card__actions">
+    {directSourceUrl ? (
+      <a class="radar-card__primary-link" href={directSourceUrl} target="_blank" rel="noopener noreferrer">
+        Lire la source complète
+      </a>
+    ) : (
+      <span class="radar-card__source-note">
+        {item.sourceKind === 'internal_maryan'
+          ? 'Signal éditorial MARYAN, sans source externe directe.'
+          : 'Source exacte non encore validée pour publication.'}
+      </span>
+    )}
+
+    {hasAnalysis ? (
+      <button
+        class="radar-card__secondary-link"
+        type="button"
+        data-radar-details-button
+        aria-controls={detailsId}
+        aria-expanded="true"
+      >
+        Voir l’analyse MARYAN
+      </button>
+    ) : (
+      <a class="radar-card__secondary-link" href={paywallHref}>
+        Accéder à l’analyse
+      </a>
+    )}
+  </div>
+</article>
+
+<style is:global>
+  .radar-card {
+    background: white;
+    border: 1px solid rgba(10, 25, 47, 0.1);
+    border-radius: 28px;
+    padding: 1.35rem;
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+  }
+
+  .radar-card--featured {
+    padding: clamp(1.4rem, 2vw, 2rem);
+    gap: 1.5rem;
+  }
+
+  .radar-card__meta {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .radar-card__badges {
+    display: flex;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .radar-card__proof,
+  .radar-card__badge,
+  .radar-card__theme {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.34rem 0.68rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  .radar-card__proof {
+    background: rgba(10, 25, 47, 0.08);
+    color: #51616b;
+  }
+
+  .radar-card__proof--verified {
+    background: rgba(173, 255, 47, 0.16);
+    color: #365100;
+  }
+
+  .radar-card__badge--type {
+    background: rgba(10, 25, 47, 0.08);
+    color: var(--deep);
+    text-transform: capitalize;
+  }
+
+  .radar-card__badge--level {
+    background: rgba(230, 57, 70, 0.08);
+    color: #9d2432;
+    text-transform: capitalize;
+  }
+
+  .radar-card__theme {
+    background: rgba(10, 25, 47, 0.04);
+    color: var(--deep);
+  }
+
+  .radar-card__source {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    color: #5a6a74;
+    font-size: 0.86rem;
+  }
+
+  .radar-card__body {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .radar-card__intro {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .radar-card__intro h3 {
+    font-size: clamp(1.15rem, 1.2vw + 1rem, 1.6rem);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .radar-card__intro p,
+  .radar-card__source-panel p,
+  .radar-card__analysis-panel p,
+  .radar-card__watch-panel p {
+    color: #40525d;
+    line-height: 1.65;
+  }
+
+  .radar-card__intro p {
+    max-width: 66ch;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .radar-card--featured .radar-card__intro p {
+    -webkit-line-clamp: 3;
+  }
+
+  .radar-card__section-label,
+  .radar-card__analysis-panel h4,
+  .radar-card__watch-panel h4 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #51616b;
+  }
+
+  .radar-card__source-panel,
+  .radar-card__analysis-panel,
+  .radar-card__watch-panel {
+    border-radius: 22px;
+    background: rgba(10, 25, 47, 0.04);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    padding: 1rem;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .radar-card__source-title {
+    color: #5a6a74;
+    font-size: 0.88rem;
+    margin: 0;
+  }
+
+  .radar-card__details {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .radar-card__analysis-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .radar-card__todo-list {
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.4rem;
+    color: #40525d;
+    margin: 0;
+  }
+
+  .radar-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .radar-card__primary-link,
+  .radar-card__secondary-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border-radius: 999px;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    font-weight: 800;
+    border: 1px solid rgba(10, 25, 47, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .radar-card__primary-link {
+    background: var(--deep);
+    color: white;
+  }
+
+  .radar-card__secondary-link {
+    background: white;
+    color: var(--deep);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .radar-card__primary-link:hover,
+  .radar-card__primary-link:focus-visible,
+  .radar-card__secondary-link:hover,
+  .radar-card__secondary-link:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.09);
+    border-color: rgba(10, 25, 47, 0.38);
+    outline: none;
+  }
+
+  .radar-card__source-note {
+    color: #5a6a74;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 760px) {
+    .radar-card__analysis-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .radar-card__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .radar-card__primary-link,
+    .radar-card__secondary-link {
+      width: 100%;
+    }
+  }
+</style>

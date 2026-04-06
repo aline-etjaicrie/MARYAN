@@ -37,6 +37,20 @@ export const GET: APIRoute = async ({ request }) => {
   if (!userId) return json({ error: 'Token invalide.' }, 401);
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const sessionId = new URL(request.url).searchParams.get('session_id');
+
+  if (sessionId) {
+    const { data, error } = await supabase
+      .from('copilote_sessions')
+      .select('id, session_type, titre, messages, diagnostic_key, created_at, updated_at')
+      .eq('id', sessionId)
+      .eq('user_id', userId)
+      .single();
+
+    if (error) return json({ error: error.message }, error.code === 'PGRST116' ? 404 : 500);
+    return json({ session: data });
+  }
+
   const { data, error } = await supabase
     .from('copilote_sessions')
     .select('id, session_type, titre, diagnostic_key, created_at, updated_at')

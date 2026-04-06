@@ -1,0 +1,158 @@
+---
+import type { RadarViewerMode } from '../../lib/radar-utils';
+
+interface Props {
+  viewer: RadarViewerMode;
+  defaultFrequency?: 'quotidien' | 'hebdomadaire' | 'aucun';
+}
+
+const {
+  viewer,
+  defaultFrequency = 'aucun'
+} = Astro.props;
+---
+
+<section class="radar-subscription card-v3" id="radarSubscriptionPanel" data-viewer={viewer}>
+  <div class="radar-subscription__copy">
+    <span class="label-v3">Recevoir le Radar de MARYAN</span>
+    <h2>Une veille utile, triée pour le mandat.</h2>
+    <p>
+      Gagnez du temps, gardez une lecture claire et recevez seulement les signaux qui méritent vraiment votre attention.
+    </p>
+  </div>
+
+  {viewer === 'subscriber' ? (
+    <div class="radar-subscription__settings" id="radarSubscriptionSettings">
+      <div class="radar-subscription__options" role="radiogroup" aria-label="Fréquence du Radar">
+        <label class="radar-subscription__option">
+          <input type="radio" name="radarEmailPref" value="quotidien" checked={defaultFrequency === 'quotidien'} />
+          <span>Quotidien</span>
+        </label>
+        <label class="radar-subscription__option">
+          <input type="radio" name="radarEmailPref" value="hebdomadaire" checked={defaultFrequency === 'hebdomadaire'} />
+          <span>Hebdomadaire</span>
+        </label>
+        <label class="radar-subscription__option">
+          <input type="radio" name="radarEmailPref" value="aucun" checked={defaultFrequency === 'aucun'} />
+          <span>Pause</span>
+        </label>
+      </div>
+
+      <div class="radar-subscription__actions">
+        <button type="button" id="saveRadarPreferenceBtn" class="radar-action radar-action--primary">
+          Enregistrer ma préférence
+        </button>
+        <p id="radarSubscriptionNote" class="radar-subscription__note">
+          Réglez la fréquence directement depuis votre compte.
+        </p>
+      </div>
+    </div>
+  ) : (
+    <div class="radar-subscription__cta" id="radarSubscriptionPublic">
+      <p>
+        Accédez aux analyses complètes, au tri utile et au Radar envoyé directement dans votre boîte mail.
+      </p>
+      <div class="radar-subscription__actions">
+        <a href="/offres" class="radar-action radar-action--primary">Accéder à toutes les analyses</a>
+        <a href="/login" class="radar-action radar-action--secondary">Recevoir le Radar chaque semaine</a>
+      </div>
+    </div>
+  )}
+</section>
+
+<style is:global>
+  .radar-subscription {
+    display: grid;
+    gap: 1.5rem;
+    border-radius: 32px;
+    padding: clamp(1.5rem, 2vw, 2.4rem);
+    background:
+      radial-gradient(circle at top right, rgba(173, 255, 47, 0.14), transparent 28%),
+      linear-gradient(180deg, #fdfefe, #f5f8fa);
+  }
+
+  .radar-subscription__copy h2 {
+    font-size: clamp(1.6rem, 2vw, 2.25rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .radar-subscription__copy p,
+  .radar-subscription__cta p,
+  .radar-subscription__note {
+    color: #4f626d;
+    max-width: 54ch;
+  }
+
+  .radar-subscription__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .radar-subscription__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(10, 25, 47, 0.12);
+    background: white;
+    font-weight: 700;
+    color: var(--deep);
+  }
+
+  .radar-subscription__option input {
+    accent-color: var(--deep);
+  }
+
+  .radar-subscription__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1rem;
+    align-items: center;
+  }
+
+  .radar-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0.95rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 800;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .radar-action--primary {
+    background: var(--deep);
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+
+  .radar-action--secondary {
+    background: white;
+    color: var(--deep);
+    border-color: rgba(10, 25, 47, 0.12);
+  }
+
+  .radar-action:hover,
+  .radar-action:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.09);
+  }
+
+  @media (max-width: 760px) {
+    .radar-subscription__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .radar-action {
+      width: 100%;
+    }
+  }
+</style>

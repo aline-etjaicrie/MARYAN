@@ -1,4 +1,14 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron/radar-digest?frequency=quotidien",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/radar-digest?frequency=hebdomadaire",
+      "schedule": "15 6 * * 1"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.(js|css|woff2|woff|ttf|otf|ico|png|jpg|jpeg|svg|webp|gif)",

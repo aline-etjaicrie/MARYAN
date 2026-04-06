@@ -369,7 +369,10 @@ const copilotSuggestions = [
 
   <script>
     import { createClient } from '@supabase/supabase-js';
-    import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
+    import {
+      buildDiagnosticStateFromProfileRow,
+      buildMaryanProfileFromDiagnosticState
+    } from '../lib/user-personalization';
 
     const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
     const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -380,37 +383,42 @@ const copilotSuggestions = [
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user?.id) return;
+        if (!session?.user?.id || !session.access_token) return;
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('diagnostic_key, diagnostic_label')
-          .eq('id', session.user.id)
-          .single();
-
-        if (!profile?.diagnostic_key && !profile?.diagnostic_label) return;
-
-        let localDiagnostic = {} as Record<string, any>;
+        let profileContext = null;
         try {
-          const raw = localStorage.getItem('maryan_v4_diag');
-          if (raw) {
-            localDiagnostic = JSON.parse(raw);
+          const response = await fetch('/api/profile-context', {
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          if (response.ok) {
+            profileContext = await response.json();
           }
         } catch (_) {}
 
-        const diagnosticState = buildStoredDiagnosticEntry({
-          ...localDiagnostic,
-          diagnostic_key: profile?.diagnostic_key || localDiagnostic?.diagnostic_key,
-          diagnostic_label: profile?.diagnostic_label || localDiagnostic?.diagnostic_label
-        });
+        const profile = profileContext?.profile || (await supabase
+          .from('profiles')
+          .select('diagnostic_key, diagnostic_label, diagnostic_profile, diagnostic_payload, first_name, commune, plan')
+          .eq('id', session.user.id)
+          .single()).data;
+
+        const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
+
+        if (!diagnosticState?.diagnostic_key && !diagnosticState?.diagnostic_label && !diagnosticState?.profile) {
+          return;
+        }
 
         localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
 
         try {
-          const rawProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-          if (diagnosticState.profile) {
+          const maryanProfile = profileContext?.maryanProfile || buildMaryanProfileFromDiagnosticState(diagnosticState, {
+            firstName: profile?.first_name,
+            commune: profile?.commune,
+            plan: profile?.plan
+          });
+
+          if (maryanProfile) {
             localStorage.setItem('maryan_profile', JSON.stringify({
-              ...rawProfile,
+              ...maryanProfile,
               diagnosticProfile: diagnosticState.profile
             }));
           }

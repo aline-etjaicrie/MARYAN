@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { MARYAN_GLOBAL_PROMPT } from './maryan-global-prompt';
 
 export type MaryanPromptStudioSegment = 'studio' | 'master';
 
@@ -187,6 +188,42 @@ export const MARYAN_PROMPT_STUDIO_VARIABLES: MaryanPromptVariable[] = [
     label: 'Ton',
     placeholder: 'sobre / ferme / apaisant / institutionnel',
     note: 'Cadre la forme finale de la réponse.'
+  },
+  {
+    key: '[PROFILE_DB]',
+    label: 'Profil DB',
+    placeholder: 'profil MARYAN déjà connu : rôle, commune, diagnostic, tags, niveau de repères',
+    note: 'Injecte le contexte utilisateur déjà stocké en base.'
+  },
+  {
+    key: '[ACCESS_DB]',
+    label: 'Accès DB',
+    placeholder: 'plan, contenus premium disponibles, limites produit, accès ouverts',
+    note: 'Empêche le prompt de révéler un contenu non accessible.'
+  },
+  {
+    key: '[SESSION_DB]',
+    label: 'Session DB',
+    placeholder: 'historique utile, points déjà clarifiés, mémoire conversationnelle courte',
+    note: 'Évite de reposer les mêmes questions et stabilise la continuité.'
+  },
+  {
+    key: '[CATALOG_DB]',
+    label: 'Catalogue DB',
+    placeholder: 'ressources, fiches, parcours et contenus réellement existants dans MARYAN',
+    note: 'Garantit que les renvois de contenus sont réels.'
+  },
+  {
+    key: '[RIGHTS_DB]',
+    label: 'Droits DB',
+    placeholder: 'repères juridiques, droits de l’élu, cadre institutionnel disponible',
+    note: 'Sépare le cadre juridique du conseil MARYAN.'
+  },
+  {
+    key: '[RADAR_DB]',
+    label: 'Radar DB',
+    placeholder: 'signaux vérifiés, statut de preuve, source ou lecture éditoriale MARYAN',
+    note: 'Empêche de traiter un signal non vérifié comme un fait certain.'
   }
 ];
 
@@ -1044,6 +1081,16 @@ Contraintes :
 
 Information brute :
 [OBJET]`
+  },
+  {
+    slug: 'prompt-global-maryan-db',
+    title: 'Prompt global MARYAN — base de données',
+    description: 'Prompt de référence pour brancher le copilote MARYAN sur les données produit réelles sans halluciner.',
+    category: 'Master',
+    segment: 'master',
+    tags: ['master', 'database', 'source de vérité'],
+    variables: ['[PROFILE_DB]', '[ACCESS_DB]', '[SESSION_DB]', '[CATALOG_DB]', '[RIGHTS_DB]', '[RADAR_DB]'],
+    body: MARYAN_GLOBAL_PROMPT
   },
   {
     slug: 'prompt-maitre-maryan',

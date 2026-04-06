@@ -1,0 +1,83 @@
+---
+interface Props {
+  title?: string;
+  copy?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  featured?: boolean;
+}
+
+const {
+  title = 'Analyse réservée aux abonnés MARYAN',
+  copy = 'MARYAN relie ici le signal à votre mandat, à vos marges de manœuvre et aux points de vigilance à anticiper.',
+  ctaHref = '/offres',
+  ctaLabel = 'Accéder à l’analyse complète',
+  featured = false
+} = Astro.props;
+---
+
+<aside class:list={['radar-lock', featured && 'radar-lock--featured']}>
+  <div class="radar-lock__eyebrow">Accès abonné</div>
+  <h3>{title}</h3>
+  <p>{copy}</p>
+  <a href={ctaHref} class="radar-lock__cta">{ctaLabel}</a>
+</aside>
+
+<style is:global>
+  .radar-lock {
+    border: 1px solid rgba(10, 25, 47, 0.12);
+    border-radius: 24px;
+    padding: 1.2rem;
+    background:
+      linear-gradient(135deg, rgba(10, 25, 47, 0.04), rgba(173, 255, 47, 0.06)),
+      #f5f7f8;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .radar-lock--featured {
+    padding: 1.5rem;
+  }
+
+  .radar-lock__eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #4b5d69;
+  }
+
+  .radar-lock h3 {
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--deep);
+  }
+
+  .radar-lock p {
+    color: #4f626d;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .radar-lock__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    text-decoration: none;
+    color: var(--deep);
+    font-weight: 800;
+    width: fit-content;
+    padding: 0.9rem 1.1rem;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid rgba(10, 25, 47, 0.12);
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .radar-lock__cta:hover,
+  .radar-lock__cta:focus-visible {
+    border-color: rgba(10, 25, 47, 0.38);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(10, 25, 47, 0.08);
+  }
+</style>

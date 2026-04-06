@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { ensureProfileRecord } from '../../lib/profiles';
 
 export const prerender = false;
 
@@ -34,6 +35,8 @@ export const PATCH: APIRoute = async ({ request }) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return json({ error: 'Token invalide.' }, 401);
+
+  await ensureProfileRecord(supabase, user);
 
   let body: { field?: unknown; value?: unknown } | null = null;
   try {

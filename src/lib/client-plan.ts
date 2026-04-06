@@ -15,6 +15,10 @@ export function getBrowserSupabase() {
   return supabase;
 }
 
+export function isSubscriberPlan(plan: string | null): boolean {
+  return plan === 'plus' || plan === 'admin';
+}
+
 export async function getCurrentSessionPlan(): Promise<{ session: Session | null; plan: string | null }> {
   if (!supabase) {
     return { session: null, plan: null };

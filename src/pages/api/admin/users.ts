@@ -61,6 +61,19 @@ export const PATCH: APIRoute = async ({ request }) => {
 
   const { error } = await supabase.from('profiles').update({ plan }).eq('id', user_id);
   if (error) return json({ error: error.message }, 500);
+
+  const { data: authUserData, error: authUserError } = await supabase.auth.admin.getUserById(user_id);
+  if (authUserError) return json({ error: authUserError.message }, 500);
+
+  const existingMetadata = authUserData.user?.user_metadata || {};
+  const { error: metadataError } = await supabase.auth.admin.updateUserById(user_id, {
+    user_metadata: {
+      ...existingMetadata,
+      plan
+    }
+  });
+
+  if (metadataError) return json({ error: metadataError.message }, 500);
   return json({ success: true });
 };
 

@@ -17,10 +17,19 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'Champs obligatoires manquants.' }), { status: 400 });
   }
 
-  const supabase = createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const supabaseUrl =
+    (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+  const supabaseServiceKey =
+    (import.meta.env.SUPABASE_SERVICE_KEY as string) ||
+    (process.env.SUPABASE_SERVICE_KEY as string) ||
+    (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string) ||
+    (process.env.SUPABASE_SERVICE_ROLE_KEY as string);
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return new Response(JSON.stringify({ error: 'Configuration serveur manquante.' }), { status: 500 });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
   const { error } = await supabase
     .from('expert_candidatures')

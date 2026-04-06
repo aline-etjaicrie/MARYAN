@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { createClient } from '@supabase/supabase-js';
 import { maryanResources } from '../../data/resources';
 
 export const GET: APIRoute = async ({ request }) => {
@@ -33,27 +34,38 @@ export const GET: APIRoute = async ({ request }) => {
     });
   }
 
-  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
-  const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+  const SUPABASE_URL =
+    (import.meta.env.PUBLIC_SUPABASE_URL as string) ||
+    (process.env.PUBLIC_SUPABASE_URL as string);
+  const SUPABASE_SERVICE_KEY =
+    (import.meta.env.SUPABASE_SERVICE_KEY as string) ||
+    (process.env.SUPABASE_SERVICE_KEY as string);
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    return new Response(JSON.stringify({ error: 'Server auth unavailable' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
   let plan: string | undefined;
   try {
-    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        apikey: SUPABASE_ANON_KEY,
-      },
-    });
-
-    if (!userRes.ok) {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const user = await userRes.json();
-    plan = user?.user_metadata?.plan;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', user.id)
+      .single();
+
+    plan = profile?.plan;
   } catch {
     return new Response(JSON.stringify({ error: 'Auth error' }), {
       status: 403,

@@ -364,6 +364,11 @@ const easyToMobilizeItems = [
 </BaseLayout>
 
 <script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+  const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
   const checkoutButtons = document.querySelectorAll<HTMLButtonElement>('.checkout-btn');
 
   checkoutButtons.forEach((btn) => {
@@ -377,23 +382,40 @@ const easyToMobilizeItems = [
       target.disabled = true;
 
       try {
-        const response = await fetch('/api/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            priceId,
-            customerEmail: localStorage.getItem('user_email') || null,
-          }),
-        });
+        if (!supabase) {
+          throw new Error('Connexion non configurée.');
+        }
 
-        const session = await response.json();
-
-        if (session.url) {
-          window.location.href = session.url;
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.access_token) {
+          window.location.href = `/login?next=${encodeURIComponent('/offres#offre-individuelle')}`;
           return;
         }
 
-        alert('Erreur de session. Veuillez vérifier vos clés Stripe.');
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({
+            priceId
+          }),
+        });
+
+        const checkoutSession = await response.json();
+
+        if (checkoutSession.url) {
+          window.location.href = checkoutSession.url;
+          return;
+        }
+
+        if (response.status === 401 && checkoutSession.loginUrl) {
+          window.location.href = checkoutSession.loginUrl;
+          return;
+        }
+
+        alert(checkoutSession.message || checkoutSession.error || 'Erreur de session Stripe.');
       } catch (error) {
         console.error(error);
         alert('La connexion à Stripe a échoué.');

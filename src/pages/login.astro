@@ -15,11 +15,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
 
       <div class="login-card">
-        <h1 id="formTitle">Se connecter</h1>
-        <p id="formSub" class="form-sub">Accédez à votre espace personnel.</p>
+        <h1 id="formTitle">Créer un compte</h1>
+        <p id="formSub" class="form-sub">Rejoignez MARYAN et accédez à votre espace de mandat.</p>
 
         <div id="formError" class="form-error" style="display:none;"></div>
         <div id="formSuccess" class="form-success" style="display:none;"></div>
+
+        <div class="oauth-actions">
+          <button type="button" id="googleAuthBtn" class="btn-oauth">
+            Créer mon compte avec Google
+          </button>
+          <button type="button" id="appleAuthBtn" class="btn-oauth">
+            Créer mon compte avec Apple
+          </button>
+        </div>
+
+        <div class="auth-divider" aria-hidden="true">
+          <span>ou</span>
+        </div>
 
         <form id="authForm" novalidate>
           <div class="field-group">
@@ -28,7 +41,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               type="email"
               id="email"
               name="email"
-              placeholder="vous@example.fr"
+              placeholder="Adresse email"
               autocomplete="email"
               required
             />
@@ -41,12 +54,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               id="password"
               name="password"
               placeholder="••••••••"
-              autocomplete="current-password"
+              autocomplete="new-password"
               required
             />
           </div>
 
-          <div id="confirmGroup" class="field-group" style="display:none;">
+          <div id="confirmGroup" class="field-group">
             <label for="confirm">Confirmer le mot de passe</label>
             <input
               type="password"
@@ -57,7 +70,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             />
           </div>
 
-          <div id="politicalLabelGroup" class="field-group" style="display:none;">
+          <div id="politicalLabelGroup" class="field-group">
             <label for="politicalLabel">Affiliation politique <span class="field-optional">(optionnel)</span></label>
             <p class="field-hint">Permet à MARYAN d'anticiper les tensions avec votre famille politique.</p>
             <select id="politicalLabel" name="politicalLabel">
@@ -82,7 +95,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </select>
           </div>
 
-          <div id="consentPartisGroup" class="field-group consent-group" style="display:none;">
+          <div id="consentPartisGroup" class="field-group consent-group">
             <label class="consent-label">
               <input type="checkbox" id="consentPartis" name="consentPartis" />
               <span>J'accepte que MARYAN traite mon affiliation politique <strong>(donnée de catégorie particulière au sens de l'article 9 du RGPD)</strong> pour personnaliser les alertes du copilote. Ce consentement est facultatif et révocable à tout moment depuis mon compte.</span>
@@ -90,14 +103,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
 
           <button type="submit" id="submitBtn" class="btn-submit">
-            <span id="btnLabel">Se connecter</span>
+            <span id="btnLabel">Créer mon compte</span>
             <span id="btnLoader" style="display:none;">Chargement…</span>
           </button>
         </form>
 
         <p class="mode-toggle">
-          <span id="toggleLabel">Pas encore de compte ?</span>
-          <button id="modeToggle" type="button" class="btn-text">Créer un compte</button>
+          <span id="toggleLabel">Déjà un compte ?</span>
+          <button id="modeToggle" type="button" class="btn-text">Se connecter</button>
         </p>
       </div>
 
@@ -109,6 +122,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
   import { createClient } from '@supabase/supabase-js';
   import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
+  import { maryanResources } from '../data/resources';
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -121,13 +135,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     (document.getElementById('submitBtn') as HTMLButtonElement).disabled = true;
   } else {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // If already logged in, go straight to dashboard
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) window.location.href = '/mon-compte';
-    });
-
-    let isSignup = false;
+    let isSignup = true;
 
     const form = document.getElementById('authForm') as HTMLFormElement;
     const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -143,22 +151,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const btnLoader = document.getElementById('btnLoader')!;
     const formError = document.getElementById('formError')!;
     const formSuccess = document.getElementById('formSuccess')!;
+    const googleAuthBtn = document.getElementById('googleAuthBtn') as HTMLButtonElement;
+    const appleAuthBtn = document.getElementById('appleAuthBtn') as HTMLButtonElement;
     const formTitle = document.getElementById('formTitle')!;
     const formSub = document.getElementById('formSub')!;
     const toggleLabel = document.getElementById('toggleLabel')!;
     const modeToggle = document.getElementById('modeToggle') as HTMLButtonElement;
 
-    modeToggle.addEventListener('click', () => {
-      isSignup = !isSignup;
-      formError.style.display = 'none';
-      formSuccess.style.display = 'none';
+    function getSafeNextPath(): string | null {
+      const next = new URL(window.location.href).searchParams.get('next');
+      if (!next || !next.startsWith('/') || next.startsWith('//')) return null;
+      return next;
+    }
 
+    const safeNextPath = getSafeNextPath();
+    const oauthRedirectTo = safeNextPath
+      ? `${window.location.origin}/login?oauth=1&next=${encodeURIComponent(safeNextPath)}`
+      : `${window.location.origin}/login?oauth=1`;
+
+    function renderMode() {
       if (isSignup) {
         formTitle.textContent = 'Créer un compte';
         formSub.textContent = 'Rejoignez MARYAN et accédez à votre espace de mandat.';
         btnLabel.textContent = 'Créer mon compte';
         toggleLabel.textContent = 'Déjà un compte ?';
         modeToggle.textContent = 'Se connecter';
+        googleAuthBtn.textContent = 'Créer mon compte avec Google';
+        appleAuthBtn.textContent = 'Créer mon compte avec Apple';
         confirmGroup.style.display = 'block';
         politicalLabelGroup.style.display = 'block';
         consentPartisGroup.style.display = 'block';
@@ -169,11 +188,55 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         btnLabel.textContent = 'Se connecter';
         toggleLabel.textContent = 'Pas encore de compte ?';
         modeToggle.textContent = 'Créer un compte';
+        googleAuthBtn.textContent = 'Continuer avec Google';
+        appleAuthBtn.textContent = 'Continuer avec Apple';
         confirmGroup.style.display = 'none';
         politicalLabelGroup.style.display = 'none';
         consentPartisGroup.style.display = 'none';
         passwordInput.setAttribute('autocomplete', 'current-password');
       }
+    }
+
+    async function finalizeAuthenticatedSession(
+      session: { access_token: string; user: { id: string } },
+      fallbackRedirect = '/mon-compte'
+    ) {
+      let redirectTo = fallbackRedirect;
+
+      try {
+        const response = await fetch('/api/account-bootstrap', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (typeof data?.redirectTo === 'string' && data.redirectTo) {
+            redirectTo = data.redirectTo;
+          }
+        }
+      } catch (_) {
+        // non bloquant
+      }
+
+      await persistLocalDiagnostic(session.user.id);
+
+      if (safeNextPath && redirectTo === '/mon-compte') {
+        redirectTo = safeNextPath;
+      }
+
+      window.location.href = redirectTo;
+    }
+
+    renderMode();
+
+    modeToggle.addEventListener('click', () => {
+      isSignup = !isSignup;
+      formError.style.display = 'none';
+      formSuccess.style.display = 'none';
+      renderMode();
     });
 
     function showError(msg: string) {
@@ -190,8 +253,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function setLoading(loading: boolean) {
       submitBtn.disabled = loading;
+      googleAuthBtn.disabled = loading;
+      appleAuthBtn.disabled = loading;
       btnLabel.style.display = loading ? 'none' : 'inline';
       btnLoader.style.display = loading ? 'inline' : 'none';
+    }
+
+    async function signInWithProvider(provider: 'google' | 'apple') {
+      formError.style.display = 'none';
+      formSuccess.style.display = 'none';
+      setLoading(true);
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: oauthRedirectTo
+        }
+      });
+
+      setLoading(false);
+
+      if (error) {
+        showError(`Connexion ${provider === 'google' ? 'Google' : 'Apple'} indisponible pour le moment.`);
+      }
     }
 
     async function persistLocalDiagnostic(userId: string) {
@@ -199,22 +283,52 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         const rawDiag = localStorage.getItem('maryan_v4_diag');
         if (!rawDiag) return;
 
-        const diag = buildStoredDiagnosticEntry(JSON.parse(rawDiag));
+        const diag = buildStoredDiagnosticEntry(JSON.parse(rawDiag), maryanResources);
         localStorage.setItem('maryan_v4_diag', JSON.stringify(diag));
 
         if (diag?.diagnostic_key && diag?.diagnostic_label) {
-          await supabase
-            .from('profiles')
-            .update({
-              diagnostic_key: diag.diagnostic_key,
-              diagnostic_label: diag.diagnostic_label
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session?.access_token) return;
+
+          const response = await fetch('/api/profile-context', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({
+              diagnosticState: diag
             })
-            .eq('id', userId);
+          });
+
+          if (!response.ok) return;
+
+          const data = await response.json();
+          if (data?.diagnosticState) {
+            localStorage.setItem('maryan_v4_diag', JSON.stringify(data.diagnosticState));
+          }
+          if (data?.maryanProfile) {
+            localStorage.setItem('maryan_profile', JSON.stringify(data.maryanProfile));
+          }
         }
       } catch (_) {
         /* non bloquant */
       }
     }
+
+    googleAuthBtn.addEventListener('click', () => {
+      void signInWithProvider('google');
+    });
+
+    appleAuthBtn.addEventListener('click', () => {
+      void signInWithProvider('apple');
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      setLoading(true);
+      void finalizeAuthenticatedSession(session);
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -278,43 +392,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         if (error) {
           showError(error.message);
+        } else if (!signUpData.session) {
+          showSuccess('Compte créé. Vérifiez votre email pour confirmer votre inscription.');
         } else {
-          // Sauvegarde parti dans profiles si session immédiate
-          if (signUpData.session && partiId) {
-            try {
-              await supabase
-                .from('profiles')
-                .update({ parti_id: partiId, parti_label: partiLabel })
-                .eq('id', signUpData.session.user.id);
-            } catch (_) {}
-          }
-          if (signUpData.session) {
-            await persistLocalDiagnostic(signUpData.session.user.id);
-          }
           showSuccess('Compte créé ! Redirection vers votre espace…');
-
-          // Send welcome email (non-blocking)
-          try {
-            await fetch('/api/send-welcome', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, firstName: '' })
-            });
-          } catch (_) {}
-
-          // Redirect to onboarding after signup success
-          setTimeout(() => { window.location.href = '/bienvenue'; }, 1500);
+          setLoading(true);
+          await finalizeAuthenticatedSession(signUpData.session, '/bienvenue');
         }
       } else {
         setLoading(true);
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        setLoading(false);
 
         if (error) {
+          setLoading(false);
           showError('Email ou mot de passe incorrect.');
         } else if (data.session) {
-          await persistLocalDiagnostic(data.session.user.id);
-          window.location.href = '/mon-compte';
+          await finalizeAuthenticatedSession(data.session, safeNextPath || '/mon-compte');
         }
       }
     });
@@ -361,6 +454,55 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: white;
     border-radius: 12px;
     padding: 3rem 2.5rem;
+  }
+
+  .oauth-actions {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-oauth {
+    width: 100%;
+    border: 1.5px solid rgba(10, 25, 47, 0.12);
+    background: #fff;
+    color: var(--deep);
+    border-radius: 10px;
+    padding: 0.95rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-oauth:hover {
+    border-color: var(--deep);
+    transform: translateY(-1px);
+  }
+
+  .btn-oauth:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+  }
+
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    color: #7b8b95;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(10, 25, 47, 0.1);
   }
 
   .login-card h1 {

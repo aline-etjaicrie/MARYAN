@@ -37,7 +37,7 @@ export const GET: APIRoute = async ({ request }) => {
   // Récupération du profil
   const { data: profileData, error: profileError } = await supabase
     .from('profiles')
-    .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label, created_at')
+    .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_profile, diagnostic_payload, diagnostic_completed_at, plan, parti_id, parti_label, stripe_customer_id, stripe_subscription_id, stripe_price_id, created_at')
     .eq('id', userId)
     .single();
 
