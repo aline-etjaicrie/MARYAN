@@ -98,6 +98,7 @@ export const POST: APIRoute = async ({ request }) => {
     id?: string;
     political_label?: string; // depuis user_metadata Supabase Auth
   } | null = null;
+  let copiloteMemory: { topic: string; context: string }[] = [];
 
   const authHeader = request.headers.get('Authorization') || '';
   const userToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -124,18 +125,28 @@ export const POST: APIRoute = async ({ request }) => {
       const { data: { user } } = await supabase.auth.getUser(userToken);
       if (user) {
         await ensureProfileRecord(supabase, user);
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label, profile_context, last_diagnostic_summary')
-          .eq('id', user.id)
-          .single();
+        const [profileResult, memoryResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('id, first_name, commune, role, diagnostic_key, diagnostic_label, plan, parti_id, parti_label, profile_context, last_diagnostic_summary')
+            .eq('id', user.id)
+            .single(),
+          supabase
+            .from('copilote_memory')
+            .select('topic, context')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(5)
+        ]);
         // Récupère aussi l'étiquette politique depuis user_metadata Auth
         const politicalLabel = (user.user_metadata?.political_label as string) || null;
+        const profileData = profileResult.data;
         if (profileData) {
           supabaseProfile = { ...profileData, id: user.id, political_label: politicalLabel };
         } else {
           supabaseProfile = { id: user.id, political_label: politicalLabel };
         }
+        copiloteMemory = (memoryResult.data || []) as { topic: string; context: string }[];
       }
     } catch (_) { /* non bloquant */ }
   }
@@ -192,6 +203,26 @@ Mots qui peuvent signaler une tension selon l'affiliation de cet élu :
 ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
 ` : '';
 
+    // ── Bloc profile_db depuis profile_context ──
+    const diagCtx = supabaseProfile.profile_context &&
+      typeof supabaseProfile.profile_context === 'object' &&
+      typeof (supabaseProfile.profile_context as Record<string, unknown>).diagnostic === 'object'
+        ? (supabaseProfile.profile_context as Record<string, unknown>).diagnostic as Record<string, unknown>
+        : null;
+
+    const diagPriorities = Array.isArray(diagCtx?.priorities)
+      ? (diagCtx!.priorities as string[]).join(', ')
+      : null;
+
+    const profileDbBlock = diagCtx
+      ? `\n<profile_db>\nProfil : ${supabaseProfile.role || 'élu·e local·e'} de ${supabaseProfile.commune || '(commune non renseignée)'}, diagnostic : ${supabaseProfile.diagnostic_label || diagCtx.label || '(non effectué)'}${diagPriorities ? `, priorités : ${diagPriorities}` : ''}\n</profile_db>`
+      : '';
+
+    // ── Bloc session_db depuis copilote_memory ──
+    const sessionDbBlock = copiloteMemory.length > 0
+      ? `\n<session_db>\nSujets déjà abordés : ${copiloteMemory.map(m => m.topic).join(', ')}\n</session_db>`
+      : '';
+
     profileSection = [
       `\n\nPROFIL DE L'ÉLU·E :`,
       `Prénom : ${supabaseProfile.first_name || '(non renseigné)'}`,
@@ -199,6 +230,8 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
       `Rôle : ${supabaseProfile.role || '(non renseigné)'}`,
       `Diagnostic MARYAN : ${supabaseProfile.diagnostic_label || '(non effectué)'} (${diagKey || '-'})`,
       `Plan : ${supabaseProfile.plan || 'gratuit'}`,
+      profileDbBlock,
+      sessionDbBlock,
       ``,
       `Tu t'adresses toujours à cette personne en utilisant son prénom si disponible. Tu adaptes tes réponses à son diagnostic et à son rôle.`,
       diagInstruction || '',
