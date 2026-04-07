@@ -279,6 +279,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
 
       const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
+      const hasDiagnostic = Boolean(diagnosticState?.diagnostic_key);
+      const diagnosticSummary = diagnosticState?.summary
+        || profile?.last_diagnostic_summary
+        || 'Votre diagnostic est enregistré dans votre espace.';
+      const diagnosticLabel = diagnosticState?.diagnostic_label || 'Diagnostic MARYAN';
 
       try {
         if (diagnosticState.diagnostic_key || diagnosticState.profile || diagnosticState.recommended_slugs?.length) {
@@ -364,7 +369,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const resumeCard = document.getElementById('resumeCard');
       if (resumeCard) {
-        resumeCard.innerHTML = `
+        resumeCard.innerHTML = hasDiagnostic
+          ? `
+          <div class="dashboard-resume-live">
+            <p class="dashboard-resume-label">${escapeHtml(diagnosticLabel)}</p>
+            <h3>Votre diagnostic est disponible</h3>
+            <p>${escapeHtml(diagnosticSummary)}</p>
+            <a href="/diagnostic" class="btn-primary-v3">Voir mon diagnostic</a>
+          </div>
+        `
+          : `
           <div class="dashboard-resume-empty">
             <p class="dashboard-resume-label">Point d’entrée</p>
             <h3>Commencer par le diagnostic</h3>

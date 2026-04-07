@@ -174,8 +174,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
              <!-- BLOC EMAIL (OPTIONNEL APRÈS RÉSULTAT) -->
              <section class="res-email-v4" id="emailBox">
-                <h3>Recevoir votre synthèse</h3>
-                <p>Vous pouvez recevoir ce diagnostic par email pour le relire plus tard, le partager ou retrouver rapidement vos points de vigilance.</p>
+                <h3 id="emailTitle">Recevoir votre synthèse</h3>
+                <p id="emailLead">Vous pouvez recevoir ce diagnostic par email pour le relire plus tard, le partager ou retrouver rapidement vos points de vigilance.</p>
                 <div class="email-input-v4">
                    <input type="email" id="emailInput" placeholder="Adresse email" />
                    <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
@@ -309,6 +309,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
     const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
     const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    let loggedInEmail: string | null = null;
+
+    async function getSessionEmail(): Promise<string | null> {
+       if (!supabase) return null;
+       try {
+          const { data: { session } } = await supabase.auth.getSession();
+          return session?.user?.email || null;
+       } catch {
+          return null;
+       }
+    }
+
+    async function hydrateEmailCaptureUI() {
+       const emailInput = document.getElementById('emailInput') as HTMLInputElement | null;
+       const emailLead = document.getElementById('emailLead');
+       const submitButton = document.querySelector('#emailBox .btn-primary-v4') as HTMLButtonElement | null;
+       if (!emailInput || !submitButton) return;
+
+       const sessionEmail = await getSessionEmail();
+       if (!sessionEmail) return;
+
+       loggedInEmail = sessionEmail;
+       emailInput.value = sessionEmail;
+       emailInput.disabled = true;
+       emailInput.setAttribute('aria-readonly', 'true');
+       submitButton.textContent = 'Envoyer à mon email';
+
+       if (emailLead) {
+          emailLead.textContent = `Votre compte est déjà connecté (${sessionEmail}). Vous pouvez envoyer la synthèse sans ressaisir votre email.`;
+       }
+    }
 
     function showStep(id) {
        document.querySelectorAll('.diag-step-v4').forEach(s => {
@@ -515,13 +546,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        // Toggle
        document.getElementById('questionsContainer').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
+       await hydrateEmailCaptureUI();
        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     window.submitEmail = async () => {
        const emailInput = document.getElementById('emailInput') as HTMLInputElement | null;
-       if (!emailInput) return;
-       const email = emailInput.value.trim();
+       const email = emailInput?.value.trim() || loggedInEmail || await getSessionEmail() || '';
        if(!email) return;
 
        let diagnosticState = null;
@@ -544,7 +575,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           submitButton.disabled = true;
           submitButton.textContent = 'Envoi…';
        }
-       emailInput.disabled = true;
+       if (emailInput) emailInput.disabled = true;
 
        try {
           const response = await fetch('/api/diagnostic-email', {
@@ -568,10 +599,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        } catch (error) {
           const message = error instanceof Error ? error.message : 'Envoi impossible pour le moment.';
           alert(message);
-          emailInput.disabled = false;
+          if (emailInput && !loggedInEmail) {
+             emailInput.disabled = false;
+          }
           if (submitButton) {
              submitButton.disabled = false;
-             submitButton.textContent = 'Recevoir';
+             submitButton.textContent = loggedInEmail ? 'Envoyer à mon email' : 'Recevoir';
           }
        }
     };

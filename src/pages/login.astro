@@ -57,38 +57,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             />
           </div>
 
-          <div id="politicalLabelGroup" class="field-group">
-            <label for="politicalLabel">Affiliation politique <span class="field-optional">(optionnel)</span></label>
-            <p class="field-hint">Permet à MARYAN d'anticiper les tensions avec votre famille politique.</p>
-            <select id="politicalLabel" name="politicalLabel">
-              <option value="">— Choisir (optionnel) —</option>
-              <optgroup label="Sans étiquette / Divers">
-                <option value="sans_etiquette">Sans étiquette</option>
-                <option value="autre">Divers / Autre</option>
-              </optgroup>
-              <optgroup label="Gauche">
-                <option value="LFI">La France Insoumise (LFI)</option>
-                <option value="PCF">Parti Communiste Français (PCF)</option>
-                <option value="PS">Parti Socialiste (PS)</option>
-                <option value="EELV">Les Écologistes / EELV</option>
-              </optgroup>
-              <optgroup label="Centre">
-                <option value="REN">Renaissance / Majorité présidentielle</option>
-              </optgroup>
-              <optgroup label="Droite">
-                <option value="LR">Les Républicains (LR)</option>
-                <option value="RN">Rassemblement National (RN)</option>
-              </optgroup>
-            </select>
-          </div>
-
-          <div id="consentPartisGroup" class="field-group consent-group">
-            <label class="consent-label">
-              <input type="checkbox" id="consentPartis" name="consentPartis" />
-              <span>J'accepte que MARYAN traite mon affiliation politique <strong>(donnée de catégorie particulière au sens de l'article 9 du RGPD)</strong> pour personnaliser les alertes du copilote. Ce consentement est facultatif et révocable à tout moment depuis mon compte.</span>
-            </label>
-          </div>
-
           <button type="submit" id="submitBtn" class="btn-submit">
             <span id="btnLabel">Créer mon compte</span>
             <span id="btnLoader" style="display:none;">Chargement…</span>
@@ -129,10 +97,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const passwordInput = document.getElementById('password') as HTMLInputElement;
     const confirmInput = document.getElementById('confirm') as HTMLInputElement;
     const confirmGroup = document.getElementById('confirmGroup') as HTMLDivElement;
-    const politicalLabelSelect = document.getElementById('politicalLabel') as HTMLSelectElement;
-    const politicalLabelGroup = document.getElementById('politicalLabelGroup') as HTMLDivElement;
-    const consentPartisGroup = document.getElementById('consentPartisGroup') as HTMLDivElement;
-    const consentPartisCheckbox = document.getElementById('consentPartis') as HTMLInputElement;
     const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
     const btnLabel = document.getElementById('btnLabel')!;
     const btnLoader = document.getElementById('btnLoader')!;
@@ -159,8 +123,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         toggleLabel.textContent = 'Déjà un compte ?';
         modeToggle.textContent = 'Se connecter';
         confirmGroup.style.display = 'block';
-        politicalLabelGroup.style.display = 'block';
-        consentPartisGroup.style.display = 'block';
         passwordInput.setAttribute('autocomplete', 'new-password');
       } else {
         formTitle.textContent = 'Se connecter';
@@ -169,8 +131,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         toggleLabel.textContent = 'Pas encore de compte ?';
         modeToggle.textContent = 'Créer un compte';
         confirmGroup.style.display = 'none';
-        politicalLabelGroup.style.display = 'none';
-        consentPartisGroup.style.display = 'none';
         passwordInput.setAttribute('autocomplete', 'current-password');
       }
     }
@@ -321,39 +281,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           return;
         }
 
-        const partiId = politicalLabelSelect.value || null;
-
-        // Vérification consentement article 9 RGPD
-        if (partiId && !consentPartisCheckbox.checked) {
-          showError('Veuillez cocher la case de consentement pour renseigner votre affiliation politique, ou laisser le champ vide.');
-          return;
-        }
-
-        // Mapping parti_id → label lisible pour Mistral
-        const PARTI_LABELS: Record<string, string> = {
-          'LFI': 'La France Insoumise',
-          'PS': 'Parti Socialiste',
-          'EELV': 'Les Écologistes',
-          'LR': 'Les Républicains',
-          'RN': 'Rassemblement National',
-          'PCF': 'Parti Communiste Français',
-          'REN': 'Renaissance / Majorité présidentielle',
-          'sans_etiquette': 'Sans étiquette',
-          'autre': 'Divers'
-        };
-        const partiLabel = partiId ? (PARTI_LABELS[partiId] || partiId) : null;
-
         setLoading(true);
         const { data: signUpData, error } = await supabase.auth.signUp({
           email,
-          password,
-          options: {
-            data: {
-              political_label: partiId,  // conservé pour compatibilité
-              parti_id: partiId,
-              parti_label: partiLabel
-            },
-          },
+          password
         });
         setLoading(false);
 
