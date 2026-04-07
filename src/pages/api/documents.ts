@@ -168,6 +168,7 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 // PATCH /api/documents — met à jour un document (titre, dossier)
+// ou renomme un dossier entier (rename_folder: { from, to })
 export const PATCH: APIRoute = async ({ request }) => {
   const token = getToken(request);
   if (!token) return json({ error: 'Non authentifié.' }, 401);
@@ -180,12 +181,30 @@ export const PATCH: APIRoute = async ({ request }) => {
     titre?: string;
     dossier?: string;
     contenu?: string;
+    rename_folder?: { from: string; to: string };
   } | null = null;
 
   try {
     body = await request.json();
   } catch {
     return json({ error: 'Format JSON invalide.' }, 400);
+  }
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+  // Renommage de dossier (batch)
+  if (body?.rename_folder) {
+    const { from, to } = body.rename_folder;
+    if (!from || !to || typeof from !== 'string' || typeof to !== 'string') {
+      return json({ error: 'Paramètres rename_folder.from et rename_folder.to requis.' }, 400);
+    }
+    const { error } = await supabase
+      .from('documents')
+      .update({ dossier: to.trim() })
+      .eq('user_id', userId)
+      .eq('dossier', from);
+    if (error) return json({ error: error.message }, 500);
+    return json({ success: true, renamed: { from, to: to.trim() } });
   }
 
   if (!body?.id) return json({ error: 'Paramètre id requis.' }, 400);
@@ -197,7 +216,6 @@ export const PATCH: APIRoute = async ({ request }) => {
 
   if (!Object.keys(updates).length) return json({ error: 'Aucun champ à mettre à jour.' }, 400);
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const { data, error } = await supabase
     .from('documents')
     .update(updates)

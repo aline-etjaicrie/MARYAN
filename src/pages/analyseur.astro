@@ -1,7 +1,4 @@
 ---
-// La fonctionnalité "Décrypter un document" est désormais intégrée dans /copilote (mode document).
-// Cette page redirige vers le hub copilote avec le mode document présélectionné.
-export const prerender = false;
-const redirectUrl = '/copilote?mode=document';
-return Astro.redirect(redirectUrl, 301);
+// Fonctionnalité intégrée dans /copilote (mode document).
 ---
+<script>window.location.replace('/copilote?mode=document');</script>
