@@ -162,30 +162,6 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
             fetchpriority="high"
           />
         </figure>
-        <div class="product-body">
-          <div class="product-input">
-            <span>Situation</span>
-            <p>
-              « Interpellation en conseil sur un dossier sensible. Je dois répondre sans fermer la
-              discussion ni promettre ce que je ne peux pas tenir. »
-            </p>
-          </div>
-          <div class="product-flow" aria-hidden="true">
-            <span>Situation</span>
-            <span>Clarification</span>
-            <span>Options</span>
-            <span>Prochaine étape</span>
-          </div>
-          <div class="product-output">
-            <h3>Réponse structurée</h3>
-            <ul>
-              <li><strong>Enjeu :</strong> préserver la confiance sans surpromesse.</li>
-              <li><strong>Option recommandée :</strong> réponse cadrée + calendrier de suivi.</li>
-              <li><strong>Vigilance :</strong> distinguer engagement politique et faisabilité technique.</li>
-              <li><strong>Prochaine étape :</strong> formuler une réponse orale de 90 secondes.</li>
-            </ul>
-          </div>
-        </div>
       </aside>
     </div>
   </section>
@@ -401,9 +377,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
 
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 1.4rem;
-      align-items: stretch;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: 2rem;
+        align-items: center;
     }
 
     .hero-copy h1 {
@@ -475,8 +451,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 28px;
-      padding: 1.2rem;
+        padding: 1rem;
       backdrop-filter: blur(8px);
+        height: fit-content;
     }
 
     .hero-photo-frame {
@@ -491,9 +468,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       display: block;
       width: 100%;
       height: auto;
-      aspect-ratio: 16 / 8;
+        aspect-ratio: 16 / 9;
       object-fit: cover;
-      object-position: 42% 56%;
+        object-position: 54% 52%;
     }
 
     .product-bar {
@@ -518,29 +495,6 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       letter-spacing: 0.03em;
     }
 
-    .product-body {
-      display: grid;
-      gap: 0.9rem;
-    }
-
-    .product-input,
-    .product-output {
-      border-radius: 18px;
-      padding: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(8, 20, 34, 0.52);
-    }
-
-    .product-input span {
-      display: inline-block;
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--neon);
-      margin-bottom: 0.55rem;
-    }
-
     .mockup-label {
       display: inline-block;
       font-size: 0.76rem;
@@ -549,44 +503,6 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       text-transform: uppercase;
       color: var(--accent-red);
       margin-bottom: 0.55rem;
-    }
-
-    .product-input p,
-    .product-output ul,
-    .product-output li {
-      margin: 0;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.58;
-      font-size: 0.95rem;
-    }
-
-    .product-flow {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.4rem;
-    }
-
-    .product-flow span {
-      text-align: center;
-      border-radius: 999px;
-      padding: 0.45rem 0.55rem;
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.88);
-      background: rgba(173, 255, 47, 0.1);
-      border: 1px solid rgba(173, 255, 47, 0.25);
-    }
-
-    .product-output h3 {
-      color: white;
-      margin: 0 0 0.6rem;
-      font-size: 1.05rem;
-    }
-
-    .product-output ul {
-      list-style: none;
-      display: grid;
-      gap: 0.45rem;
-      padding: 0;
     }
 
     .section-head {
@@ -1013,9 +929,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
         padding: 1.35rem;
       }
 
-      .product-flow {
-        grid-template-columns: 1fr 1fr;
-      }
+        .hero-grid {
+          gap: 1.1rem;
+        }
     }
   </style>
 </Layout>
