@@ -60,10 +60,16 @@ import InternalHeader from '../components/InternalHeader.astro';
     const mode = urlParams.get('mode') || 'login';
     const from = urlParams.get('from');
 
-    const authTitle = document.getElementById('auth-title');
-    const submitBtn = document.getElementById('submitBtn');
-    const toggleBtn = document.getElementById('toggleBtn');
-    const form = document.getElementById('auth-form');
+    const authTitle = document.getElementById('auth-title') as HTMLHeadingElement | null;
+    const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement | null;
+    const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement | null;
+    const form = document.getElementById('auth-form') as HTMLFormElement | null;
+    const emailInput = document.getElementById('email') as HTMLInputElement | null;
+    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+
+    if (!authTitle || !submitBtn || !toggleBtn || !form || !emailInput || !passwordInput) {
+      throw new Error('UI login incomplète : éléments DOM introuvables.');
+    }
 
     let currentMode = mode;
 
@@ -87,16 +93,16 @@ import InternalHeader from '../components/InternalHeader.astro';
       updateUI();
     });
 
-    form.addEventListener('submit', async (e) => {
+      form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+        const email = emailInput.value;
+        const password = passwordInput.value;
       const submitOriginalText = submitBtn.innerText;
       submitBtn.innerText = "Chargement...";
       submitBtn.disabled = true;
 
       try {
-         let authResult;
+          let authResult: Awaited<ReturnType<typeof supabase.auth.signUp>>;
          
          if (currentMode === 'signup') {
             authResult = await supabase.auth.signUp({ email, password });

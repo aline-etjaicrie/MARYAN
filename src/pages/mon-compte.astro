@@ -208,28 +208,55 @@ const tests = [
   const user = JSON.parse(localStorage.getItem('user_data') || '{}');
   const diagText = localStorage.getItem('maryan_v4_diag'); // Diagnostic brut
 
-  // B. INIT DU FORMULAIRE DE PROFIL
-  document.getElementById('first_name')!.value = user.first_name || profile.firstName || "Aline";
-  document.getElementById('last_name')!.value = user.last_name || profile.lastName || "";
-  document.getElementById('mandat_principal')!.value = user.mandat_principal || profile.title || "Maire";
-  document.getElementById('taille_ct')!.value = user.taille_ct || "moins500";
-  document.getElementById('type_ct')!.value = user.type_ct || "commune";
-  document.getElementById('metier_hors_mandat')!.value = user.metier_hors_mandat || "";
-  document.getElementById('affiliation_politique')!.value = user.affiliation_politique || "";
+  const getField = (id: string) =>
+    document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
 
-  document.getElementById('headerName')!.innerText = user.first_name || profile.firstName || "Aline";
+  const firstNameEl = getField('first_name');
+  const lastNameEl = getField('last_name');
+  const mandatPrincipalEl = getField('mandat_principal');
+  const tailleCtEl = getField('taille_ct');
+  const typeCtEl = getField('type_ct');
+  const metierEl = getField('metier_hors_mandat');
+  const affiliationEl = getField('affiliation_politique');
+  const headerNameEl = document.getElementById('headerName');
+  const profileFormEl = document.getElementById('profileForm') as HTMLFormElement | null;
+
+  if (
+    !firstNameEl ||
+    !lastNameEl ||
+    !mandatPrincipalEl ||
+    !tailleCtEl ||
+    !typeCtEl ||
+    !metierEl ||
+    !affiliationEl ||
+    !headerNameEl ||
+    !profileFormEl
+  ) {
+    throw new Error('UI compte incomplète : éléments DOM introuvables.');
+  }
+
+  // B. INIT DU FORMULAIRE DE PROFIL
+  firstNameEl.value = user.first_name || profile.firstName || "Aline";
+  lastNameEl.value = user.last_name || profile.lastName || "";
+  mandatPrincipalEl.value = user.mandat_principal || profile.title || "Maire";
+  tailleCtEl.value = user.taille_ct || "moins500";
+  typeCtEl.value = user.type_ct || "commune";
+  metierEl.value = user.metier_hors_mandat || "";
+  affiliationEl.value = user.affiliation_politique || "";
+
+  headerNameEl.innerText = user.first_name || profile.firstName || "Aline";
 
   // C. SOUMISSION DU FORMULAIRE (CHANTIER 2 ETAPE 3)
-  document.getElementById('profileForm')!.addEventListener('submit', async (e) => {
+  profileFormEl.addEventListener('submit', async (e) => {
      e.preventDefault();
      const data = {
-        first_name: document.getElementById('first_name')!.value,
-        last_name: document.getElementById('last_name')!.value,
-        mandat_principal: document.getElementById('mandat_principal')!.value,
-        taille_ct: document.getElementById('taille_ct')!.value,
-        type_ct: document.getElementById('type_ct')!.value,
-        metier_hors_mandat: document.getElementById('metier_hors_mandat')!.value,
-        affiliation_politique: document.getElementById('affiliation_politique')!.value,
+        first_name: firstNameEl.value,
+        last_name: lastNameEl.value,
+        mandat_principal: mandatPrincipalEl.value,
+        taille_ct: tailleCtEl.value,
+        type_ct: typeCtEl.value,
+        metier_hors_mandat: metierEl.value,
+        affiliation_politique: affiliationEl.value,
      };
      
      // Sauvegarde locale pour fallback
@@ -249,7 +276,7 @@ const tests = [
         if (result.success || res.ok) {
            msgEl!.innerText = "Profil mis à jour ✓";
            msgEl!.style.color = "green";
-           document.getElementById('headerName')!.innerText = data.first_name;
+            headerNameEl.innerText = data.first_name;
         } else {
            msgEl!.innerText = "Erreur lors de la sauvegarde.";
            msgEl!.style.color = "red";
