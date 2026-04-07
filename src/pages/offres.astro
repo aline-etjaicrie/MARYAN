@@ -73,7 +73,7 @@ const individualPlans = [
       'Accès MARYAN Plus complet',
       'Pour démarrer seul·e sans contrainte'
     ],
-    priceId: 'price_INDIVIDUAL_MONTHLY',
+    checkoutUrl: 'https://buy.stripe.com/9B6eVdeY23ZueXQe2q0gw00',
     cta: 'Tester maintenant'
   },
   {
@@ -85,7 +85,7 @@ const individualPlans = [
       'Accès MARYAN Plus complet',
       'Pour intégrer MARYAN dans le rythme du mandat'
     ],
-    priceId: 'price_INDIVIDUAL_6M',
+    checkoutUrl: 'https://buy.stripe.com/28E8wP3fk1Rm02W5vU0gw01',
     cta: 'Choisir cette formule'
   },
   {
@@ -97,7 +97,7 @@ const individualPlans = [
       'Accès MARYAN Plus complet',
       'Pour installer un vrai réflexe d’usage'
     ],
-    priceId: 'price_INDIVIDUAL_12M',
+    checkoutUrl: 'https://buy.stripe.com/5kQ00j03853ybLEe2q0gw02',
     cta: 'Choisir cette formule',
     featured: true,
     badge: 'Le plus utilisé'
@@ -245,9 +245,9 @@ const easyToMobilizeItems = [
               <ul class="plan-list">
                 {plan.features.map((feature) => <li>{feature}</li>)}
               </ul>
-              <button class:list={['checkout-btn', 'w-full', plan.featured ? 'btn-primary-v3 btn-neon' : 'btn-secondary-v3']} data-price-id={plan.priceId}>
+              <a href={plan.checkoutUrl} class:list={['w-full', plan.featured ? 'btn-primary-v3 btn-neon' : 'btn-secondary-v3']}>
                 {plan.cta}
-              </button>
+              </a>
             </article>
           ))}
         </div>
@@ -362,70 +362,6 @@ const easyToMobilizeItems = [
     </section>
   </main>
 </BaseLayout>
-
-<script>
-  import { createClient } from '@supabase/supabase-js';
-
-  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
-  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
-  const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-  const checkoutButtons = document.querySelectorAll<HTMLButtonElement>('.checkout-btn');
-
-  checkoutButtons.forEach((btn) => {
-    btn.addEventListener('click', async (event) => {
-      const target = event.currentTarget as HTMLButtonElement;
-      const priceId = target.dataset.priceId;
-      if (!priceId) return;
-
-      const originalText = target.innerText;
-      target.innerText = 'Chargement…';
-      target.disabled = true;
-
-      try {
-        if (!supabase) {
-          throw new Error('Connexion non configurée.');
-        }
-
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.access_token) {
-          window.location.href = `/login?next=${encodeURIComponent('/offres#offre-individuelle')}`;
-          return;
-        }
-
-        const response = await fetch('/api/create-checkout-session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.access_token}`
-          },
-          body: JSON.stringify({
-            priceId
-          }),
-        });
-
-        const checkoutSession = await response.json();
-
-        if (checkoutSession.url) {
-          window.location.href = checkoutSession.url;
-          return;
-        }
-
-        if (response.status === 401 && checkoutSession.loginUrl) {
-          window.location.href = checkoutSession.loginUrl;
-          return;
-        }
-
-        alert(checkoutSession.message || checkoutSession.error || 'Erreur de session Stripe.');
-      } catch (error) {
-        console.error(error);
-        alert('La connexion à Stripe a échoué.');
-      } finally {
-        target.innerText = originalText;
-        target.disabled = false;
-      }
-    });
-  });
-</script>
 
 <style>
   .offres-page {
