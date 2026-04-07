@@ -13,6 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span class="label-v3">Compte</span>
           <h2 id="profileName">Chargement…</h2>
           <p id="profileMeta" class="dashboard-account-meta"></p>
+          <p id="identityStatus" class="dashboard-identity-status" style="display:none;"></p>
 
           <div class="dashboard-account-stats">
             <div class="dashboard-account-stat">
@@ -34,7 +35,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
           <section class="dashboard-profile-form-wrap">
             <h3>Compléter mon profil</h3>
-            <p>Votre espace de travail MARYAN devient plus pertinent quand ces informations sont renseignées.</p>
+            <p>Ces informations sont facultatives. Elles permettent à MARYAN de personnaliser l’accompagnement de manière plus juste.</p>
 
             <form id="profileForm" class="dashboard-profile-form" novalidate>
               <div class="dashboard-profile-grid">
@@ -66,9 +67,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   <option value="epci">EPCI / Intercommunalité</option>
                   <option value="departement">Département</option>
                   <option value="region">Région</option>
-                  <option value="metropole">Métropole</option>
-                  <option value="autre">Autre collectivité locale</option>
+                  <option value="statut_particulier">Collectivité à statut particulier</option>
+                  <option value="autre">Autre</option>
                 </select>
+              </label>
+
+              <label id="profileCollectivityOtherWrap" style="display:none;">
+                <span>Préciser la collectivité (facultatif)</span>
+                <input id="profileCollectivityOther" type="text" placeholder="Ex : Collectivité de Corse, Métropole de Lyon…" />
               </label>
 
               <label>
@@ -90,11 +96,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
               <label class="dashboard-checkbox-row">
                 <input id="profileHasOtherJob" type="checkbox" />
-                <span>J’exerce aussi une activité professionnelle en parallèle</span>
+                <span>Avez-vous une activité professionnelle en parallèle de votre mandat ?</span>
               </label>
 
               <label id="profileOtherJobWrap" style="display:none;">
-                <span>Activité professionnelle (facultatif)</span>
+                <span>Laquelle ? (facultatif)</span>
                 <input id="profileOtherJobTitle" type="text" placeholder="Ex : Enseignante, avocat, cadre territorial…" />
               </label>
 
@@ -166,9 +172,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="dashboard-block-head">
             <div>
               <h2>Vos sujets du moment</h2>
-              <p id="topicsLead">Des points d’appui choisis à partir de votre diagnostic.</p>
+              <p id="topicsLead">Des appuis de travail personnalisés, à ouvrir immédiatement.</p>
             </div>
-            <a href="/ressources" class="btn-link">Explorer les ressources →</a>
+            <a href="/ressources" class="btn-secondary-v3 dashboard-head-cta-secondary">Voir toutes les ressources</a>
           </div>
 
           <div id="topicsGrid" class="dashboard-topics-grid"></div>
@@ -188,10 +194,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <section class="dashboard-block" id="docs-section">
           <div class="dashboard-block-head">
             <div>
-              <h2>Mes documents</h2>
-              <p>Vos comptes rendus et analyses sauvegardés.</p>
+              <h2>Créer</h2>
+              <p>Démarrez rapidement un document de travail.</p>
             </div>
-            <a href="/copilote" class="btn-primary-v3 dashboard-head-cta">Créer un document</a>
+          </div>
+
+          <div class="dashboard-create-grid">
+            <a href="/copilote?mode=document&kind=note" class="dashboard-create-card" data-intent="note">
+              <strong>Note</strong>
+              <span>Structurer une idée ou un point d’étape</span>
+            </a>
+            <a href="/copilote?mode=document&kind=document" class="dashboard-create-card" data-intent="document">
+              <strong>Document</strong>
+              <span>Rédiger ou clarifier un document de travail</span>
+            </a>
+            <a href="/copilote?mode=document&kind=reunion" class="dashboard-create-card" data-intent="reunion">
+              <strong>Réunion</strong>
+              <span>Préparer ou structurer un compte rendu</span>
+            </a>
+          </div>
+
+          <div class="dashboard-block-head dashboard-block-head--sub">
+            <div>
+              <h3>Mes documents</h3>
+              <p>Notes, documents et réunions enregistrés.</p>
+            </div>
           </div>
 
           <!-- Dossiers -->
@@ -374,11 +401,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const isSubscriber = plan === 'plus' || plan === 'admin';
       const lastName = normalizeText(personalInfo.last_name);
       const fullName = [firstName, lastName].filter(Boolean).join(' ');
+      const hasFirstName = Boolean(firstName.trim());
+      const hasLastName = Boolean(lastName.trim());
+      const identityStatus = document.getElementById('identityStatus');
 
-      document.getElementById('profileName')!.textContent = fullName || firstName || user.email?.split('@')[0] || 'Mon compte';
+      document.getElementById('profileName')!.textContent = fullName || firstName || 'Profil à compléter';
       document.getElementById('profileMeta')!.textContent = [role, commune].filter(Boolean).join(' — ');
       document.getElementById('userEmail')!.textContent = user.email || '';
       document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
+
+      if (identityStatus) {
+        if (!hasFirstName || !hasLastName) {
+          identityStatus.textContent = 'Nom et prénom à compléter.';
+          identityStatus.classList.remove('dashboard-identity-status--ok');
+          identityStatus.classList.add('dashboard-identity-status--warn');
+          identityStatus.style.display = 'block';
+        } else {
+          identityStatus.textContent = 'Identité complétée.';
+          identityStatus.classList.remove('dashboard-identity-status--warn');
+          identityStatus.classList.add('dashboard-identity-status--ok');
+          identityStatus.style.display = 'block';
+        }
+      }
 
       const subscriptionBlock = document.getElementById('subscriptionBlock');
       if (subscriptionBlock) {
@@ -462,13 +506,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         if (topicsLead && !diagnosticState.profile) {
-          topicsLead.textContent = 'Des points d’appui personnalisés pour avancer tout de suite.';
+          topicsLead.textContent = 'Des appuis concrets pour avancer dans votre mandat.';
         }
 
         topicsGrid.innerHTML = resources.map((resource) => `
           <a href="/ressources/${escapeHtml(resource.slug)}" class="dashboard-topic-card">
             <span class="dashboard-topic-title">${escapeHtml(resource.title)}</span>
-            <span class="dashboard-topic-link">Voir la fiche →</span>
+            <span class="dashboard-topic-link">Voir la fiche</span>
           </a>
         `).join('');
       }
@@ -500,6 +544,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const profileRole = document.getElementById('profileRole') as HTMLInputElement | null;
       const profileCommune = document.getElementById('profileCommune') as HTMLInputElement | null;
       const profileCollectivityType = document.getElementById('profileCollectivityType') as HTMLSelectElement | null;
+      const profileCollectivityOther = document.getElementById('profileCollectivityOther') as HTMLInputElement | null;
+      const profileCollectivityOtherWrap = document.getElementById('profileCollectivityOtherWrap') as HTMLLabelElement | null;
       const profileCollectivitySize = document.getElementById('profileCollectivitySize') as HTMLSelectElement | null;
       const profilePoliticalAffiliation = document.getElementById('profilePoliticalAffiliation') as HTMLInputElement | null;
       const profileHasOtherJob = document.getElementById('profileHasOtherJob') as HTMLInputElement | null;
@@ -510,7 +556,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       if (
         profileForm && profileFirstName && profileLastName && profileRole && profileCommune &&
-        profileCollectivityType && profileCollectivitySize && profilePoliticalAffiliation &&
+        profileCollectivityType && profileCollectivityOther && profileCollectivityOtherWrap &&
+        profileCollectivitySize && profilePoliticalAffiliation &&
         profileHasOtherJob && profileOtherJobTitle && profileOtherJobWrap
       ) {
         profileFirstName.value = firstName;
@@ -518,11 +565,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         profileRole.value = role === 'élu·e local·e' ? '' : role;
         profileCommune.value = commune;
         profileCollectivityType.value = normalizeText(personalInfo.collectivity_type);
+        profileCollectivityOther.value = normalizeText(personalInfo.collectivity_other);
         profileCollectivitySize.value = normalizeText(personalInfo.collectivity_size);
         profilePoliticalAffiliation.value = normalizeText(personalInfo.political_affiliation || profile?.parti_label);
         profileHasOtherJob.checked = Boolean(personalInfo.has_other_job);
         profileOtherJobTitle.value = normalizeText(personalInfo.other_job_title);
         profileOtherJobWrap.style.display = profileHasOtherJob.checked ? 'grid' : 'none';
+        profileCollectivityOtherWrap.style.display = profileCollectivityType.value === 'autre' ? 'grid' : 'none';
+
+        profileCollectivityType.addEventListener('change', () => {
+          const isOther = profileCollectivityType.value === 'autre';
+          profileCollectivityOtherWrap.style.display = isOther ? 'grid' : 'none';
+          if (!isOther) profileCollectivityOther.value = '';
+        });
 
         profileHasOtherJob.addEventListener('change', () => {
           profileOtherJobWrap.style.display = profileHasOtherJob.checked ? 'grid' : 'none';
@@ -564,6 +619,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 personalInfo: {
                   last_name: lastNameValue || null,
                   collectivity_type: profileCollectivityType.value || null,
+                  collectivity_other: profileCollectivityType.value === 'autre' ? (profileCollectivityOther.value.trim() || null) : null,
                   collectivity_size: profileCollectivitySize.value || null,
                   political_affiliation: affiliationValue || null,
                   has_other_job: profileHasOtherJob.checked,
@@ -578,8 +634,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             }
 
             const displayName = [firstNameValue, lastNameValue].filter(Boolean).join(' ');
-            document.getElementById('profileName')!.textContent = displayName || firstNameValue || user.email?.split('@')[0] || 'Mon compte';
+            document.getElementById('profileName')!.textContent = displayName || firstNameValue || 'Profil à compléter';
             document.getElementById('profileMeta')!.textContent = [getRoleLabel(roleValue || diagnosticState?.role), communeValue].filter(Boolean).join(' — ');
+
+            if (identityStatus) {
+              const missingIdentity = !firstNameValue || !lastNameValue;
+              identityStatus.textContent = missingIdentity ? 'Nom et prénom à compléter.' : 'Identité complétée.';
+              identityStatus.classList.toggle('dashboard-identity-status--warn', missingIdentity);
+              identityStatus.classList.toggle('dashboard-identity-status--ok', !missingIdentity);
+              identityStatus.style.display = 'block';
+            }
 
             if (profileFormFeedback) {
               profileFormFeedback.textContent = 'Profil mis à jour.';
@@ -1015,6 +1079,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     line-height: 1.5;
   }
 
+  .dashboard-identity-status {
+    margin: 0.55rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .dashboard-identity-status--warn {
+    color: #8A1C2B;
+  }
+
+  .dashboard-identity-status--ok {
+    color: #1B5E3B;
+  }
+
   .dashboard-account-stats {
     display: grid;
     gap: 0.85rem;
@@ -1226,6 +1304,62 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 0.6rem 1rem;
     border-radius: 12px;
     text-decoration: none;
+  }
+
+  .dashboard-head-cta-secondary {
+    font-size: 0.88rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 12px;
+    text-decoration: none;
+  }
+
+  .dashboard-block-head--sub {
+    margin-top: 1.1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border);
+    margin-bottom: 0.9rem;
+  }
+
+  .dashboard-block-head--sub h3 {
+    margin: 0;
+    font-size: 1.08rem;
+    color: var(--deep);
+  }
+
+  .dashboard-create-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .dashboard-create-card {
+    display: grid;
+    gap: 0.35rem;
+    border: 1px solid var(--border);
+    background: #FCFCFB;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--deep);
+    padding: 0.85rem 0.9rem;
+    min-height: 92px;
+  }
+
+  .dashboard-create-card strong {
+    font-size: 0.95rem;
+    line-height: 1.2;
+  }
+
+  .dashboard-create-card span {
+    font-size: 0.83rem;
+    line-height: 1.4;
+    color: #51606B;
+    font-weight: 600;
+  }
+
+  .dashboard-create-card:hover,
+  .dashboard-create-card:focus-visible {
+    border-color: var(--deep);
+    outline: none;
   }
 
   .dashboard-block-head h2 {
@@ -1458,6 +1592,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     .dashboard-action-grid,
     .dashboard-topics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-create-grid {
       grid-template-columns: 1fr;
     }
 

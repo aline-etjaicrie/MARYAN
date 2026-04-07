@@ -183,6 +183,7 @@ export const POST: APIRoute = async ({ request }) => {
       ...existingPersonal,
       last_name: sanitizeText(personalInput.last_name),
       collectivity_type: sanitizeText(personalInput.collectivity_type),
+      collectivity_other: sanitizeText(personalInput.collectivity_other),
       collectivity_size: sanitizeText(personalInput.collectivity_size),
       political_affiliation: sanitizeText(personalInput.political_affiliation),
       has_other_job: hasOtherJob,
