@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/BaseLayout.astro';
+import heroScene from '../assets/maryan-hero-mandat.png';
 
 const microProofs = [
   'Répondre à une interpellation sans se fragiliser',
@@ -119,7 +121,11 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container hero-grid">
       <div class="hero-copy">
         <span class="label-v3">Copilote de mandat</span>
-        <h1>Une situation de mandat. Une réponse exploitable.</h1>
+        <h1>
+          Une <span class="accent-keyword">situation</span> de mandat.
+          <br />
+          Une réponse <span class="accent-keyword">exploitable</span>.
+        </h1>
         <p class="hero-subtitle">
           MARYAN aide les élu·es à clarifier une situation, trancher plus vite et passer à l’action
           sans se fragiliser.
@@ -144,6 +150,18 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
           <span class="dot"></span>
           <strong>Copilote MARYAN</strong>
         </div>
+        <figure class="hero-photo-frame">
+          <Image
+            src={heroScene}
+            alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
+            class="hero-photo"
+            widths={[720, 960, 1280]}
+            sizes="(max-width: 1024px) calc(100vw - 4rem), 42vw"
+            quality={84}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
         <div class="product-body">
           <div class="product-input">
             <span>Situation</span>
@@ -176,7 +194,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Situations</span>
-        <h2>Vous reconnaissez ces moments ?</h2>
+        <h2>Vous reconnaissez ces <span class="accent-keyword">moments</span> ?</h2>
       </div>
 
       <div class="situations-grid">
@@ -197,7 +215,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Méthode</span>
-        <h2>En pratique, ça donne ça</h2>
+        <h2>En <span class="accent-keyword">pratique</span>, ça donne ça</h2>
         <p class="section-intro">
           MARYAN ne part pas d’une consigne abstraite. Il commence par relire la situation que vous
           vivez.
@@ -241,7 +259,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Différence</span>
-        <h2>Pensé pour le mandat local, pas pour répondre à tout.</h2>
+        <h2>
+          Pensé pour le <span class="accent-keyword">mandat local</span>, pas pour répondre à tout.
+        </h2>
       </div>
 
       <div class="comparison-shell">
@@ -263,7 +283,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Impact concret</span>
-        <h2>Ce que MARYAN change dans des situations très concrètes</h2>
+        <h2>Ce que MARYAN <span class="accent-keyword">change</span> dans des situations très concrètes</h2>
       </div>
 
       <div class="scenario-grid">
@@ -289,7 +309,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       <div class="credibility-shell">
         <div class="section-head section-head-light">
           <span class="label-v3">Crédibilité</span>
-          <h2>Conçu à partir du réel, pas d’un chatbot générique.</h2>
+          <h2>Conçu à partir du <span class="accent-keyword">réel</span>, pas d’un chatbot générique.</h2>
         </div>
 
         <div class="credibility-points">
@@ -322,7 +342,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head section-head-center">
         <span class="label-v3">Accès</span>
-        <h2>Simple à démarrer</h2>
+        <h2>Simple à <span class="accent-keyword">démarrer</span></h2>
       </div>
 
       <div class="offers-grid">
@@ -354,7 +374,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
   <section class="section-v3 final-cta-section">
     <div class="container">
       <div class="final-cta-panel">
-        <h2>Prêt à tester sur une vraie situation de votre mandat ?</h2>
+        <h2>
+          Prêt à tester sur une vraie <span class="accent-keyword">situation</span> de votre mandat ?
+        </h2>
         <div class="final-cta-actions">
           <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
           <a href="/copilote" class="btn-secondary-v3">Tester une situation réelle</a>
@@ -364,6 +386,13 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
   </section>
 
   <style>
+    .accent-keyword {
+      color: var(--neon);
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-weight: 700;
+    }
+
     .home-hero {
       background:
         radial-gradient(circle at top left, rgba(230, 57, 70, 0.16), transparent 34%),
@@ -451,6 +480,23 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       border-radius: 28px;
       padding: 1.2rem;
       backdrop-filter: blur(8px);
+    }
+
+    .hero-photo-frame {
+      margin: 0 0 0.9rem;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 8;
+      object-fit: cover;
+      object-position: 42% 56%;
     }
 
     .product-bar {
