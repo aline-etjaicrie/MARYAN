@@ -256,7 +256,10 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
           <span class="hub-card-desc">Posez une question, explorez une situation, trouvez une piste.</span>
         </button>
       </div>
-      <p class="hub-footer-link"><a href="/mon-compte">← Mon espace MARYAN</a></p>
+      <div class="hub-footer-links">
+        <a href="/">← Accueil</a>
+        <a href="/mon-compte">Mon espace MARYAN</a>
+      </div>
     </div>
   </div>
 
@@ -1933,19 +1936,22 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
       line-height: 1.5;
     }
 
-    .hub-footer-link {
+    .hub-footer-links {
       margin-top: 2rem;
-      text-align: center;
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
     }
 
-    .hub-footer-link a {
+    .hub-footer-links a {
       color: rgba(100, 255, 218, 0.6);
       font-size: 0.85rem;
       font-weight: 700;
       text-decoration: none;
+      transition: color 0.15s;
     }
 
-    .hub-footer-link a:hover { color: #64FFDA; }
+    .hub-footer-links a:hover { color: #64FFDA; }
 
     @media (min-width: 640px) {
       .hub-cards {
