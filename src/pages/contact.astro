@@ -10,11 +10,16 @@ import InternalHeader from '../components/InternalHeader.astro';
   <InternalHeader 
     label="Contact direct"
     title="Échanger autour de <span class='emphasis'>votre mandat</span>"
-    subtitle="Pour une démonstration, un devis pour votre collectivité ou un appui ponctuel sur un dossier sensible."
+    subtitle="Démo, devis collectivité ou appui ponctuel sur un dossier sensible."
   />
 
   <main class="contact-v3">
     <div class="container-narrow">
+      <div class="contact-signals" aria-label="Informations utiles">
+        <div class="contact-signal">Réponse sous 24h à 48h</div>
+        <div class="contact-signal">Démo individuelle ou collective</div>
+        <div class="contact-signal">Échange confidentiel</div>
+      </div>
       
       <div id="contactFormWrapper" class="card-v3 contact-card-v3">
         <form id="contactForm" class="form-v3">
@@ -32,7 +37,7 @@ import InternalHeader from '../components/InternalHeader.astro';
 
           <div class="form-group-v3">
             <label for="email">Email institutionnel</label>
-            <input type="email" id="email" name="email" required placeholder="votre@mairie.fr" />
+            <input type="email" id="email" name="email" required placeholder="Adresse email" />
           </div>
 
           <div class="form-row-v3">
@@ -75,7 +80,7 @@ import InternalHeader from '../components/InternalHeader.astro';
 
           <div class="form-footer-v3">
             <button type="submit" class="btn-primary-v3 big" id="submitBtn">Envoyer ma demande</button>
-            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par l'équipe MARYAN pour répondre à votre demande. Confidentialité garantie.</p>
+            <p class="form-consent-v3">En envoyant ce formulaire, vous acceptez que vos données soient traitées par MARYAN pour répondre à votre demande. <a href="/confidentialite">Politique de confidentialité</a></p>
           </div>
         </form>
       </div>
@@ -92,8 +97,26 @@ import InternalHeader from '../components/InternalHeader.astro';
   </main>
 
   <style>
+    .hidden { display: none !important; }
     .contact-v3 { padding-bottom: 8rem; }
     .container-narrow { max-width: 700px; margin: 0 auto; padding: 0 1.5rem; }
+    .contact-signals {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: -1rem 0 1.25rem;
+    }
+    .contact-signal {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.8rem 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--deep);
+    }
     .contact-card-v3 { padding: 4rem; margin-top: -2rem; }
 
     .form-v3 { display: flex; flex-direction: column; gap: 2rem; }
@@ -120,12 +143,14 @@ import InternalHeader from '../components/InternalHeader.astro';
 
     .form-footer-v3 { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; margin-top: 1rem; }
     .form-consent-v3 { font-size: 0.8rem; opacity: 0.5; text-align: center; max-width: 400px; line-height: 1.4; }
+    .form-consent-v3 a { color: var(--deep); font-weight: 700; }
 
     /* Success State */
     .success-box-v3 { padding: 5rem 3rem; background: #fff; border: 2px solid var(--neon); }
     .success-icon-v3 { width: 60px; height: 60px; background: var(--neon); color: var(--deep); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; margin: 0 auto 2rem; }
 
     @media (max-width: 600px) {
+      .contact-signals { grid-template-columns: 1fr; margin: -1rem 0 1rem; }
       .form-row-v3 { grid-template-columns: 1fr; }
       .contact-card-v3 { padding: 2rem 1.5rem; }
     }
@@ -158,7 +183,7 @@ import InternalHeader from '../components/InternalHeader.astro';
           success.classList.remove('hidden');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          alert("Une erreur est survenue. Veuillez réessayer ou contacter directment aline@etjaicrie.com");
+          alert("Une erreur est survenue. Veuillez réessayer ou utiliser le formulaire de contact.");
           btn.innerText = "Envoyer ma demande";
           btn.disabled = false;
         }
