@@ -968,6 +968,20 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
         });
 
         const data = await res.json() as Record<string, any>;
+
+        // Paywall : abonnement requis
+        if (res.status === 401 || res.status === 403) {
+          docAnalyseBtn.disabled = false;
+          document.getElementById('doc-btn-label')!.style.display = 'inline';
+          document.getElementById('doc-btn-spinner')!.style.display = 'none';
+          docInputError.innerHTML = `
+            <strong>Service réservé aux abonné·es MARYAN Plus.</strong><br>
+            <a href="/offres" style="color:var(--deep);font-weight:800;text-decoration:underline">Découvrir MARYAN Plus →</a>
+          `;
+          docInputError.style.display = 'block';
+          return;
+        }
+
         if (!res.ok || data.error) throw new Error(data.error || 'Erreur lors de l\'analyse.');
 
         // Build text for copy/save

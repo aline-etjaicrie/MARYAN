@@ -477,17 +477,69 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         function renderFolders() {
           const list = document.getElementById('docsFoldersList')!;
           list.innerHTML = allDossiers.map(d => `
-            <button class="docs-folder-btn${currentDossier === d ? ' docs-folder-btn--active' : ''}"
-              data-folder="${escDoc(d)}" type="button">
-              ${escDoc(d)}
-            </button>
+            <span class="docs-folder-chip${currentDossier === d ? ' docs-folder-btn--active' : ''}" data-folder="${escDoc(d)}">
+              <button class="docs-folder-btn${currentDossier === d ? ' docs-folder-btn--active' : ''}"
+                data-folder-select="${escDoc(d)}" type="button" title="Clic : sélectionner · Double-clic : renommer">
+                ${escDoc(d)}
+              </button>
+            </span>
           `).join('');
-          list.querySelectorAll('[data-folder]').forEach(btn => {
+
+          // Sélectionner dossier
+          list.querySelectorAll('[data-folder-select]').forEach(btn => {
             btn.addEventListener('click', () => {
-              currentDossier = btn.getAttribute('data-folder');
+              currentDossier = btn.getAttribute('data-folder-select');
               renderFolders();
               loadDocuments(currentDossier!);
               closePanelIfOpen();
+            });
+
+            // Double-clic → renommer
+            btn.addEventListener('dblclick', (e) => {
+              e.stopPropagation();
+              const folderName = btn.getAttribute('data-folder-select')!;
+              const chip = btn.closest('[data-folder]') as HTMLElement;
+              const input = document.createElement('input');
+              input.type = 'text';
+              input.value = folderName;
+              input.className = 'docs-folder-rename-input';
+              input.maxLength = 60;
+              chip.innerHTML = '';
+              chip.appendChild(input);
+              input.focus();
+              input.select();
+
+              async function commitRename() {
+                const newName = input.value.trim();
+                if (!newName || newName === folderName) {
+                  renderFolders();
+                  return;
+                }
+                try {
+                  const res = await fetch('/api/documents', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ rename_folder: { from: folderName, to: newName } })
+                  });
+                  if (res.ok) {
+                    const idx = allDossiers.indexOf(folderName);
+                    if (idx !== -1) allDossiers[idx] = newName;
+                    if (currentDossier === folderName) currentDossier = newName;
+                    renderFolders();
+                    loadDocuments(currentDossier!);
+                  } else {
+                    renderFolders();
+                  }
+                } catch {
+                  renderFolders();
+                }
+              }
+
+              input.addEventListener('blur', commitRename);
+              input.addEventListener('keydown', (ev: KeyboardEvent) => {
+                if (ev.key === 'Enter') { input.blur(); }
+                if (ev.key === 'Escape') { input.value = folderName; input.blur(); }
+              });
             });
           });
         }
@@ -1142,6 +1194,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .docs-new-folder-btn:hover { border-color: var(--deep); color: var(--deep); }
+
+  .docs-folder-chip { display: inline-flex; }
+
+  .docs-folder-rename-input {
+    border: 1.5px solid var(--deep);
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--deep);
+    outline: none;
+    min-width: 80px;
+    max-width: 180px;
+  }
 
   .docs-new-folder-form {
     display: flex;
