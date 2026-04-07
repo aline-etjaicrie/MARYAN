@@ -1,141 +1,172 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '../layouts/BaseLayout.astro';
-import heroScene from '../assets/maryan-hero-mandat.png';
 
-const heroPreview = [
+const microProofs = [
+  'Répondre à une interpellation sans se fragiliser',
+  'Arbitrer avec des marges de manœuvre plus claires',
+  'Agir quand le temps manque ou que ça bloque'
+];
+
+const situations = [
   {
-    title: 'Situation',
-    copy: 'Comprendre ce qui se joue vraiment avant d’agir.'
+    title: 'Interpellation publique sur un sujet sensible',
+    text: 'MARYAN relit les enjeux, les risques et les marges de réponse.',
+    result: 'Une réponse plus juste, sans promesse intenable.'
   },
   {
-    title: 'Priorité',
-    copy: 'Identifier le sujet à traiter en premier.'
+    title: 'Arbitrage budgétaire ou décision floue',
+    text: 'MARYAN structure les options, les impacts et les points de vigilance.',
+    result: 'Une décision plus claire et plus assumable.'
   },
   {
-    title: 'Suite',
-    copy: 'Choisir le bon niveau d’appui pour avancer.'
+    title: 'Conseil municipal préparé dans l’urgence',
+    text: 'MARYAN aide à remettre de l’ordre, du cadre et des priorités.',
+    result: 'Une préparation plus sûre, sans dispersion.'
+  },
+  {
+    title: 'Début de mandat, repères encore flous',
+    text: 'MARYAN aide à prioriser et à retrouver un cadre institutionnel lisible.',
+    result: 'Une montée en compétence plus rapide.'
   }
 ];
 
-const diagnosticPoints = [
+const steps = [
   {
-    title: 'Clarifier votre situation',
-    copy: 'Nommer plus clairement ce qui se joue dans votre mandat.'
+    title: 'Vous décrivez votre situation',
+    text: 'Question libre ou diagnostic guidé.'
   },
   {
-    title: 'Identifier vos priorités',
-    copy: 'Faire ressortir ce qui demande votre attention en premier.'
+    title: 'MARYAN fait remonter le vrai nœud',
+    text: 'Ce qui relève du contexte, du risque, de la marge de manœuvre et de la bonne lecture de la situation.'
   },
   {
-    title: 'Savoir quoi faire en premier',
-    copy: 'Repartir avec une direction lisible, sans dispersion.'
+    title: 'Vous repartez avec une réponse structurée',
+    text: 'Enjeux, options, vigilance, prochaine étape.'
   }
 ];
 
-const copilotePoints = [
-  'une situation à gérer',
-  'une décision à prendre',
-  'un doute à lever'
+const comparisonRows = [
+  {
+    generic: 'Point de départ = question générique',
+    maryan: 'Point de départ = situation réelle du mandat'
+  },
+  {
+    generic: 'Contexte intégré = faible ou absent',
+    maryan: 'Contexte intégré = règles, marges de manœuvre, risques, repères de mandat'
+  },
+  {
+    generic: 'Type de réponse = texte souvent long',
+    maryan: 'Type de réponse = structure claire + prochaine étape'
+  },
+  {
+    generic: 'Finalité = produire du texte',
+    maryan: 'Finalité = aider à décider, répondre et tenir sa position'
+  }
 ];
 
-const benefits = [
-  'comprendre plus rapidement',
-  'structurer vos décisions',
-  'éviter les erreurs classiques',
-  'gagner du temps au quotidien'
+const scenarios = [
+  {
+    title: 'Interpellation sensible',
+    before: 'Stress, réponse trop rapide, risque de surpromesse.',
+    after: 'Une réponse cadrée en 10 à 15 minutes, avec les bons points de vigilance.'
+  },
+  {
+    title: 'Décision à arbitrer',
+    before: 'Trop d’options, pas assez de lisibilité, difficulté à trancher.',
+    after: 'Un arbitrage plus clair, plus argumentable, plus tenable.'
+  },
+  {
+    title: 'Début de mandat',
+    before: 'Impression de courir après tous les sujets à la fois.',
+    after: 'Des repères plus solides et une meilleure priorisation.'
+  }
 ];
 
 const credibilityPoints = [
-  'plus de 20 ans d’expérience en communication publique et en cabinet',
-  'une connaissance directe des pratiques institutionnelles',
-  'des situations concrètes intégrées dans l’outil'
+  'Plus de 20 ans d’expérience en communication publique et en cabinet',
+  'Un outil nourri par des situations concrètes du mandat local',
+  'Un diagnostic, un copilote et des ressources conçus pour aider à comprendre, décider et agir'
 ];
 
-const individualOffer = [
-  'abonnement individuel',
-  'accès direct à l’outil',
-  'démarrage immédiat'
+const resourceExamples = [
+  {
+    label: 'Faire passer une délibération',
+    href: '/ressources/faire-passer-une-deliberation'
+  },
+  {
+    label: 'Quand l’administration freine',
+    href: '/ressources/administration-qui-freine'
+  },
+  {
+    label: 'Réseaux sociaux : ce qu’un élu peut et ne peut pas dire',
+    href: '/ressources/reseaux-sociaux-elu-ce-quon-peut-dire'
+  },
+  {
+    label: 'Prévenir et gérer les situations de VSS et harcèlement',
+    href: '/ressources/prevenir-gerer-vss-harcelement'
+  }
 ];
 
-const collectiveOffer = [
-  'accès groupé pour plusieurs élu.e.s',
-  'déploiement simple',
-  'moins de 10 € / élu.e / mois dans de nombreuses configurations'
-];
+const individualOffer = ['Diagnostic initial', 'Accès au copilote', 'Ressources', 'Activation immédiate'];
+const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement léger', 'Tarif ajusté selon le nombre d’élu·es'];
 ---
 
 <Layout
-  title="MARYAN — Le copilote de mandat au service de la clarté"
-  description="Faites le point en quelques minutes. Clarifiez votre situation, avancez avec des réponses adaptées à votre mandat, en accès individuel ou collectif."
+  title="MARYAN — Une situation de mandat. Une réponse exploitable."
+  description="MARYAN aide les élu·es à clarifier une situation, trancher plus vite et passer à l’action sans se fragiliser."
 >
   <section class="home-hero">
-    <div class="container">
-      <div class="home-hero-grid">
-        <div class="hero-copy">
-          <div class="hero-copy-head">
-            <h1>
-              <span class="hero-title-brand">MARYAN</span>
-              <span class="hero-title-line">
-                Le <span class="accent-keyword">copilote</span> de <span class="accent-keyword">mandat</span>
-              </span>
-              <span class="hero-title-line">
-                au service de la <span class="accent-keyword">clarté</span>
-              </span>
-            </h1>
-          </div>
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="label-v3">Copilote de mandat</span>
+        <h1>Une situation de mandat. Une réponse exploitable.</h1>
+        <p class="hero-subtitle">
+          MARYAN aide les élu·es à clarifier une situation, trancher plus vite et passer à l’action
+          sans se fragiliser.
+        </p>
 
-          <div class="hero-copy-body">
-            <p class="hero-hook">
-              Exercer un mandat aujourd’hui est complexe.
-              <br />
-              Vous n’êtes pas censé.e tout savoir.
-            </p>
+        <ul class="hero-proofs">
+          {microProofs.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
 
-            <p class="hero-support">
-              Faites le point en quelques minutes.
-              <br />
-              Avancez avec des réponses adaptées à votre situation.
-            </p>
-
-            <div class="hero-actions">
-              <a href="/diagnostic" class="btn-primary-v3 hero-primary">Lancer le diagnostic</a>
-              <a href="/copilote" class="btn-secondary-v3 hero-secondary">Poser une question</a>
-            </div>
-
-            <p class="hero-note">Le diagnostic ouvre le parcours, en accès individuel comme en déploiement collectif.</p>
-          </div>
-        </div>
-
-        <div class="hero-media">
-          <figure class="hero-scene">
-            <div class="hero-scene-frame">
-              <Image
-                src={heroScene}
-                alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
-                class="hero-scene-image"
-                widths={[720, 960, 1280]}
-                sizes="(max-width: 1024px) calc(100vw - 4rem), 46vw"
-                quality={84}
-                loading="eager"
-                fetchpriority="high"
-              />
-            </div>
-          </figure>
+        <div class="hero-actions">
+          <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Tester une situation réelle</a>
         </div>
       </div>
 
-      <aside class="hero-context-card">
-        <span class="label-v3">Première étape</span>
-        <h2>Le diagnostic vous donne une première direction.</h2>
-
-        <div class="hero-context-grid">
-          {heroPreview.map((item) => (
-            <div class="hero-context-item">
-              <strong>{item.title}</strong>
-              <span>{item.copy}</span>
-            </div>
-          ))}
+      <aside class="hero-product card-v3" aria-label="Aperçu du produit">
+        <div class="product-bar">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <strong>Copilote MARYAN</strong>
+        </div>
+        <div class="product-body">
+          <div class="product-input">
+            <span>Situation</span>
+            <p>
+              « Interpellation en conseil sur un dossier sensible. Je dois répondre sans fermer la
+              discussion ni promettre ce que je ne peux pas tenir. »
+            </p>
+          </div>
+          <div class="product-flow" aria-hidden="true">
+            <span>Situation</span>
+            <span>Clarification</span>
+            <span>Options</span>
+            <span>Prochaine étape</span>
+          </div>
+          <div class="product-output">
+            <h3>Réponse structurée</h3>
+            <ul>
+              <li><strong>Enjeu :</strong> préserver la confiance sans surpromesse.</li>
+              <li><strong>Option recommandée :</strong> réponse cadrée + calendrier de suivi.</li>
+              <li><strong>Vigilance :</strong> distinguer engagement politique et faisabilité technique.</li>
+              <li><strong>Prochaine étape :</strong> formuler une réponse orale de 90 secondes.</li>
+            </ul>
+          </div>
         </div>
       </aside>
     </div>
@@ -144,260 +175,267 @@ const collectiveOffer = [
   <section class="section-v3">
     <div class="container">
       <div class="section-head">
-        <span class="label-v3">Diagnostic</span>
-        <h2>Par où <span class="accent-keyword">commencer</span> ?</h2>
-        <p class="section-intro">Le diagnostic vous permet de :</p>
+        <span class="label-v3">Situations</span>
+        <h2>Vous reconnaissez ces moments ?</h2>
       </div>
 
-      <div class="point-grid point-grid-three">
-        {diagnosticPoints.map((point, index) => (
-          <article class="point-card">
-            <span class="point-index">{String(index + 1).padStart(2, '0')}</span>
-            <h3>{point.title}</h3>
-            <p>{point.copy}</p>
+      <div class="situations-grid">
+        {situations.map((item) => (
+          <article class="usage-card card-v3">
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+            <p class="result-line">
+              <span>Résultat :</span> {item.result}
+            </p>
           </article>
         ))}
       </div>
-
-      <div class="section-close">
-        <p class="section-conclusion">En quelques minutes, vous avez une direction claire.</p>
-        <a href="/diagnostic" class="btn-primary-v3">Lancer le diagnostic</a>
-      </div>
     </div>
   </section>
 
-  <section class="section-v3 section-copilote">
-    <div class="container copilote-grid">
-      <div class="section-head section-head-light">
-        <span class="label-v3">Copilote</span>
-        <h2>
-          Une question concrète, une réponse
-          <span class="accent-keyword"> structurée</span>
-        </h2>
-        <p class="section-intro">
-          Posez votre question.
-          <br />
-          Obtenez une réponse claire, directement applicable.
-        </p>
-        <p class="copilote-note">
-          <strong>Un appui, pas un substitut.</strong>
-          <br />
-          Pour décider plus clairement, plus vite, avec plus de sécurité.
-        </p>
-        <a href="/copilote" class="btn-secondary-v3">Accéder au copilote</a>
-      </div>
-
-      <div class="copilote-panel">
-        <span class="copilote-panel-label">Pour traiter</span>
-        <ul class="copilote-list">
-          {copilotePoints.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-v3 benefits-section">
+  <section id="comment-ca-marche" class="section-v3 section-how">
     <div class="container">
-      <div class="section-head section-head-center">
-        <span class="label-v3">Bénéfices</span>
-        <h2>Moins <span class="accent-keyword">subir</span>. Plus <span class="accent-keyword">agir</span>.</h2>
+      <div class="section-head">
+        <span class="label-v3">Méthode</span>
+        <h2>En pratique, ça donne ça</h2>
+        <p class="section-intro">
+          MARYAN ne part pas d’une consigne abstraite. Il commence par relire la situation que vous
+          vivez.
+        </p>
       </div>
 
-      <div class="point-grid point-grid-four">
-        {benefits.map((benefit) => (
-          <article class="point-card benefit-card">
-            <h3>{benefit}</h3>
+      <div class="steps-grid">
+        {steps.map((step, index) => (
+          <article class="step-card card-v3">
+            <span class="step-index">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
           </article>
         ))}
       </div>
 
-      <p class="section-conclusion section-conclusion-center">Être plus serein dans son mandat.</p>
+      <div class="mockups-grid">
+        <article class="mockup-card card-v3">
+          <span class="mockup-label">Exemple — Entrée utilisateur</span>
+          <h3>Question saisie dans le copilote</h3>
+          <p>
+            « Conseil municipal demain. Le sujet est conflictuel. Je veux rester ferme sur le cadre,
+            sans fermer la discussion. »
+          </p>
+        </article>
+        <article class="mockup-card card-v3">
+          <span class="mockup-label">Exemple — Sortie structurée</span>
+          <h3>Réponse exploitable</h3>
+          <ul>
+            <li>Lecture politique de la situation</li>
+            <li>Options argumentées</li>
+            <li>Points de vigilance</li>
+            <li>Prochaine étape activable</li>
+          </ul>
+        </article>
+      </div>
     </div>
   </section>
 
-  <section class="section-v3 credibility-section">
+  <section class="section-v3 section-compare">
+    <div class="container">
+      <div class="section-head">
+        <span class="label-v3">Différence</span>
+        <h2>Pensé pour le mandat local, pas pour répondre à tout.</h2>
+      </div>
+
+      <div class="comparison-shell">
+        <div class="comparison-head comparison-row">
+          <strong>IA généraliste</strong>
+          <strong>MARYAN</strong>
+        </div>
+        {comparisonRows.map((row) => (
+          <div class="comparison-row">
+            <p>{row.generic}</p>
+            <p>{row.maryan}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-v3">
+    <div class="container">
+      <div class="section-head">
+        <span class="label-v3">Impact concret</span>
+        <h2>Ce que MARYAN change dans des situations très concrètes</h2>
+      </div>
+
+      <div class="scenario-grid">
+        {scenarios.map((scenario) => (
+          <article class="scenario-card card-v3">
+            <h3>{scenario.title}</h3>
+            <div class="scenario-lines">
+              <p>
+                <strong>Avant :</strong> {scenario.before}
+              </p>
+              <p>
+                <strong>Après :</strong> {scenario.after}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-v3 section-credibility">
     <div class="container">
       <div class="credibility-shell">
         <div class="section-head section-head-light">
           <span class="label-v3">Crédibilité</span>
-          <h2>
-            Un outil conçu à partir de la <span class="accent-keyword">réalité</span> du
-            <span class="accent-keyword"> mandat</span>
-          </h2>
+          <h2>Conçu à partir du réel, pas d’un chatbot générique.</h2>
         </div>
 
-        <div class="point-grid point-grid-three">
-          {credibilityPoints.map((item) => (
+        <div class="credibility-points">
+          {credibilityPoints.map((point) => (
             <article class="credibility-card">
-              <p>{item}</p>
+              <p>{point}</p>
             </article>
           ))}
         </div>
 
-        <p class="credibility-conclusion">Une IA construite à partir de cas réels, pas une IA abstraite.</p>
+        <div class="resource-examples card-v3">
+          <h3>Exemples de ressources</h3>
+          <ul>
+            {resourceExamples.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="proof-slot" aria-label="Emplacement futur pour retour d'expérience">
+          <p>Emplacement réservé pour un retour d’expérience terrain (pilote ou témoignage vérifié).</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section-v3 offers-section">
+  <section class="section-v3">
     <div class="container">
       <div class="section-head section-head-center">
         <span class="label-v3">Accès</span>
-        <h2>Choisir le bon format d’<span class="accent-keyword">accès</span></h2>
-        <p class="section-intro section-intro-narrow">
-          MARYAN s’adresse aux élu.e.s qui veulent avancer seul.e.s comme aux équipes qui veulent
-          équiper plusieurs élu.e.s.
-        </p>
+        <h2>Simple à démarrer</h2>
       </div>
 
       <div class="offers-grid">
         <article class="offer-card card-v3">
-          <span class="offer-audience">Pour un.e élu.e</span>
-          <h3>Un accès individuel, direct et simple à activer.</h3>
+          <span class="offer-audience">Pour un élu</span>
+          <h3>Un accès individuel, activable immédiatement.</h3>
           <ul class="clean-list">
             {individualOffer.map((item) => (
               <li>{item}</li>
             ))}
           </ul>
-          <a href="/offres" class="btn-primary-v3">Découvrir les offres</a>
+          <a href="/offres" class="btn-primary-v3">Voir les offres</a>
         </article>
 
-        <article class="offer-card offer-card-highlight">
+        <article class="offer-card offer-card-dark">
           <span class="offer-audience">Pour une équipe ou une collectivité</span>
-          <h3>Un format pensé pour déployer MARYAN à plusieurs.</h3>
+          <h3>Un déploiement léger, avec un cadre d’usage commun.</h3>
           <ul class="clean-list">
-            {collectiveOffer.map((item) => (
+            {teamOffer.map((item) => (
               <li>{item}</li>
             ))}
           </ul>
           <a href="/contact" class="btn-secondary-v3">Demander une démo</a>
         </article>
       </div>
+    </div>
+  </section>
 
+  <section class="section-v3 final-cta-section">
+    <div class="container">
       <div class="final-cta-panel">
-        <p>Anticiper, plutôt que subir.</p>
+        <h2>Prêt à tester sur une vraie situation de votre mandat ?</h2>
         <div class="final-cta-actions">
-          <a href="/diagnostic" class="btn-primary-v3 hero-primary">Lancer le diagnostic</a>
-          <a href="/offres" class="btn-secondary-v3">Voir les offres</a>
+          <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+          <a href="/copilote" class="btn-secondary-v3">Tester une situation réelle</a>
         </div>
       </div>
     </div>
   </section>
 
   <style>
-    .accent-keyword {
-      color: var(--neon) !important;
-      font-family: var(--font-accent);
-      font-style: italic;
-      font-weight: 700;
-      display: inline;
-      white-space: normal;
-    }
-
     .home-hero {
-      position: relative;
-      overflow: hidden;
       background:
         radial-gradient(circle at top left, rgba(230, 57, 70, 0.16), transparent 34%),
         radial-gradient(circle at bottom right, rgba(173, 255, 47, 0.14), transparent 32%),
         var(--deep);
       color: white;
-      padding: 5.5rem 0 6.25rem;
-      border-bottom: 1px solid rgba(173, 255, 47, 0.24);
+      padding: 5.5rem 0;
     }
 
-    .home-hero > .container {
-      max-width: 1280px;
-    }
-
-    .home-hero-grid {
-      position: relative;
-      z-index: 1;
+    .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.08fr);
-      gap: 2.5rem;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.4rem;
       align-items: stretch;
-      margin-bottom: 1.2rem;
     }
 
-    .hero-copy {
-      max-width: 38rem;
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-    }
-
-    .hero-copy-head {
-      max-width: 34rem;
-    }
-
-    .hero-copy-body {
-      margin-top: auto;
-      padding-top: 2rem;
-    }
-
-    .home-hero h1,
-    .section-head h2 {
+    .hero-copy h1 {
+      color: white;
+      font-size: clamp(2.1rem, 4vw, 3.6rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin: 0 0 1.1rem;
       text-wrap: balance;
     }
 
-    .home-hero h1 {
-      color: white;
-      font-size: clamp(2.8rem, 5.1vw, 4.9rem);
-      line-height: 0.98;
-      letter-spacing: -0.045em;
-      margin-bottom: 1.4rem;
+    .hero-subtitle {
+      margin: 0 0 1.5rem;
+      color: rgba(255, 255, 255, 0.86);
+      max-width: 42ch;
+      line-height: 1.65;
     }
 
-    .hero-title-brand,
-    .hero-title-line {
-      display: block;
+    .hero-proofs {
+      list-style: none;
+      display: grid;
+      gap: 0.65rem;
+      margin: 0 0 1.5rem;
+      padding: 0;
     }
 
-    .hero-title-brand {
-      margin-bottom: 1rem;
-      font-size: clamp(0.95rem, 1.5vw, 1.08rem);
-      line-height: 1.2;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .hero-hook {
-      max-width: 34rem;
-      margin: 0 0 1rem;
-      font-size: clamp(1.18rem, 2vw, 1.45rem);
+    .hero-proofs li {
+      position: relative;
+      padding-left: 1rem;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 0.98rem;
       line-height: 1.5;
-      font-weight: 600;
-      color: white;
     }
 
-    .hero-support {
-      max-width: 34rem;
-      margin: 0 0 1.75rem;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.8);
+    .hero-proofs li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.72rem;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neon);
+      transform: translateY(-50%);
     }
 
     .hero-actions,
     .final-cta-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.9rem;
       align-items: center;
     }
 
-    .hero-primary {
-      min-width: 16rem;
-    }
-
     .hero-secondary {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.13);
       color: white;
-      border-color: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .hero-secondary:hover,
@@ -407,111 +445,101 @@ const collectiveOffer = [
       border-color: white !important;
     }
 
-    .hero-note {
-      margin-top: 1rem;
-      color: rgba(255, 255, 255, 0.68);
-      font-size: 0.94rem;
-      line-height: 1.55;
-    }
-
-    .hero-media {
-      display: flex;
-      align-items: stretch;
-      justify-content: flex-end;
-    }
-
-    .hero-scene {
-      margin: 0;
-      width: 100%;
-    }
-
-    .hero-scene-frame {
-      position: relative;
-      overflow: hidden;
-      border-radius: 36px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow:
-        0 12px 32px rgba(6, 13, 24, 0.16),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    }
-
-    .hero-scene-frame::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(10, 25, 47, 0.01) 0%, rgba(10, 25, 47, 0.1) 100%);
-    }
-
-    .hero-scene-image {
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 1.02 / 1;
-      object-fit: cover;
-      object-position: 42% 55%;
-    }
-
-    .hero-context-card {
+    .hero-product {
       background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 28px;
-      padding: 1.5rem;
+      padding: 1.2rem;
       backdrop-filter: blur(8px);
-      width: 100%;
     }
 
-    .hero-context-card .label-v3,
-    .section-head-light .label-v3,
-    .credibility-shell .label-v3 {
-      color: white !important;
+    .product-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.86rem;
+      margin-bottom: 0.95rem;
     }
 
-    .hero-context-card .label-v3::before,
-    .section-head-light .label-v3::before,
-    .credibility-shell .label-v3::before {
-      background: white !important;
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.42);
     }
 
-    .hero-context-card h2 {
+    .product-bar strong {
+      margin-left: 0.35rem;
       color: white;
-      font-size: clamp(1.4rem, 2vw, 1.8rem);
-      margin-bottom: 1rem;
-      line-height: 1.15;
+      letter-spacing: 0.03em;
     }
 
-    .hero-context-grid {
+    .product-body {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.8rem;
+      gap: 0.9rem;
     }
 
-    .hero-context-item {
-      padding: 0.95rem 1rem;
+    .product-input,
+    .product-output {
       border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(8, 20, 34, 0.52);
     }
 
-    .hero-context-item strong {
-      display: block;
-      margin-bottom: 0.3rem;
+    .product-input span,
+    .mockup-label {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--neon);
+      margin-bottom: 0.55rem;
+    }
+
+    .product-input p,
+    .product-output ul,
+    .product-output li {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.58;
+      font-size: 0.95rem;
+    }
+
+    .product-flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+
+    .product-flow span {
+      text-align: center;
+      border-radius: 999px;
+      padding: 0.45rem 0.55rem;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.88);
+      background: rgba(173, 255, 47, 0.1);
+      border: 1px solid rgba(173, 255, 47, 0.25);
+    }
+
+    .product-output h3 {
       color: white;
-      font-size: 0.98rem;
+      margin: 0 0 0.6rem;
+      font-size: 1.05rem;
     }
 
-    .hero-context-item span {
-      display: block;
-      color: rgba(255, 255, 255, 0.74);
-      font-size: 0.9rem;
-      line-height: 1.55;
+    .product-output ul {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      padding: 0;
     }
 
     .section-head {
       max-width: 46rem;
-      margin-bottom: 2.75rem;
+      margin-bottom: 2rem;
     }
 
     .section-head-center {
@@ -521,380 +549,420 @@ const collectiveOffer = [
     }
 
     .section-head h2 {
-      font-size: clamp(2.1rem, 4vw, 3.35rem);
-      margin-bottom: 1rem;
-    }
-
-    .section-head-light h2,
-    .section-head-light p,
-    .credibility-shell h2,
-    .credibility-shell p {
-      color: white !important;
+      font-size: clamp(1.8rem, 3.3vw, 3rem);
+      margin: 0 0 0.85rem;
+      text-wrap: balance;
     }
 
     .section-intro {
-      color: #54636C;
-      font-size: 1.06rem;
-      line-height: 1.7;
+      margin: 0;
+      color: #54636c;
+      line-height: 1.66;
+      max-width: 56ch;
     }
 
-    .section-intro-narrow {
-      max-width: 40rem;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .point-grid {
+    .situations-grid,
+    .steps-grid,
+    .scenario-grid,
+    .offers-grid {
       display: grid;
       gap: 1rem;
     }
 
-    .point-grid-three {
+    .situations-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .usage-card h3,
+    .step-card h3,
+    .scenario-card h3,
+    .offer-card h3,
+    .resource-examples h3,
+    .mockup-card h3 {
+      margin: 0 0 0.65rem;
+      font-size: 1.2rem;
+      line-height: 1.28;
+    }
+
+    .usage-card p,
+    .step-card p,
+    .scenario-card p,
+    .offer-card p,
+    .mockup-card p {
+      margin: 0;
+      color: #54636c;
+      line-height: 1.62;
+    }
+
+    .result-line {
+      margin-top: 0.65rem !important;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    .result-line span {
+      color: var(--deep);
+      font-weight: 700;
+    }
+
+    .section-how {
+      background: linear-gradient(180deg, #f8f9fa 0%, #eef3f7 100%);
+    }
+
+    .steps-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 1rem;
+    }
+
+    .step-index {
+      display: inline-block;
+      margin-bottom: 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--accent-red);
+    }
+
+    .mockups-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .mockup-card {
+      border: 1px solid rgba(10, 25, 47, 0.1);
+    }
+
+    .mockup-card ul {
+      margin: 0;
+      padding-left: 1rem;
+      display: grid;
+      gap: 0.45rem;
+      color: #54636c;
+    }
+
+    .section-compare {
+      background: var(--deep);
+    }
+
+    .section-compare .section-head h2,
+    .section-compare .section-head {
+      color: white;
+    }
+
+    .section-compare .label-v3 {
+      color: white;
+    }
+
+    .section-compare .label-v3::before {
+      background: white;
+    }
+
+    .comparison-shell {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .comparison-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .comparison-row:last-child {
+      border-bottom: 0;
+    }
+
+    .comparison-head {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .comparison-row strong {
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    .comparison-row p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.54;
+    }
+
+    .scenario-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .point-grid-four {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+    .scenario-lines {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 0.7rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border);
     }
 
-    .point-card {
-      padding: 1.5rem;
-      border-radius: 28px;
-      background: white;
-      border: 1px solid var(--border);
-      box-shadow: 0 18px 50px rgba(10, 25, 47, 0.05);
-    }
-
-    .point-index {
-      display: inline-block;
-      margin-bottom: 1rem;
-      font-size: 0.85rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      color: var(--accent-red);
-    }
-
-    .point-card h3 {
-      margin-bottom: 0.65rem;
-      font-size: 1.2rem;
-    }
-
-    .point-card p {
-      color: #54636C;
-    }
-
-    .section-close {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-top: 1.75rem;
-    }
-
-    .section-conclusion {
-      font-size: 1.08rem;
-      font-weight: 700;
+    .scenario-lines strong {
       color: var(--deep);
     }
 
-    .section-conclusion-center {
-      margin-top: 1.75rem;
-      text-align: center;
-    }
-
-    .section-copilote {
-      background:
-        radial-gradient(circle at top right, rgba(173, 255, 47, 0.1), transparent 24%),
-        linear-gradient(180deg, var(--deep) 0%, #11253B 100%);
-    }
-
-    .copilote-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .copilote-note {
-      margin: 0 0 1.75rem;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    .copilote-panel {
-      padding: 2rem;
-      border-radius: 32px;
-      background: rgba(255, 255, 255, 0.96);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 22px 60px rgba(4, 10, 18, 0.2);
-    }
-
-    .copilote-panel-label {
-      display: inline-block;
-      margin-bottom: 1rem;
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent-red);
-    }
-
-    .copilote-list {
-      list-style: none;
-      display: grid;
-      gap: 0.9rem;
-      padding: 0;
-      margin: 0;
-    }
-
-    .copilote-list li {
-      position: relative;
-      padding: 1rem 1.1rem 1rem 2.5rem;
-      border-radius: 20px;
-      background: rgba(10, 25, 47, 0.04);
-      border: 1px solid rgba(10, 25, 47, 0.07);
-      color: var(--deep);
-      font-size: 1.02rem;
-      font-weight: 700;
-      line-height: 1.5;
-    }
-
-    .copilote-list li::before {
-      content: '';
-      position: absolute;
-      left: 1rem;
-      top: 1.45rem;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--neon);
-      box-shadow: 0 0 10px rgba(173, 255, 47, 0.6);
-      transform: translateY(-50%);
-    }
-
-    .benefits-section {
-      background: linear-gradient(180deg, var(--bg) 0%, #EEF3F7 100%);
-    }
-
-    .benefit-card {
-      text-align: center;
-      min-height: 100%;
-    }
-
-    .benefit-card h3 {
-      margin: 0;
-      font-size: 1.15rem;
+    .section-credibility {
+      background: linear-gradient(180deg, #f8f9fa 0%, #edf2f6 100%);
     }
 
     .credibility-shell {
-      position: relative;
-      overflow: hidden;
-      padding: 2.5rem;
-      border-radius: 36px;
-      background:
-        radial-gradient(circle at bottom left, rgba(173, 255, 47, 0.14), transparent 28%),
-        var(--deep);
+      background: var(--deep);
+      border-radius: 28px;
+      padding: 2rem;
+    }
+
+    .section-head-light h2,
+    .section-head-light p {
+      color: white;
+    }
+
+    .section-head-light .label-v3 {
+      color: white;
+    }
+
+    .section-head-light .label-v3::before {
+      background: white;
+    }
+
+    .credibility-points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1rem;
     }
 
     .credibility-card {
-      padding: 1.4rem;
-      border-radius: 24px;
+      border-radius: 18px;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.13);
       background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .credibility-card p {
       margin: 0;
-      color: rgba(255, 255, 255, 0.82) !important;
-      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.89);
+      line-height: 1.55;
     }
 
-    .credibility-conclusion {
-      margin-top: 1.75rem;
-      font-size: 1.08rem;
-      font-weight: 700;
-      color: white !important;
+    .resource-examples {
+      margin-bottom: 0.9rem;
+      border-radius: 22px;
+      padding: 1.2rem;
+    }
+
+    .resource-examples ul {
+      list-style: none;
+      display: grid;
+      gap: 0.55rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .resource-examples a {
+      color: var(--deep);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .resource-examples a:hover {
+      color: var(--accent-red);
+    }
+
+    .proof-slot {
+      border: 1px dashed rgba(255, 255, 255, 0.28);
+      border-radius: 16px;
+      padding: 0.8rem 1rem;
+    }
+
+    .proof-slot p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.78);
     }
 
     .offers-grid {
-      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
     }
 
     .offer-card {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      justify-content: space-between;
-      padding: 2rem;
-      border-radius: 32px;
-    }
-
-    .offer-card h3 {
-      font-size: 1.55rem;
-      margin: 0;
+      gap: 1rem;
     }
 
     .offer-audience {
       display: inline-block;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--accent-red);
-    }
-
-    .offer-card-highlight {
-      background:
-        radial-gradient(circle at top right, rgba(173, 255, 47, 0.16), transparent 30%),
-        var(--deep);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 24px 60px rgba(10, 25, 47, 0.18);
-      border-radius: 32px;
-      padding: 2rem;
-    }
-
-    .offer-card-highlight h3,
-    .offer-card-highlight p,
-    .offer-card-highlight li {
-      color: white !important;
-    }
-
-    .offer-card-highlight .offer-audience {
-      color: var(--neon);
     }
 
     .clean-list {
       list-style: none;
       display: grid;
-      gap: 0.8rem;
-      padding: 0;
+      gap: 0.5rem;
       margin: 0;
+      padding: 0;
     }
 
     .clean-list li {
       position: relative;
-      padding-left: 1.25rem;
-      color: #54636C;
-      line-height: 1.55;
+      padding-left: 1rem;
+      color: #54636c;
+      line-height: 1.5;
     }
 
     .clean-list li::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 0.78rem;
-      width: 7px;
-      height: 7px;
+      top: 0.68rem;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--neon);
-      box-shadow: 0 0 8px rgba(173, 255, 47, 0.4);
       transform: translateY(-50%);
     }
 
-    .offer-card-highlight .clean-list li::before {
+    .offer-card-dark {
+      background: var(--deep);
+      border-radius: 32px;
+      padding: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .offer-card-dark h3,
+    .offer-card-dark p,
+    .offer-card-dark li {
+      color: white;
+    }
+
+    .offer-card-dark .offer-audience {
+      color: var(--neon);
+    }
+
+    .offer-card-dark .clean-list li::before {
       background: white;
-      box-shadow: none;
+    }
+
+    .final-cta-section {
+      padding-top: 2rem;
     }
 
     .final-cta-panel {
+      border-radius: 28px;
+      background: var(--deep);
+      padding: 2rem;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 1.25rem;
-      padding: 2rem 2.15rem;
-      border-radius: 32px;
-      background: var(--deep);
+      gap: 1rem;
     }
 
-    .final-cta-panel p {
-      margin: 0;
+    .final-cta-panel h2 {
       color: white;
-      font-size: clamp(1.55rem, 3vw, 2.25rem);
-      font-weight: 800;
+      margin: 0;
+      font-size: clamp(1.5rem, 2.8vw, 2.3rem);
       line-height: 1.15;
+      max-width: 20ch;
     }
 
     @media (max-width: 1024px) {
-      .home-hero-grid,
-      .copilote-grid,
-      .point-grid-three,
-      .point-grid-four,
+      .hero-grid,
+      .situations-grid,
+      .steps-grid,
+      .mockups-grid,
+      .scenario-grid,
+      .credibility-points,
       .offers-grid,
-      .hero-context-grid {
+      .comparison-row {
         grid-template-columns: 1fr;
       }
 
       .home-hero {
-        padding: 4.75rem 0 5.5rem;
+        padding: 4.25rem 0;
       }
 
-      .hero-copy {
-        max-width: 100%;
+      .comparison-head {
+        display: none;
       }
 
-      .hero-copy-body {
-        padding-top: 1.5rem;
+      .comparison-row {
+        gap: 0.6rem;
       }
 
-      .hero-scene-image {
-        aspect-ratio: 1.24 / 1;
-        object-position: 44% 56%;
+      .comparison-row p:first-child::before {
+        content: 'IA généraliste';
+        display: block;
+        color: rgba(255, 255, 255, 0.64);
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+      }
+
+      .comparison-row p:last-child::before {
+        content: 'MARYAN';
+        display: block;
+        color: white;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+      }
+
+      .offer-card-dark {
+        padding: 2rem;
+      }
+
+      .final-cta-panel {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
 
     @media (max-width: 768px) {
-      .home-hero h1 {
-        font-size: clamp(2.3rem, 10vw, 3.2rem);
+      .section-v3 {
+        padding: 5rem 0;
       }
 
       .hero-actions,
-      .final-cta-actions,
-      .section-close {
+      .final-cta-actions {
         flex-direction: column;
         align-items: stretch;
       }
 
       .hero-actions a,
-      .final-cta-actions a,
-      .section-close a,
-      .copilote-grid .btn-secondary-v3 {
+      .final-cta-actions a {
         width: 100%;
       }
 
-      .hero-primary {
-        min-width: 0;
-      }
-
-      .hero-context-card,
-      .copilote-panel,
-      .point-card,
-      .credibility-shell,
+      .hero-product,
+      .usage-card,
+      .step-card,
+      .mockup-card,
+      .scenario-card,
       .offer-card,
-      .offer-card-highlight,
+      .offer-card-dark,
+      .credibility-shell,
       .final-cta-panel {
-        padding: 1.6rem;
+        padding: 1.35rem;
       }
 
-      .section-head h2,
-      .hero-context-card h2 {
-        font-size: 2.05rem;
-      }
-
-      .hero-scene-image {
-        aspect-ratio: 1.14 / 1;
-        object-position: 45% 58%;
-      }
-
-      .hero-copy-body {
-        margin-top: 0;
-        padding-top: 1rem;
+      .product-flow {
+        grid-template-columns: 1fr 1fr;
       }
     }
   </style>
