@@ -47,6 +47,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             />
           </div>
 
+          <div id="firstNameGroup" class="field-group">
+            <label for="firstName">Prénom <span class="field-optional">(optionnel)</span></label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              placeholder="Votre prénom"
+              autocomplete="given-name"
+            />
+          </div>
+
           <div class="field-group">
             <label for="password">Mot de passe</label>
             <input
@@ -142,6 +153,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const passwordInput = document.getElementById('password') as HTMLInputElement;
     const confirmInput = document.getElementById('confirm') as HTMLInputElement;
     const confirmGroup = document.getElementById('confirmGroup') as HTMLDivElement;
+    const firstNameInput = document.getElementById('firstName') as HTMLInputElement;
+    const firstNameGroup = document.getElementById('firstNameGroup') as HTMLDivElement;
     const politicalLabelSelect = document.getElementById('politicalLabel') as HTMLSelectElement;
     const politicalLabelGroup = document.getElementById('politicalLabelGroup') as HTMLDivElement;
     const consentPartisGroup = document.getElementById('consentPartisGroup') as HTMLDivElement;
@@ -179,6 +192,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         googleAuthBtn.textContent = 'Créer mon compte avec Google';
         appleAuthBtn.textContent = 'Créer mon compte avec Apple';
         confirmGroup.style.display = 'block';
+        firstNameGroup.style.display = 'block';
         politicalLabelGroup.style.display = 'block';
         consentPartisGroup.style.display = 'block';
         passwordInput.setAttribute('autocomplete', 'new-password');
@@ -191,6 +205,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         googleAuthBtn.textContent = 'Continuer avec Google';
         appleAuthBtn.textContent = 'Continuer avec Apple';
         confirmGroup.style.display = 'none';
+        firstNameGroup.style.display = 'none';
         politicalLabelGroup.style.display = 'none';
         consentPartisGroup.style.display = 'none';
         passwordInput.setAttribute('autocomplete', 'current-password');
@@ -355,6 +370,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         const partiId = politicalLabelSelect.value || null;
+        const firstName = firstNameInput.value.trim() || null;
 
         // Vérification consentement article 9 RGPD
         if (partiId && !consentPartisCheckbox.checked) {
@@ -382,6 +398,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           password,
           options: {
             data: {
+              ...(firstName ? { first_name: firstName } : {}),
               political_label: partiId,  // conservé pour compatibilité
               parti_id: partiId,
               parti_label: partiLabel

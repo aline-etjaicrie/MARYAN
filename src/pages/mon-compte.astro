@@ -362,16 +362,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         `).join('');
       }
 
-      const resumeCard = document.getElementById('resumeCard');
+      const resumeCard = document.getElementById(‘resumeCard’);
       if (resumeCard) {
-        resumeCard.innerHTML = `
-          <div class="dashboard-resume-empty">
-            <p class="dashboard-resume-label">Point d’entrée</p>
-            <h3>Commencer par le diagnostic</h3>
-            <p>En quelques minutes, vous obtenez une première direction claire.</p>
-            <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
-          </div>
-        `;
+        if (diagnosticState.profile || diagnosticState.diagnostic_key) {
+          const diagLabel = escapeHtml(diagnosticState.diagnostic_label || diagnosticState.diagnostic_key || ‘Votre profil’);
+          const profileAnglesStr = diagnosticState.profile
+            ? (ANGLES_BY_PROFILE[diagnosticState.profile as keyof typeof ANGLES_BY_PROFILE] || []).join(‘, ‘)
+            : ‘’;
+          resumeCard.innerHTML = `
+            <div class="dashboard-resume-live">
+              <p class="dashboard-resume-label">Diagnostic complété</p>
+              <h3>${diagLabel}</h3>
+              ${profileAnglesStr ? `<p>Axes prioritaires : ${escapeHtml(profileAnglesStr)}</p>` : ‘’}
+              <a href="/diagnostic" class="btn-primary-v3">Refaire le diagnostic</a>
+            </div>
+          `;
+        } else {
+          resumeCard.innerHTML = `
+            <div class="dashboard-resume-empty">
+              <p class="dashboard-resume-label">Point d’entrée</p>
+              <h3>Commencer par le diagnostic</h3>
+              <p>En quelques minutes, vous obtenez une première direction claire.</p>
+              <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+            </div>
+          `;
+        }
       }
 
       try {
