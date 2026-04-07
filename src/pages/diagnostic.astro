@@ -444,6 +444,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        document.getElementById('questionsContainer').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+       // --- CHANTIER 1 ÉTAPE 2 ---
+       // Check if user is connected (mocked via localStorage or a cookie for now)
+       // Supabase typically sets identifying info or we can rely on a custom token flag "maryan_session"
+       const isConnected = !!localStorage.getItem('sb-auth-token') || !!localStorage.getItem('user_id'); 
+       
+       if (isConnected) {
+          // CAS B: Sauvegarde automatique (+ redirection vers /mon-compte)
+          fetch('/api/profile-context', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(a)
+          }).then(() => {
+             window.location.href = '/mon-compte';
+          });
+       } else {
+          // CAS A: Afficher bloc de sauvegarde
+          const saveBlock = document.createElement('div');
+          saveBlock.className = "card-v3 highlight-neon";
+          saveBlock.style.cssText = "background:#FFFDF8; border: 2px solid var(--neon); padding: 2rem; border-radius: 16px; margin-top:2rem; text-align:center;";
+          saveBlock.innerHTML = `
+             <h3 style="color:var(--deep); margin-bottom:1.5rem; font-size:1.3rem;">Sauvegardez votre diagnostic pour retrouver vos recommandations à chaque connexion.</h3>
+             <a href="/login?mode=signup&from=diagnostic" class="btn-primary-v4 big" style="background:#0A192F; color:#fff; display:block; margin-bottom:1rem; text-decoration:none;">Créer mon compte</a>
+             <a href="/copilote" class="btn-link-v4" style="color:var(--deep); text-decoration:underline;">Continuer sans compte</a>
+          `;
+          document.getElementById('resCTA').appendChild(saveBlock);
+       }
     }
 
     window.submitEmail = () => {

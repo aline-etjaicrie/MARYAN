@@ -2,16 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
 
-// Pour l'instant, données mockées en attendant le backend Authentication
-const userProfile = {
-  name: "Aline Weber",
-  role: "Adjointe à la Culture",
-  municipality: "Commune de Test",
-  diagnosticResult: "Besoin de méthode (Copilote Plus)",
-  plan: "Découverte (Gratuit)",
-  messagesRemaining: 3
-};
-
+// Modules backend mock
 const modules = [
   { 
     title: "Mon Copilote", 
@@ -35,22 +26,32 @@ const modules = [
     icon: "🤝" 
   }
 ];
+
+// TESTS MOCK
+const tests = [
+  { slug: "posture", title: "Test de posture", desc: "Évaluez votre solidité dans l'adversité." },
+  { slug: "vision", title: "Test de vision", desc: "Vérifiez l'alignement de vos priorités." },
+  { slug: "equipe", title: "Test d'équipe", desc: "Diagnostic flash de vos dynamiques d'équipe." },
+  { slug: "communication", title: "Test de communication", desc: "Mesurez l'impact de vos prises de parole." },
+  { slug: "gestion-crise", title: "Test gestion de crise", desc: "Êtes-vous structuré pour l'urgence ?" },
+];
 ---
 
 <BaseLayout 
   title="Mon Compte — MARYAN" 
   description="Gérez votre abonnement MARYAN et accédez à vos outils de mandat.">
   
+  <!-- Ajout du composant InternalHeader -->
   <InternalHeader 
     label="Espace Personnel"
-    title="Bienvenue, <span class='emphasis'>Aline</span>"
+    title="Bienvenue, <span class='emphasis' id='headerName'>Aline</span>"
     subtitle="Retrouvez ici vos diagnostics, vos outils et votre accès privilégié au réseau d'experts."
   />
 
   <main class="dashboard-v3">
     <div class="container">
       
-      <!-- SUCCESS BANNER (Hidden by default) -->
+      <!-- SUCCESS BANNER -->
       <div id="successBanner" class="card-v3 highlight-neon" style="display:none; margin-bottom: 3rem; border-color: var(--neon); padding: 2rem;">
          <h3 style="color:var(--deep);">Bienvenue dans MARYAN Plus !</h3>
          <p>Votre abonnement a été activé. Vous avez désormais un accès illimité au Copilote et à la Bibliothèque.</p>
@@ -58,31 +59,79 @@ const modules = [
 
       <div class="dashboard-grid">
         
-        <!-- SIDEBAR INFO -->
+        <!-- SIDEBAR INFO (Profil & Formulaire) -->
         <aside class="dash-sidebar">
           <div class="dash-profile card-v3">
-            <div class="profile-header">
-              <div class="avatar-circle">AW</div>
-              <div class="profile-text">
-                <h3 id="profileName">{userProfile.name}</h3>
-                <p id="profileRole">{userProfile.role} — {userProfile.municipality}</p>
-              </div>
-            </div>
+            <h3 class="dash-h3">Vos informations d'élu·e</h3>
             
+            <form id="profileForm" class="profile-form">
+               <div class="form-group">
+                 <label for="first_name">Prénom *</label>
+                 <input type="text" id="first_name" required />
+               </div>
+               <div class="form-group">
+                 <label for="last_name">Nom</label>
+                 <input type="text" id="last_name" />
+               </div>
+               <div class="form-group">
+                 <label for="mandat_principal">Votre mandat principal</label>
+                 <select id="mandat_principal">
+                   <option value="Maire">Maire</option>
+                   <option value="Adjoint au maire">Adjoint au maire</option>
+                   <option value="Conseiller municipal majoritaire">Conseiller municipal majoritaire</option>
+                   <option value="Conseiller municipal opposition">Conseiller municipal opposition</option>
+                   <option value="Conseiller communautaire">Conseiller communautaire</option>
+                   <option value="Vice-président intercommunalité">Vice-président intercommunalité</option>
+                   <option value="Conseiller de Paris">Conseiller de Paris</option>
+                   <option value="Conseiller d'arrondissement">Conseiller d'arrondissement</option>
+                   <option value="Maire de secteur Marseille">Maire de secteur Marseille</option>
+                 </select>
+               </div>
+               <div class="form-group">
+                 <label for="taille_ct">Taille de votre collectivité</label>
+                 <select id="taille_ct">
+                   <option value="moins500">Moins de 500 hab.</option>
+                   <option value="500-3500">500 à 3 500 hab.</option>
+                   <option value="3500-10000">3 500 à 10 000 hab.</option>
+                   <option value="10000-50000">10 000 à 50 000 hab.</option>
+                   <option value="plus50000">Plus de 50 000 hab.</option>
+                 </select>
+               </div>
+               <div class="form-group">
+                 <label for="type_ct">Type de collectivité</label>
+                 <select id="type_ct">
+                   <option value="commune">Commune</option>
+                   <option value="intercommunalite">Intercommunalité</option>
+                   <option value="metropole">Métropole</option>
+                   <option value="plm">Paris-Lyon-Marseille</option>
+                 </select>
+               </div>
+               <div class="form-group">
+                 <label for="metier_hors_mandat">Votre métier en dehors du mandat</label>
+                 <input type="text" id="metier_hors_mandat" placeholder="Ex : enseignant, médecin, chef d'entreprise..." />
+               </div>
+               <div class="form-group">
+                 <label for="affiliation_politique">Affiliation politique</label>
+                 <input type="text" id="affiliation_politique" placeholder="Ex : divers gauche, LR, sans étiquette..." />
+               </div>
+               <button type="submit" class="btn-primary-v4 btn-save-profile">Enregistrer</button>
+               <p id="profileMessage" class="feedback-msg"></p>
+            </form>
+
             <hr class="dash-sep" />
             
             <div class="profile-stat">
               <span class="label">Votre forfait</span>
-              <p class="val" id="planVal">{userProfile.plan}</p>
-              <a href="/offres" id="upgradeBtn" class="upgrade-btn">Passer à MARYAN Plus →</a>
+              <p class="val" id="planVal">Découverte (Gratuit)</p>
+              <a href="/offres" id="upgradeBtn" class="upgrade-btn">Passer à Plus →</a>
             </div>
-
+            
             <div class="profile-stat">
               <span class="label">Crédit Copilote</span>
               <div class="progress-bar">
                 <div id="progressFill" class="progress-fill" style="width: 60%;"></div>
               </div>
-              <p class="val-sub" id="counterText">{userProfile.messagesRemaining} sur 5 messages restants</p>
+              <p class="val-sub" id="counterText">3 sur 5 messages restants</p>
             </div>
           </div>
         </aside>
@@ -105,17 +154,30 @@ const modules = [
             </div>
           </section>
 
+          <!-- DIAGNOSTIC : 1 SEUL ÉTAT -->
           <section class="dash-section" style="margin-top: 4rem;">
-            <h2 class="dash-h2">Dernier diagnostic</h2>
-            <div class="diag-summary card-v3 highlight-neon">
-              <div class="diag-header-row">
-                <div>
-                   <span class="label">Résultat préconisé</span>
-                   <p class="diag-val">{userProfile.diagnosticResult}</p>
-                </div>
-                <a href="/diagnostic" class="btn-link">Refaire le diagnostic</a>
-              </div>
-              <p class="diag-desc">Votre profil indique un besoin de structure et de méthode pour gagner du temps sur vos dossiers stratégiques.</p>
+            <h2 class="dash-h2">Diagnostic MARYAN</h2>
+            <div id="diagBlock" class="diag-summary card-v3">
+               <!-- Rempli par le script -->
+            </div>
+          </section>
+
+          <!-- AUTO-ÉVALUATIONS (TESTS) -->
+          <section class="dash-section" style="margin-top: 4rem;">
+            <h2 class="dash-h2">Vos auto-évaluations</h2>
+            <div class="tests-grid">
+               {tests.map(test => (
+                  <div class="test-card card-v3">
+                     <div class="test-header">
+                        <h4>{test.title} <span class="badge-abonne">Abonné·e</span></h4>
+                     </div>
+                     <p class="test-desc">{test.desc}</p>
+                     <div class="test-footer">
+                        <span class="test-status" id={`status-${test.slug}`}>À faire</span>
+                        <a href={`/tests/${test.slug}`} class="btn-link-v4">Passer le test →</a>
+                     </div>
+                  </div>
+               ))}
             </div>
           </section>
 
@@ -124,8 +186,7 @@ const modules = [
              <div class="billing-card card-v3">
                 <p>Aucun paiement n’a été effectué pour le moment.</p>
                 <div class="billing-actions">
-                  <button class="btn-secondary-v3">Configurer Stripe Payout</button>
-                  <button class="btn-link">Afficher l’historique des factures</button>
+                  <button class="btn-secondary-v3">Configurer Stripe</button>
                 </div>
              </div>
           </section>
@@ -138,91 +199,179 @@ const modules = [
 </BaseLayout>
 
 <script>
-  // ACTIVATION LOGIC
+  // A. RÉCUPÉRATION DES DONEES LOCALES
+  const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
+  const user = JSON.parse(localStorage.getItem('user_data') || '{}');
+  const diagText = localStorage.getItem('maryan_v4_diag'); // Diagnostic brut
+
+  // B. INIT DU FORMULAIRE DE PROFIL
+  document.getElementById('first_name')!.value = user.first_name || profile.firstName || "Aline";
+  document.getElementById('last_name')!.value = user.last_name || profile.lastName || "";
+  document.getElementById('mandat_principal')!.value = user.mandat_principal || profile.title || "Maire";
+  document.getElementById('taille_ct')!.value = user.taille_ct || "moins500";
+  document.getElementById('type_ct')!.value = user.type_ct || "commune";
+  document.getElementById('metier_hors_mandat')!.value = user.metier_hors_mandat || "";
+  document.getElementById('affiliation_politique')!.value = user.affiliation_politique || "";
+
+  document.getElementById('headerName')!.innerText = user.first_name || profile.firstName || "Aline";
+
+  // C. SOUMISSION DU FORMULAIRE (CHANTIER 2 ETAPE 3)
+  document.getElementById('profileForm')!.addEventListener('submit', async (e) => {
+     e.preventDefault();
+     const data = {
+        first_name: document.getElementById('first_name')!.value,
+        last_name: document.getElementById('last_name')!.value,
+        mandat_principal: document.getElementById('mandat_principal')!.value,
+        taille_ct: document.getElementById('taille_ct')!.value,
+        type_ct: document.getElementById('type_ct')!.value,
+        metier_hors_mandat: document.getElementById('metier_hors_mandat')!.value,
+        affiliation_politique: document.getElementById('affiliation_politique')!.value,
+     };
+     
+     // Sauvegarde locale pour fallback
+     localStorage.setItem('user_data', JSON.stringify({ ...user, ...data }));
+     
+     const msgEl = document.getElementById('profileMessage');
+     msgEl!.innerText = "Enregistrement...";
+     
+     try {
+        const res = await fetch('/api/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        
+        if (result.success || res.ok) {
+           msgEl!.innerText = "Profil mis à jour ✓";
+           msgEl!.style.color = "green";
+           document.getElementById('headerName')!.innerText = data.first_name;
+        } else {
+           msgEl!.innerText = "Erreur lors de la sauvegarde.";
+           msgEl!.style.color = "red";
+        }
+     } catch(err) {
+        // Fallback UI pour mode offline ou API manquante
+        msgEl!.innerText = "Profil mis à jour ✓ (Local)";
+        msgEl!.style.color = "green";
+     }
+     
+     setTimeout(() => { if(msgEl) msgEl.innerText = ""; }, 3000);
+  });
+
+  // D. GESTION DU DIAGNOSTIC (CHANTIER 1 ETAPE 4)
+  const diagBlock = document.getElementById('diagBlock');
+  if (diagText || profile.summary) {
+     diagBlock!.innerHTML = `
+        <div class="diag-header-row" style="margin-bottom:1rem;">
+           <div>
+              <span class="label">Résultat préconisé</span>
+              <p class="diag-val" style="font-size:1.2rem; font-weight:700; color:var(--deep); margin-top:0.5rem;">${profile.summary || "Synthèse de votre diagnostic..."}</p>
+           </div>
+        </div>
+        <div style="margin-top:1.5rem;">
+           <a href="/diagnostic" class="btn-link-v4" style="font-weight:600; text-decoration:underline;">Mettre à jour mon diagnostic</a>
+        </div>
+     `;
+  } else {
+     diagBlock!.innerHTML = `
+        <p style="margin-bottom:1.5rem; color:#54636C;">Faites votre diagnostic pour personnaliser MARYAN.</p>
+        <a href="/diagnostic" class="btn-primary-v4">Lancer le diagnostic</a>
+     `;
+  }
+
+  // E. ACTIVATION BANNER & PLAN
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get('session_id');
-  
   if (sessionId) {
     const banner = document.getElementById('successBanner');
     if (banner) banner.style.display = 'block';
-    
-    // Simulate back-end activation by updating localStorage
-    const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-    if (profile) {
-      profile.plan = "MARYAN Plus";
-      profile.offerLevel = 2;
-      localStorage.setItem('maryan_profile', JSON.stringify(profile));
-      
-      // Update UI
-      const planVal = document.getElementById('planVal');
-      if (planVal) planVal.innerText = "MARYAN Plus";
-      
-      const upgradeBtn = document.getElementById('upgradeBtn');
-      if (upgradeBtn) upgradeBtn.style.display = 'none';
-      
-      const progressFill = document.getElementById('progressFill') as HTMLElement;
-      if (progressFill) progressFill.style.width = '100%';
-      
-      const counterText = document.getElementById('counterText');
-      if (counterText) counterText.innerText = "Accès Illimité";
-    }
+    profile.plan = "MARYAN Plus";
+    profile.offerLevel = 2;
+    localStorage.setItem('maryan_profile', JSON.stringify(profile));
+  }
+  
+  if (profile.plan === 'MARYAN Plus') {
+    document.getElementById('planVal')!.innerText = "MARYAN Plus";
+    document.getElementById('upgradeBtn')!.style.display = 'none';
+    const fill = document.getElementById('progressFill');
+    if(fill) fill.style.width = '100%';
+    document.getElementById('counterText')!.innerText = "Accès Illimité";
   }
 
-  // Dynamic Profile Rendering (Simple)
-  const profile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-  if (profile.title) {
-     document.getElementById('profileName')!.innerText = profile.firstName || "Aline";
-     document.getElementById('profileRole')!.innerText = `${profile.title} — ${profile.commune || 'Votre Commune'}`;
-     document.getElementById('planVal')!.innerText = profile.plan || "Découverte (Gratuit)";
-  }
+  // F. TESTS AUTO-ÉVALUATIONS (CHANTIER 2 ETAPE 5)
+  const allTests = ["posture", "vision", "equipe", "communication", "gestion-crise"];
+  allTests.forEach(slug => {
+     let val = localStorage.getItem('maryan_test_' + slug);
+     let statusEl = document.getElementById('status-' + slug);
+     if (val && statusEl) {
+         try {
+             let parsed = JSON.parse(val);
+             statusEl.innerHTML = `<span style="color:green; font-weight:bold;">✓ Complété</span> le ${new Date(parsed.date || Date.now()).toLocaleDateString()}`;
+         } catch {
+             statusEl.innerHTML = `<span style="color:green; font-weight:bold;">✓ Complété</span>`;
+         }
+     }
+  });
+
 </script>
 
 <style>
   .dashboard-v3 { padding-bottom: 8rem; background: var(--bg); min-height: 80vh; }
-  
-  .dashboard-grid { display: grid; grid-template-columns: 340px 1fr; gap: 4rem; align-items: start; }
-  
+  .dashboard-grid { display: grid; grid-template-columns: 360px 1fr; gap: 4rem; align-items: start; }
   .dash-h2 { font-size: 1.5rem; margin-bottom: 2rem; color: var(--deep); }
+  .dash-h3 { font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--deep); }
   
-  /* Sidebar */
+  /* Sidebar & Form */
   .dash-sidebar { position: sticky; top: 2rem; }
-  .dash-profile { padding: 2.5rem; background: white; }
-  .profile-header { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem; }
-  .avatar-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--deep); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
-  .profile-text h3 { font-size: 1.15rem; margin-bottom: 0.25rem; }
-  .profile-text p { font-size: 0.9rem; opacity: 0.6; }
+  .dash-profile { padding: 2.5rem; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
   
-  .dash-sep { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  .profile-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label { font-size: 0.8rem; font-weight: 700; color: #54636C; text-transform: uppercase; }
+  .form-group input, .form-group select { padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; font-family: inherit; }
+  .btn-save-profile { width: 100%; border: none; padding: 0.9rem; margin-top: 0.5rem; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; background: var(--deep); color: white; }
+  .btn-save-profile:hover { transform: translateY(-2px); }
+  .feedback-msg { font-size: 0.85rem; font-weight: 600; text-align: center; min-height: 1.2em; margin-top: 0.5rem; }
+
+  .dash-sep { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   
   .profile-stat { margin-bottom: 2rem; }
   .profile-stat .label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #54636C; display: block; margin-bottom: 0.75rem; }
   .profile-stat .val { font-size: 1.1rem; font-weight: 700; color: var(--deep); }
   .profile-stat .val-sub { font-size: 0.85rem; opacity: 0.6; margin-top: 0.5rem; }
-  
   .upgrade-btn { display: inline-block; margin-top: 1rem; color: var(--accent-red); font-weight: 800; font-size: 0.9rem; text-decoration: none; border-bottom: 2px solid var(--accent-red); }
   
   .progress-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-top: 1rem; }
-  .progress-fill { height: 100%; background: var(--accent-red); border-radius: 99px; }
+  .progress-fill { height: 100%; background: var(--accent-red); border-radius: 99px; transition: width 0.3s; }
 
   /* Modules Grid */
-  .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-  .module-card { text-decoration: none; padding: 2.5rem; transition: all 0.3s; }
+  .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .module-card { text-decoration: none; padding: 2rem; border-radius: 16px; border: 1px solid var(--border); background: white; transition: all 0.3s; display: block; }
   .module-card:hover { transform: translateY(-5px); border-color: var(--accent-red); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
   .module-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .module-title-row h3 { font-size: 1.25rem; color: var(--deep); }
+  .module-title-row h3 { font-size: 1.25rem; color: var(--deep); margin: 0; }
   .mod-status { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; background: #E8F5E9; color: #2E7D32; padding: 0.3rem 0.6rem; border-radius: 4px; }
   .module-card p { font-size: 0.95rem; color: #54636C; line-height: 1.5; margin-bottom: 1.5rem; }
   .mod-nav { font-size: 0.85rem; font-weight: 800; color: var(--deep); }
 
-  /* Diagnostic Summary */
-  .diag-summary { padding: 3rem; }
-  .diag-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
-  .diag-val { font-size: 1.5rem; font-weight: 800; color: var(--deep); }
-  .diag-desc { font-size: 1.05rem; opacity: 0.8; line-height: 1.6; }
+  /* Tests Grid */
+  .tests-grid { display: flex; flex-direction: column; gap: 1rem; }
+  .test-card { padding: 1.5rem 2rem; border-radius: 12px; background: white; border: 1px solid var(--border); }
+  .test-header h4 { font-size: 1.1rem; color: var(--deep); margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; }
+  .badge-abonne { font-size: 0.65rem; background: var(--neon); color: var(--deep); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 800; text-transform: uppercase; }
+  .test-desc { font-size: 0.9rem; color: #54636C; margin-bottom: 1rem; }
+  .test-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; border-top: 1px solid #EEE; padding-top: 1rem; }
+  .test-status { color: #888; font-weight: 600; }
+  .btn-link-v4 { color: var(--deep); font-weight: 700; text-decoration: none; }
 
+  /* Diagnostic */
+  .diag-summary { padding: 2rem; background: #fff; border: 1px solid var(--border); border-radius: 16px; }
+  .btn-primary-v4 { display: inline-block; background: var(--deep); color: white; padding: 1rem 2rem; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.2s; }
+  
   /* Billing */
-  .billing-card { padding: 3rem; text-align: center; color: #54636C; opacity: 0.8; }
-  .billing-actions { display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; }
+  .billing-card { padding: 2rem; text-align: center; color: #54636C; opacity: 0.8; border: 1px dashed var(--border); border-radius: 16px; background: transparent; }
+  .billing-actions { display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 1.5rem; }
 
   @media (max-width: 992px) {
     .dashboard-grid { grid-template-columns: 1fr; gap: 3rem; }

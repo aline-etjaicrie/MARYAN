@@ -117,25 +117,44 @@ function initCopilot(rootElement: HTMLElement) {
   }
 
   function loadProfile(): MaryanProfile | null {
+    let profile: MaryanProfile | null = null;
     try {
       const rawProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
       if (rawProfile) {
         const parsed = JSON.parse(rawProfile) as Partial<MaryanProfile>;
         if (isValidProfile(parsed)) {
-          return parsed as MaryanProfile;
+          profile = parsed as MaryanProfile;
         }
       }
 
-      const rawDiagnostic = localStorage.getItem('maryan_v4_diag');
-      if (!rawDiagnostic) return null;
-      const answers = JSON.parse(rawDiagnostic) as DiagnosticAnswers;
-      const derived = deriveProfileFromDiagnostic(answers);
-
-      if (derived) {
-        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(derived));
+      if (!profile) {
+        const rawDiagnostic = localStorage.getItem('maryan_v4_diag');
+        if (rawDiagnostic) {
+          const answers = JSON.parse(rawDiagnostic) as DiagnosticAnswers;
+          const derived = deriveProfileFromDiagnostic(answers);
+          if (derived) {
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(derived));
+            profile = derived;
+          }
+        }
       }
 
-      return derived;
+      if (profile) {
+        // Enlacement CHANTIER 2 : on ajoute les infos complémentaires venant de user_data 
+        const userDataRaw = localStorage.getItem('user_data');
+        if (userDataRaw) {
+           const user = JSON.parse(userDataRaw);
+           profile.tailleCt = user.taille_ct;
+           profile.typeCt = user.type_ct;
+           profile.metierHorsMandat = user.metier_hors_mandat;
+           // Le rôle (targetRoles) + mandat principal
+           if (user.mandat_principal) {
+               profile.title = user.mandat_principal;
+           }
+        }
+      }
+
+      return profile;
     } catch {
       return null;
     }

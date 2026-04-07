@@ -24,6 +24,9 @@ export interface MaryanProfile {
   firstName?: string;
   commune?: string;
   source?: 'diagnostic' | 'dashboard' | 'derived';
+  tailleCt?: string;
+  typeCt?: string;
+  metierHorsMandat?: string;
 }
 
 export interface MaryanIntentAnalysis {
@@ -689,6 +692,8 @@ export function buildSystemPrompt(
 - role : ${profile.title}
 - thematique dominante : ${profile.themeLabel}
 - situation resumee : ${profile.summary}
+- taille et type de CT : ${profile.tailleCt || 'Non renseigné'} / ${profile.typeCt || 'Non renseigné'}
+- metier hors mandat : ${profile.metierHorsMandat ? `L'élu est ${profile.metierHorsMandat} de profession.` : 'Non renseigné'}
 - niveau d'appui conseille : ${profile.offerName}
 - tags : ${(profile.tags || []).join(', ') || 'aucun'}
 

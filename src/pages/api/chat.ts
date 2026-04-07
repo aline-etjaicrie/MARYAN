@@ -275,6 +275,9 @@ function getSuggestedResources(
     profile?.summary || '',
     profile?.themeLabel || '',
     ...(profile?.tags || []),
+    profile?.tailleCt || '',
+    profile?.typeCt || '',
+    profile?.metierHorsMandat || '',
     resolvedMode.replaceAll('_', ' ')
   ].join(' ');
 

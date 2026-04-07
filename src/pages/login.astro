@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InternalHeader from '../components/InternalHeader.astro';
+---
+
+<BaseLayout title="Connexion / Inscription — MARYAN" description="Connectez-vous à MARYAN ou créez votre compte.">
+  <InternalHeader 
+    label="Accès"
+    title="Votre Espace Élu·e"
+    subtitle="Retrouvez votre parcours et vos ressources personnalisées."
+  />
+
+  <main class="login-wrapper">
+    <div class="container-narrow">
+      <div id="auth-container" class="auth-card card-v3">
+        <!-- Conteneur pour Supabase Auth UI (à remplacer avec le SDK officiel) ou un formulaire simulé pour le moment -->
+        <h2 id="auth-title">Connexion</h2>
+        <form id="auth-form" class="auth-form">
+          <div class="form-group">
+            <label for="email">Adresse email de la collectivité</label>
+            <input type="email" id="email" required placeholder="vous@collectivite.fr" />
+          </div>
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" required />
+          </div>
+          <button type="submit" class="btn-primary-v4 auth-btn" id="submitBtn">Se connecter</button>
+        </form>
+        <div class="auth-toggle">
+          <button id="toggleBtn" class="btn-link-v4">Créer un compte</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .login-wrapper { padding-bottom: 8rem; background: var(--bg); min-height: 50vh; }
+    .auth-card { padding: 3rem; max-width: 480px; margin: 0 auto; background: white; }
+    #auth-title { font-size: 1.8rem; font-weight: 800; color: var(--deep); margin-bottom: 2rem; text-align: center; }
+    .auth-form { display: flex; flex-direction: column; gap: 1.5rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: 0.85rem; font-weight: 700; color: #54636C; }
+    .form-group input { padding: 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: inherit; }
+    .auth-btn { width: 100%; border: none; padding: 1rem; font-size: 1.1rem; border-radius: 12px; cursor: pointer; }
+    .auth-toggle { margin-top: 2rem; text-align: center; }
+    .auth-toggle button { background: none; border: none; font-size: 0.9rem; cursor: pointer; color: var(--deep); text-decoration: underline; }
+  </style>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    
+    // Config Supabase 
+    // Utilisera les variables d'environnement quand le projet sera publiquement branché 
+    // (mock pour la structure demandée en Vanilla JS côté client)
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || 'https://xxx.supabase.co';
+    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || 'xxx';
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode') || 'login';
+    const from = urlParams.get('from');
+
+    const authTitle = document.getElementById('auth-title');
+    const submitBtn = document.getElementById('submitBtn');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const form = document.getElementById('auth-form');
+
+    let currentMode = mode;
+
+    function updateUI() {
+      if (currentMode === 'signup') {
+        authTitle.innerText = 'Créer mon compte';
+        submitBtn.innerText = 'Créer mon compte';
+        toggleBtn.innerText = 'Déjà un compte ? Se connecter';
+      } else {
+        authTitle.innerText = 'Connexion';
+        submitBtn.innerText = 'Se connecter';
+        toggleBtn.innerText = "Pas encore de compte ? S'inscrire";
+      }
+    }
+
+    updateUI();
+
+    toggleBtn.addEventListener('click', () => {
+      currentMode = currentMode === 'signup' ? 'login' : 'signup';
+      window.history.replaceState({}, '', `/login?mode=${currentMode}${from ? '&from='+from : ''}`);
+      updateUI();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const submitOriginalText = submitBtn.innerText;
+      submitBtn.innerText = "Chargement...";
+      submitBtn.disabled = true;
+
+      try {
+         let authResult;
+         
+         if (currentMode === 'signup') {
+            authResult = await supabase.auth.signUp({ email, password });
+         } else {
+            authResult = await supabase.auth.signInWithPassword({ email, password });
+         }
+
+         if (authResult.error) {
+            alert(authResult.error.message);
+            submitBtn.innerText = submitOriginalText;
+            submitBtn.disabled = false;
+            return;
+         }
+
+         // Enregistrer le token de session explicitement (souvent géré par Supabase auto)
+         localStorage.setItem('sb-auth-token', authResult.data.session.access_token);
+         localStorage.setItem('user_id', authResult.data.user.id);
+
+         // ÉTAPE 3 — récupérer le diagnostic après inscription
+         if (currentMode === 'signup' && from === 'diagnostic') {
+            const diagData = localStorage.getItem('maryan_v4_diag');
+            if (diagData) {
+               await fetch('/api/profile-context', {
+                  method: 'POST',
+                  headers: { 
+                     'Content-Type': 'application/json',
+                     'Authorization': `Bearer ${authResult.data.session.access_token}`
+                  },
+                  body: diagData
+               });
+            }
+         }
+         
+         // Redirection une fois connecté
+         window.location.href = '/mon-compte';
+
+      } catch (err) {
+         console.error(err);
+         alert("Une erreur inattendue est survenue.");
+         submitBtn.innerText = submitOriginalText;
+         submitBtn.disabled = false;
+      }
+    });
+  </script>
+</BaseLayout>
