@@ -29,6 +29,8 @@ interface CopilotRequestBody {
   mode?: MaryanSituationMode | string;
   message?: string;
   session_id?: string | null;
+  /** Remplace intégralement le system prompt (usage interne : mode compte-rendu) */
+  _overrideSystemPrompt?: string;
 }
 
 interface SuggestedResource {
@@ -265,6 +267,10 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
   try {
     const isAgentMode = !!agentId;
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
+    const overridePrompt = typeof body?._overrideSystemPrompt === 'string' && body._overrideSystemPrompt.trim()
+      ? body._overrideSystemPrompt.trim()
+      : null;
+
     const baseMessages = isAgentMode
       ? [
           {
@@ -276,7 +282,9 @@ ${JSON.stringify(getMotsDeclencheurs(partiId), null, 2)}
       : [
           {
             role: 'system' as const,
-            content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage) + profileSection + '\n\n' + resourcesSection
+            content: overridePrompt
+              ? overridePrompt
+              : buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage) + profileSection + '\n\n' + resourcesSection
           },
           ...messages
         ];
