@@ -38,6 +38,8 @@ type ProfileContextRequestBody = {
   personalInfo?: Record<string, unknown> | null;
 };
 
+const KNOWN_ROLES = new Set(['maire', 'adjoint', 'conseiller_maj', 'conseiller_opp', 'interco']);
+
 function json(payload: unknown, status = 200): Response {
   return new Response(JSON.stringify(payload), {
     status,
@@ -159,7 +161,11 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (firstName !== null || profileInput.first_name === null) updates.first_name = firstName;
     if (commune !== null || profileInput.commune === null) updates.commune = commune;
-    if (role !== null || profileInput.role === null) updates.role = role;
+    if (profileInput.role === null) {
+      updates.role = null;
+    } else if (role && KNOWN_ROLES.has(role)) {
+      updates.role = role;
+    }
     if (partiId !== null || profileInput.parti_id === null) updates.parti_id = partiId;
     if (partiLabel !== null || profileInput.parti_label === null) updates.parti_label = partiLabel;
   }
@@ -182,6 +188,7 @@ export const POST: APIRoute = async ({ request }) => {
     nextContext.personal = {
       ...existingPersonal,
       last_name: sanitizeText(personalInput.last_name),
+      role_title: sanitizeText(personalInput.role_title),
       collectivity_type: sanitizeText(personalInput.collectivity_type),
       collectivity_other: sanitizeText(personalInput.collectivity_other),
       collectivity_size: sanitizeText(personalInput.collectivity_size),
