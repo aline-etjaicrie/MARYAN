@@ -31,6 +31,77 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <button id="exportDataBtn" class="btn-secondary-v3" type="button">Télécharger mes données</button>
             <button id="logoutBtn" class="dashboard-logout-btn" type="button">Se déconnecter</button>
           </div>
+
+          <section class="dashboard-profile-form-wrap">
+            <h3>Compléter mon profil</h3>
+            <p>Votre espace de travail MARYAN devient plus pertinent quand ces informations sont renseignées.</p>
+
+            <form id="profileForm" class="dashboard-profile-form" novalidate>
+              <div class="dashboard-profile-grid">
+                <label>
+                  <span>Prénom</span>
+                  <input id="profileFirstName" type="text" autocomplete="given-name" placeholder="Prénom" />
+                </label>
+                <label>
+                  <span>Nom</span>
+                  <input id="profileLastName" type="text" autocomplete="family-name" placeholder="Nom" />
+                </label>
+              </div>
+
+              <label>
+                <span>Rôle dans la collectivité</span>
+                <input id="profileRole" type="text" placeholder="Ex : Adjoint·e au maire" />
+              </label>
+
+              <label>
+                <span>Collectivité (commune / territoire)</span>
+                <input id="profileCommune" type="text" placeholder="Ex : Ville de Nantes" />
+              </label>
+
+              <label>
+                <span>Nature de collectivité</span>
+                <select id="profileCollectivityType">
+                  <option value="">— Choisir —</option>
+                  <option value="mairie">Mairie / Commune</option>
+                  <option value="epci">EPCI / Intercommunalité</option>
+                  <option value="departement">Département</option>
+                  <option value="region">Région</option>
+                  <option value="metropole">Métropole</option>
+                  <option value="autre">Autre collectivité locale</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Taille de collectivité</span>
+                <select id="profileCollectivitySize">
+                  <option value="">— Choisir —</option>
+                  <option value="moins_3500">Moins de 3 500 habitants</option>
+                  <option value="3500_10000">3 500 à 10 000 habitants</option>
+                  <option value="10000_50000">10 000 à 50 000 habitants</option>
+                  <option value="50000_100000">50 000 à 100 000 habitants</option>
+                  <option value="plus_100000">Plus de 100 000 habitants</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Affiliation politique (facultatif)</span>
+                <input id="profilePoliticalAffiliation" type="text" placeholder="Nom du parti, si vous souhaitez le préciser" />
+              </label>
+
+              <label class="dashboard-checkbox-row">
+                <input id="profileHasOtherJob" type="checkbox" />
+                <span>J’exerce aussi une activité professionnelle en parallèle</span>
+              </label>
+
+              <label id="profileOtherJobWrap" style="display:none;">
+                <span>Activité professionnelle (facultatif)</span>
+                <input id="profileOtherJobTitle" type="text" placeholder="Ex : Enseignante, avocat, cadre territorial…" />
+              </label>
+
+              <div id="profileFormFeedback" class="dashboard-profile-feedback" style="display:none;"></div>
+              <button id="profileSaveBtn" type="submit" class="btn-primary-v3">Enregistrer mon profil</button>
+            </form>
+          </section>
         </div>
       </aside>
 
@@ -39,6 +110,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <strong>Abonnement activé</strong>
           <p>Votre accès MARYAN Plus est maintenant disponible.</p>
         </div>
+
+        <section id="subscriptionBlock" class="dashboard-banner dashboard-banner-upgrade" style="display:none;">
+          <strong>Passez en mode MARYAN Plus</strong>
+          <p>Activez l’offre pour débloquer un usage complet du copilote, des fiches expertes et l’analyseur.</p>
+          <a href="/offres#offre-individuelle" class="btn-primary-v3">Voir les offres</a>
+        </section>
 
         <section class="dashboard-hero card-v3">
           <span class="label-v3">Mon espace</span>
@@ -114,7 +191,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <h2>Mes documents</h2>
               <p>Vos comptes rendus et analyses sauvegardés.</p>
             </div>
-            <a href="/copilote" class="btn-link">Créer un document →</a>
+            <a href="/copilote" class="btn-primary-v3 dashboard-head-cta">Créer un document</a>
           </div>
 
           <!-- Dossiers -->
@@ -200,6 +277,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     'comment-se-prend-une-decision-dans-une-commune'
   ];
 
+  const ROLE_LABELS: Record<string, string> = {
+    maire: 'Maire',
+    adjoint: 'Adjoint·e au maire',
+    conseiller_maj: 'Conseiller·e de la majorité',
+    conseiller_opp: 'Conseiller·e d’opposition',
+    interco: 'Président·e / VP d’intercommunalité'
+  };
+
   function escapeHtml(value: unknown): string {
     return String(value ?? '')
       .replaceAll('&', '&amp;')
@@ -215,6 +300,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     } catch {
       return '';
     }
+  }
+
+  function normalizeText(value: unknown): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+  function getRoleLabel(value: unknown): string {
+    const key = normalizeText(value);
+    if (!key) return '';
+    return ROLE_LABELS[key] || key;
   }
 
   function sessionLabel(type: string): string {
@@ -263,22 +358,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const profile = profileContext?.profile || (await supabase
         .from('profiles')
-        .select('first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_completed, last_diagnostic_summary, profile_context, profile_context_updated_at, plan')
+        .select('first_name, commune, role, parti_label, diagnostic_key, diagnostic_label, diagnostic_completed, last_diagnostic_summary, profile_context, profile_context_updated_at, plan')
         .eq('id', user.id)
         .single()).data;
 
+      const personalInfo = profileContext?.personalInfo && typeof profileContext.personalInfo === 'object'
+        ? profileContext.personalInfo as Record<string, unknown>
+        : {};
+
       const firstName = profile?.first_name || '';
-      const role = profile?.role || 'élu·e local·e';
+      const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
+      const role = getRoleLabel(profile?.role || diagnosticState?.role) || 'élu·e local·e';
       const commune = profile?.commune || '';
       const plan = profile?.plan || 'gratuit';
       const isSubscriber = plan === 'plus' || plan === 'admin';
+      const lastName = normalizeText(personalInfo.last_name);
+      const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
-      document.getElementById('profileName')!.textContent = firstName || user.email?.split('@')[0] || 'Mon compte';
+      document.getElementById('profileName')!.textContent = fullName || firstName || user.email?.split('@')[0] || 'Mon compte';
       document.getElementById('profileMeta')!.textContent = [role, commune].filter(Boolean).join(' — ');
       document.getElementById('userEmail')!.textContent = user.email || '';
       document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
 
-      const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
+      const subscriptionBlock = document.getElementById('subscriptionBlock');
+      if (subscriptionBlock) {
+        subscriptionBlock.style.display = isSubscriber ? 'none' : 'block';
+      }
       const hasDiagnostic = Boolean(diagnosticState?.diagnostic_key);
       const diagnosticSummary = diagnosticState?.summary
         || profile?.last_diagnostic_summary
@@ -357,12 +462,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         if (topicsLead && !diagnosticState.profile) {
-          topicsLead.textContent = 'Des points d’appui sobres pour avancer tout de suite.';
+          topicsLead.textContent = 'Des points d’appui personnalisés pour avancer tout de suite.';
         }
 
         topicsGrid.innerHTML = resources.map((resource) => `
           <a href="/ressources/${escapeHtml(resource.slug)}" class="dashboard-topic-card">
-            <span>${escapeHtml(resource.title)}</span>
+            <span class="dashboard-topic-title">${escapeHtml(resource.title)}</span>
+            <span class="dashboard-topic-link">Voir la fiche →</span>
           </a>
         `).join('');
       }
@@ -386,6 +492,116 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
           </div>
         `;
+      }
+
+      const profileForm = document.getElementById('profileForm') as HTMLFormElement | null;
+      const profileFirstName = document.getElementById('profileFirstName') as HTMLInputElement | null;
+      const profileLastName = document.getElementById('profileLastName') as HTMLInputElement | null;
+      const profileRole = document.getElementById('profileRole') as HTMLInputElement | null;
+      const profileCommune = document.getElementById('profileCommune') as HTMLInputElement | null;
+      const profileCollectivityType = document.getElementById('profileCollectivityType') as HTMLSelectElement | null;
+      const profileCollectivitySize = document.getElementById('profileCollectivitySize') as HTMLSelectElement | null;
+      const profilePoliticalAffiliation = document.getElementById('profilePoliticalAffiliation') as HTMLInputElement | null;
+      const profileHasOtherJob = document.getElementById('profileHasOtherJob') as HTMLInputElement | null;
+      const profileOtherJobTitle = document.getElementById('profileOtherJobTitle') as HTMLInputElement | null;
+      const profileOtherJobWrap = document.getElementById('profileOtherJobWrap') as HTMLLabelElement | null;
+      const profileFormFeedback = document.getElementById('profileFormFeedback') as HTMLDivElement | null;
+      const profileSaveBtn = document.getElementById('profileSaveBtn') as HTMLButtonElement | null;
+
+      if (
+        profileForm && profileFirstName && profileLastName && profileRole && profileCommune &&
+        profileCollectivityType && profileCollectivitySize && profilePoliticalAffiliation &&
+        profileHasOtherJob && profileOtherJobTitle && profileOtherJobWrap
+      ) {
+        profileFirstName.value = firstName;
+        profileLastName.value = lastName;
+        profileRole.value = role === 'élu·e local·e' ? '' : role;
+        profileCommune.value = commune;
+        profileCollectivityType.value = normalizeText(personalInfo.collectivity_type);
+        profileCollectivitySize.value = normalizeText(personalInfo.collectivity_size);
+        profilePoliticalAffiliation.value = normalizeText(personalInfo.political_affiliation || profile?.parti_label);
+        profileHasOtherJob.checked = Boolean(personalInfo.has_other_job);
+        profileOtherJobTitle.value = normalizeText(personalInfo.other_job_title);
+        profileOtherJobWrap.style.display = profileHasOtherJob.checked ? 'grid' : 'none';
+
+        profileHasOtherJob.addEventListener('change', () => {
+          profileOtherJobWrap.style.display = profileHasOtherJob.checked ? 'grid' : 'none';
+          if (!profileHasOtherJob.checked) {
+            profileOtherJobTitle.value = '';
+          }
+        });
+
+        profileForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const firstNameValue = profileFirstName.value.trim();
+          const lastNameValue = profileLastName.value.trim();
+          const roleValue = profileRole.value.trim();
+          const communeValue = profileCommune.value.trim();
+          const affiliationValue = profilePoliticalAffiliation.value.trim();
+
+          if (profileSaveBtn) profileSaveBtn.disabled = true;
+          if (profileFormFeedback) {
+            profileFormFeedback.style.display = 'none';
+            profileFormFeedback.textContent = '';
+          }
+
+          try {
+            const response = await fetch('/api/profile-context', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                profile: {
+                  first_name: firstNameValue || null,
+                  role: roleValue || null,
+                  commune: communeValue || null,
+                  parti_id: null,
+                  parti_label: affiliationValue || null
+                },
+                personalInfo: {
+                  last_name: lastNameValue || null,
+                  collectivity_type: profileCollectivityType.value || null,
+                  collectivity_size: profileCollectivitySize.value || null,
+                  political_affiliation: affiliationValue || null,
+                  has_other_job: profileHasOtherJob.checked,
+                  other_job_title: profileHasOtherJob.checked ? (profileOtherJobTitle.value.trim() || null) : null
+                }
+              })
+            });
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(data?.error || 'Enregistrement impossible pour le moment.');
+            }
+
+            const displayName = [firstNameValue, lastNameValue].filter(Boolean).join(' ');
+            document.getElementById('profileName')!.textContent = displayName || firstNameValue || user.email?.split('@')[0] || 'Mon compte';
+            document.getElementById('profileMeta')!.textContent = [getRoleLabel(roleValue || diagnosticState?.role), communeValue].filter(Boolean).join(' — ');
+
+            if (profileFormFeedback) {
+              profileFormFeedback.textContent = 'Profil mis à jour.';
+              profileFormFeedback.classList.remove('dashboard-profile-feedback--error');
+              profileFormFeedback.classList.add('dashboard-profile-feedback--ok');
+              profileFormFeedback.style.display = 'block';
+            }
+
+            if (data?.maryanProfile) {
+              localStorage.setItem('maryan_profile', JSON.stringify(data.maryanProfile));
+            }
+          } catch (error) {
+            if (profileFormFeedback) {
+              profileFormFeedback.textContent = error instanceof Error ? error.message : 'Enregistrement impossible pour le moment.';
+              profileFormFeedback.classList.remove('dashboard-profile-feedback--ok');
+              profileFormFeedback.classList.add('dashboard-profile-feedback--error');
+              profileFormFeedback.style.display = 'block';
+            }
+          } finally {
+            if (profileSaveBtn) profileSaveBtn.disabled = false;
+          }
+        });
       }
 
       try {
@@ -831,6 +1047,91 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 0.75rem;
   }
 
+  .dashboard-profile-form-wrap {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .dashboard-profile-form-wrap h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.02rem;
+    color: var(--deep);
+  }
+
+  .dashboard-profile-form-wrap > p {
+    margin: 0 0 0.8rem;
+    color: #55646F;
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .dashboard-profile-form {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .dashboard-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .dashboard-profile-form label {
+    display: grid;
+    gap: 0.32rem;
+  }
+
+  .dashboard-profile-form label > span {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #4D5C66;
+  }
+
+  .dashboard-profile-form input,
+  .dashboard-profile-form select {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-height: 40px;
+    padding: 0.5rem 0.65rem;
+    font: inherit;
+    color: var(--deep);
+    background: white;
+  }
+
+  .dashboard-checkbox-row {
+    grid-template-columns: 16px 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+  }
+
+  .dashboard-checkbox-row input {
+    min-height: auto;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+
+  .dashboard-profile-feedback {
+    border-radius: 10px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .dashboard-profile-feedback--ok {
+    background: #ECFDF3;
+    color: #1B5E3B;
+    border: 1px solid #BBE7CD;
+  }
+
+  .dashboard-profile-feedback--error {
+    background: #FFF1F2;
+    color: #8A1C2B;
+    border: 1px solid #F8C6CE;
+  }
+
   .dashboard-account-actions .btn-secondary-v3 {
     width: 100%;
     justify-content: center;
@@ -873,6 +1174,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.92rem;
   }
 
+  .dashboard-banner-upgrade {
+    background: #FFFDF2;
+    border-color: #E8E0A5;
+    display: grid;
+    gap: 0.75rem;
+    align-items: start;
+  }
+
   .dashboard-hero,
   .dashboard-block,
   .dashboard-resume-card {
@@ -910,6 +1219,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 1rem;
     margin-bottom: 1rem;
     flex-wrap: wrap;
+  }
+
+  .dashboard-head-cta {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
   }
 
   .dashboard-block-head h2 {
@@ -1062,8 +1378,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .dashboard-topic-card {
     display: flex;
-    align-items: center;
-    min-height: 72px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 88px;
     border-radius: 18px;
     border: 1px solid var(--border);
     background: #FCFCFB;
@@ -1073,6 +1391,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.96rem;
     font-weight: 700;
     line-height: 1.45;
+  }
+
+  .dashboard-topic-title {
+    display: block;
+  }
+
+  .dashboard-topic-link {
+    margin-top: 0.45rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--accent-red);
   }
 
   .dashboard-topic-card:hover,
@@ -1129,6 +1458,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     .dashboard-action-grid,
     .dashboard-topics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-profile-grid {
       grid-template-columns: 1fr;
     }
 

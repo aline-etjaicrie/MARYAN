@@ -35,6 +35,7 @@ const PROFILE_SELECT = [
 type ProfileContextRequestBody = {
   profile?: Record<string, unknown> | null;
   diagnosticState?: unknown;
+  personalInfo?: Record<string, unknown> | null;
 };
 
 function json(payload: unknown, status = 200): Response {
@@ -92,6 +93,19 @@ async function getAuthenticatedProfile(request: Request) {
 }
 
 function serializeProfileContext(profile: ProfileContextRow | null | undefined) {
+  const profileContext =
+    profile?.profile_context &&
+    typeof profile.profile_context === 'object' &&
+    !Array.isArray(profile.profile_context)
+      ? (profile.profile_context as Record<string, unknown>)
+      : {};
+  const personalInfo =
+    profileContext.personal &&
+    typeof profileContext.personal === 'object' &&
+    !Array.isArray(profileContext.personal)
+      ? (profileContext.personal as Record<string, unknown>)
+      : {};
+
   const diagnosticState = buildDiagnosticStateFromProfileRow(profile);
   const maryanProfile = buildMaryanProfileFromDiagnosticState(diagnosticState, {
     firstName: profile?.first_name || null,
@@ -101,6 +115,7 @@ function serializeProfileContext(profile: ProfileContextRow | null | undefined) 
 
   return {
     profile,
+    personalInfo,
     diagnosticState,
     maryanProfile
   };
@@ -126,6 +141,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   const updates: Record<string, unknown> = {};
   const profileInput = body?.profile && typeof body.profile === 'object' ? body.profile : null;
+  const existingContext =
+    result.profile?.profile_context &&
+    typeof result.profile.profile_context === 'object' &&
+    !Array.isArray(result.profile.profile_context)
+      ? (result.profile.profile_context as Record<string, unknown>)
+      : {};
+  const nextContext: Record<string, unknown> = { ...existingContext };
+  let contextChanged = false;
 
   if (profileInput) {
     const firstName = normalizeOptionalString(profileInput.first_name);
@@ -139,6 +162,34 @@ export const POST: APIRoute = async ({ request }) => {
     if (role !== null || profileInput.role === null) updates.role = role;
     if (partiId !== null || profileInput.parti_id === null) updates.parti_id = partiId;
     if (partiLabel !== null || profileInput.parti_label === null) updates.parti_label = partiLabel;
+  }
+
+  if (body?.personalInfo && typeof body.personalInfo === 'object' && !Array.isArray(body.personalInfo)) {
+    const personalInput = body.personalInfo as Record<string, unknown>;
+    const existingPersonal =
+      nextContext.personal && typeof nextContext.personal === 'object' && !Array.isArray(nextContext.personal)
+        ? (nextContext.personal as Record<string, unknown>)
+        : {};
+
+    const sanitizeText = (value: unknown) => {
+      const normalized = normalizeOptionalString(value);
+      return normalized ?? null;
+    };
+
+    const hasOtherJobRaw = personalInput.has_other_job;
+    const hasOtherJob = typeof hasOtherJobRaw === 'boolean' ? hasOtherJobRaw : null;
+
+    nextContext.personal = {
+      ...existingPersonal,
+      last_name: sanitizeText(personalInput.last_name),
+      collectivity_type: sanitizeText(personalInput.collectivity_type),
+      collectivity_size: sanitizeText(personalInput.collectivity_size),
+      political_affiliation: sanitizeText(personalInput.political_affiliation),
+      has_other_job: hasOtherJob,
+      other_job_title: sanitizeText(personalInput.other_job_title)
+    };
+
+    contextChanged = true;
   }
 
   if (body && 'diagnosticState' in body) {
@@ -156,37 +207,37 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (diagnosticKey) {
       const nowIso = new Date().toISOString();
-      const existingContext =
-        result.profile?.profile_context &&
-        typeof result.profile.profile_context === 'object' &&
-        !Array.isArray(result.profile.profile_context)
-          ? (result.profile.profile_context as Record<string, unknown>)
-          : {};
-
       const existingDiagnosticContext =
-        existingContext.diagnostic &&
-        typeof existingContext.diagnostic === 'object' &&
-        !Array.isArray(existingContext.diagnostic)
-          ? (existingContext.diagnostic as Record<string, unknown>)
+        nextContext.diagnostic &&
+        typeof nextContext.diagnostic === 'object' &&
+        !Array.isArray(nextContext.diagnostic)
+          ? (nextContext.diagnostic as Record<string, unknown>)
           : {};
 
       updates.diagnostic_key = diagnosticKey;
       updates.diagnostic_label = diagnosticLabel;
       updates.diagnostic_completed = true;
-      updates.profile_context = {
-        ...existingContext,
-        diagnostic: {
-          ...existingDiagnosticContext,
-          key: diagnosticKey,
-          label: diagnosticLabel || null,
-          priorities,
-          fiches,
-          completed_at: nowIso
-        }
+      nextContext.diagnostic = {
+        ...existingDiagnosticContext,
+        key: diagnosticKey,
+        label: diagnosticLabel || null,
+        priorities,
+        fiches,
+        completed_at: nowIso
       };
-      updates.profile_context_updated_at = nowIso;
+      contextChanged = true;
       if (summary) updates.last_diagnostic_summary = summary;
+
+      const roleFromDiagnostic = normalizeOptionalString(raw.role as string);
+      if (roleFromDiagnostic && !updates.role) {
+        updates.role = roleFromDiagnostic;
+      }
     }
+  }
+
+  if (contextChanged) {
+    updates.profile_context = nextContext;
+    updates.profile_context_updated_at = new Date().toISOString();
   }
 
   if (!Object.keys(updates).length) {
