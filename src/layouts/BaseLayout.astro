@@ -50,6 +50,7 @@ const {
           <a href="/copilote">Copilote</a>
           <a href="/ressources">Ressources</a>
           <a href="/droits">Droits & devoirs</a>
+          <a href="/blog">Blog</a>
           <a href="/login" id="accountEntry" class="header-compte">Se connecter</a>
         </nav>
       </div>
@@ -152,10 +153,26 @@ const {
       if (SUPABASE_URL && SUPABASE_KEY) {
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          if (session) {
-            updateAccountLinks('/mon-compte', 'Mon compte');
+        supabase.auth.getSession().then(async ({ data: { session } }) => {
+          if (!session) return;
+
+          // Prénom depuis user_metadata (rapide, pas de requête extra)
+          let firstName = session.user.user_metadata?.first_name || '';
+
+          // Fallback : requête légère sur profiles
+          if (!firstName) {
+            try {
+              const { data } = await supabase
+                .from('profiles')
+                .select('first_name')
+                .eq('id', session.user.id)
+                .single();
+              firstName = data?.first_name || '';
+            } catch { /* noop */ }
           }
+
+          const label = firstName ? `Bonjour ${firstName}` : 'Mon compte';
+          updateAccountLinks('/mon-compte', label);
         });
       }
     </script>
