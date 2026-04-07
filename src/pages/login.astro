@@ -21,19 +21,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div id="formError" class="form-error" style="display:none;"></div>
         <div id="formSuccess" class="form-success" style="display:none;"></div>
 
-        <div class="oauth-actions">
-          <button type="button" id="googleAuthBtn" class="btn-oauth">
-            Créer mon compte avec Google
-          </button>
-          <button type="button" id="appleAuthBtn" class="btn-oauth">
-            Créer mon compte avec Apple
-          </button>
-        </div>
-
-        <div class="auth-divider" aria-hidden="true">
-          <span>ou</span>
-        </div>
-
         <form id="authForm" novalidate>
           <div class="field-group">
             <label for="email">Adresse email</label>
@@ -151,8 +138,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const btnLoader = document.getElementById('btnLoader')!;
     const formError = document.getElementById('formError')!;
     const formSuccess = document.getElementById('formSuccess')!;
-    const googleAuthBtn = document.getElementById('googleAuthBtn') as HTMLButtonElement;
-    const appleAuthBtn = document.getElementById('appleAuthBtn') as HTMLButtonElement;
     const formTitle = document.getElementById('formTitle')!;
     const formSub = document.getElementById('formSub')!;
     const toggleLabel = document.getElementById('toggleLabel')!;
@@ -165,9 +150,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     const safeNextPath = getSafeNextPath();
-    const oauthRedirectTo = safeNextPath
-      ? `${window.location.origin}/login?oauth=1&next=${encodeURIComponent(safeNextPath)}`
-      : `${window.location.origin}/login?oauth=1`;
 
     function renderMode() {
       if (isSignup) {
@@ -176,8 +158,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         btnLabel.textContent = 'Créer mon compte';
         toggleLabel.textContent = 'Déjà un compte ?';
         modeToggle.textContent = 'Se connecter';
-        googleAuthBtn.textContent = 'Créer mon compte avec Google';
-        appleAuthBtn.textContent = 'Créer mon compte avec Apple';
         confirmGroup.style.display = 'block';
         politicalLabelGroup.style.display = 'block';
         consentPartisGroup.style.display = 'block';
@@ -188,8 +168,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         btnLabel.textContent = 'Se connecter';
         toggleLabel.textContent = 'Pas encore de compte ?';
         modeToggle.textContent = 'Créer un compte';
-        googleAuthBtn.textContent = 'Continuer avec Google';
-        appleAuthBtn.textContent = 'Continuer avec Apple';
         confirmGroup.style.display = 'none';
         politicalLabelGroup.style.display = 'none';
         consentPartisGroup.style.display = 'none';
@@ -253,29 +231,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     function setLoading(loading: boolean) {
       submitBtn.disabled = loading;
-      googleAuthBtn.disabled = loading;
-      appleAuthBtn.disabled = loading;
       btnLabel.style.display = loading ? 'none' : 'inline';
       btnLoader.style.display = loading ? 'inline' : 'none';
-    }
-
-    async function signInWithProvider(provider: 'google' | 'apple') {
-      formError.style.display = 'none';
-      formSuccess.style.display = 'none';
-      setLoading(true);
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: oauthRedirectTo
-        }
-      });
-
-      setLoading(false);
-
-      if (error) {
-        showError(`Connexion ${provider === 'google' ? 'Google' : 'Apple'} indisponible pour le moment.`);
-      }
     }
 
     async function persistLocalDiagnostic(userId: string) {
@@ -315,14 +272,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         /* non bloquant */
       }
     }
-
-    googleAuthBtn.addEventListener('click', () => {
-      void signInWithProvider('google');
-    });
-
-    appleAuthBtn.addEventListener('click', () => {
-      void signInWithProvider('apple');
-    });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
