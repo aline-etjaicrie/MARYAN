@@ -235,6 +235,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       btnLoader.style.display = loading ? 'inline' : 'none';
     }
 
+    function getFriendlyAuthError(message: string, mode: 'signup' | 'signin'): string {
+      const normalized = message.toLowerCase();
+
+      if (normalized.includes('error sending confirmation email')) {
+        return 'La création de compte est momentanément indisponible (email de confirmation non envoyé). Merci de réessayer dans quelques minutes.';
+      }
+
+      if (normalized.includes('email not confirmed')) {
+        return 'Votre email n’est pas encore confirmé. Vérifiez votre boîte mail (et les spams).';
+      }
+
+      if (mode === 'signin' && normalized.includes('invalid login credentials')) {
+        return 'Email ou mot de passe incorrect.';
+      }
+
+      return message;
+    }
+
     async function persistLocalDiagnostic(userId: string) {
       try {
         const rawDiag = localStorage.getItem('maryan_v4_diag');
@@ -340,7 +358,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         setLoading(false);
 
         if (error) {
-          showError(error.message);
+          showError(getFriendlyAuthError(error.message, 'signup'));
         } else if (!signUpData.session) {
           showSuccess('Compte créé. Vérifiez votre email pour confirmer votre inscription.');
         } else {
@@ -354,7 +372,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         if (error) {
           setLoading(false);
-          showError('Email ou mot de passe incorrect.');
+          showError(getFriendlyAuthError(error.message, 'signin'));
         } else if (data.session) {
           await finalizeAuthenticatedSession(data.session, safeNextPath || '/mon-compte');
         }
