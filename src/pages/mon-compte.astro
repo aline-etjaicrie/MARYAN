@@ -144,16 +144,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
 
           <div class="dashboard-action-grid">
-            <a href="/diagnostic" class="dashboard-action-card" data-intent="comprendre">
+            <a href="/copilote?mode=chat&intent=comprendre" class="dashboard-action-card" data-intent="comprendre">
               <span>Comprendre une situation</span>
             </a>
-            <a href="/copilote" class="dashboard-action-card" data-intent="decision">
+            <a href="/copilote?mode=chat&intent=decider" class="dashboard-action-card" data-intent="decider">
               <span>Prendre une décision</span>
             </a>
-            <a href="/copilote" class="dashboard-action-card" data-intent="sensible">
+            <a href="/copilote?mode=chat&intent=sensible" class="dashboard-action-card" data-intent="sensible">
               <span>Gérer une situation sensible</span>
             </a>
-            <a href="/copilote" class="dashboard-action-card" data-intent="reponse">
+            <a href="/copilote?mode=chat&intent=rediger" class="dashboard-action-card" data-intent="rediger">
               <span>Rédiger une réponse</span>
             </a>
           </div>
@@ -163,17 +163,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </section>
 
-        <section class="dashboard-block">
-          <div class="dashboard-block-head">
-            <div>
-              <h2>Le Radar de MARYAN</h2>
-              <p>À venir.</p>
-            </div>
-            <a href="/radar" class="btn-link">Voir la page →</a>
-          </div>
-
-          <div id="dashboardRadarList" class="dashboard-radar-list"></div>
-        </section>
+        <!-- Radar — masqué jusqu'à la mise en ligne de la page /radar -->
 
         <section class="dashboard-block">
           <div class="dashboard-block-head">
@@ -228,7 +218,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <h2>Mes documents</h2>
               <p>Vos comptes rendus et analyses sauvegardés.</p>
             </div>
-            <a href="/copilote" class="btn-link">Créer un document →</a>
+            <a href="/copilote?mode=document" class="btn-link">Créer un document →</a>
           </div>
 
           <!-- Dossiers -->
@@ -247,7 +237,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div id="docsLoading" class="docs-loading">Chargement…</div>
             <div id="docsEmpty" class="docs-empty" style="display:none">
               <p>Aucun document dans ce dossier.</p>
-              <a href="/copilote" class="btn-primary-v3">Créer un compte rendu ou analyser un document</a>
+              <a href="/copilote?mode=document" class="btn-primary-v3">Créer un compte rendu ou analyser un document</a>
             </div>
             <div id="docsList" class="docs-list" style="display:none"></div>
           </div>
@@ -382,8 +372,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .eq('id', user.id)
         .single()).data;
 
+      const MANDAT_LABELS: Record<string, string> = {
+        maire: 'Maire',
+        adjoint: 'Adjoint au maire',
+        adjoint_maire: 'Adjoint au maire',
+        conseiller_maj: 'Conseiller municipal (majorité)',
+        conseiller_opp: 'Conseiller municipal (opposition)',
+        interco: 'Conseiller communautaire',
+        president_interco: "Président d'intercommunalité",
+        vice_president_interco: "Vice-président intercommunalité",
+        conseiller_communautaire: 'Conseiller communautaire',
+        conseiller_paris: 'Conseiller de Paris',
+        maire_arrondissement_paris: "Maire d'arrondissement (Paris)",
+        adjoint_arrondissement_paris: "Adjoint d'arrondissement (Paris)",
+        conseiller_arrondissement_paris: "Conseiller d'arrondissement (Paris)",
+        conseiller_metropolitain_lyon: 'Conseiller métropolitain (Lyon)',
+        conseiller_arrondissement_lyon: "Conseiller d'arrondissement (Lyon)",
+        maire_secteur_marseille: 'Maire de secteur (Marseille)',
+        adjoint_secteur_marseille: 'Adjoint de secteur (Marseille)',
+        conseiller_municipal_marseille: 'Conseiller municipal (Marseille)'
+      };
+      function mandatLabel(raw: string): string {
+        return MANDAT_LABELS[raw] || raw;
+      }
+
       const firstName = profile?.first_name || session.user.user_metadata?.first_name || '';
-      const role = profile?.role || 'élu·e local·e';
+      const roleRaw = profile?.role || '';
+      const role = mandatLabel(roleRaw) || 'élu·e local·e';
       const commune = profile?.commune || '';
       const plan = profile?.plan || 'gratuit';
       const isSubscriber = plan === 'plus' || plan === 'admin';
@@ -451,7 +466,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           if (newFirstName) {
             document.getElementById('helloTitle')!.textContent = `Bonjour ${newFirstName},`;
           }
-          const newRole = body.role || (role !== 'élu·e local·e' ? role : '');
+          const newRole = body.role ? mandatLabel(body.role) : (role !== 'élu·e local·e' ? role : '');
           document.getElementById('profileMeta')!.textContent = newRole || '';
         } catch (err) {
           msg.textContent = `Erreur : ${(err as Error).message || 'Échec de la sauvegarde'}`;
@@ -639,6 +654,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 return r ? `<a href="/ressources/${escapeHtml(r.slug)}" class="diag-rec-item">${escapeHtml(r.title)}</a>` : '';
               }).filter(Boolean).join('')}</div>`
             : '';
+          const updateDiagHref = advancedDiagCompleted ? '/diagnostic' : '/diagnostic/approfondi';
+          const updateDiagLabel = advancedDiagCompleted ? 'Refaire le diagnostic' : 'Affiner mon profil →';
           resumeCard.innerHTML = `
             <div class="dashboard-resume-live">
               <p class="dashboard-resume-label">Diagnostic complété</p>
@@ -646,7 +663,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               ${accroche ? `<p class="diag-situation">${accroche}</p>` : ''}
               ${priorityTagsHtml}
               ${recResourcesHtml}
-              <a href="/diagnostic" class="btn-primary-v3" style="margin-top:1rem;display:inline-block;">Mettre à jour mon diagnostic</a>
+              <a href="${escapeHtml(updateDiagHref)}" class="btn-primary-v3" style="margin-top:1rem;display:inline-block;">${updateDiagLabel}</a>
             </div>
           `;
         } else {

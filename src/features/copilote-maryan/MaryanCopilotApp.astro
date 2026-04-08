@@ -684,11 +684,38 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
       btn.addEventListener('click', showHub);
     });
 
-    // Check URL param ?mode=
+    // Check URL param ?mode= and ?intent=
     const urlParams = new URLSearchParams(window.location.search);
     const paramMode = urlParams.get('mode') as HubMode;
+    const paramIntent = urlParams.get('intent');
+
     if (paramMode && ['compte-rendu', 'document', 'chat'].includes(paramMode)) {
       showMode(paramMode);
+    }
+
+    if (paramIntent) {
+      const INTENT_PREFILLS: Record<string, string> = {
+        comprendre: "Je voudrais comprendre une situation dans mon mandat : ",
+        decider: "Je dois prendre une décision importante et j'ai besoin d'aide pour l'arbitrer : ",
+        sensible: "Je gère une situation sensible dans mon mandat : ",
+        rediger: "Je dois rédiger une réponse et j'ai besoin d'aide pour la formuler : "
+      };
+      const prefill = INTENT_PREFILLS[paramIntent];
+      if (prefill) {
+        const chatInput = document.querySelector('[data-user-input]') as HTMLTextAreaElement | null;
+        if (chatInput) {
+          chatInput.value = prefill;
+          chatInput.focus();
+          // Trigger resize if the textarea auto-resizes
+          chatInput.dispatchEvent(new Event('input'));
+          // Place cursor at end
+          chatInput.selectionStart = chatInput.selectionEnd = prefill.length;
+        }
+        // Ensure we're in chat mode
+        if (!paramMode || paramMode === 'chat') {
+          showMode('chat');
+        }
+      }
     }
 
     // ── Auth helper ────────────────────────────────────────────────
