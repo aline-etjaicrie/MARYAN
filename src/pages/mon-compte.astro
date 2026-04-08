@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Mon Compte — MARYAN"
-  description="Votre point d’entrée MARYAN : agir, comprendre et reprendre rapidement.">
+  description="Votre point d'entrée MARYAN : agir, comprendre et reprendre rapidement.">
 
   <main class="dashboard-page">
     <div class="container dashboard-layout">
@@ -159,7 +159,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="dashboard-block-head">
             <div>
               <h2>Vos sujets du moment</h2>
-              <p id="topicsLead">Des points d’appui choisis à partir de votre diagnostic.</p>
+              <p id="topicsLead">Des points d'appui choisis à partir de votre diagnostic.</p>
             </div>
             <a href="/ressources" class="btn-link">Explorer les ressources →</a>
           </div>
@@ -463,7 +463,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const helloLead = document.getElementById('helloLead');
       if (helloLead) {
         const roleSentence = [role, commune ? `à ${commune}` : 'dans votre collectivité'].join(' ');
-        helloLead.textContent = `Vous êtes ${roleSentence}. MARYAN privilégie aujourd’hui : ${angles.join(', ')}.`;
+        helloLead.textContent = `Vous êtes ${roleSentence}. MARYAN privilégie aujourd'hui : ${angles.join(', ')}.`;
       }
 
 
@@ -498,26 +498,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         if (topicsLead && !diagnosticState.profile) {
-          topicsLead.textContent = 'Des points d’appui sobres pour avancer tout de suite.';
+          topicsLead.textContent = "Des points d'appui sobres pour avancer tout de suite.";
         }
 
         topicsGrid.innerHTML = resources.map((resource) => `
           <a href="/ressources/${escapeHtml(resource.slug)}" class="dashboard-topic-card">
             <span>${escapeHtml(resource.title)}</span>
           </a>
-        `).join(‘’);
+        `).join('');
       }
 
       // ── Auto-évaluations ──
       {
         const DASHBOARD_TESTS = [
-          { slug: ‘style-decision’,   title: ‘Mon style de décision’,             desc: ‘Repérez votre profil décisionnel et vos angles morts.’,       storageKey: ‘maryan_test_decision’ },
-          { slug: ‘posture-conflit’,  title: ‘Ma posture face au conflit’,         desc: ‘Comment traversez-vous les tensions ?’,                       storageKey: ‘maryan_test_conflit’ },
-          { slug: ‘prise-de-parole’,  title: ‘Préparer une prise de parole’,       desc: ‘Évaluez votre niveau de préparation réelle.’,                 storageKey: ‘maryan_test_parole’ },
-          { slug: ‘travail-equipe’,   title: ‘Mon rapport au travail en équipe’,   desc: ‘Repérez votre profil d\’équipe et ce qu\’il vous coûte.’,     storageKey: ‘maryan_test_equipe’ },
-          { slug: ‘deliberation’,     title: ‘Préparer une délibération’,          desc: ‘Évaluez votre niveau de préparation avant le vote.’,          storageKey: ‘maryan_test_deliberation’ }
+          { slug: 'style-decision',   title: 'Mon style de décision',             desc: 'Repérez votre profil décisionnel et vos angles morts.',       storageKey: 'maryan_test_decision' },
+          { slug: 'posture-conflit',  title: 'Ma posture face au conflit',         desc: 'Comment traversez-vous les tensions ?',                       storageKey: 'maryan_test_conflit' },
+          { slug: 'prise-de-parole',  title: 'Préparer une prise de parole',       desc: 'Évaluez votre niveau de préparation réelle.',                 storageKey: 'maryan_test_parole' },
+          { slug: 'travail-equipe',   title: 'Mon rapport au travail en équipe',   desc: 'Repérez votre profil d\'équipe et ce qu\'il vous coûte.',     storageKey: 'maryan_test_equipe' },
+          { slug: 'deliberation',     title: 'Préparer une délibération',          desc: 'Évaluez votre niveau de préparation avant le vote.',          storageKey: 'maryan_test_deliberation' }
         ];
-        const testsList = document.getElementById(‘dashboardTestsList’);
+        const testsList = document.getElementById('dashboardTestsList');
         if (testsList) {
           testsList.innerHTML = DASHBOARD_TESTS.map(t => {
             const done = !!localStorage.getItem(t.storageKey);
@@ -535,29 +535,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   <span class="dash-test-badge">Abonné·e</span>
                 </div>
               </a>`;
-          }).join(‘’);
+          }).join('');
         }
       }
 
-      const resumeCard = document.getElementById(‘resumeCard’);
+      const resumeCard = document.getElementById('resumeCard');
       if (resumeCard) {
         if (diagnosticState.profile || diagnosticState.diagnostic_key) {
-          const diagLabel = escapeHtml(diagnosticState.diagnostic_label || diagnosticState.diagnostic_key || ‘Votre profil’);
+          const diagLabel = escapeHtml(diagnosticState.diagnostic_label || diagnosticState.diagnostic_key || 'Votre profil');
           const profileAnglesStr = diagnosticState.profile
-            ? (ANGLES_BY_PROFILE[diagnosticState.profile as keyof typeof ANGLES_BY_PROFILE] || []).join(‘, ‘)
-            : ‘’;
+            ? (ANGLES_BY_PROFILE[diagnosticState.profile as keyof typeof ANGLES_BY_PROFILE] || []).join(', ')
+            : '';
           resumeCard.innerHTML = `
             <div class="dashboard-resume-live">
               <p class="dashboard-resume-label">Diagnostic complété</p>
               <h3>${diagLabel}</h3>
-              ${profileAnglesStr ? `<p>Axes prioritaires : ${escapeHtml(profileAnglesStr)}</p>` : ‘’}
+              ${profileAnglesStr ? `<p>Axes prioritaires : ${escapeHtml(profileAnglesStr)}</p>` : ''}
               <a href="/diagnostic" class="btn-primary-v3">Mettre à jour mon diagnostic</a>
             </div>
           `;
         } else {
           resumeCard.innerHTML = `
             <div class="dashboard-resume-empty">
-              <p class="dashboard-resume-label">Point d’entrée</p>
+              <p class="dashboard-resume-label">Point d'entrée</p>
               <h3>Faites votre diagnostic</h3>
               <p>Personnalisez MARYAN à votre situation de mandat en 3 minutes.</p>
               <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic →</a>
