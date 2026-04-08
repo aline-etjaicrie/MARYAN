@@ -19,7 +19,12 @@ const ALLOWED_FIELDS = new Set([
   'type_ct',
   'metier_hors_mandat',
   'parti_id',
-  'parti_label'
+  'parti_label',
+  'profil_decision',
+  'profil_conflit',
+  'profil_parole',
+  'profil_equipe',
+  'profil_deliberation'
 ]);
 
 const TAILLE_CT_VALUES = new Set(['moins500', '500-3500', '3500-10000', '10000-50000', 'plus50000', '']);

@@ -147,18 +147,38 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
                 <div id="resCTA" class="res-actions-v4"></div>
              </section>
 
-             <section class="res-email-v4" id="emailBox">
-                <h3>Recevoir votre profil</h3>
-                <p>Gardez une trace de ce profil pour y revenir, le partager avec un pair ou le comparer avec un prochain test.</p>
-                <div class="email-input-v4">
-                   <input type="email" id="emailInput" placeholder="Adresse email" />
-                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
-                </div>
-             </section>
-
              <footer class="res-footer-v4 text-center">
                 <p>Décider seul·e, c'est souvent décider dans le flou.</p>
                 <a href="/tests" class="btn-link-v4">Voir les autres tests</a>
+<div id="saveBlock" style="margin-top:2rem; text-align:center;">
+  <div id="saveIfConnected" style="display:none;">
+    <button id="saveToProfile"
+      style="background:#64FFDA; color:#0A192F; border:none;
+             padding:1rem 2rem; border-radius:12px;
+             font-weight:700; font-size:1rem; cursor:pointer;">
+      Ajouter à mon profil →
+    </button>
+    <p id="saveConfirm" style="display:none; color:#64FFDA;
+       font-weight:600; margin-top:1rem;">
+      ✓ Résultat ajouté à votre profil
+    </p>
+    <div style="margin-top:1rem;">
+      <a href="/mon-compte" style="color:rgba(255,255,255,0.6);
+         font-size:0.9rem;">← Retour au dashboard</a>
+    </div>
+  </div>
+  <div id="saveIfGuest" style="display:none;">
+    <p style="color:rgba(255,255,255,0.7); margin-bottom:1rem;">
+      Créez un compte pour sauvegarder ce résultat.
+    </p>
+    <a href="/login?mode=signup&amp;from=tests"
+       style="background:#64FFDA; color:#0A192F;
+              padding:1rem 2rem; border-radius:12px;
+              font-weight:700; text-decoration:none;">
+      Créer mon compte →
+    </a>
+  </div>
+</div>
              </footer>
 
           </div>
@@ -232,11 +252,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
     .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
 
-    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
-    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
-    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
-    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
 
     .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
     .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
@@ -254,7 +269,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       .diag-title-v4 { font-size: 2.4rem; }
       .diag-lead-v4 { font-size: 1.1rem; }
       .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
-      .email-input-v4 { flex-direction: column; }
       .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
       .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; border-radius: 14px; }
     }
@@ -384,7 +398,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
        const ctas = `
          <a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Travailler ça avec le copilote</a>
          <a href="/tests" class="btn-secondary-v4">Voir les autres tests</a>
-         <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir mon profil</button>
        `;
 
        document.getElementById('resProfilTitle').textContent = p.title;
@@ -401,13 +414,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
        document.getElementById('resultSection').classList.remove('hidden');
        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    window.submitEmail = () => {
-       const email = document.getElementById('emailInput').value.trim();
-       if(!email) return;
-       localStorage.setItem('user_email', email);
-       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre profil décisionnel vous attend sur ${email}.</p>`;
-    };
   </script>
 
   <script>
@@ -425,6 +431,40 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         body: JSON.stringify((e as CustomEvent).detail)
       }).catch(() => {});
     });
+
+    // ── Bloc sauvegarde profil ─────────────────────────────────────
+    if (supabase) {
+      supabase.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (session) {
+          var connected = document.getElementById('saveIfConnected');
+          if (connected) connected.style.display = 'block';
+          var btn = document.getElementById('saveToProfile');
+          if (btn) {
+            btn.addEventListener('click', async function() {
+              var resultEl = document.querySelector('.res-title-v4, #resProfilTitle, #resProfileTitle');
+              var resultLabel = resultEl ? resultEl.textContent.trim() : 'complété';
+              try {
+                await fetch('/api/update-profile', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session.access_token
+                  },
+                  body: JSON.stringify({ 'profil_decision': resultLabel })
+                });
+              } catch (_) {}
+              var confirm = document.getElementById('saveConfirm');
+              if (confirm) confirm.style.display = 'block';
+              btn.style.display = 'none';
+            });
+          }
+        } else {
+          var guest = document.getElementById('saveIfGuest');
+          if (guest) guest.style.display = 'block';
+        }
+      });
+    }
   </script>
 
   <script>
