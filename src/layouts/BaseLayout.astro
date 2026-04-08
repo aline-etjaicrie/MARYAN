@@ -82,6 +82,13 @@ const {
             <p class="footer-credit">
               MARYAN est une offre de <a href="https://www.etjaicrie.com/index.html">Et j'ai crié</a>.
             </p>
+            <p class="footer-legal-links">
+              <a href="/mentions-legales">Mentions légales</a>
+              &middot;
+              <a href="/confidentialite">Confidentialité</a>
+              &middot;
+              <a href="/cgv">CGV</a>
+            </p>
           </div>
         </div>
         <div class="footer-links">
@@ -95,18 +102,16 @@ const {
             <li><a href="/droits">Droits & devoirs</a></li>
             <li><a href="/blog">Blog</a></li>
             <li><a href="/contact">Contact</a></li>
-            <li><a href="/mentions-legales">Mentions légales</a></li>
-            <li><a href="/confidentialite">Confidentialité</a></li>
-            <li><a href="/cgv">CGV</a></li>
-            <li><a href="/ecoindex">EcoIndex A</a></li>
           </ul>
         </div>
         <div class="footer-eco">
-          <p class="footer-kicker" style="color:var(--neon);">Innovation Sobriété · EcoIndex A</p>
-          <div class="footer-note">
-            <strong>MARYAN est conçu pour une sobriété numérique forte :</strong>
-            Architecture Astro statique et hébergement éco-responsable.
-          </div>
+          <a href="/ecoindex" class="footer-eco-link">
+            <p class="footer-kicker" style="color:var(--neon);">Innovation Sobriété · EcoIndex A</p>
+            <div class="footer-note">
+              <strong>MARYAN est conçu pour une sobriété numérique forte :</strong>
+              Architecture Astro statique et hébergement éco-responsable.
+            </div>
+          </a>
         </div>
       </div>
     </footer>
@@ -163,6 +168,26 @@ const {
 </html>
 
 <style>
+  .footer-eco-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .footer-eco-link:hover .footer-kicker {
+    text-decoration: underline;
+  }
+  .footer-legal-links {
+    margin: 0.6rem 0 0;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .footer-legal-links a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+  }
+  .footer-legal-links a:hover {
+    color: rgba(255, 255, 255, 0.85);
+  }
   .cookie-bar {
     position: fixed;
     bottom: 0;
