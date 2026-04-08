@@ -25,7 +25,7 @@ export function extractFirstNameFromUser(user: User): string | null {
 export async function ensureProfileRecord(supabase: SupabaseClient, user: User) {
   const { data: existingProfile, error: selectError } = await supabase
     .from('profiles')
-    .select('id, first_name, plan, radar_email_frequency')
+    .select('id, first_name, plan')
     .eq('id', user.id)
     .maybeSingle();
 
@@ -44,8 +44,7 @@ export async function ensureProfileRecord(supabase: SupabaseClient, user: User) 
 
   const payload: Record<string, unknown> = {
     id: user.id,
-    plan: 'gratuit',
-    radar_email_frequency: 'aucun'
+    plan: 'gratuit'
   };
 
   if (firstName) payload.first_name = firstName;
@@ -55,7 +54,7 @@ export async function ensureProfileRecord(supabase: SupabaseClient, user: User) 
   const { data: insertedProfile, error: insertError } = await supabase
     .from('profiles')
     .insert(payload)
-    .select('id, first_name, plan, radar_email_frequency')
+    .select('id, first_name, plan')
     .single();
 
   if (!insertError) {
@@ -65,7 +64,7 @@ export async function ensureProfileRecord(supabase: SupabaseClient, user: User) 
   if (insertError.code === '23505') {
     const { data: concurrentProfile, error: concurrentError } = await supabase
       .from('profiles')
-      .select('id, first_name, plan, radar_email_frequency')
+      .select('id, first_name, plan')
       .eq('id', user.id)
       .single();
 
