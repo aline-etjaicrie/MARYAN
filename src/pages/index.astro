@@ -143,25 +143,17 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
         </div>
       </div>
 
-      <aside class="hero-product card-v3" aria-label="Aperçu du produit">
-        <div class="product-bar">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <strong>Copilote MARYAN</strong>
-        </div>
-        <figure class="hero-photo-frame">
-          <Image
-            src={heroScene}
-            alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
-            class="hero-photo"
-            widths={[720, 960, 1280]}
-            sizes="(max-width: 1024px) calc(100vw - 4rem), 42vw"
-            quality={84}
-            loading="eager"
-            fetchpriority="high"
-          />
-        </figure>
+      <aside class="hero-product" aria-label="Aperçu du produit">
+        <Image
+          src={heroScene}
+          alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
+          class="hero-photo"
+          widths={[720, 960, 1280]}
+          sizes="(max-width: 1024px) calc(100vw - 4rem), 42vw"
+          quality={84}
+          loading="eager"
+          fetchpriority="high"
+        />
       </aside>
     </div>
   </section>
@@ -379,7 +371,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       display: grid;
         grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
         gap: 2rem;
-        align-items: center;
+        align-items: stretch;
     }
 
     .hero-copy h1 {
@@ -448,51 +440,16 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     }
 
     .hero-product {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 28px;
-        padding: 1rem;
-      backdrop-filter: blur(8px);
-        height: fit-content;
-    }
-
-    .hero-photo-frame {
-      margin: 0 0 0.9rem;
       overflow: hidden;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.08);
+      display: flex;
     }
 
     .hero-photo {
       display: block;
       width: 100%;
-      height: auto;
-        aspect-ratio: 16 / 9;
+      height: 100%;
       object-fit: cover;
-        object-position: 54% 52%;
-    }
-
-    .product-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.86rem;
-      margin-bottom: 0.95rem;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.42);
-    }
-
-    .product-bar strong {
-      margin-left: 0.35rem;
-      color: white;
-      letter-spacing: 0.03em;
+      object-position: 54% 52%;
     }
 
     .mockup-label {
@@ -917,7 +874,6 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
         width: 100%;
       }
 
-      .hero-product,
       .usage-card,
       .step-card,
       .mockup-card,
