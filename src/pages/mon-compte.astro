@@ -68,15 +68,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <label for="pf-role">Mandat principal</label>
                 <select id="pf-role" name="role">
                   <option value="">— Choisir —</option>
-                  <option value="maire">Maire</option>
-                  <option value="adjoint">Adjoint au maire</option>
-                  <option value="conseiller_maj">Conseiller municipal majoritaire</option>
-                  <option value="conseiller_opp">Conseiller municipal opposition</option>
-                  <option value="conseiller_communautaire">Conseiller communautaire</option>
-                  <option value="vice_president_interco">Vice-président intercommunalité</option>
-                  <option value="conseiller_paris">Conseiller de Paris</option>
-                  <option value="conseiller_arrondissement">Conseiller d'arrondissement</option>
-                  <option value="maire_de_secteur">Maire de secteur Marseille</option>
+                  <optgroup label="Communes">
+                    <option value="maire">Maire</option>
+                    <option value="adjoint_maire">Adjoint au maire</option>
+                    <option value="conseiller_maj">Conseiller municipal (majorité)</option>
+                    <option value="conseiller_opp">Conseiller municipal (opposition)</option>
+                  </optgroup>
+                  <optgroup label="Intercommunalité">
+                    <option value="president_interco">Président d'intercommunalité</option>
+                    <option value="vice_president_interco">Vice-président intercommunalité</option>
+                    <option value="conseiller_communautaire">Conseiller communautaire</option>
+                  </optgroup>
+                  <optgroup label="Paris">
+                    <option value="conseiller_paris">Conseiller de Paris</option>
+                    <option value="maire_arrondissement_paris">Maire d'arrondissement (Paris)</option>
+                    <option value="adjoint_arrondissement_paris">Adjoint d'arrondissement (Paris)</option>
+                    <option value="conseiller_arrondissement_paris">Conseiller d'arrondissement (Paris)</option>
+                  </optgroup>
+                  <optgroup label="Lyon">
+                    <option value="conseiller_metropolitain_lyon">Conseiller métropolitain (Lyon)</option>
+                    <option value="conseiller_arrondissement_lyon">Conseiller d'arrondissement (Lyon)</option>
+                  </optgroup>
+                  <optgroup label="Marseille">
+                    <option value="maire_secteur_marseille">Maire de secteur (Marseille)</option>
+                    <option value="adjoint_secteur_marseille">Adjoint de secteur (Marseille)</option>
+                    <option value="conseiller_municipal_marseille">Conseiller municipal (Marseille)</option>
+                  </optgroup>
                 </select>
               </div>
               <div class="profile-field">
@@ -94,10 +111,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <label for="pf-type-ct">Type de collectivité</label>
                 <select id="pf-type-ct" name="type_ct">
                   <option value="">— Choisir —</option>
-                  <option value="commune">Commune</option>
-                  <option value="intercommunalite">Intercommunalité</option>
+                  <option value="commune_rurale">Commune rurale (- de 3 500 hab.)</option>
+                  <option value="commune_urbaine">Commune urbaine (+ de 3 500 hab.)</option>
+                  <option value="intercommunalite">Intercommunalité / EPCI</option>
                   <option value="metropole">Métropole</option>
-                  <option value="plm">Paris-Lyon-Marseille</option>
+                  <option value="plm_paris">Paris (régime PLM)</option>
+                  <option value="plm_lyon">Lyon (régime PLM)</option>
+                  <option value="plm_marseille">Marseille (régime PLM)</option>
                 </select>
               </div>
               <div class="profile-field profile-field--full">
@@ -355,8 +375,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const plan = profile?.plan || 'gratuit';
       const isSubscriber = plan === 'plus' || plan === 'admin';
 
-      document.getElementById('profileName')!.textContent = firstName || user.email?.split('@')[0] || 'Mon compte';
-      document.getElementById('profileMeta')!.textContent = [role, commune].filter(Boolean).join(' — ');
+      const lastName = (profile as any)?.last_name || '';
+      const displayName = [firstName, lastName].filter(Boolean).join(' ');
+      document.getElementById('profileName')!.textContent = displayName || 'Profil à compléter';
+      document.getElementById('profileMeta')!.textContent = role !== 'élu·e local·e' ? role : '';
       document.getElementById('userEmail')!.textContent = user.email || '';
       document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
 
@@ -405,12 +427,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           if (!res.ok) throw new Error();
           msg.textContent = '✓ Profil mis à jour';
           msg.style.color = '#2E7D32';
-          // Update sidebar display name if first_name changed
+          // Update sidebar after save
           const newFirstName = body.first_name || firstName;
+          const newLastName = body.last_name || lastName;
+          const newDisplayName = [newFirstName, newLastName].filter(Boolean).join(' ');
+          if (newDisplayName) {
+            document.getElementById('profileName')!.textContent = newDisplayName;
+          }
           if (newFirstName) {
-            document.getElementById('profileName')!.textContent = newFirstName;
             document.getElementById('helloTitle')!.textContent = `Bonjour ${newFirstName},`;
           }
+          const newRole = body.role || (role !== 'élu·e local·e' ? role : '');
+          document.getElementById('profileMeta')!.textContent = newRole || '';
         } catch {
           msg.textContent = 'Erreur lors de la sauvegarde.';
           msg.style.color = '#C62828';

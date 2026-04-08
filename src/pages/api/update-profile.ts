@@ -23,7 +23,7 @@ const ALLOWED_FIELDS = new Set([
 ]);
 
 const TAILLE_CT_VALUES = new Set(['moins500', '500-3500', '3500-10000', '10000-50000', 'plus50000', '']);
-const TYPE_CT_VALUES = new Set(['commune', 'intercommunalite', 'plm', 'metropole', '']);
+const TYPE_CT_VALUES = new Set(['commune_rurale', 'commune_urbaine', 'intercommunalite', 'metropole', 'plm_paris', 'plm_lyon', 'plm_marseille', 'commune', 'plm', '']);
 
 function json(payload: unknown, status = 200): Response {
   return new Response(JSON.stringify(payload), {
