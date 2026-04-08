@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
+import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } from './config';
 ---
 
 <BaseLayout
@@ -76,6 +76,19 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     .msg-bubble p {
       margin: 0 0 0.8rem;
       font-size: 0.95rem;
+    }
+
+    .msg-attachment-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.22rem 0.55rem;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      margin-bottom: 0.45rem;
+      opacity: 0.88;
     }
 
     .msg-bubble p:last-child {
@@ -219,7 +232,191 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     }
   </style>
 
-  <div class="copilot-app-root" data-maryan-copilot-root data-upgrade-url="/offres" data-endpoint="/api/chat">
+  <!-- ══════════════════════════════════════════════════
+       HUB SCREEN — écran d'accueil, sélection du mode
+       ══════════════════════════════════════════════════ -->
+  <div id="maryan-hub" class="maryan-hub">
+    <div class="hub-inner">
+      <p class="hub-kicker">MARYAN · Copilote de mandat</p>
+      <h1 class="hub-title">Que voulez-vous faire&nbsp;?</h1>
+      <div class="hub-cards">
+        <button class="hub-card" data-hub-mode="compte-rendu" type="button">
+          <span class="hub-card-icon">🎙️</span>
+          <strong class="hub-card-label">Compte rendu de réunion</strong>
+          <span class="hub-card-desc">Enregistrez ou collez le contenu d'une réunion — MARYAN rédige le compte rendu.</span>
+        </button>
+        <button class="hub-card" data-hub-mode="document" type="button">
+          <span class="hub-card-icon">📄</span>
+          <strong class="hub-card-label">Décrypter un document</strong>
+          <span class="hub-card-desc">Déposez une délibération, un arrêté, un courrier — MARYAN vous en donne les points essentiels.</span>
+        </button>
+        <button class="hub-card" data-hub-mode="chat" type="button">
+          <span class="hub-card-icon">💬</span>
+          <strong class="hub-card-label">Discuter avec MARYAN</strong>
+          <span class="hub-card-desc">Posez une question, explorez une situation, trouvez une piste.</span>
+        </button>
+      </div>
+      <div class="hub-footer-links">
+        <a href="/">← Accueil</a>
+        <a href="/mon-compte">Mon espace MARYAN</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODE COMPTE RENDU
+       ══════════════════════════════════════════════════ -->
+  <div id="maryan-cr-mode" class="maryan-mode-screen" style="display:none">
+    <header class="mode-header">
+      <button class="mode-back-btn" data-hub-back type="button">← Changer de mode</button>
+      <span class="mode-header-title">Compte rendu de réunion</span>
+    </header>
+
+    <div class="mode-body">
+      <!-- Phase 1 : saisie -->
+      <div id="cr-input-phase">
+        <div class="mode-card">
+          <div class="cr-tabs">
+            <button class="cr-tab cr-tab--active" data-cr-tab="paste" type="button">📝 Coller une transcription</button>
+            <button class="cr-tab" data-cr-tab="voice" type="button">🎙️ Dictée vocale</button>
+          </div>
+
+          <div id="cr-paste-panel" class="cr-panel">
+            <label class="cr-label" for="cr-textarea">Collez la transcription ou le contenu brut de la réunion</label>
+            <textarea id="cr-textarea" class="cr-textarea" rows="10" placeholder="Copiez-collez ici le contenu brut : transcription, notes, PV…"></textarea>
+          </div>
+
+          <div id="cr-voice-panel" class="cr-panel" style="display:none">
+            <div class="cr-voice-controls">
+              <button id="cr-mic-btn" class="cr-mic-btn" type="button" aria-label="Démarrer la dictée">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3Z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg>
+                <span id="cr-mic-label">Démarrer la dictée</span>
+              </button>
+              <p id="cr-mic-status" class="cr-mic-status">Cliquez pour dicter votre réunion en temps réel.</p>
+            </div>
+            <textarea id="cr-voice-textarea" class="cr-textarea cr-textarea--voice" rows="8" placeholder="La transcription apparaîtra ici…" readonly></textarea>
+          </div>
+
+          <p id="cr-input-error" class="mode-error" style="display:none"></p>
+
+          <div class="mode-actions">
+            <button id="cr-generate-btn" class="btn-mode-primary" type="button">
+              <span id="cr-btn-label">Générer le compte rendu</span>
+              <span id="cr-btn-spinner" class="mode-spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 : résultat -->
+      <div id="cr-result-phase" style="display:none">
+        <div class="mode-card">
+          <div class="result-actions-top">
+            <h2 class="result-heading">Compte rendu généré</h2>
+            <div class="result-btn-row">
+              <button id="cr-copy-btn" class="btn-mode-secondary" type="button">Copier</button>
+              <button id="cr-save-btn" class="btn-mode-secondary" type="button">Sauvegarder</button>
+              <button id="cr-new-btn" class="btn-mode-outline" type="button">Nouvelle réunion</button>
+            </div>
+          </div>
+          <p id="cr-save-status" class="save-status" style="display:none"></p>
+          <div id="cr-result-content" class="result-markdown"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODE DOCUMENT
+       ══════════════════════════════════════════════════ -->
+  <div id="maryan-doc-mode" class="maryan-mode-screen" style="display:none">
+    <header class="mode-header">
+      <button class="mode-back-btn" data-hub-back type="button">← Changer de mode</button>
+      <span class="mode-header-title">Décrypter un document</span>
+    </header>
+
+    <div class="mode-body">
+      <!-- Phase 1 : upload -->
+      <div id="doc-input-phase">
+        <div class="mode-card">
+          <p class="mode-intro">Déposez un document — MARYAN vous en donne les points essentiels.</p>
+
+          <div id="doc-drop-zone" class="doc-drop-zone" role="button" tabindex="0" aria-label="Zone de dépôt de fichier">
+            <div class="doc-drop-icon">📄</div>
+            <p class="doc-drop-title">Glissez votre document ici</p>
+            <p class="doc-drop-sub">ou <button type="button" id="doc-browse-btn" class="btn-inline-link">choisissez un fichier</button></p>
+            <p class="doc-drop-formats">PDF, JPG, PNG · max 10 Mo</p>
+            <input type="file" id="doc-file-input" accept=".pdf,image/jpeg,image/png" style="display:none" />
+          </div>
+
+          <div id="doc-file-preview" class="doc-file-preview" style="display:none">
+            <span class="doc-file-icon">📎</span>
+            <span id="doc-file-name" class="doc-file-name"></span>
+            <button type="button" id="doc-remove-file" class="doc-remove-btn" aria-label="Supprimer">✕</button>
+          </div>
+
+          <div class="form-group-doc">
+            <label class="form-label-doc" for="doc-type-select">Type de document</label>
+            <select id="doc-type-select" class="form-select-doc">
+              <option value="deliberation">Délibération</option>
+              <option value="ordre_du_jour">Ordre du jour</option>
+              <option value="budget">Document budgétaire</option>
+              <option value="courrier">Courrier reçu</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+
+          <p id="doc-input-error" class="mode-error" style="display:none"></p>
+
+          <div class="mode-actions">
+            <button id="doc-analyse-btn" class="btn-mode-primary" type="button" disabled>
+              <span id="doc-btn-label">Analyser le document</span>
+              <span id="doc-btn-spinner" class="mode-spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 : résultat -->
+      <div id="doc-result-phase" style="display:none">
+        <div class="mode-card">
+          <div class="result-actions-top">
+            <h2 class="result-heading">Analyse du document</h2>
+            <div class="result-btn-row">
+              <button id="doc-copy-btn" class="btn-mode-secondary" type="button">Copier</button>
+              <button id="doc-save-btn" class="btn-mode-secondary" type="button">Sauvegarder</button>
+              <button id="doc-new-btn" class="btn-mode-outline" type="button">Nouveau document</button>
+            </div>
+          </div>
+          <p id="doc-save-status" class="save-status" style="display:none"></p>
+
+          <div class="doc-result-blocks">
+            <div class="doc-result-block">
+              <p class="doc-result-label">En résumé</p>
+              <p id="doc-res-resume" class="doc-result-text"></p>
+            </div>
+            <div class="doc-result-block">
+              <p class="doc-result-label">Points d'attention</p>
+              <ul id="doc-res-attention" class="doc-result-list"></ul>
+            </div>
+            <div class="doc-result-block">
+              <p class="doc-result-label">Ce que ça engage</p>
+              <p id="doc-res-engagements" class="doc-result-text"></p>
+            </div>
+            <div class="doc-result-block doc-result-block--accent">
+              <p class="doc-result-label">Prochaine étape suggérée</p>
+              <p id="doc-res-prochain" class="doc-result-text"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODE CHAT — copilote existant (masqué par défaut)
+       ══════════════════════════════════════════════════ -->
+  <div class="copilot-app-root" data-maryan-copilot-root data-upgrade-url="/offres" data-endpoint="/api/chat" style="display:none">
     <div class="drawer-overlay" data-drawer-overlay></div>
 
     <aside class="profile-drawer" data-profile-drawer aria-label="Profil MARYAN">
@@ -255,7 +452,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
     <div class="chat-shell">
       <header class="app-header">
-        <a href="/" class="home-link">← Retour à la home</a>
+        <button class="home-link" type="button" data-hub-back>← Changer de mode</button>
 
         <div class="header-copy">
           <span class="app-title">MARYAN</span>
@@ -300,7 +497,23 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
           </div>
 
           <section class="suggestions-strip" data-suggestions>
-            <p class="suggestions-title">Pour commencer</p>
+            <!-- Notice RGPD tiers — AIPD R3 -->
+            <p class="tiers-notice">🔒 Pour protéger les données des personnes que vous mentionnez, évitez d'indiquer des noms ou informations permettant d'identifier des tiers (collègues, agents, élus).</p>
+
+            <!-- Parcours types : 3 portes d'entrée situationnelles -->
+            <p class="suggestions-title">Quelle est votre situation ?</p>
+            <div class="parcours-grid">
+              {PARCOURS_TYPES.map((p) => (
+                <button type="button" class="parcours-card" data-suggestion={p.message}>
+                  <span class="parcours-icon">{p.icon}</span>
+                  <span class="parcours-label">{p.label}</span>
+                  <span class="parcours-desc">{p.description}</span>
+                </button>
+              ))}
+            </div>
+
+            <!-- Exemples libres -->
+            <p class="suggestions-title suggestions-title-secondary">Ou décrivez librement</p>
             <div class="suggestions-grid">
               {SUGGESTIONS.map((suggestion) => (
                 <button type="button" class="suggestion-chip" data-suggestion={suggestion}>
@@ -313,6 +526,11 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       </main>
 
       <footer class="app-input-bar">
+        <p class="privacy-notice">Pour votre confidentialité, évitez de mentionner des noms de personnes ou des informations permettant d'identifier des tiers.</p>
+        <div class="attach-preview hidden" data-attach-preview>
+          <span data-attach-filename class="attach-preview-name"></span>
+          <button type="button" class="attach-remove-btn" data-remove-attach title="Retirer">✕</button>
+        </div>
         <div class="input-shell">
           <button class="mic-btn" type="button" aria-label="Dicter" data-mic-btn>
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -320,6 +538,11 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
               <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"></path>
             </svg>
           </button>
+
+          <button class="attach-btn" type="button" aria-label="Joindre un document" data-attach-btn>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+          <input type="file" style="display:none" accept=".pdf,image/png,image/jpeg,image/webp,image/jpg" data-attach-input>
 
           <label class="input-wrap">
             <span class="sr-only">Votre message</span>
@@ -345,6 +568,529 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
   <script>
     import './client.ts';
+  </script>
+
+  <!-- Hub + mode management -->
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+    const COMPTE_RENDU_SYSTEM = `Tu es MARYAN, assistant des élus municipaux français.
+On te fournit la transcription brute d'une réunion. Produis un compte rendu structuré, sobre et directement utile pour un élu.
+
+FORMAT DE SORTIE :
+
+## 📅 Réunion
+- Date : [si mentionnée, sinon "non précisée"]
+- Participants : [noms ou rôles mentionnés]
+- Objet : [sujet principal en une phrase]
+
+## ✅ Décisions prises
+[Liste des décisions actées. Si aucune : "Aucune décision formelle actée."]
+
+## ⏳ Points en suspens
+[Ce qui n'a pas été tranché. Si aucun : "Aucun."]
+
+## 📌 Actions à faire
+[Format : Action — Responsable (si mentionné) — Échéance (si mentionnée)]
+
+## 💬 Verbatim notable
+[1 à 3 phrases importantes entre guillemets. Uniquement si vraiment significatif.]
+
+## ❓ Questions pour la suite
+[2 à 4 questions utiles pour avancer — pas rhétoriques.]
+
+## 💡 Suggestions MARYAN
+[1 à 2 pistes concrètes. Peut renvoyer à une thématique ressources MARYAN si pertinent.]
+
+RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggestions spécifiques, maximum 600 mots.`;
+
+    // ── Markdown minimal renderer ──────────────────────────────────
+    function renderMarkdown(md: string): string {
+      const esc = (s: string) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const lines = md.split('\n');
+      const out: string[] = [];
+      let inList = false;
+
+      for (const raw of lines) {
+        const line = raw.trimEnd();
+
+        if (line.startsWith('## ')) {
+          if (inList) { out.push('</ul>'); inList = false; }
+          out.push(`<h2 class="md-h2">${esc(line.slice(3))}</h2>`);
+        } else if (line.startsWith('### ')) {
+          if (inList) { out.push('</ul>'); inList = false; }
+          out.push(`<h3 class="md-h3">${esc(line.slice(4))}</h3>`);
+        } else if (line.startsWith('- ') || line.startsWith('* ')) {
+          if (!inList) { out.push('<ul class="md-list">'); inList = true; }
+          out.push(`<li>${inlineMarkdown(line.slice(2))}</li>`);
+        } else if (line === '') {
+          if (inList) { out.push('</ul>'); inList = false; }
+          out.push('<br>');
+        } else {
+          if (inList) { out.push('</ul>'); inList = false; }
+          out.push(`<p class="md-p">${inlineMarkdown(line)}</p>`);
+        }
+      }
+      if (inList) out.push('</ul>');
+      return out.join('\n');
+    }
+
+    function inlineMarkdown(s: string): string {
+      const esc = (t: string) => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return esc(s)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>');
+    }
+
+    // ── Mode state ─────────────────────────────────────────────────
+    type HubMode = 'compte-rendu' | 'document' | 'chat' | null;
+    let currentMode: HubMode = null;
+
+    const hubEl = document.getElementById('maryan-hub')!;
+    const crModeEl = document.getElementById('maryan-cr-mode')!;
+    const docModeEl = document.getElementById('maryan-doc-mode')!;
+    const chatRootEl = document.querySelector('[data-maryan-copilot-root]') as HTMLElement;
+
+    function showHub() {
+      currentMode = null;
+      hubEl.style.display = '';
+      crModeEl.style.display = 'none';
+      docModeEl.style.display = 'none';
+      chatRootEl.style.display = 'none';
+    }
+
+    function showMode(mode: HubMode) {
+      currentMode = mode;
+      hubEl.style.display = 'none';
+      crModeEl.style.display = mode === 'compte-rendu' ? '' : 'none';
+      docModeEl.style.display = mode === 'document' ? '' : 'none';
+      chatRootEl.style.display = mode === 'chat' ? '' : 'none';
+    }
+
+    // Hub card clicks
+    document.querySelectorAll('[data-hub-mode]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-hub-mode') as HubMode;
+        showMode(mode);
+      });
+    });
+
+    // Back buttons
+    document.querySelectorAll('[data-hub-back]').forEach(btn => {
+      btn.addEventListener('click', showHub);
+    });
+
+    // Check URL param ?mode=
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramMode = urlParams.get('mode') as HubMode;
+    if (paramMode && ['compte-rendu', 'document', 'chat'].includes(paramMode)) {
+      showMode(paramMode);
+    }
+
+    // ── Auth helper ────────────────────────────────────────────────
+    async function getAccessToken(): Promise<string | null> {
+      if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data: { session } } = await supabase.auth.getSession();
+      return session?.access_token || null;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // MODE COMPTE RENDU
+    // ═══════════════════════════════════════════════════════════
+    let crResult = '';
+    let crRecognition: SpeechRecognition | null = null;
+    let crIsRecording = false;
+
+    // Tab switching
+    document.querySelectorAll('[data-cr-tab]').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-cr-tab')!;
+        document.querySelectorAll('[data-cr-tab]').forEach(t => t.classList.remove('cr-tab--active'));
+        tab.classList.add('cr-tab--active');
+        (document.getElementById('cr-paste-panel') as HTMLElement).style.display = target === 'paste' ? '' : 'none';
+        (document.getElementById('cr-voice-panel') as HTMLElement).style.display = target === 'voice' ? '' : 'none';
+      });
+    });
+
+    // Voice dictation
+    const crMicBtn = document.getElementById('cr-mic-btn')!;
+    const crMicLabel = document.getElementById('cr-mic-label')!;
+    const crMicStatus = document.getElementById('cr-mic-status')!;
+    const crVoiceTextarea = document.getElementById('cr-voice-textarea') as HTMLTextAreaElement;
+
+    crMicBtn.addEventListener('click', () => {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        crMicStatus.textContent = 'La dictée vocale n\'est pas supportée par ce navigateur.';
+        return;
+      }
+
+      if (crIsRecording && crRecognition) {
+        crRecognition.stop();
+        return;
+      }
+
+      crRecognition = new SpeechRecognition();
+      crRecognition.lang = 'fr-FR';
+      crRecognition.continuous = true;
+      crRecognition.interimResults = true;
+
+      let finalTranscript = crVoiceTextarea.value;
+
+      crRecognition.onstart = () => {
+        crIsRecording = true;
+        crMicBtn.classList.add('cr-mic-btn--recording');
+        crMicLabel.textContent = 'Arrêter la dictée';
+        crMicStatus.textContent = '🔴 Dictée en cours…';
+      };
+
+      crRecognition.onresult = (event: SpeechRecognitionEvent) => {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript + ' ';
+          } else {
+            interim = transcript;
+          }
+        }
+        crVoiceTextarea.value = finalTranscript + interim;
+      };
+
+      crRecognition.onend = () => {
+        crIsRecording = false;
+        crMicBtn.classList.remove('cr-mic-btn--recording');
+        crMicLabel.textContent = 'Démarrer la dictée';
+        crMicStatus.textContent = 'Dictée terminée. Cliquez sur "Générer" pour obtenir le compte rendu.';
+      };
+
+      crRecognition.onerror = () => {
+        crIsRecording = false;
+        crMicBtn.classList.remove('cr-mic-btn--recording');
+        crMicLabel.textContent = 'Démarrer la dictée';
+        crMicStatus.textContent = 'Erreur de dictée. Réessayez.';
+      };
+
+      crRecognition.start();
+    });
+
+    // Generate compte rendu
+    const crGenerateBtn = document.getElementById('cr-generate-btn') as HTMLButtonElement;
+    const crBtnLabel = document.getElementById('cr-btn-label')!;
+    const crBtnSpinner = document.getElementById('cr-btn-spinner')!;
+    const crInputError = document.getElementById('cr-input-error')!;
+
+    crGenerateBtn.addEventListener('click', async () => {
+      const activeTab = (document.querySelector('[data-cr-tab].cr-tab--active') as HTMLElement)?.getAttribute('data-cr-tab');
+      const transcription = activeTab === 'voice'
+        ? (crVoiceTextarea.value || '').trim()
+        : ((document.getElementById('cr-textarea') as HTMLTextAreaElement).value || '').trim();
+
+      if (!transcription) {
+        crInputError.textContent = 'Veuillez saisir ou dicter une transcription.';
+        crInputError.style.display = 'block';
+        return;
+      }
+      crInputError.style.display = 'none';
+
+      crGenerateBtn.disabled = true;
+      crBtnLabel.style.display = 'none';
+      crBtnSpinner.style.display = 'inline-block';
+
+      try {
+        const token = await getAccessToken();
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            messages: [
+              { role: 'user', content: transcription }
+            ],
+            message: transcription,
+            _overrideSystemPrompt: COMPTE_RENDU_SYSTEM
+          })
+        });
+
+        const data = await res.json() as Record<string, any>;
+
+        if (!res.ok || data.error) {
+          throw new Error(data.message || data.error || 'Erreur lors de la génération.');
+        }
+
+        crResult = data.reply || '';
+        document.getElementById('cr-result-content')!.innerHTML = renderMarkdown(crResult);
+        document.getElementById('cr-input-phase')!.style.display = 'none';
+        document.getElementById('cr-result-phase')!.style.display = '';
+      } catch (e: any) {
+        crInputError.textContent = e.message || 'Erreur de connexion. Réessayez.';
+        crInputError.style.display = 'block';
+      } finally {
+        crGenerateBtn.disabled = false;
+        crBtnLabel.style.display = 'inline';
+        crBtnSpinner.style.display = 'none';
+      }
+    });
+
+    // Copy CR
+    document.getElementById('cr-copy-btn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(crResult).then(() => {
+        const btn = document.getElementById('cr-copy-btn')!;
+        btn.textContent = '✓ Copié';
+        setTimeout(() => { btn.textContent = 'Copier'; }, 2000);
+      });
+    });
+
+    // Save CR
+    document.getElementById('cr-save-btn')?.addEventListener('click', async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        showSaveStatus('cr', 'Connectez-vous pour sauvegarder.', true);
+        return;
+      }
+      const saveBtn = document.getElementById('cr-save-btn') as HTMLButtonElement;
+      saveBtn.disabled = true;
+      try {
+        const res = await fetch('/api/documents', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ type: 'compte-rendu', contenu: crResult, generate_title: true })
+        });
+        const data = await res.json() as Record<string, any>;
+        if (!res.ok) throw new Error(data.error || 'Erreur');
+        showSaveStatus('cr', `✓ Sauvegardé : "${data.document?.titre || 'Document'}"`, false);
+      } catch (e: any) {
+        showSaveStatus('cr', e.message, true);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // New CR
+    document.getElementById('cr-new-btn')?.addEventListener('click', () => {
+      crResult = '';
+      (document.getElementById('cr-textarea') as HTMLTextAreaElement).value = '';
+      crVoiceTextarea.value = '';
+      document.getElementById('cr-result-content')!.innerHTML = '';
+      document.getElementById('cr-result-phase')!.style.display = 'none';
+      document.getElementById('cr-input-phase')!.style.display = '';
+      document.getElementById('cr-save-status')!.style.display = 'none';
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // MODE DOCUMENT
+    // ═══════════════════════════════════════════════════════════
+    let docSelectedFile: File | null = null;
+    let docResultText = '';
+    let docFileName = '';
+
+    const docDropZone = document.getElementById('doc-drop-zone')!;
+    const docFileInput = document.getElementById('doc-file-input') as HTMLInputElement;
+    const docBrowseBtn = document.getElementById('doc-browse-btn')!;
+    const docFilePreview = document.getElementById('doc-file-preview')!;
+    const docFileNameEl = document.getElementById('doc-file-name')!;
+    const docRemoveFile = document.getElementById('doc-remove-file')!;
+    const docAnalyseBtn = document.getElementById('doc-analyse-btn') as HTMLButtonElement;
+    const docInputError = document.getElementById('doc-input-error')!;
+
+    docBrowseBtn.addEventListener('click', () => docFileInput.click());
+    docDropZone.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') docFileInput.click();
+    });
+    docDropZone.addEventListener('dragover', (e: DragEvent) => {
+      e.preventDefault();
+      docDropZone.classList.add('doc-drop-zone--over');
+    });
+    docDropZone.addEventListener('dragleave', () => docDropZone.classList.remove('doc-drop-zone--over'));
+    docDropZone.addEventListener('drop', (e: DragEvent) => {
+      e.preventDefault();
+      docDropZone.classList.remove('doc-drop-zone--over');
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleDocFile(file);
+    });
+    docFileInput.addEventListener('change', () => {
+      if (docFileInput.files?.[0]) handleDocFile(docFileInput.files[0]);
+    });
+    docRemoveFile.addEventListener('click', () => {
+      docSelectedFile = null;
+      docFileInput.value = '';
+      docFilePreview.style.display = 'none';
+      docDropZone.style.display = '';
+      docAnalyseBtn.disabled = true;
+    });
+
+    function handleDocFile(file: File) {
+      const maxSize = 10 * 1024 * 1024;
+      const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+      if (!allowed.includes(file.type)) {
+        docInputError.textContent = 'Format non supporté. Utilisez PDF, JPG ou PNG.';
+        docInputError.style.display = 'block';
+        return;
+      }
+      if (file.size > maxSize) {
+        docInputError.textContent = 'Fichier trop volumineux (max 10 Mo).';
+        docInputError.style.display = 'block';
+        return;
+      }
+      docInputError.style.display = 'none';
+      docSelectedFile = file;
+      docFileName = file.name;
+      docFileNameEl.textContent = file.name;
+      docFilePreview.style.display = 'flex';
+      docDropZone.style.display = 'none';
+      docAnalyseBtn.disabled = false;
+    }
+
+    docAnalyseBtn.addEventListener('click', async () => {
+      if (!docSelectedFile) return;
+      const docBtnLabel = document.getElementById('doc-btn-label')!;
+      const docBtnSpinner = document.getElementById('doc-btn-spinner')!;
+      docAnalyseBtn.disabled = true;
+      docBtnLabel.style.display = 'none';
+      docBtnSpinner.style.display = 'inline-block';
+      docInputError.style.display = 'none';
+
+      try {
+        const token = await getAccessToken();
+        const docType = (document.getElementById('doc-type-select') as HTMLSelectElement).value;
+        const base64 = await fileToBase64(docSelectedFile);
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch('/api/analyse', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ fileData: base64, mimeType: docSelectedFile.type, docType })
+        });
+
+        const data = await res.json() as Record<string, any>;
+
+        // Paywall : abonnement requis
+        if (res.status === 401 || res.status === 403) {
+          docAnalyseBtn.disabled = false;
+          document.getElementById('doc-btn-label')!.style.display = 'inline';
+          document.getElementById('doc-btn-spinner')!.style.display = 'none';
+          docInputError.innerHTML = `
+            <strong>Service réservé aux abonné·es MARYAN Plus.</strong><br>
+            <a href="/offres" style="color:var(--deep);font-weight:800;text-decoration:underline">Découvrir MARYAN Plus →</a>
+          `;
+          docInputError.style.display = 'block';
+          return;
+        }
+
+        if (!res.ok || data.error) throw new Error(data.error || 'Erreur lors de l\'analyse.');
+
+        // Build text for copy/save
+        docResultText = [
+          `# Analyse : ${docFileName}`,
+          '',
+          `## En résumé`,
+          data.resume || '',
+          '',
+          `## Points d'attention`,
+          ...(Array.isArray(data.pointsAttention) ? data.pointsAttention.map((p: string) => `- ${p}`) : []),
+          '',
+          `## Ce que ça engage`,
+          data.engagements || '',
+          '',
+          `## Prochaine étape suggérée`,
+          data.prochainEtape || ''
+        ].join('\n');
+
+        document.getElementById('doc-res-resume')!.textContent = data.resume || '';
+        document.getElementById('doc-res-engagements')!.textContent = data.engagements || '';
+        document.getElementById('doc-res-prochain')!.textContent = data.prochainEtape || '';
+
+        const ul = document.getElementById('doc-res-attention')!;
+        ul.innerHTML = (Array.isArray(data.pointsAttention) ? data.pointsAttention : [])
+          .map((p: string) => `<li>${p}</li>`).join('');
+
+        document.getElementById('doc-input-phase')!.style.display = 'none';
+        document.getElementById('doc-result-phase')!.style.display = '';
+      } catch (e: any) {
+        docInputError.textContent = e.message || 'Erreur de connexion. Réessayez.';
+        docInputError.style.display = 'block';
+        docAnalyseBtn.disabled = false;
+        document.getElementById('doc-btn-label')!.style.display = 'inline';
+        document.getElementById('doc-btn-spinner')!.style.display = 'none';
+      } finally {
+        docBtnLabel.style.display = 'inline';
+        docBtnSpinner.style.display = 'none';
+      }
+    });
+
+    // Copy doc result
+    document.getElementById('doc-copy-btn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(docResultText).then(() => {
+        const btn = document.getElementById('doc-copy-btn')!;
+        btn.textContent = '✓ Copié';
+        setTimeout(() => { btn.textContent = 'Copier'; }, 2000);
+      });
+    });
+
+    // Save doc result
+    document.getElementById('doc-save-btn')?.addEventListener('click', async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        showSaveStatus('doc', 'Connectez-vous pour sauvegarder.', true);
+        return;
+      }
+      const saveBtn = document.getElementById('doc-save-btn') as HTMLButtonElement;
+      saveBtn.disabled = true;
+      try {
+        const res = await fetch('/api/documents', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ type: 'document', contenu: docResultText, source_nom: docFileName, generate_title: true })
+        });
+        const data = await res.json() as Record<string, any>;
+        if (!res.ok) throw new Error(data.error || 'Erreur');
+        showSaveStatus('doc', `✓ Sauvegardé : "${data.document?.titre || 'Document'}"`, false);
+      } catch (e: any) {
+        showSaveStatus('doc', e.message, true);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // New doc analysis
+    document.getElementById('doc-new-btn')?.addEventListener('click', () => {
+      docSelectedFile = null;
+      docResultText = '';
+      docFileName = '';
+      docFileInput.value = '';
+      docFilePreview.style.display = 'none';
+      docDropZone.style.display = '';
+      docAnalyseBtn.disabled = true;
+      document.getElementById('doc-result-phase')!.style.display = 'none';
+      document.getElementById('doc-input-phase')!.style.display = '';
+      document.getElementById('doc-save-status')!.style.display = 'none';
+    });
+
+    // ── Shared helpers ─────────────────────────────────────────────
+    function showSaveStatus(mode: 'cr' | 'doc', message: string, isError: boolean) {
+      const el = document.getElementById(`${mode}-save-status`)!;
+      el.textContent = message;
+      el.className = 'save-status' + (isError ? ' save-status--error' : ' save-status--ok');
+      el.style.display = 'block';
+      if (!isError) setTimeout(() => { el.style.display = 'none'; }, 4000);
+    }
+
+    function fileToBase64(file: File): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
   </script>
 
   <style>
@@ -566,6 +1312,18 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       gap: 0;
     }
 
+    .tiers-notice {
+      width: 100%;
+      margin: 0 0 1.1rem;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: rgba(10, 25, 47, 0.65);
+      background: rgba(10, 25, 47, 0.03);
+      border: 1px solid rgba(10, 25, 47, 0.1);
+      border-radius: 0.75rem;
+    }
+
     .suggestions-strip {
       margin-top: 0.8rem;
       padding-bottom: 0.35rem;
@@ -580,6 +1338,68 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       color: rgba(10, 25, 47, 0.58);
     }
 
+    .suggestions-title-secondary {
+      margin-top: 1.4rem;
+    }
+
+    /* ── Parcours types ── */
+    .parcours-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .parcours-card {
+      appearance: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      text-align: left;
+      border: 1.5px solid rgba(10, 25, 47, 0.1);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--deep);
+      border-radius: 1.1rem;
+      padding: 1rem 0.85rem 0.9rem;
+      font: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .parcours-card:hover,
+    .parcours-card:focus-visible {
+      border-color: var(--deep);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(10, 25, 47, 0.1);
+      outline: none;
+    }
+
+    .parcours-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+      margin-bottom: 0.1rem;
+    }
+
+    .parcours-label {
+      font-size: 0.875rem;
+      font-weight: 800;
+      color: var(--deep);
+      line-height: 1.2;
+    }
+
+    .parcours-desc {
+      font-size: 0.75rem;
+      color: rgba(10, 25, 47, 0.56);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 520px) {
+      .parcours-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Suggestions libres ── */
     .suggestions-grid {
       display: grid;
       gap: 0.7rem;
@@ -621,11 +1441,52 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       backdrop-filter: blur(18px);
     }
 
+    .attach-preview {
+      width: min(100%, 50rem);
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.9rem;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(10, 25, 47, 0.1);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--deep);
+      font-weight: 600;
+    }
+
+    .attach-preview-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .attach-remove-btn {
+      width: 1.35rem;
+      height: 1.35rem;
+      border: none;
+      background: rgba(10, 25, 47, 0.07);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.18s;
+    }
+
+    .attach-remove-btn:hover {
+      background: rgba(230, 57, 70, 0.15);
+    }
+
     .input-shell {
       width: min(100%, 50rem);
       margin: 0 auto;
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto auto auto 1fr auto;
       gap: 0.6rem;
       align-items: end;
       padding: 0.5rem;
@@ -636,6 +1497,7 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
     }
 
     .mic-btn,
+    .attach-btn,
     .send-btn {
       width: 2.8rem;
       height: 2.8rem;
@@ -648,16 +1510,33 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
     }
 
-    .mic-btn {
+    .mic-btn,
+    .attach-btn {
       background: rgba(10, 25, 47, 0.05);
       color: rgba(10, 25, 47, 0.55);
     }
 
+    .attach-btn.active {
+      background: rgba(230, 57, 70, 0.1);
+      color: var(--accent-red);
+    }
+
+    .mic-btn svg,
+    .attach-btn svg,
+    .send-btn svg {
+      width: 1.1rem;
+      height: 1.1rem;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .mic-btn svg,
     .send-btn svg {
-      width: 1.15rem;
-      height: 1.15rem;
       fill: currentColor;
+      stroke: none;
     }
 
     .mic-btn.recording {
@@ -706,6 +1585,18 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
 
     .input-wrap textarea::placeholder {
       color: rgba(10, 25, 47, 0.46);
+    }
+
+    .privacy-notice {
+      width: min(100%, 50rem);
+      margin: 0 auto 0.55rem;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: rgba(10, 25, 47, 0.55);
+      background: rgba(10, 25, 47, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
     }
 
     .input-hint {
@@ -908,8 +1799,8 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
       }
 
       .input-shell {
-        grid-template-columns: 1fr auto;
-        padding: 0.45rem 0.45rem 0.45rem 0.7rem;
+        grid-template-columns: auto auto 1fr auto;
+        padding: 0.45rem 0.45rem 0.45rem 0.45rem;
         border-radius: 1.2rem;
       }
 
@@ -957,6 +1848,590 @@ import { FREE_LIMIT, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME_PARAGRAPHS } fr
         padding-left: 1.5rem;
         padding-right: 1.5rem;
       }
+    }
+  </style>
+
+  <!-- ── Hub & mode styles ─────────────────────────────────── -->
+  <style>
+    /* ── HUB SCREEN ── */
+    .maryan-hub {
+      min-height: 100dvh;
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+    }
+
+    .hub-inner {
+      width: min(100%, 680px);
+    }
+
+    .hub-kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(100, 255, 218, 0.7);
+      margin: 0 0 1.1rem;
+    }
+
+    .hub-title {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin: 0 0 2.5rem;
+    }
+
+    .hub-cards {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .hub-card {
+      appearance: none;
+      border: 1.5px solid rgba(100, 255, 218, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 1.4rem 1.5rem;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 2.2rem 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.2rem 0.75rem;
+      align-items: start;
+      color: #fff;
+      font: inherit;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .hub-card:hover,
+    .hub-card:focus-visible {
+      border-color: #64FFDA;
+      background: rgba(100, 255, 218, 0.07);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .hub-card-icon {
+      font-size: 1.6rem;
+      grid-row: span 2;
+      line-height: 1;
+      padding-top: 0.1rem;
+    }
+
+    .hub-card-label {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .hub-card-desc {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.62);
+      line-height: 1.5;
+    }
+
+    .hub-footer-links {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .hub-footer-links a {
+      color: rgba(100, 255, 218, 0.6);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .hub-footer-links a:hover { color: #64FFDA; }
+
+    @media (min-width: 640px) {
+      .hub-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── MODE SCREENS ── */
+    .maryan-mode-screen {
+      min-height: 100dvh;
+      background: var(--bg, #F8F9FA);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mode-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: rgba(248, 249, 250, 0.94);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .mode-back-btn {
+      border: none;
+      background: transparent;
+      color: rgba(10, 25, 47, 0.55);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 25, 47, 0.1);
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .mode-back-btn:hover { color: var(--deep); border-color: var(--deep); }
+
+    .mode-header-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--deep);
+    }
+
+    .mode-body {
+      flex: 1;
+      padding: 1.5rem 1.25rem 4rem;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .mode-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(10, 25, 47, 0.08);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .mode-intro {
+      margin: 0;
+      font-size: 1rem;
+      color: #54636C;
+      line-height: 1.55;
+    }
+
+    .mode-error {
+      background: #FFF0F0;
+      border: 1px solid #FFCDD2;
+      color: #C62828;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .mode-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-mode-primary {
+      background: var(--deep);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem 1.75rem;
+      font: inherit;
+      font-size: 0.96rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-mode-primary:hover:not(:disabled) { background: #0d2140; transform: translateY(-1px); }
+    .btn-mode-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-mode-secondary {
+      background: transparent;
+      border: 1.5px solid rgba(10, 25, 47, 0.15);
+      color: var(--deep);
+      border-radius: 10px;
+      padding: 0.75rem 1.25rem;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .btn-mode-secondary:hover:not(:disabled) { border-color: var(--deep); }
+    .btn-mode-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-mode-outline {
+      background: transparent;
+      border: none;
+      color: rgba(10, 25, 47, 0.5);
+      padding: 0.75rem 1rem;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .btn-mode-outline:hover { color: var(--deep); }
+
+    .mode-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .save-status {
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      margin: 0;
+    }
+
+    .save-status--ok {
+      background: #F0FFF4;
+      color: #1F5F3E;
+      border: 1px solid #B7E4C7;
+    }
+
+    .save-status--error {
+      background: #FFF0F0;
+      color: #C62828;
+      border: 1px solid #FFCDD2;
+    }
+
+    /* ── Compte rendu tabs ── */
+    .cr-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .cr-tab {
+      appearance: none;
+      border: 1.5px solid rgba(10, 25, 47, 0.12);
+      background: transparent;
+      border-radius: 999px;
+      padding: 0.5rem 1rem;
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: rgba(10, 25, 47, 0.6);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cr-tab--active,
+    .cr-tab:hover {
+      border-color: var(--deep);
+      background: var(--deep);
+      color: #fff;
+    }
+
+    .cr-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #54636C;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .cr-textarea {
+      width: 100%;
+      border: 1.5px solid rgba(10, 25, 47, 0.1);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--deep);
+      background: #FAFAF8;
+      resize: vertical;
+      min-height: 160px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .cr-textarea:focus { border-color: var(--deep); background: #fff; }
+    .cr-textarea--voice { min-height: 120px; background: rgba(10, 25, 47, 0.02); }
+
+    .cr-voice-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.25rem 0;
+    }
+
+    .cr-mic-btn {
+      appearance: none;
+      background: var(--deep);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 0.85rem 1.5rem;
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      transition: background 0.15s;
+    }
+
+    .cr-mic-btn svg {
+      width: 1.1rem;
+      height: 1.1rem;
+      fill: currentColor;
+    }
+
+    .cr-mic-btn--recording {
+      background: var(--accent-red, #E63946);
+      animation: mic-pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes mic-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(230, 57, 70, 0); }
+    }
+
+    .cr-mic-status {
+      margin: 0;
+      font-size: 0.85rem;
+      color: rgba(10, 25, 47, 0.55);
+      text-align: center;
+    }
+
+    /* ── Résultats ── */
+    .result-actions-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .result-heading {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--deep);
+      margin: 0;
+    }
+
+    .result-btn-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .result-markdown {
+      line-height: 1.65;
+      color: var(--ink, #1E2A32);
+    }
+
+    .result-markdown .md-h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--deep);
+      margin: 1.2rem 0 0.5rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .result-markdown .md-h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--deep);
+      margin: 1rem 0 0.4rem;
+    }
+
+    .result-markdown .md-p {
+      margin: 0.4rem 0;
+      font-size: 0.96rem;
+    }
+
+    .result-markdown .md-list {
+      margin: 0.4rem 0 0.4rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .result-markdown .md-list li {
+      font-size: 0.96rem;
+      line-height: 1.55;
+    }
+
+    /* ── Document mode ── */
+    .doc-drop-zone {
+      border: 2px dashed rgba(10, 25, 47, 0.15);
+      border-radius: 14px;
+      padding: 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      outline: none;
+      text-align: center;
+    }
+
+    .doc-drop-zone:hover,
+    .doc-drop-zone:focus,
+    .doc-drop-zone--over {
+      border-color: var(--deep);
+      background: rgba(10, 25, 47, 0.02);
+    }
+
+    .doc-drop-icon { font-size: 2.2rem; }
+    .doc-drop-title { font-size: 1rem; font-weight: 700; color: var(--deep); margin: 0; }
+    .doc-drop-sub { font-size: 0.88rem; color: #54636C; margin: 0; }
+    .doc-drop-formats { font-size: 0.78rem; color: #99A1A7; margin: 0; }
+
+    .btn-inline-link {
+      background: none;
+      border: none;
+      color: var(--deep);
+      font-weight: 800;
+      font-size: inherit;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .doc-file-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.8rem 1rem;
+      background: rgba(10, 25, 47, 0.04);
+      border-radius: 10px;
+      border: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .doc-file-icon { font-size: 1.1rem; }
+    .doc-file-name { font-size: 0.88rem; font-weight: 600; color: var(--deep); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .doc-remove-btn { background: none; border: none; color: #99A1A7; cursor: pointer; font-size: 0.95rem; padding: 0.2rem; }
+    .doc-remove-btn:hover { color: var(--accent-red, #E63946); }
+
+    .form-group-doc { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label-doc {
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #54636C;
+    }
+
+    .form-select-doc {
+      padding: 0.8rem 1rem;
+      border: 1.5px solid rgba(10, 25, 47, 0.1);
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.95rem;
+      color: var(--deep);
+      background: #FAFAF8;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230A192F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    .form-select-doc:focus { border-color: var(--deep); }
+
+    .doc-result-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .doc-result-block {
+      background: #FAFAF8;
+      border-radius: 14px;
+      padding: 1.25rem 1.4rem;
+      border: 1px solid rgba(10, 25, 47, 0.07);
+    }
+
+    .doc-result-block--accent {
+      background: var(--deep);
+      border-color: transparent;
+    }
+
+    .doc-result-block--accent .doc-result-label { color: #64FFDA; }
+    .doc-result-block--accent .doc-result-text { color: #fff; }
+
+    .doc-result-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(10, 25, 47, 0.42);
+      margin: 0 0 0.6rem;
+    }
+
+    .doc-result-text {
+      font-size: 0.97rem;
+      line-height: 1.6;
+      color: var(--deep);
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .doc-result-list {
+      padding-left: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin: 0;
+    }
+
+    .doc-result-list li {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      color: var(--deep);
+    }
+
+    @media (max-width: 600px) {
+      .hub-card {
+        padding: 1.1rem 1.2rem;
+      }
+      .mode-body { padding: 1rem 0.85rem 3rem; }
+      .mode-card { padding: 1.25rem; }
+      .result-actions-top { flex-direction: column; gap: 0.75rem; }
     }
   </style>
 </BaseLayout>

@@ -72,14 +72,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <!-- Q3 : POIDS DU MOMENT -->
         <div class="diag-step-v4 hidden" id="q3-step">
-          <h2 class="q-label-v4">Qu’est-ce qui vous pèse le plus en ce moment dans votre mandat ?</h2>
-          <p class="q-help-v4">Il ne s’agit pas seulement du sujet du moment, mais de ce qui fragilise réellement votre action.</p>
+          <h2 class="q-label-v4">Qu’est-ce qui vous met le plus en difficulté aujourd’hui dans votre mandat ?</h2>
+          <p class="q-help-v4">Au-delà du sujet du moment, ce qui pèse vraiment sur votre façon d’agir.</p>
           <div class="options-v4">
-            <button class="opt-v4" onclick="pick(this,'tension','flou',3)">Devoir arbitrer dans le flou</button>
-            <button class="opt-v4" onclick="pick(this,'tension','conflit',3)">Gérer une tension ou un conflit</button>
-            <button class="opt-v4" onclick="pick(this,'tension','exposition',3)">Porter un sujet très exposé</button>
-            <button class="opt-v4" onclick="pick(this,'tension','sollicitations',3)">Répondre à trop de sollicitations contradictoires</button>
-            <button class="opt-v4" onclick="pick(this,'tension','duree',3)">Garder une ligne claire dans la durée</button>
+            <button class="opt-v4" onclick="pick(this,'tension','flou',3)">Prendre des décisions sans avoir toutes les informations</button>
+            <button class="opt-v4" onclick="pick(this,'tension','conflit',3)">Gérer des tensions (avec d’autres élus, des habitants ou l’administration)</button>
+            <button class="opt-v4" onclick="pick(this,'tension','exposition',3)">Faire face à une pression ou une exposition forte</button>
+            <button class="opt-v4" onclick="pick(this,'tension','sollicitations',3)">Répondre à trop de sollicitations en même temps</button>
+            <button class="opt-v4" onclick="pick(this,'tension','duree',3)">Tenir une ligne claire dans la durée</button>
+            <button class="opt-v4" onclick="pick(this,'tension','administration',3)">Comprendre ou faire avancer un sujet avec l’administration</button>
           </div>
         </div>
 
@@ -176,10 +177,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <h3>Recevoir votre synthèse</h3>
                 <p>Vous pouvez recevoir ce diagnostic par email pour le relire plus tard, le partager ou retrouver rapidement vos points de vigilance.</p>
                 <div class="email-input-v4">
-                   <input type="email" id="emailInput" placeholder="vous@collectivite.fr" />
+                   <input type="email" id="emailInput" placeholder="Adresse email" />
                    <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
                 </div>
              </section>
+
+             <!-- BLOC SAUVEGARDE / INSCRIPTION -->
+             <div id="saveDiagBlock" class="res-save-v4" style="display:none;"></div>
 
              <footer class="res-footer-v4 text-center">
                 <p>Un mandat ne se porte pas seul·e face à l'incertitude.</p>
@@ -285,6 +289,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* BLOC SAUVEGARDE */
+    .res-save-v4 { margin: 0 0 5rem; }
+    .save-invite-v4, .save-success-v4 { background: #fff; border: 1.5px solid var(--border); border-radius: 24px; padding: 3rem; text-align: center; }
+    .save-invite-v4 h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .save-invite-v4 p { font-size: 1.1rem; opacity: 0.7; line-height: 1.6; max-width: 480px; margin: 0 auto 2.5rem; }
+    .save-actions-v4 { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+    .save-success-v4 p { font-size: 1.1rem; font-weight: 700; color: #2E7D32; margin-bottom: 1.5rem; }
+
     /* RESPONSIVE */
     @media (max-width: 600px) {
       #introSection { padding-top: 5vh; }
@@ -297,9 +309,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   </style>
 
-  <script is:inline>
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    import { buildStoredDiagnosticEntry } from '../lib/diagnostic-personalization';
+    import { buildMaryanProfileFromDiagnosticState } from '../lib/user-personalization';
+    import { maryanResources } from '../data/resources';
+
     const state = { answers: {}, step: 0 };
     const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'calc'];
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+    const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     function showStep(id) {
        document.querySelectorAll('.diag-step-v4').forEach(s => {
@@ -341,7 +361,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        }
     };
 
-    function processDiagnosis() {
+    async function persistDiagnosticForLoggedUser(diagnosticState) {
+       if (!supabase || !diagnosticState?.diagnostic_key || !diagnosticState?.diagnostic_label) return;
+
+       try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session?.access_token) return null;
+
+          const response = await fetch('/api/profile-context', {
+             method: 'POST',
+             headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.access_token}`
+             },
+             body: JSON.stringify({
+                diagnosticState
+             })
+          });
+
+          if (!response.ok) return null;
+          return await response.json();
+       } catch (_) {
+          // non bloquant
+          return null;
+       }
+    }
+
+    async function processDiagnosis() {
        const a = state.answers;
        
        const results = {
@@ -369,7 +415,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           results.priorities = ["Retrouver des relais fiables sur les sujets exposés", "Sécuriser le cadrage des dossiers sensibles", "Déléguer la mise en forme pour garder la main sur le fond"];
        } else if (a.feeling === 'surcharge' || a.lack === 'priorites' || a.tension === 'sollicitations') {
           results.vigilance = "Votre enjeu principal n’est pas seulement de faire face aux sujets, mais de retrouver un ordre clair entre urgence, priorité et cap politique.";
-          results.priorities = ["Mieux hiérarchiser ce qui mérite une vraie décision", "Reprendre la main sur le rythme plutôt que subir l'agenda", "Clarifier votre ligne de conduite sur le semestre"];
+          results.priorities = ["Mieux hiérarchiser ce qui mérite une vraie décision", "Reprendre la main sur le rythme plutôt que subir l’agenda", "Clarifier votre ligne de conduite sur le semestre"];
+       } else if (a.tension === 'administration') {
+          results.vigilance = "Votre point de friction principal se situe à l’interface entre votre rôle politique et l’administration. Savoir ce que vous pouvez exiger, ce que vous devez impulser, et ce qui relève de l’exécution est un levier central pour avancer sans vous épuiser.";
+          results.priorities = ["Clarifier ce que l’administration peut décider sans vous, et ce qui requiert votre arbitrage", "Formuler des commandes claires aux services plutôt que des intentions", "Identifier les blocages administratifs qui méritent votre intervention directe"];
        } else {
           results.vigilance = "Votre vigilance principale porte sur la manière de tenir une position juste, lisible et solide dans un contexte où la parole et le tempo comptent autant que la décision elle-même.";
           results.priorities = ["Sécuriser la manière de porter une décision", "Mieux calibrer le tempo de vos interventions", "Tenir une position ferme sans vous crisper"];
@@ -380,7 +429,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           results.offerType = "formation_irl";
        } else if (a.role === 'interco' || a.tension === 'sollicitations' || a.vigilance === 'impact') {
           results.offerType = "collectivite";
-       } else if (a.tension === 'conflit' || a.tension === 'duree' || a.lack === 'cadre' || a.feeling === 'soutenu_partiel') {
+       } else if (a.tension === 'conflit' || a.tension === 'duree' || a.tension === 'administration' || a.lack === 'cadre' || a.feeling === 'soutenu_partiel') {
           results.offerType = "individuel";
        } else {
           results.offerType = "copilote";
@@ -423,107 +472,144 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        document.getElementById('resOfferText').textContent = off.text;
        document.getElementById('resCTA').innerHTML = off.ctas;
 
+       const diagnosticState = buildStoredDiagnosticEntry({
+          ...a,
+          summary: results.vigilance,
+          situation: results.situation,
+          priorities: results.priorities,
+          offer_type: results.offerType
+       }, maryanResources);
+
        // Memory persist
-       localStorage.setItem('maryan_v4_diag', JSON.stringify(a));
+       localStorage.setItem('maryan_v4_diag', JSON.stringify(diagnosticState));
 
        try {
           const existingProfile = JSON.parse(localStorage.getItem('maryan_profile') || '{}');
-          const derivedProfile = buildMaryanProfile(a, results);
+          const derivedProfile = buildMaryanProfileFromDiagnosticState(diagnosticState, {
+             firstName: existingProfile.firstName,
+             commune: existingProfile.commune,
+             plan: existingProfile.plan
+          });
           const mergedProfile = {
-             ...derivedProfile,
-             firstName: existingProfile.firstName || derivedProfile.firstName,
-             commune: existingProfile.commune || derivedProfile.commune,
-             plan: existingProfile.plan || derivedProfile.plan
+             ...existingProfile,
+             ...(derivedProfile || {}),
+             diagnosticProfile: diagnosticState.profile
           };
           localStorage.setItem('maryan_profile', JSON.stringify(mergedProfile));
        } catch (e) {
-          localStorage.setItem('maryan_profile', JSON.stringify(buildMaryanProfile(a, results)));
+          const fallbackProfile = buildMaryanProfileFromDiagnosticState(diagnosticState);
+          if (fallbackProfile) {
+             localStorage.setItem('maryan_profile', JSON.stringify({
+                ...fallbackProfile,
+                diagnosticProfile: diagnosticState.profile
+             }));
+          }
        }
+
+       const persistedContext = await persistDiagnosticForLoggedUser(diagnosticState);
+
+       if (persistedContext?.diagnosticState) {
+          localStorage.setItem('maryan_v4_diag', JSON.stringify(persistedContext.diagnosticState));
+       }
+
+       if (persistedContext?.maryanProfile) {
+          localStorage.setItem('maryan_profile', JSON.stringify({
+             ...persistedContext.maryanProfile,
+             diagnosticProfile: persistedContext.diagnosticState?.profile || diagnosticState.profile
+          }));
+       }
+
+       window.dispatchEvent(new CustomEvent('maryan:diagnostic-sync', {
+          detail: persistedContext?.diagnosticState || diagnosticState
+       }));
 
        // Toggle
        document.getElementById('questionsContainer').classList.add('hidden');
        document.getElementById('resultSection').classList.remove('hidden');
        window.scrollTo({ top: 0, behavior: 'smooth' });
 
-       // --- CHANTIER 1 ÉTAPE 2 ---
-       // Check if user is connected (mocked via localStorage or a cookie for now)
-       // Supabase typically sets identifying info or we can rely on a custom token flag "maryan_session"
-       const isConnected = !!localStorage.getItem('sb-auth-token') || !!localStorage.getItem('user_id'); 
-       
-       if (isConnected) {
-          // CAS B: Sauvegarde automatique (+ redirection vers /mon-compte)
-          fetch('/api/profile-context', {
-             method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
-             body: JSON.stringify(a)
-          }).then(() => {
-             window.location.href = '/mon-compte';
-          });
-       } else {
-          // CAS A: Afficher bloc de sauvegarde
-          const saveBlock = document.createElement('div');
-          saveBlock.className = "card-v3 highlight-neon";
-          saveBlock.style.cssText = "background:#FFFDF8; border: 2px solid var(--neon); padding: 2rem; border-radius: 16px; margin-top:2rem; text-align:center;";
-          saveBlock.innerHTML = `
-             <h3 style="color:var(--deep); margin-bottom:1.5rem; font-size:1.3rem;">Sauvegardez votre diagnostic pour retrouver vos recommandations à chaque connexion.</h3>
-             <a href="/login?mode=signup&from=diagnostic" class="btn-primary-v4 big" style="background:#0A192F; color:#fff; display:block; margin-bottom:1rem; text-decoration:none;">Créer mon compte</a>
-             <a href="/copilote" class="btn-link-v4" style="color:var(--deep); text-decoration:underline;">Continuer sans compte</a>
-          `;
-          document.getElementById('resCTA').appendChild(saveBlock);
+       // Bloc sauvegarde — CAS A (non connecté) / CAS B (connecté)
+       const saveDiagBlock = document.getElementById('saveDiagBlock');
+       if (saveDiagBlock) {
+          const currentSession = supabase ? (await supabase.auth.getSession()).data.session : null;
+          if (currentSession) {
+             saveDiagBlock.innerHTML = `
+               <div class="save-success-v4">
+                 <p>✓ Votre diagnostic est sauvegardé dans votre espace personnel.</p>
+                 <a href="/mon-compte" class="btn-primary-v4">Voir mon tableau de bord</a>
+               </div>`;
+          } else {
+             saveDiagBlock.innerHTML = `
+               <div class="save-invite-v4">
+                 <h3>Sauvegardez votre diagnostic</h3>
+                 <p>Créez un compte gratuit pour retrouver vos recommandations à chaque connexion et personnaliser MARYAN à votre situation de mandat.</p>
+                 <div class="save-actions-v4">
+                   <a href="/login?mode=signup&from=diagnostic" class="btn-primary-v4 big">Créer mon compte</a>
+                   <a href="/copilote" class="btn-link-v4">Continuer sans compte →</a>
+                 </div>
+               </div>`;
+          }
+          saveDiagBlock.style.display = 'block';
        }
     }
 
-    window.submitEmail = () => {
-       const email = document.getElementById('emailInput').value.trim();
+    window.submitEmail = async () => {
+       const emailInput = document.getElementById('emailInput') as HTMLInputElement | null;
+       if (!emailInput) return;
+       const email = emailInput.value.trim();
        if(!email) return;
-       localStorage.setItem('user_email', email);
-       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre synthèse complète vous attend sur ${email}.</p>`;
+
+       let diagnosticState = null;
+       try {
+          diagnosticState = buildStoredDiagnosticEntry(
+             JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}'),
+             maryanResources
+          );
+       } catch (_) {
+          diagnosticState = null;
+       }
+
+       if (!diagnosticState?.diagnostic_key) {
+          alert('Votre diagnostic n’est pas prêt à être envoyé pour le moment.');
+          return;
+       }
+
+       const submitButton = document.querySelector('#emailBox .btn-primary-v4') as HTMLButtonElement | null;
+       if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent = 'Envoi…';
+       }
+       emailInput.disabled = true;
+
+       try {
+          const response = await fetch('/api/diagnostic-email', {
+             method: 'POST',
+             headers: {
+                'Content-Type': 'application/json'
+             },
+             body: JSON.stringify({
+                email,
+                diagnosticState
+             })
+          });
+
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+             throw new Error(data?.error || 'Envoi impossible pour le moment.');
+          }
+
+          localStorage.setItem('user_email', email);
+          document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre synthèse complète vous attend sur ${email}.</p>`;
+       } catch (error) {
+          const message = error instanceof Error ? error.message : 'Envoi impossible pour le moment.';
+          alert(message);
+          emailInput.disabled = false;
+          if (submitButton) {
+             submitButton.disabled = false;
+             submitButton.textContent = 'Recevoir';
+          }
+       }
     };
 
-    function buildMaryanProfile(answers, results) {
-       const roleMap = {
-          maire: { title: 'Maire', theme: 'gouvernance', themeLabel: 'Gouvernance et arbitrage' },
-          adjoint: { title: 'Adjoint·e municipal·e', theme: 'delegation', themeLabel: 'Délégation et mise en oeuvre' },
-          majorite: { title: 'Élu·e de majorité', theme: 'mandat', themeLabel: 'Conduite du mandat' },
-          opposition: { title: 'Élu·e d’opposition', theme: 'positionnement', themeLabel: 'Positionnement politique' },
-          interco: { title: 'Élu·e intercommunal·e', theme: 'coordination', themeLabel: 'Coordination territoriale' }
-       };
-
-       const role = roleMap[answers.role] || {
-          title: 'Élu·e local·e',
-          theme: 'mandat',
-          themeLabel: 'Conduite du mandat'
-       };
-
-       const offerNames = {
-          copilote: 'Copilote',
-          individuel: 'Offre individuelle',
-          collectivite: 'Offre collectivité',
-          formation_irl: 'Formation / Appui IRL'
-       };
-
-       const tags = [];
-       if (answers.seniority === 'moins1an') tags.push('début de mandat');
-       if (answers.feeling === 'seul') tags.push('isolement');
-       if (answers.feeling === 'surcharge') tags.push('surcharge');
-       if (answers.tension === 'conflit') tags.push('tension');
-       if (answers.tension === 'exposition') tags.push('exposition');
-       if (answers.tension === 'flou') tags.push('arbitrage dans le flou');
-       if (answers.lack === 'cadre') tags.push('besoin de cadre');
-       if (answers.vigilance === 'parole') tags.push('prise de parole');
-       if (!tags.length) tags.push('mandat local');
-
-       return {
-          key: `${answers.role || 'elu'}-${answers.tension || answers.feeling || 'mandat'}`,
-          title: role.title,
-          summary: results.vigilance,
-          theme: role.theme,
-          themeLabel: role.themeLabel,
-          offerLevel: results.offerType === 'copilote' ? 1 : 2,
-          offerName: offerNames[results.offerType] || 'Copilote',
-          tags,
-          source: 'diagnostic'
-       };
-    }
   </script>
 </BaseLayout>
