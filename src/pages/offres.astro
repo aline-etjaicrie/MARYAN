@@ -254,6 +254,58 @@ const easyToMobilizeItems = [
       </div>
     </section>
 
+    <section class="section-v3 section-offres-groupe">
+      <div class="container">
+        <div class="offres-groupe-grid">
+
+          <article class="plan-card offre-groupe-card">
+            <span class="offre-groupe-label">👥 Groupe politique</span>
+            <h3 class="offre-groupe-title">Pack groupe</h3>
+            <p class="offre-groupe-sub">Un socle commun pour travailler avec les mêmes repères</p>
+            <ul class="plan-list">
+              <li>Jusqu'à 8 élu·es</li>
+              <li>Accès individuel pour chacun</li>
+              <li>Même outil, mêmes repères</li>
+            </ul>
+            <div class="offre-groupe-price">
+              <strong>600 €</strong>
+              <span>/ an</span>
+            </div>
+            <a href="/contact" class="btn-secondary-v3 w-full">Nous contacter</a>
+          </article>
+
+          <article class="plan-card offre-collectivite-card">
+            <span class="offre-groupe-label">🏛️ Collectivité &amp; équipe</span>
+            <h3 class="offre-groupe-title">Offre collectivité</h3>
+            <p class="offre-groupe-sub">Même outil. Plusieurs élu·es. Un socle commun pour comprendre, décider, agir.</p>
+            <ul class="plan-list">
+              <li>Équiper plusieurs élu·es</li>
+              <li>Créer un socle commun de compréhension</li>
+              <li>Homogénéiser les pratiques</li>
+              <li>Déploiement simple, usage immédiat</li>
+            </ul>
+            <div class="offre-collectivite-tiers">
+              <div class="offre-tier-row">
+                <span>5 à 10 élu·es</span>
+                <strong>8 € / mois / élu·e</strong>
+              </div>
+              <div class="offre-tier-row">
+                <span>10 à 30 élu·es</span>
+                <strong>6 € / mois / élu·e</strong>
+              </div>
+              <div class="offre-tier-row">
+                <span>30 à 100+ élu·es</span>
+                <strong>4 € / mois / élu·e</strong>
+              </div>
+            </div>
+            <p class="offre-collectivite-note">À partir de 3 000 € / an · moins de 10 € / élu·e / mois dans la majorité des cas</p>
+            <a href="/contact" class="btn-primary-v3 btn-neon w-full">Demander un devis</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
     <section class="section-v3 group-pack-section">
       <div class="container">
         <div class="group-pack-panel">
@@ -679,6 +731,84 @@ const easyToMobilizeItems = [
     border-color: var(--neon) !important;
   }
 
+  .offres-groupe-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .offre-groupe-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-red);
+  }
+
+  .offre-groupe-title {
+    font-size: 1.6rem;
+    line-height: 1.15;
+    margin: 0.2rem 0 0;
+  }
+
+  .offre-groupe-sub {
+    color: #54636C;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .offre-groupe-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+  }
+
+  .offre-groupe-price strong {
+    font-size: clamp(2.4rem, 4vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .offre-groupe-price span {
+    color: #54636C;
+    font-size: 1rem;
+  }
+
+  .offre-collectivite-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.9rem;
+    margin-top: 0.25rem;
+  }
+
+  .offre-tier-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .offre-tier-row span {
+    color: #54636C;
+  }
+
+  .offre-tier-row strong {
+    color: var(--deep);
+    font-weight: 700;
+  }
+
+  .offre-collectivite-note {
+    font-size: 0.82rem;
+    color: #6C7B84;
+    line-height: 1.5;
+    margin: 0;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+  }
+
   .group-pack-section {
     background: var(--deep);
   }
@@ -848,7 +978,8 @@ const easyToMobilizeItems = [
 
     .entry-grid,
     .plans-grid,
-    .collective-grid {
+    .collective-grid,
+    .offres-groupe-grid {
       grid-template-columns: 1fr;
     }
 
