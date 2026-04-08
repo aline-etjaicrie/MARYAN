@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { blogPosts, formatDate } from '../../data/blog';
+
+export function getStaticPaths() {
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+---
+
+<BaseLayout
+  title={`${post.title} — Maryan`}
+  description={post.excerpt}
+>
+  <article class="blog-article">
+    <div class="blog-article-header">
+      <div class="container container-article">
+        <a href="/blog" class="back-link">← Blog</a>
+        <h1>{post.title}</h1>
+        <p class="article-meta">Par {post.author} · {formatDate(post.date)}</p>
+      </div>
+    </div>
+
+    <div class="container container-article">
+      <div class="article-body">
+        <p class="article-excerpt">{post.excerpt}</p>
+        <div class="article-wip">
+          <p>Cet article est en cours de rédaction. Revenez bientôt.</p>
+          <div class="article-wip-links">
+            <a href="/ressources" class="btn-primary-v3">Voir les ressources</a>
+            <a href="/copilote" class="btn-secondary-v3">Essayer le copilote</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .container-article {
+    max-width: 720px;
+  }
+
+  .blog-article-header {
+    background: var(--deep);
+    padding: 5rem 0 4rem;
+    margin-bottom: 4rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    transition: opacity 0.2s;
+  }
+
+  .back-link:hover {
+    opacity: 1;
+    color: white;
+  }
+
+  .blog-article-header h1 {
+    color: white;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+
+  .article-meta {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+  }
+
+  .article-body {
+    padding-bottom: 6rem;
+  }
+
+  .article-excerpt {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #54636c;
+    margin: 0 0 3rem;
+    font-style: italic;
+  }
+
+  .article-wip {
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  .article-wip p {
+    color: #54636c;
+    margin: 0 0 1.5rem;
+  }
+
+  .article-wip-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 480px) {
+    .article-wip-links {
+      flex-direction: column;
+    }
+
+    .article-wip-links a {
+      text-align: center;
+    }
+  }
+</style>

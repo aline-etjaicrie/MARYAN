@@ -1,26 +1,100 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InternalHeader from '../../components/InternalHeader.astro';
+import { blogPosts, formatDate } from '../../data/blog';
 ---
 
 <BaseLayout
-  title="Blog — MARYAN"
-  description="Articles, analyses et ressources pour les élu·es municipaux."
+  title="Blog — Maryan"
+  description="Articles, analyses et retours d'expérience pour les élu·es municipaux."
 >
   <InternalHeader
     label="Blog"
-    title="Le <span class='emphasis'>blog</span> MARYAN"
-    subtitle="Articles, analyses et retours d'expérience pour les élu·es. Section en cours de construction."
+    title="Le <span class='emphasis'>blog</span> Maryan"
+    subtitle="Articles, analyses et retours d'expérience pour les élu·es."
   />
 
   <main>
-    <section class="section-v3 bg-light">
-      <div class="container container-narrow">
-        <div class="about-prose intro-prose">
-          <p class="lead">Les premiers articles arrivent bientôt.</p>
-          <p>En attendant, retrouvez les ressources pratiques dans la <a href="/ressources">bibliothèque</a> ou posez vos questions au <a href="/copilote">copilote</a>.</p>
-        </div>
+    <section class="section-v3">
+      <div class="container container-blog">
+        <ul class="blog-list">
+          {blogPosts.map((post) => (
+            <li class="blog-item">
+              <a href={`/blog/${post.slug}`} class="blog-link">
+                <article>
+                  <h2 class="blog-title">{post.title}</h2>
+                  <p class="blog-meta">{formatDate(post.date)} · Par {post.author}</p>
+                  <p class="blog-excerpt">{post.excerpt}</p>
+                  <span class="blog-read">Lire l'article →</span>
+                </article>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .container-blog {
+    max-width: 720px;
+  }
+
+  .blog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .blog-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .blog-item:first-child {
+    border-top: 1px solid var(--border);
+  }
+
+  .blog-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 2rem 0;
+    transition: opacity 0.2s;
+  }
+
+  .blog-link:hover {
+    opacity: 0.75;
+  }
+
+  .blog-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--deep);
+    margin: 0 0 0.4rem;
+    line-height: 1.25;
+  }
+
+  .blog-meta {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin: 0 0 0.75rem;
+    color: var(--deep);
+  }
+
+  .blog-excerpt {
+    color: #54636c;
+    line-height: 1.65;
+    margin: 0 0 0.85rem;
+    font-size: 0.98rem;
+  }
+
+  .blog-read {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-red);
+  }
+</style>
