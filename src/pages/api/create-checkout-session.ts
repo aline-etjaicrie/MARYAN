@@ -1,3 +1,4 @@
+// À supprimer si Stripe hosted links est définitif
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 

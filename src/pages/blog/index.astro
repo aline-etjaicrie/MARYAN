@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InternalHeader from '../../components/InternalHeader.astro';
+---
+
+<BaseLayout
+  title="Blog — MARYAN"
+  description="Articles, analyses et ressources pour les élu·es municipaux."
+>
+  <InternalHeader
+    label="Blog"
+    title="Le <span class='emphasis'>blog</span> MARYAN"
+    subtitle="Articles, analyses et retours d'expérience pour les élu·es. Section en cours de construction."
+  />
+
+  <main>
+    <section class="section-v3 bg-light">
+      <div class="container container-narrow">
+        <div class="about-prose intro-prose">
+          <p class="lead">Les premiers articles arrivent bientôt.</p>
+          <p>En attendant, retrouvez les ressources pratiques dans la <a href="/ressources">bibliothèque</a> ou posez vos questions au <a href="/copilote">copilote</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
