@@ -85,8 +85,8 @@ export const POST: APIRoute = async ({ request }) => {
   const { error: updateError } = await supabase.from('profiles').update(updates).eq('id', user.id);
 
   if (updateError) {
-    console.error('[update-profile] erreur:', updateError.message);
-    return json({ error: 'Erreur lors de la mise à jour.' }, 500);
+    console.error('[update-profile] Supabase error:', updateError.message, updateError.code, updateError.details);
+    return json({ error: updateError.message }, 500);
   }
 
   return json({ success: true });

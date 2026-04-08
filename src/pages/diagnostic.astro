@@ -172,16 +172,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </div>
              </section>
 
-             <!-- BLOC EMAIL (OPTIONNEL APRÈS RÉSULTAT) -->
-             <section class="res-email-v4" id="emailBox">
-                <h3>Recevoir votre synthèse</h3>
-                <p>Vous pouvez recevoir ce diagnostic par email pour le relire plus tard, le partager ou retrouver rapidement vos points de vigilance.</p>
-                <div class="email-input-v4">
-                   <input type="email" id="emailInput" placeholder="Adresse email" />
-                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
-                </div>
-             </section>
-
              <!-- BLOC SAUVEGARDE / INSCRIPTION -->
              <div id="saveDiagBlock" class="res-save-v4" style="display:none;"></div>
 
@@ -266,13 +256,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .res-reco-v4 .section-title-v4 { color: var(--neon); }
     .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
     .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
-
-    /* EMAIL BOX */
-    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
-    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
-    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
-    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
 
     /* BUTTONS */
     .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; }
@@ -439,26 +422,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           copilote: {
              text: "Au vu de votre situation, un premier niveau d’appui peut déjà vous aider à clarifier vos options, prendre du recul et tester la valeur de MARYAN dans votre quotidien.",
              ctas: `<a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Tester le copilote gratuit</a>
-                    <a href="/offres#avancer" class="btn-secondary-v4">Découvrir l’offre individuelle</a>
-                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
+                    <a href="/offres#avancer" class="btn-secondary-v4">Découvrir l’offre individuelle</a>`
           },
           individuel: {
              text: "Au vu de votre situation, l’usage le plus pertinent de MARYAN semble être un appui individuel, réactif et confidentiel pour cadrer, arbitrer et tenir vos décisions dans la durée.",
              ctas: `<a href="/offres#avancer" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Découvrir l’offre AVANCER</a>
-                    <a href="/copilote" class="btn-secondary-v4">Tester le copilote gratuit</a>
-                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
+                    <a href="/copilote" class="btn-secondary-v4">Tester le copilote gratuit</a>`
           },
           collectivite: {
              text: "Au vu de votre situation, le besoin semble dépasser un usage individuel ponctuel. MARYAN peut aussi être déployé comme outil partagé pour plusieurs élu·es ou pour votre collectivité.",
              ctas: `<a href="/offres#collectivites" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Voir l’offre collectivité</a>
-                    <a href="/contact" class="btn-secondary-v4">Être rappelé</a>
-                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
+                    <a href="/contact" class="btn-secondary-v4">Être rappelé</a>`
           },
           formation_irl: {
              text: "Au vu de votre situation, un appui présentiel ou une formation ciblée semble pouvoir vous faire gagner du temps et de la solidité plus vite qu’un simple usage autonome. Votre situation semble appeler un temps de travail plus structuré : prise de fonction, clarification des rôles ou travail d’équipe.",
              ctas: `<a href="/methode" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Découvrir les formations</a>
-                    <a href="/contact" class="btn-secondary-v4">Être rappelé</a>
-                    <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir ma synthèse</button>`
+                    <a href="/contact" class="btn-secondary-v4">Être rappelé</a>`
           }
        };
 
@@ -553,63 +532,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
        }
     }
 
-    window.submitEmail = async () => {
-       const emailInput = document.getElementById('emailInput') as HTMLInputElement | null;
-       if (!emailInput) return;
-       const email = emailInput.value.trim();
-       if(!email) return;
-
-       let diagnosticState = null;
-       try {
-          diagnosticState = buildStoredDiagnosticEntry(
-             JSON.parse(localStorage.getItem('maryan_v4_diag') || '{}'),
-             maryanResources
-          );
-       } catch (_) {
-          diagnosticState = null;
-       }
-
-       if (!diagnosticState?.diagnostic_key) {
-          alert('Votre diagnostic n’est pas prêt à être envoyé pour le moment.');
-          return;
-       }
-
-       const submitButton = document.querySelector('#emailBox .btn-primary-v4') as HTMLButtonElement | null;
-       if (submitButton) {
-          submitButton.disabled = true;
-          submitButton.textContent = 'Envoi…';
-       }
-       emailInput.disabled = true;
-
-       try {
-          const response = await fetch('/api/diagnostic-email', {
-             method: 'POST',
-             headers: {
-                'Content-Type': 'application/json'
-             },
-             body: JSON.stringify({
-                email,
-                diagnosticState
-             })
-          });
-
-          const data = await response.json().catch(() => ({}));
-          if (!response.ok) {
-             throw new Error(data?.error || 'Envoi impossible pour le moment.');
-          }
-
-          localStorage.setItem('user_email', email);
-          document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre synthèse complète vous attend sur ${email}.</p>`;
-       } catch (error) {
-          const message = error instanceof Error ? error.message : 'Envoi impossible pour le moment.';
-          alert(message);
-          emailInput.disabled = false;
-          if (submitButton) {
-             submitButton.disabled = false;
-             submitButton.textContent = 'Recevoir';
-          }
-       }
-    };
 
   </script>
 </BaseLayout>

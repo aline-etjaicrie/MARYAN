@@ -279,6 +279,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     buildDiagnosticStateFromProfileRow,
     buildMaryanProfileFromDiagnosticState
   } from '../lib/user-personalization';
+  import { DIAGNOSTIC_ACCROCHES } from '../lib/diagnostic-personalization';
 
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
@@ -369,7 +370,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .eq('id', user.id)
         .single()).data;
 
-      const firstName = profile?.first_name || '';
+      const firstName = profile?.first_name || session.user.user_metadata?.first_name || '';
       const role = profile?.role || 'élu·e local·e';
       const commune = profile?.commune || '';
       const plan = profile?.plan || 'gratuit';
@@ -424,7 +425,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(body)
           });
-          if (!res.ok) throw new Error();
+          const result = await res.json();
+          if (!res.ok) throw new Error(result.error || 'Erreur serveur');
           msg.textContent = '✓ Profil mis à jour';
           msg.style.color = '#2E7D32';
           // Update sidebar after save
@@ -439,8 +441,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           }
           const newRole = body.role || (role !== 'élu·e local·e' ? role : '');
           document.getElementById('profileMeta')!.textContent = newRole || '';
-        } catch {
-          msg.textContent = 'Erreur lors de la sauvegarde.';
+        } catch (err) {
+          msg.textContent = `Erreur : ${(err as Error).message || 'Échec de la sauvegarde'}`;
           msg.style.color = '#C62828';
         } finally {
           btn.disabled = false;
@@ -573,15 +575,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (resumeCard) {
         if (diagnosticState.profile || diagnosticState.diagnostic_key) {
           const diagLabel = escapeHtml(diagnosticState.diagnostic_label || diagnosticState.diagnostic_key || 'Votre profil');
-          const profileAnglesStr = diagnosticState.profile
-            ? (ANGLES_BY_PROFILE[diagnosticState.profile as keyof typeof ANGLES_BY_PROFILE] || []).join(', ')
+          const accroche = diagnosticState.profile
+            ? escapeHtml(DIAGNOSTIC_ACCROCHES[diagnosticState.profile as keyof typeof DIAGNOSTIC_ACCROCHES] || '')
+            : '';
+          const priorities: string[] = Array.isArray(diagnosticState.priorities) ? diagnosticState.priorities : [];
+          const priorityTagsHtml = priorities.length
+            ? `<div class="diag-priority-tags">${priorities.map(p => `<span class="diag-tag">${escapeHtml(p)}</span>`).join('')}</div>`
+            : '';
+          const recSlugs: string[] = Array.isArray(diagnosticState.recommended_slugs) ? diagnosticState.recommended_slugs.slice(0, 3) : [];
+          const recResourcesHtml = recSlugs.length
+            ? `<div class="diag-rec-list">${recSlugs.map(slug => {
+                const r = maryanResources.find(x => x.slug === slug);
+                return r ? `<a href="/ressources/${escapeHtml(r.slug)}" class="diag-rec-item">${escapeHtml(r.title)}</a>` : '';
+              }).filter(Boolean).join('')}</div>`
             : '';
           resumeCard.innerHTML = `
             <div class="dashboard-resume-live">
               <p class="dashboard-resume-label">Diagnostic complété</p>
               <h3>${diagLabel}</h3>
-              ${profileAnglesStr ? `<p>Axes prioritaires : ${escapeHtml(profileAnglesStr)}</p>` : ''}
-              <a href="/diagnostic" class="btn-primary-v3">Mettre à jour mon diagnostic</a>
+              ${accroche ? `<p class="diag-situation">${accroche}</p>` : ''}
+              ${priorityTagsHtml}
+              ${recResourcesHtml}
+              <a href="/diagnostic" class="btn-primary-v3" style="margin-top:1rem;display:inline-block;">Mettre à jour mon diagnostic</a>
             </div>
           `;
         } else {
@@ -1369,6 +1384,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       grid-template-columns: 1fr;
     }
   }
+
+  .diag-situation { font-size: 0.9rem; color: #54636C; line-height: 1.55; margin: 0.5rem 0 0.75rem; }
+  .diag-priority-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
+  .diag-tag { font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.65rem; background: rgba(10,25,47,0.07); color: var(--deep); border-radius: 99px; text-transform: lowercase; }
+  .diag-rec-list { display: flex; flex-direction: column; gap: 0.3rem; margin: 0.75rem 0 0; }
+  .diag-rec-item { font-size: 0.88rem; font-weight: 600; color: var(--deep); text-decoration: none; padding: 0.3rem 0; border-bottom: 1px solid var(--border); }
+  .diag-rec-item:last-child { border-bottom: none; }
+  .diag-rec-item:hover { color: var(--accent-red); }
 
   @media (max-width: 720px) {
     .profile-form-grid { grid-template-columns: 1fr; }
