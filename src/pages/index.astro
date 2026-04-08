@@ -3,12 +3,6 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/BaseLayout.astro';
 import heroScene from '../assets/maryan-hero-mandat.png';
 
-const microProofs = [
-  'Décrypter une délibération technique et en dire l\'essentiel',
-  'Préparer une prise de parole sans improviser',
-  'Comprendre sa posture d\'élu, pas juste ses droits'
-];
-
 const situations = [
   {
     title: 'Délibération technique à présenter',
@@ -93,33 +87,32 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 ---
 
 <Layout
-  title="Maryan — Une situation de mandat. Une réponse exploitable."
-  description="Maryan aide les élu·es à clarifier une situation, trancher plus vite et passer à l'action sans se fragiliser."
+  title="Maryan — Le premier assistant IA pour les élus locaux"
+  description="Gagnez du temps sur vos dossiers, vos délibérations et vos prises de parole."
 >
 
   <!-- 1. HERO -->
   <section class="home-hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <span class="label-v3">Copilote de mandat</span>
+        <span class="label-v3">Premier assistant IA pour les élus locaux</span>
         <h1>
-          Le temps que vous n'avez pas,<br />
-          <span class="accent-keyword">Maryan</span> le prend pour vous.
+          Maryan : le premier assistant IA<br />
+          pour les <span class="accent-keyword">élus locaux</span>.
         </h1>
         <p class="hero-subtitle">
-          Décidez sans douter. Parlez sans vous fragiliser.
-          Un copilote qui lit votre situation — et une bibliothèque de ressources courtes,
-          ancrées dans le réel du mandat.
+          Gagnez du temps sur vos dossiers,
+          vos délibérations et vos prises de parole.
         </p>
-        <ul class="hero-proofs">
-          {microProofs.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
         <div class="hero-actions">
           <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
           <a href="/copilote" class="btn-secondary-v3 hero-secondary">Essayer le copilote</a>
         </div>
+        <ul class="hero-chips">
+          <li><span class="chip-icon">⚡</span>Décrypter une délibération en 5 minutes</li>
+          <li><span class="chip-icon">🎤</span>Préparer une prise de parole sans improviser</li>
+          <li><span class="chip-icon">🧭</span>Comprendre sa posture d'élu, pas juste ses droits</li>
+        </ul>
       </div>
 
       <aside class="hero-product" aria-label="Aperçu du produit">
@@ -142,6 +135,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Situations réelles</span>
+        <span class="section-icon" aria-hidden="true">🗺️</span>
         <h2>Vous connaissez ces <span class="accent-keyword">moments</span>.</h2>
       </div>
       <div class="situations-grid">
@@ -163,6 +157,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Méthode</span>
+        <span class="section-icon" aria-hidden="true">⚙️</span>
         <h2>En <span class="accent-keyword">pratique</span>, ça donne ça.</h2>
         <p class="section-intro">
           Vous décrivez ce que vous vivez.
@@ -186,6 +181,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Bibliothèque de ressources</span>
+        <span class="section-icon" aria-hidden="true">📚</span>
         <h2>Pas des articles. Des fiches pour <span class="accent-keyword">tenir sa posture</span>.</h2>
         <p class="section-intro">
           Courtes, pédagos, ancrées dans le réel du mandat.
@@ -212,6 +208,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Impact concret</span>
+        <span class="section-icon" aria-hidden="true">✅</span>
         <h2>Ce que ça <span class="accent-keyword">change</span>, concrètement.</h2>
       </div>
       <div class="scenario-grid">
@@ -228,28 +225,13 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     </div>
   </section>
 
-  <!-- 6. PREUVE SOCIALE -->
-  <section class="section-v3 section-proof">
-    <div class="container">
-      <div class="section-head section-head-center">
-        <span class="label-v3">Ils utilisent Maryan</span>
-        <h2>Rejoignez les premiers élus qui <span class="accent-keyword">changent leur posture</span>.</h2>
-      </div>
-      <div class="proof-text container-narrow">
-        <p>
-          Maryan est en cours de déploiement auprès des premiers élus.
-          Les retours arrivent. Ils seront ici.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7. HUB EXPERTS -->
+  <!-- 6. HUB EXPERTS -->
   <section class="section-v3 section-hub">
     <div class="container">
       <div class="hub-shell">
         <div class="section-head section-head-light">
           <span class="label-v3">Experts & formation</span>
+          <span class="section-icon section-icon-light" aria-hidden="true">👥</span>
           <h2>Quand <span class="accent-keyword">Maryan</span> ne suffit plus.</h2>
         </div>
         <p class="hub-text">
@@ -265,11 +247,12 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     </div>
   </section>
 
-  <!-- 8. ACCÈS + PRIX -->
+  <!-- 7. ACCÈS + PRIX -->
   <section class="section-v3">
     <div class="container">
       <div class="section-head section-head-center">
         <span class="label-v3">Accès</span>
+        <span class="section-icon" aria-hidden="true">🚀</span>
         <h2>Vous commencez ce soir <span class="accent-keyword">si vous voulez</span>.</h2>
       </div>
       <div class="offers-grid">
@@ -299,7 +282,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     </div>
   </section>
 
-  <!-- 9. CTA FINAL -->
+  <!-- 8. CTA FINAL -->
   <section class="section-v3 final-cta-section">
     <div class="container">
       <div class="final-cta-panel">
@@ -333,70 +316,39 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
         radial-gradient(circle at bottom right, rgba(173, 255, 47, 0.14), transparent 32%),
         var(--deep);
       color: white;
-      padding: 5.5rem 0;
+      padding: 4rem 0;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
       gap: 2rem;
       align-items: stretch;
     }
 
     .hero-copy h1 {
       color: white;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      line-height: 1.04;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.06;
       letter-spacing: -0.03em;
-      margin: 0 0 1.1rem;
+      margin: 0 0 1rem;
       text-wrap: balance;
     }
 
     .hero-subtitle {
       margin: 0 0 1.5rem;
       color: rgba(255, 255, 255, 0.86);
-      max-width: 42ch;
+      max-width: 44ch;
       line-height: 1.65;
+      font-size: 1.1rem;
     }
 
-    .hero-proofs {
-      list-style: none;
-      display: grid;
-      gap: 0.65rem;
-      margin: 0 0 1.5rem;
-      padding: 0;
-    }
-
-    .hero-proofs li {
-      position: relative;
-      padding-left: 1rem;
-      color: rgba(255, 255, 255, 0.92);
-      font-size: 0.98rem;
-      line-height: 1.5;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-    }
-
-    .hero-proofs li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--neon);
-      transform: translateY(-50%);
-      flex-shrink: 0;
-    }
-
-    .hero-actions,
-    .final-cta-actions {
+    .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 0.9rem;
       align-items: center;
+      margin-bottom: 1.5rem;
     }
 
     .hero-secondary {
@@ -412,6 +364,34 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       border-color: white !important;
     }
 
+    /* Hero chips (emoji vignettes) */
+    .hero-chips {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .hero-chips li {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.3;
+    }
+
+    .chip-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
     .hero-product {
       overflow: hidden;
       display: flex;
@@ -425,7 +405,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       object-position: 54% 52%;
     }
 
-    /* ─── SECTION HEAD ─── */
+    /* ─── SECTION HEAD + ICONS ─── */
     .section-head {
       max-width: 46rem;
       margin-bottom: 2rem;
@@ -441,6 +421,17 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       font-size: clamp(1.5rem, 4vw, 2.5rem);
       margin: 0 0 0.85rem;
       text-wrap: balance;
+    }
+
+    .section-icon {
+      display: block;
+      font-size: 1.5rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-icon-light {
+      opacity: 0.7;
     }
 
     .section-intro {
@@ -573,28 +564,6 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
     .scenario-lines strong {
       color: var(--deep);
-    }
-
-    /* ─── PREUVE SOCIALE ─── */
-    .section-proof {
-      background: linear-gradient(180deg, #f8f9fa 0%, #edf2f6 100%);
-    }
-
-    .proof-text {
-      text-align: center;
-      margin: 0 auto;
-    }
-
-    .proof-text p {
-      font-style: italic;
-      opacity: 0.55;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .container-narrow {
-      max-width: 600px;
     }
 
     /* ─── HUB EXPERTS ─── */
@@ -755,15 +724,19 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       max-width: 22ch;
     }
 
+    .final-cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 1024px) {
       .hero-grid,
       .offers-grid {
         grid-template-columns: 1fr;
-      }
-
-      .home-hero {
-        padding: 4rem 0;
       }
 
       .offer-card-dark {
@@ -778,22 +751,57 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
     @media (max-width: 768px) {
       .home-hero {
-        padding: 3rem 0 2.5rem;
+        padding: 2rem 0 2rem;
         overflow: hidden;
       }
 
-      .hero-grid {
-        gap: 1.5rem;
+      /* Cache l'image sur mobile pour garder le hero compact */
+      .hero-product {
+        display: none;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(1.75rem, 8vw, 2.4rem);
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 1.2rem;
+      }
+
+      .hero-actions a {
+        width: 100%;
+        text-align: center;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-chips {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .hero-chips li {
+        border-radius: 12px;
+        font-size: 0.88rem;
       }
 
       .situations-grid,
       .steps-grid,
       .resources-grid,
-      .scenario-grid {
+      .scenario-grid,
+      .offers-grid {
         grid-template-columns: 1fr;
       }
 
-      .hero-actions,
       .final-cta-actions,
       .hub-cta-group,
       .section-cta-center {
@@ -801,7 +809,6 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
         align-items: stretch;
       }
 
-      .hero-actions a,
       .final-cta-actions a,
       .hub-cta-group a,
       .section-cta-center a {
@@ -822,12 +829,9 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
         padding: 1.5rem;
       }
 
-      .offer-card-dark {
-        padding: 1.5rem;
-      }
-
+      .offer-card-dark,
       .hub-shell {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem;
       }
 
       .btn-primary-v3,
