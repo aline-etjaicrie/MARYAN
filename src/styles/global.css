@@ -1,4 +1,18 @@
 
+/* ── Print CSS ──────────────────────────────────────────────────────────────
+   GreenIT best practice: fournir une print CSS
+   ────────────────────────────────────────────────────────────────────────── */
+@media print {
+  * { background: white !important; color: black !important; box-shadow: none !important; }
+  header, footer, nav, .grain-overlay, .bg-grid-v3, .cookie-bar, .glow-v3 { display: none !important; }
+  main { max-width: 100%; padding: 0; margin: 0; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.75em; color: #555; }
+  a[href^="#"]::after, a[href^="javascript"]::after { content: ""; }
+  h1, h2, h3 { page-break-after: avoid; color: black !important; }
+  p, li { orphans: 3; widows: 3; }
+  img { max-width: 100% !important; }
+}
+
 :root {
   /* 🎨 NEW PALETTE: REPUBLIQUE DESIGN V3 */
   --bg: #F8F9FA;         /* Ivoire Blanc pur respiration */
@@ -294,14 +308,106 @@ h4 em {
 /* ──────────────────────────────────────────────────────────────────────────
    FOOTER REDESIGN
    ────────────────────────────────────────────────────────────────────────── */
+/* ── HEADER ── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--deep);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 72px;
+  gap: 1.5rem;
+}
+.header-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: white;
+  text-decoration: none;
+}
+.header-logo-mark {
+  display: block;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.header-logo-wordmark {
+  display: inline-block;
+  line-height: 1;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+.header-nav a {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.header-nav .nav-primary {
+  color: white;
+  font-weight: 700;
+}
+.header-nav a:hover { color: white; }
+.header-compte {
+  color: var(--neon) !important;
+  font-weight: 700 !important;
+}
+@media (max-width: 640px) {
+  .header-inner { gap: 1rem; }
+  .header-nav { gap: 1rem; }
+  .header-nav a { display: none; }
+  .header-nav .nav-primary,
+  .header-nav .header-compte { display: inline-flex; }
+  .header-logo-wordmark { display: none; }
+  .header-logo-mark {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ── FOOTER ── */
 .site-footer {
   padding: 8rem 0; background: var(--deep); color: white; border-top: 1px solid rgba(255,255,255,0.05);
 }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 4rem; align-items: start; }
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 100%;
+}
+.footer-brand-copy {
+  width: 100%;
+}
 .brand { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
 .brand-sub { font-size: 0.9rem; opacity: 0.6; margin-bottom: 2rem; }
 .footer-credit { font-size: 0.85rem; opacity: 0.5; }
 .footer-credit a { color: white; text-decoration: underline; }
+.footer-logo-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 2rem;
+  text-decoration: none;
+}
+.footer-logo-mark {
+  display: block;
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+}
 
 .footer-nav { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
 .footer-nav a { color: white; text-decoration: none; font-size: 0.95rem; font-weight: 600; opacity: 0.7; transition: all 0.2s; }
@@ -313,4 +419,5 @@ h4 em {
 @media (max-width: 992px) {
   .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
   .section-v3 { padding: 5rem 0; }
+  .footer-logo-link { margin-top: 1.5rem; }
 }
