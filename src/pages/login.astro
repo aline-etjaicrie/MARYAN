@@ -146,7 +146,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     (document.getElementById('submitBtn') as HTMLButtonElement).disabled = true;
   } else {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    let isSignup = true;
+    const _urlParams = new URL(window.location.href).searchParams;
+    const fromParam = _urlParams.get('from');
+    let isSignup = _urlParams.get('mode') !== 'login';
 
     const form = document.getElementById('authForm') as HTMLFormElement;
     const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -238,7 +240,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       await persistLocalDiagnostic(session.user.id);
 
-      if (safeNextPath && redirectTo === '/mon-compte') {
+      if (fromParam === 'diagnostic') {
+        redirectTo = '/mon-compte';
+      } else if (safeNextPath && redirectTo === '/mon-compte') {
         redirectTo = safeNextPath;
       }
 

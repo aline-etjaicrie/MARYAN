@@ -24,6 +24,7 @@ type DiagnosticPayload = Record<string, string | string[]>;
 export type ProfileContextRow = {
   id?: string | null;
   first_name?: string | null;
+  last_name?: string | null;
   commune?: string | null;
   role?: string | null;
   plan?: string | null;
@@ -35,6 +36,10 @@ export type ProfileContextRow = {
   profile_context_updated_at?: string | null;
   parti_id?: string | null;
   parti_label?: string | null;
+  affiliation_politique?: string | null;
+  taille_ct?: string | null;
+  type_ct?: string | null;
+  metier_hors_mandat?: string | null;
   created_at?: string | null;
 };
 
@@ -42,6 +47,9 @@ type BuildProfileOptions = {
   firstName?: string | null;
   commune?: string | null;
   plan?: string | null;
+  metierHorsMandat?: string | null;
+  tailleCtLabel?: string | null;
+  typeCtLabel?: string | null;
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -174,14 +182,21 @@ export function buildMaryanProfileFromDiagnosticState(
         ? offerNames[offerType]
         : 'Copilote';
 
+  const metier = normalizeOptionalString(options.metierHorsMandat);
+  const baseSummary =
+    normalizeOptionalString(safeState.summary) ||
+    DIAGNOSTIC_ACCROCHES[profileKey as keyof typeof DIAGNOSTIC_ACCROCHES] ||
+    normalizeOptionalString(safeState.diagnostic_label) ||
+    'MARYAN adapte son aide à votre situation de mandat.';
+  const summary = metier ? `${baseSummary} L'élu·e est ${metier} de profession.` : baseSummary;
+
+  if (options.tailleCtLabel) tags.push(options.tailleCtLabel);
+  if (options.typeCtLabel) tags.push(options.typeCtLabel);
+
   return {
     key: `${roleKey}-${normalizeOptionalString(safeState.tension) || normalizeOptionalString(safeState.feeling) || profileKey}`,
     title: role.title,
-    summary:
-      normalizeOptionalString(safeState.summary) ||
-      DIAGNOSTIC_ACCROCHES[profileKey as keyof typeof DIAGNOSTIC_ACCROCHES] ||
-      normalizeOptionalString(safeState.diagnostic_label) ||
-      'MARYAN adapte son aide à votre situation de mandat.',
+    summary,
     theme: role.theme,
     themeLabel: role.themeLabel,
     offerLevel: plan === 'plus' || plan === 'admin' || offerType !== 'copilote' ? 2 : 1,

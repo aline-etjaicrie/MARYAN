@@ -46,6 +46,76 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <p id="helloLead" class="dashboard-hero-copy">Chargement…</p>
         </section>
 
+        <!-- ══ PROFIL ÉLU·E ══ -->
+        <section class="dashboard-block" id="profile-section">
+          <div class="dashboard-block-head">
+            <div>
+              <h2>Vos informations d'élu·e</h2>
+              <p>Ces informations personnalisent votre copilote.</p>
+            </div>
+          </div>
+          <form id="profileForm" class="profile-form" autocomplete="off" novalidate>
+            <div class="profile-form-grid">
+              <div class="profile-field">
+                <label for="pf-first-name">Prénom</label>
+                <input type="text" id="pf-first-name" name="first_name" placeholder="Votre prénom" autocomplete="given-name" />
+              </div>
+              <div class="profile-field">
+                <label for="pf-last-name">Nom <span class="field-opt">(facultatif)</span></label>
+                <input type="text" id="pf-last-name" name="last_name" placeholder="Votre nom" autocomplete="family-name" />
+              </div>
+              <div class="profile-field">
+                <label for="pf-role">Mandat principal</label>
+                <select id="pf-role" name="role">
+                  <option value="">— Choisir —</option>
+                  <option value="maire">Maire</option>
+                  <option value="adjoint">Adjoint au maire</option>
+                  <option value="conseiller_maj">Conseiller municipal majoritaire</option>
+                  <option value="conseiller_opp">Conseiller municipal opposition</option>
+                  <option value="conseiller_communautaire">Conseiller communautaire</option>
+                  <option value="vice_president_interco">Vice-président intercommunalité</option>
+                  <option value="conseiller_paris">Conseiller de Paris</option>
+                  <option value="conseiller_arrondissement">Conseiller d'arrondissement</option>
+                  <option value="maire_de_secteur">Maire de secteur Marseille</option>
+                </select>
+              </div>
+              <div class="profile-field">
+                <label for="pf-taille-ct">Taille de la collectivité</label>
+                <select id="pf-taille-ct" name="taille_ct">
+                  <option value="">— Choisir —</option>
+                  <option value="moins500">Moins de 500 hab.</option>
+                  <option value="500-3500">500 à 3 500 hab.</option>
+                  <option value="3500-10000">3 500 à 10 000 hab.</option>
+                  <option value="10000-50000">10 000 à 50 000 hab.</option>
+                  <option value="plus50000">Plus de 50 000 hab.</option>
+                </select>
+              </div>
+              <div class="profile-field">
+                <label for="pf-type-ct">Type de collectivité</label>
+                <select id="pf-type-ct" name="type_ct">
+                  <option value="">— Choisir —</option>
+                  <option value="commune">Commune</option>
+                  <option value="intercommunalite">Intercommunalité</option>
+                  <option value="metropole">Métropole</option>
+                  <option value="plm">Paris-Lyon-Marseille</option>
+                </select>
+              </div>
+              <div class="profile-field profile-field--full">
+                <label for="pf-metier">Métier en dehors du mandat <span class="field-opt">(facultatif)</span></label>
+                <input type="text" id="pf-metier" name="metier_hors_mandat" placeholder="Ex : enseignant, médecin, chef d'entreprise..." />
+              </div>
+              <div class="profile-field profile-field--full">
+                <label for="pf-affiliation">Affiliation politique <span class="field-opt">(facultatif)</span></label>
+                <input type="text" id="pf-affiliation" name="affiliation_politique" placeholder="Ex : divers gauche, LR, sans étiquette..." />
+              </div>
+            </div>
+            <div class="profile-form-footer">
+              <button type="submit" id="profileSaveBtn" class="btn-primary-v3">Enregistrer</button>
+              <span id="profileSaveMsg" class="profile-save-msg" aria-live="polite"></span>
+            </div>
+          </form>
+        </section>
+
         <section class="dashboard-block">
           <div class="dashboard-block-head">
             <div>
@@ -95,6 +165,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
 
           <div id="topicsGrid" class="dashboard-topics-grid"></div>
+        </section>
+
+        <!-- ══ AUTO-ÉVALUATIONS ══ -->
+        <section class="dashboard-block" id="tests-section">
+          <div class="dashboard-block-head">
+            <div>
+              <h2>Vos auto-évaluations</h2>
+              <p>Cinq tests courts pour mieux vous connaître en tant qu'élu·e.</p>
+            </div>
+            <a href="/tests" class="btn-link">Voir tous →</a>
+          </div>
+          <div id="dashboardTestsList" class="dashboard-tests-list"></div>
         </section>
 
         <section class="dashboard-block">
@@ -263,7 +345,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       const profile = profileContext?.profile || (await supabase
         .from('profiles')
-        .select('first_name, commune, role, diagnostic_key, diagnostic_label, diagnostic_completed, last_diagnostic_summary, profile_context, profile_context_updated_at, plan')
+        .select('first_name, last_name, commune, role, plan, diagnostic_key, diagnostic_label, diagnostic_completed, last_diagnostic_summary, profile_context, profile_context_updated_at, affiliation_politique, taille_ct, type_ct, metier_hors_mandat')
         .eq('id', user.id)
         .single()).data;
 
@@ -278,6 +360,67 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('userEmail')!.textContent = user.email || '';
       document.getElementById('planVal')!.textContent = plan === 'plus' ? 'MARYAN Plus' : plan === 'admin' ? 'Admin' : 'Découverte';
 
+      // ── Pré-remplissage du formulaire profil ──
+      {
+        const fields: Record<string, string> = {
+          'pf-first-name': profile?.first_name || '',
+          'pf-last-name': (profile as any)?.last_name || '',
+          'pf-role': role !== 'élu·e local·e' ? role : '',
+          'pf-taille-ct': (profile as any)?.taille_ct || '',
+          'pf-type-ct': (profile as any)?.type_ct || '',
+          'pf-metier': (profile as any)?.metier_hors_mandat || '',
+          'pf-affiliation': (profile as any)?.affiliation_politique || ''
+        };
+        for (const [id, val] of Object.entries(fields)) {
+          const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
+          if (el) el.value = val;
+        }
+      }
+
+      // ── Soumission du formulaire profil ──
+      document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('profileSaveBtn') as HTMLButtonElement;
+        const msg = document.getElementById('profileSaveMsg')!;
+        btn.disabled = true;
+        btn.textContent = 'Enregistrement…';
+        msg.textContent = '';
+        msg.style.color = '';
+        try {
+          const body: Record<string, string | null> = {};
+          ['first_name', 'last_name', 'role', 'taille_ct', 'type_ct', 'metier_hors_mandat', 'affiliation_politique'].forEach(field => {
+            const idMap: Record<string, string> = {
+              first_name: 'pf-first-name', last_name: 'pf-last-name', role: 'pf-role',
+              taille_ct: 'pf-taille-ct', type_ct: 'pf-type-ct',
+              metier_hors_mandat: 'pf-metier', affiliation_politique: 'pf-affiliation'
+            };
+            const el = document.getElementById(idMap[field]) as HTMLInputElement | HTMLSelectElement | null;
+            body[field] = el ? (el.value.trim() || null) : null;
+          });
+          const res = await fetch('/api/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify(body)
+          });
+          if (!res.ok) throw new Error();
+          msg.textContent = '✓ Profil mis à jour';
+          msg.style.color = '#2E7D32';
+          // Update sidebar display name if first_name changed
+          const newFirstName = body.first_name || firstName;
+          if (newFirstName) {
+            document.getElementById('profileName')!.textContent = newFirstName;
+            document.getElementById('helloTitle')!.textContent = `Bonjour ${newFirstName},`;
+          }
+        } catch {
+          msg.textContent = 'Erreur lors de la sauvegarde.';
+          msg.style.color = '#C62828';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Enregistrer';
+          setTimeout(() => { msg.textContent = ''; }, 4000);
+        }
+      });
+
       const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
 
       try {
@@ -288,7 +431,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         const maryanProfile = profileContext?.maryanProfile || buildMaryanProfileFromDiagnosticState(diagnosticState, {
           firstName,
           commune,
-          plan
+          plan,
+          metierHorsMandat: (profile as any)?.metier_hors_mandat || null,
+          tailleCtLabel: (profile as any)?.taille_ct || null,
+          typeCtLabel: (profile as any)?.type_ct || null
         });
 
         if (maryanProfile) {
@@ -359,7 +505,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <a href="/ressources/${escapeHtml(resource.slug)}" class="dashboard-topic-card">
             <span>${escapeHtml(resource.title)}</span>
           </a>
-        `).join('');
+        `).join(‘’);
+      }
+
+      // ── Auto-évaluations ──
+      {
+        const DASHBOARD_TESTS = [
+          { slug: ‘style-decision’,   title: ‘Mon style de décision’,             desc: ‘Repérez votre profil décisionnel et vos angles morts.’,       storageKey: ‘maryan_test_decision’ },
+          { slug: ‘posture-conflit’,  title: ‘Ma posture face au conflit’,         desc: ‘Comment traversez-vous les tensions ?’,                       storageKey: ‘maryan_test_conflit’ },
+          { slug: ‘prise-de-parole’,  title: ‘Préparer une prise de parole’,       desc: ‘Évaluez votre niveau de préparation réelle.’,                 storageKey: ‘maryan_test_parole’ },
+          { slug: ‘travail-equipe’,   title: ‘Mon rapport au travail en équipe’,   desc: ‘Repérez votre profil d\’équipe et ce qu\’il vous coûte.’,     storageKey: ‘maryan_test_equipe’ },
+          { slug: ‘deliberation’,     title: ‘Préparer une délibération’,          desc: ‘Évaluez votre niveau de préparation avant le vote.’,          storageKey: ‘maryan_test_deliberation’ }
+        ];
+        const testsList = document.getElementById(‘dashboardTestsList’);
+        if (testsList) {
+          testsList.innerHTML = DASHBOARD_TESTS.map(t => {
+            const done = !!localStorage.getItem(t.storageKey);
+            const statusHtml = done
+              ? `<span class="dash-test-status done">Complété</span>`
+              : `<span class="dash-test-status todo">À faire</span>`;
+            return `
+              <a href="/tests/${escapeHtml(t.slug)}" class="dash-test-item">
+                <div class="dash-test-info">
+                  <span class="dash-test-title">${escapeHtml(t.title)}</span>
+                  <span class="dash-test-desc">${escapeHtml(t.desc)}</span>
+                </div>
+                <div class="dash-test-right">
+                  ${statusHtml}
+                  <span class="dash-test-badge">Abonné·e</span>
+                </div>
+              </a>`;
+          }).join(‘’);
+        }
       }
 
       const resumeCard = document.getElementById(‘resumeCard’);
@@ -374,16 +551,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <p class="dashboard-resume-label">Diagnostic complété</p>
               <h3>${diagLabel}</h3>
               ${profileAnglesStr ? `<p>Axes prioritaires : ${escapeHtml(profileAnglesStr)}</p>` : ‘’}
-              <a href="/diagnostic" class="btn-primary-v3">Refaire le diagnostic</a>
+              <a href="/diagnostic" class="btn-primary-v3">Mettre à jour mon diagnostic</a>
             </div>
           `;
         } else {
           resumeCard.innerHTML = `
             <div class="dashboard-resume-empty">
               <p class="dashboard-resume-label">Point d’entrée</p>
-              <h3>Commencer par le diagnostic</h3>
-              <p>En quelques minutes, vous obtenez une première direction claire.</p>
-              <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
+              <h3>Faites votre diagnostic</h3>
+              <p>Personnalisez MARYAN à votre situation de mandat en 3 minutes.</p>
+              <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic →</a>
             </div>
           `;
         }
@@ -756,6 +933,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </script>
 
 <style>
+  /* ── PROFIL FORM ── */
+  .profile-form { padding-top: 0.25rem; }
+  .profile-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; }
+  .profile-field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .profile-field--full { grid-column: 1 / -1; }
+  .profile-field label { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #55646F; }
+  .field-opt { font-weight: 400; text-transform: none; letter-spacing: 0; color: #999; font-size: 0.75rem; }
+  .profile-field input, .profile-field select {
+    padding: 0.7rem 0.9rem; border: 1.5px solid rgba(10,25,47,0.1); border-radius: 8px;
+    font: inherit; font-size: 0.95rem; color: var(--deep); background: #FAFAF8;
+    transition: border-color 0.15s; outline: none;
+  }
+  .profile-field input:focus, .profile-field select:focus { border-color: var(--deep); background: #fff; }
+  .profile-field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230A192F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.85rem center; padding-right: 2.2rem; cursor: pointer; }
+  .profile-form-footer { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  .profile-save-msg { font-size: 0.88rem; font-weight: 700; }
+
+  /* ── TESTS LIST ── */
+  .dashboard-tests-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .dash-test-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 14px; background: #FCFCFB; text-decoration: none; color: var(--deep); transition: border-color 0.15s; }
+  .dash-test-item:hover { border-color: var(--deep); }
+  .dash-test-info { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 0; }
+  .dash-test-title { font-size: 0.96rem; font-weight: 700; }
+  .dash-test-desc { font-size: 0.82rem; color: #62737C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dash-test-right { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+  .dash-test-status { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.65rem; border-radius: 99px; }
+  .dash-test-status.done { background: rgba(46,125,50,0.12); color: #2E7D32; }
+  .dash-test-status.todo { background: #F5F5F5; color: #999; }
+  .dash-test-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.6rem; background: rgba(10,25,47,0.06); color: var(--deep); border-radius: 99px; }
+
   .dashboard-page {
     background: var(--bg);
     min-height: 100vh;
@@ -1113,6 +1320,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .dashboard-radar-list {
       grid-template-columns: 1fr;
     }
+  }
+
+  @media (max-width: 720px) {
+    .profile-form-grid { grid-template-columns: 1fr; }
+    .dash-test-desc { display: none; }
   }
 
   @media (max-width: 720px) {
