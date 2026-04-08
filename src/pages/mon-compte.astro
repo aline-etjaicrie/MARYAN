@@ -1062,7 +1062,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .profile-field--full { grid-column: 1 / -1; }
   .profile-field label { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #55646F; }
   .field-opt { font-weight: 400; text-transform: none; letter-spacing: 0; color: #999; font-size: 0.75rem; }
-  .profile-field input, .profile-field select {
+  .profile-field input, .profile-field select, .profile-field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
     padding: 0.7rem 0.9rem; border: 1.5px solid rgba(10,25,47,0.1); border-radius: 8px;
     font: inherit; font-size: 0.95rem; color: var(--deep); background: #FAFAF8;
     transition: border-color 0.15s; outline: none;
