@@ -150,8 +150,11 @@ const {
             } catch { /* noop */ }
           }
 
-          const label = firstName ? `Bonjour ${firstName}` : 'Mon compte';
-          updateAccountLinks('/mon-compte', label);
+          const headerLabel = firstName ? `Bonjour ${firstName}` : 'Mon compte';
+          const headerLink = document.getElementById('accountEntry');
+          if (headerLink) { headerLink.setAttribute('href', '/mon-compte'); headerLink.textContent = headerLabel; }
+          const footerLink = document.getElementById('footerAccountEntry');
+          if (footerLink) { footerLink.setAttribute('href', '/mon-compte'); footerLink.textContent = 'Mon compte'; }
         });
       }
     </script>
