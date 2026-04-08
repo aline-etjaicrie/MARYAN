@@ -239,6 +239,7 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
     <div class="hub-inner">
       <p class="hub-kicker">MARYAN · Copilote de mandat</p>
       <h1 class="hub-title">Que voulez-vous faire&nbsp;?</h1>
+      <p class="hub-accroche">Décrivez votre situation. Maryan lit entre les lignes et vous aide à décider, répondre et tenir votre position.</p>
       <div class="hub-cards">
         <button class="hub-card" data-hub-mode="compte-rendu" type="button">
           <span class="hub-card-icon">🎙️</span>
@@ -1903,13 +1904,23 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
       margin: 0 0 1.1rem;
     }
 
+    .hub-accroche {
+      text-align: center;
+      opacity: 0.7;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+    }
+
     .hub-title {
       font-size: clamp(2rem, 6vw, 3rem);
       font-weight: 900;
       color: #fff;
       line-height: 1.08;
       letter-spacing: -0.03em;
-      margin: 0 0 2.5rem;
+      margin: 0 0 1rem;
     }
 
     .hub-cards {
