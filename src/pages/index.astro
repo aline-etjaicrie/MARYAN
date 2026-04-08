@@ -4,90 +4,90 @@ import Layout from '../layouts/BaseLayout.astro';
 import heroScene from '../assets/maryan-hero-mandat.png';
 
 const microProofs = [
-  'Répondre à une interpellation sans se fragiliser',
-  'Arbitrer avec des marges de manœuvre plus claires',
-  'Agir quand le temps manque ou que ça bloque'
+  'Décrypter une délibération technique et en dire l\'essentiel politiquement',
+  'Préparer une prise de parole sans improviser',
+  'Comprendre sa posture d\'élu, pas juste ses droits'
 ];
 
 const situations = [
   {
-    title: 'Interpellation publique sur un sujet sensible',
-    text: 'MARYAN relit les enjeux, les risques et les marges de réponse.',
-    result: 'Une réponse plus juste, sans promesse intenable.'
+    title: ‘Délibération technique à présenter’,
+    text: ‘Vous devez en dire l\’essentiel sans vous noyer dans le jargon.’,
+    result: ‘MARYAN traduit le technique en posture politique lisible.’
   },
   {
-    title: 'Arbitrage budgétaire ou décision floue',
-    text: 'MARYAN structure les options, les impacts et les points de vigilance.',
-    result: 'Une décision plus claire et plus assumable.'
+    title: ‘Interpellation publique sur un sujet sensible’,
+    text: ‘Vous avez besoin de la bonne réponse, pas de la réponse rapide.’,
+    result: ‘MARYAN relit les enjeux, les risques, ce que vous pouvez dire.’
   },
   {
-    title: 'Conseil municipal préparé dans l’urgence',
-    text: 'MARYAN aide à remettre de l’ordre, du cadre et des priorités.',
-    result: 'Une préparation plus sûre, sans dispersion.'
+    title: ‘Décision à arbitrer, options floues’,
+    text: ‘Vous devez trancher. Pas demain. Ce soir.’,
+    result: ‘MARYAN structure les options et les points de vigilance.’
   },
   {
-    title: 'Début de mandat, repères encore flous',
-    text: 'MARYAN aide à prioriser et à retrouver un cadre institutionnel lisible.',
-    result: 'Une montée en compétence plus rapide.'
+    title: ‘Début de mandat, repères encore flous’,
+    text: ‘Tout va vite et vous courez après les sujets.’,
+    result: ‘MARYAN aide à prioriser et à retrouver un cadre institutionnel lisible.’
   }
 ];
 
 const steps = [
   {
-    title: 'Vous décrivez votre situation',
-    text: 'Question libre ou diagnostic guidé.'
+    title: 'Vous posez votre situation',
+    text: 'Question libre ou diagnostic guidé. Pas de formulaire compliqué.'
   },
   {
-    title: 'MARYAN fait remonter le vrai nœud',
-    text: 'Ce qui relève du contexte, du risque, de la marge de manœuvre et de la bonne lecture de la situation.'
+    title: 'MARYAN lit entre les lignes',
+    text: 'Ce qui relève du risque, du contexte, de la marge de manœuvre réelle.'
   },
   {
-    title: 'Vous repartez avec une réponse structurée',
-    text: 'Enjeux, options, vigilance, prochaine étape.'
+    title: 'Vous repartez avec quelque chose d\'utilisable',
+    text: 'Enjeux, options, points de vigilance, prochaine étape.'
   }
 ];
 
 const comparisonRows = [
   {
-    generic: 'Point de départ = question générique',
-    maryan: 'Point de départ = situation réelle du mandat'
+    generic: 'Part d\'une question générique',
+    maryan: 'Part de votre situation réelle'
   },
   {
-    generic: 'Contexte intégré = faible ou absent',
-    maryan: 'Contexte intégré = règles, marges de manœuvre, risques, repères de mandat'
+    generic: 'Peu ou pas de contexte de mandat',
+    maryan: 'Règles, risques, marges de manœuvre intégrés'
   },
   {
-    generic: 'Type de réponse = texte souvent long',
-    maryan: 'Type de réponse = structure claire + prochaine étape'
+    generic: 'Produit du texte',
+    maryan: 'Vous aide à décider et à tenir une position'
   },
   {
-    generic: 'Finalité = produire du texte',
-    maryan: 'Finalité = aider à décider, répondre et tenir sa position'
+    generic: 'Réponse longue, à déchiffrer',
+    maryan: 'Structure claire + prochaine étape'
   }
 ];
 
 const scenarios = [
   {
-    title: 'Interpellation sensible',
-    before: 'Stress, réponse trop rapide, risque de surpromesse.',
-    after: 'Une réponse cadrée en 10 à 15 minutes, avec les bons points de vigilance.'
+    title: ‘Délibération technique’,
+    before: ‘Vous lisez. Vous relisez. Vous ne savez pas quoi en dire politiquement.’,
+    after: ‘Vous savez ce qui est en jeu, ce que vous pouvez défendre et comment le formuler.’
   },
   {
-    title: 'Décision à arbitrer',
-    before: 'Trop d’options, pas assez de lisibilité, difficulté à trancher.',
-    after: 'Un arbitrage plus clair, plus argumentable, plus tenable.'
+    title: ‘Interpellation sensible’,
+    before: ‘Vous improvisez. Vous en dites trop ou pas assez.’,
+    after: ‘Une réponse cadrée, avec ce que vous pouvez promettre et ce que vous ne pouvez pas.’
   },
   {
-    title: 'Début de mandat',
-    before: 'Impression de courir après tous les sujets à la fois.',
-    after: 'Des repères plus solides et une meilleure priorisation.'
+    title: ‘Décision à arbitrer’,
+    before: ‘Trop d\’options, pas de lisibilité, difficile de trancher sans se fragiliser.’,
+    after: ‘Un arbitrage argumentable, avec les bons points de vigilance.’
   }
 ];
 
 const credibilityPoints = [
-  'Plus de 20 ans d’expérience en communication publique et en cabinet',
-  'Un outil nourri par des situations concrètes du mandat local',
-  'Un diagnostic, un copilote et des ressources conçus pour aider à comprendre, décider et agir'
+  ‘Plus de 20 ans dans les cabinets et la communication publique locale’,
+  ‘Des situations réelles de mandat comme matière première — pas des cas d\’école’,
+  ‘Un diagnostic, un copilote, des ressources — pour comprendre, décider, agir’
 ];
 
 const resourceExamples = [
@@ -109,8 +109,31 @@ const resourceExamples = [
   }
 ];
 
-const individualOffer = ['Diagnostic initial', 'Accès au copilote', 'Ressources', 'Activation immédiate'];
-const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement léger', 'Tarif ajusté selon le nombre d’élu·es'];
+const individualOffer = [‘Diagnostic initial’, ‘Copilote’, ‘Ressources’, ‘Activation immédiate’];
+const teamOffer = [‘Pack groupe jusqu\’à 8 élu·es’, ‘Offre collectivité à partir de 5 élu·es’, ‘Tarif ajusté’];
+
+const resourceCards = [
+  {
+    title: ‘Lire et présenter une délibération’,
+    body: ‘Comprendre ce qui est vraiment en jeu, pas juste ce qui est écrit.’,
+    href: ‘/ressources/faire-passer-une-deliberation’
+  },
+  {
+    title: ‘Quand l\’administration freine’,
+    body: ‘Distinguer le blocage technique du blocage politique. Et quoi faire.’,
+    href: ‘/ressources/administration-qui-freine’
+  },
+  {
+    title: ‘Ce qu\’un élu peut et ne peut pas dire publiquement’,
+    body: ‘Les limites réelles, sans le vernis juridique.’,
+    href: ‘/ressources/reseaux-sociaux-elu-ce-quon-peut-dire’
+  },
+  {
+    title: ‘Prévenir et gérer une situation de VSS’,
+    body: ‘Ce que la loi impose. Ce que la posture exige.’,
+    href: ‘/ressources/prevenir-gerer-vss-harcelement’
+  }
+];
 ---
 
 <Layout
@@ -122,13 +145,11 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       <div class="hero-copy">
         <span class="label-v3">Copilote de mandat</span>
         <h1>
-          Une <span class="accent-keyword">situation</span> de mandat.
-          <br />
-          Une réponse <span class="accent-keyword">exploitable</span>.
+          Le temps que vous n’avez pas,<br />
+          <span class="accent-keyword">MARYAN</span> le prend pour vous.
         </h1>
         <p class="hero-subtitle">
-          MARYAN aide les élu·es à clarifier une situation, trancher plus vite et passer à l’action
-          sans se fragiliser.
+          Décidez sans douter. Parlez sans vous fragiliser. Un copilote qui lit votre situation — et une bibliothèque de ressources courtes, ancrées dans le réel du mandat.
         </p>
 
         <ul class="hero-proofs">
@@ -139,7 +160,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
 
         <div class="hero-actions">
           <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic</a>
-          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Tester une situation réelle</a>
+          <a href="/copilote" class="btn-secondary-v3 hero-secondary">Essayer le copilote</a>
         </div>
       </div>
 
@@ -161,8 +182,8 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
   <section class="section-v3">
     <div class="container">
       <div class="section-head">
-        <span class="label-v3">Situations</span>
-        <h2>Vous reconnaissez ces <span class="accent-keyword">moments</span> ?</h2>
+        <span class="label-v3">Situations réelles</span>
+        <h2>Vous connaissez ces <span class="accent-keyword">moments</span>.</h2>
       </div>
 
       <div class="situations-grid">
@@ -183,10 +204,9 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Méthode</span>
-        <h2>En <span class="accent-keyword">pratique</span>, ça donne ça</h2>
+        <h2>En <span class="accent-keyword">pratique</span>, ça donne ça.</h2>
         <p class="section-intro">
-          MARYAN ne part pas d’une consigne abstraite. Il commence par relire la situation que vous
-          vivez.
+          Vous décrivez ce que vous vivez. MARYAN fait remonter ce qui compte vraiment.
         </p>
       </div>
 
@@ -228,7 +248,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
       <div class="section-head">
         <span class="label-v3">Différence</span>
         <h2>
-          Pensé pour le <span class="accent-keyword">mandat local</span>, pas pour répondre à tout.
+          Pensé pour le <span class="accent-keyword">mandat</span>. Pas pour répondre à tout.
         </h2>
       </div>
 
@@ -251,7 +271,7 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head">
         <span class="label-v3">Impact concret</span>
-        <h2>Ce que MARYAN <span class="accent-keyword">change</span> dans des situations très concrètes</h2>
+        <h2>Ce que ça <span class="accent-keyword">change</span>, concrètement.</h2>
       </div>
 
       <div class="scenario-grid">
@@ -276,8 +296,8 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="credibility-shell">
         <div class="section-head section-head-light">
-          <span class="label-v3">Crédibilité</span>
-          <h2>Conçu à partir du <span class="accent-keyword">réel</span>, pas d’un chatbot générique.</h2>
+          <span class="label-v3">Pourquoi MARYAN</span>
+          <h2>Pas construit pour répondre à tout. <span class="accent-keyword">Construit pour ça.</span></h2>
         </div>
 
         <div class="credibility-points">
@@ -307,13 +327,13 @@ const teamOffer = ['Plusieurs accès', 'Même socle d’usage', 'Déploiement l�
     <div class="container">
       <div class="section-head section-head-center">
         <span class="label-v3">Accès</span>
-        <h2>Simple à <span class="accent-keyword">démarrer</span></h2>
+        <h2>Vous commencez ce soir <span class="accent-keyword">si vous voulez</span>.</h2>
       </div>
 
       <div class="offers-grid">
         <article class="offer-card card-v3">
           <span class="offer-audience">Pour un élu</span>
-          <h3>Un accès individuel, activable immédiatement.</h3>
+          <h3>Un accès individuel. Vous payez vous-même, vous utilisez vous-même.</h3>
           <ul class="clean-list">
             {individualOffer.map((item) => (
               <li>{item}</li>
