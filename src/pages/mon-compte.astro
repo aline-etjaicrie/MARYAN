@@ -503,7 +503,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         topicsGrid.innerHTML = resources.map((resource) => `
           <a href="/ressources/${escapeHtml(resource.slug)}" class="dashboard-topic-card">
-            <span>${escapeHtml(resource.title)}</span>
+            <span class="dtc-title">${escapeHtml(resource.title)}</span>
+            ${resource.promise ? `<span class="dtc-promise">${escapeHtml(resource.promise)}</span>` : ''}
+            ${resource.pillar ? `<span class="dtc-pillar dtc-pillar--${escapeHtml(resource.pillar)}">${escapeHtml(resource.pillar.replace('_', '\u00a0'))}</span>` : ''}
           </a>
         `).join('');
       }
@@ -952,7 +954,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* ── TESTS LIST ── */
   .dashboard-tests-list { display: flex; flex-direction: column; gap: 0.6rem; }
-  .dash-test-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 14px; background: #FCFCFB; text-decoration: none; color: var(--deep); transition: border-color 0.15s; }
+  .dash-test-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 16px; background: white; text-decoration: none; color: var(--deep); transition: border-color 0.15s; }
   .dash-test-item:hover { border-color: var(--deep); }
   .dash-test-info { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 0; }
   .dash-test-title { font-size: 0.96rem; font-weight: 700; }
@@ -961,7 +963,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .dash-test-status { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.65rem; border-radius: 99px; }
   .dash-test-status.done { background: rgba(46,125,50,0.12); color: #2E7D32; }
   .dash-test-status.todo { background: #F5F5F5; color: #999; }
-  .dash-test-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.6rem; background: rgba(10,25,47,0.06); color: var(--deep); border-radius: 99px; }
+  .dash-test-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.6rem; background: var(--deep); color: var(--neon); border-radius: 99px; }
 
   .dashboard-page {
     background: var(--bg);
@@ -1270,17 +1272,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .dashboard-topic-card {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
     min-height: 72px;
-    border-radius: 18px;
+    border-radius: 16px;
     border: 1px solid var(--border);
-    background: #FCFCFB;
+    background: white;
     padding: 0.95rem 1rem;
     color: var(--deep);
     text-decoration: none;
-    font-size: 0.96rem;
-    font-weight: 700;
     line-height: 1.45;
+    transition: border-color 0.15s;
   }
 
   .dashboard-topic-card:hover,
@@ -1288,6 +1291,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border-color: var(--border-neon);
     outline: none;
   }
+
+  .dtc-title { font-size: 0.96rem; font-weight: 700; color: var(--deep); }
+  .dtc-promise { font-size: 0.8rem; color: #62737C; line-height: 1.4; }
+  .dtc-pillar {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 99px;
+    margin-top: 0.2rem;
+  }
+  .dtc-pillar--se_situer   { background: #E8F0FE; color: #1A56DB; }
+  .dtc-pillar--comprendre  { background: #FEF3C7; color: #92400E; }
+  .dtc-pillar--agir        { background: #D1FAE5; color: #065F46; }
+  .dtc-pillar--se_proteger { background: #FEE2E2; color: #991B1B; }
 
   .dashboard-resume-card {
     padding: 1.5rem;
