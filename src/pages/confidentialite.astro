@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Politique de confidentialité — MARYAN"
+  description="Politique de confidentialité de MARYAN. Comment vos données sont collectées, utilisées et protégées.">
+
+  <main class="legal-page">
+    <div class="container-narrow">
+
+      <a href="/" class="back-link">← Accueil</a>
+
+      <h1>Politique de confidentialité</h1>
+      <p class="last-updated">Dernière mise à jour : avril 2026</p>
+
+      <section class="legal-section">
+        <h2>Responsable du traitement</h2>
+        <p>
+          <strong>MARYAN</strong>, représentée par Aline Weber.<br />
+          Contact : <a href="/contact">formulaire de contact</a> ou bonjour&nbsp;[at]&nbsp;maryanapp.fr
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Données collectées</h2>
+        <ul>
+          <li>
+            <strong>Formulaire de contact</strong> : prénom, nom, email institutionnel, mandat, taille de collectivité,
+            objet de la demande, message.
+          </li>
+          <li>
+            <strong>Compte abonné</strong> : adresse email, mot de passe (chiffré), étiquette politique (optionnelle),
+            plan d'abonnement — via Supabase Auth.
+          </li>
+          <li>
+            <strong>Copilote IA</strong> : les messages envoyés au copilote sont stockés dans votre espace compte (Supabase) pour vous permettre de reprendre vos sessions. À chaque échange, les données suivantes sont transmises à Mistral AI pour générer une réponse : votre message, votre prénom, votre commune, votre rôle, votre diagnostic MARYAN et, si vous l'avez renseignée, votre affiliation politique.
+          </li>
+          <li>
+            <strong>Diagnostic</strong> : les résultats de votre diagnostic (catégorie et libellé) sont d'abord stockés dans le navigateur (localStorage). Lorsque vous vous connectez à votre compte, ces résultats sont synchronisés avec votre profil Supabase afin de personnaliser votre expérience. Vous pouvez les supprimer depuis votre compte ou <a href="/contact">en nous contactant</a>.
+          </li>
+          <li>
+            <strong>Données de catégorie particulière (article 9 RGPD)</strong> : si vous choisissez de renseigner votre affiliation politique lors de l'inscription, cette donnée est traitée sur la base de votre consentement explicite (article 9.2.a du RGPD). Ce consentement est facultatif et peut être retiré à tout moment en supprimant cette information depuis votre compte ou <a href="/contact">en nous contactant</a>.
+          </li>
+          <li>
+            <strong>Paiement</strong> : les données de paiement sont traitées exclusivement par Stripe.
+            MARYAN ne stocke aucune donnée bancaire.
+          </li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Finalités du traitement</h2>
+        <ul>
+          <li>Répondre aux demandes envoyées via le formulaire de contact</li>
+          <li>Gérer les accès à l'espace abonné et aux fonctionnalités premium</li>
+          <li>Générer des réponses IA via le copilote (transmission à Mistral AI)</li>
+          <li>Traiter les paiements et gérer les abonnements (via Stripe)</li>
+          <li>Envoyer des communications liées au service (si consentement)</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Durées de conservation</h2>
+        <ul>
+          <li><strong>Formulaire de contact</strong> : 12 mois à compter de la demande</li>
+          <li><strong>Compte abonné</strong> : durée de l'abonnement + 12 mois après résiliation</li>
+          <li><strong>Sessions copilote</strong> : les historiques de conversation sont conservés jusqu'à suppression par l'utilisateur·ice ou suppression du compte. Vous pouvez supprimer vos sessions à tout moment depuis votre espace compte.</li>
+          <li><strong>Données de diagnostic</strong> : la clé de diagnostic est conservée dans votre profil tant que votre compte est actif. Elle est supprimée à la suppression du compte.</li>
+          <li><strong>Données de paiement</strong> : 5 ans (obligation légale comptable), gérées par Stripe</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Sous-traitants</h2>
+        <ul>
+          <li><strong>Vercel Inc.</strong> (États-Unis) — hébergement de l'application</li>
+          <li><strong>Supabase</strong> (Union Européenne) — authentification et base de données</li>
+          <li><strong>Mistral AI</strong> (France) — moteur IA du copilote. À chaque échange avec le copilote MARYAN, les données suivantes sont transmises à Mistral AI pour générer une réponse : votre message, votre prénom, votre commune, votre rôle, votre diagnostic MARYAN et, si vous l'avez renseignée, votre affiliation politique. Ces données ne sont pas conservées par Mistral AI à des fins de formation selon leurs conditions générales. Nous vous invitons à consulter la politique de confidentialité de Mistral AI sur <a href="https://mistral.ai" target="_blank" rel="noopener">mistral.ai</a>.</li>
+          <li><strong>Stripe</strong> (États-Unis) — traitement des paiements</li>
+          <li><strong>Resend Inc.</strong> (États-Unis) — routage des emails transactionnels (confirmation d'inscription, confirmation de paiement) et notifications de publication. Seuls votre adresse email et votre prénom sont transmis. Resend ne les utilise pas à des fins commerciales propres.</li>
+        </ul>
+        <p>
+          Les transferts hors UE sont encadrés par les garanties appropriées (clauses contractuelles types ou
+          équivalents). Stripe et Vercel sont certifiés dans le cadre du Data Privacy Framework.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Vos droits (RGPD)</h2>
+        <p>Conformément au Règlement (UE) 2016/679, vous disposez des droits suivants :</p>
+        <ul>
+          <li><strong>Droit d'accès</strong> : connaître les données que nous détenons sur vous</li>
+          <li><strong>Droit de rectification</strong> : corriger des données inexactes</li>
+          <li><strong>Droit à l'effacement</strong> : demander la suppression de vos données</li>
+          <li><strong>Droit à la portabilité</strong> : recevoir vos données dans un format structuré</li>
+          <li><strong>Droit d'opposition</strong> : vous opposer à certains traitements</li>
+        </ul>
+        <p>
+          Pour exercer ces droits : utilisez le <a href="/contact">formulaire de contact</a> ou écrivez à bonjour&nbsp;[at]&nbsp;maryanapp.fr.
+          Nous nous engageons à répondre dans un délai maximum de 30 jours.
+          Vous pouvez également introduire une réclamation auprès de la
+          <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Cookies</h2>
+        <p>
+          Ce site utilise uniquement des cookies techniques nécessaires au fonctionnement (session
+          d'authentification Supabase). <strong>Aucun cookie publicitaire, de profilage ou de tracking
+          tiers n'est utilisé.</strong>
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Sécurité</h2>
+        <ul>
+          <li>Toutes les communications sont chiffrées via HTTPS</li>
+          <li>Les mots de passe sont chiffrés (bcrypt) par Supabase</li>
+          <li>L'accès aux données est limité aux personnes habilitées</li>
+          <li>Les tokens d'authentification expirent automatiquement</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Violation de données</h2>
+        <p>
+          En cas de violation de données à caractère personnel susceptible d'engendrer un risque pour vos droits et libertés, nous nous engageons à notifier la CNIL dans un délai de 72 heures conformément à l'article 33 du RGPD, et à vous informer sans délai indu si cette violation est susceptible d'engendrer un risque élevé pour vos droits et libertés, conformément à l'article 34 du RGPD.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<style>
+  .legal-page {
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 0 8rem;
+  }
+
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: var(--deep);
+    opacity: 0.4;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-bottom: 3rem;
+    transition: opacity 0.2s;
+  }
+
+  .back-link:hover { opacity: 1; }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    color: var(--deep);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .last-updated {
+    font-size: 0.85rem;
+    color: var(--deep);
+    opacity: 0.4;
+    margin-bottom: 3rem;
+  }
+
+  .legal-section {
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legal-section:last-child {
+    border-bottom: none;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--deep);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--deep);
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--deep);
+    opacity: 0.85;
+  }
+
+  a {
+    color: var(--deep);
+    font-weight: 700;
+  }
+
+  a:hover { opacity: 0.7; }
+</style>

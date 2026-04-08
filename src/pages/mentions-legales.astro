@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Mentions légales — MARYAN"
+  description="Mentions légales de l'application MARYAN, éditée par Et j'ai crié.">
+
+  <main class="legal-page">
+    <div class="container-narrow">
+
+      <a href="/" class="back-link">← Accueil</a>
+
+      <h1>Mentions légales</h1>
+
+      <section class="legal-section">
+        <h2>Éditeur</h2>
+        <p>
+          Le site <strong>maryanapp.fr</strong> est édité par la société <strong>Et j'ai crié</strong>,
+          représentée par <strong>Aline Weber</strong>.
+        </p>
+        <ul>
+          <li>Email : <a href="mailto:contact@etjaicrie.com">contact@etjaicrie.com</a></li>
+          <li>Adresse : [ADRESSE]</li>
+          <li>SIRET : [SIRET]</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Directrice de publication</h2>
+        <p>Aline Weber</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Hébergeur</h2>
+        <p>
+          Ce site est hébergé par <strong>Vercel Inc.</strong><br />
+          340 Pine Street, Suite 701, San Francisco, CA 94104, États-Unis.<br />
+          <a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a>
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Propriété intellectuelle</h2>
+        <p>
+          L'ensemble du contenu de ce site (textes, visuels, architecture, outils) est la propriété exclusive
+          de <strong>Et j'ai crié</strong>. Toute reproduction, même partielle, est interdite sans autorisation
+          préalable et écrite.
+        </p>
+        <p>
+          La marque <strong>MARYAN</strong> et les outils associés sont la propriété de Et j'ai crié.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Limitation de responsabilité</h2>
+        <p>
+          MARYAN est un outil d'appui à destination des élus municipaux. Les contenus, analyses et
+          recommandations produits par l'application — y compris ceux générés par intelligence artificielle —
+          ont une valeur informative et pédagogique. <strong>Ils ne constituent en aucun cas un avis juridique,
+          fiscal ou professionnel</strong> et ne sauraient engager la responsabilité de Et j'ai crié.
+        </p>
+        <p>
+          Pour toute situation nécessitant un conseil qualifié, l'utilisateur est invité à consulter un professionnel compétent.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Cookies</h2>
+        <p>
+          Ce site utilise uniquement des cookies techniques nécessaires au fonctionnement (authentification,
+          session). Aucun cookie publicitaire ou de tracking tiers n'est déposé.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>Contact</h2>
+        <p>
+          Pour toute question relative aux présentes mentions légales :
+          <a href="mailto:contact@etjaicrie.com">contact@etjaicrie.com</a>
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+</BaseLayout>
+
+<style>
+  .legal-page {
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 0 8rem;
+  }
+
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    color: var(--deep);
+    opacity: 0.4;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-bottom: 3rem;
+    transition: opacity 0.2s;
+  }
+
+  .back-link:hover { opacity: 1; }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    color: var(--deep);
+    letter-spacing: -0.03em;
+    margin-bottom: 3rem;
+  }
+
+  .legal-section {
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legal-section:last-child {
+    border-bottom: none;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--deep);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--deep);
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--deep);
+    opacity: 0.85;
+  }
+
+  a {
+    color: var(--deep);
+    font-weight: 700;
+  }
+
+  a:hover { opacity: 0.7; }
+</style>
