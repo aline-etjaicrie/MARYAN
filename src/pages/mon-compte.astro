@@ -199,6 +199,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div id="dashboardTestsList" class="dashboard-tests-list"></div>
         </section>
 
+        <!-- ══ DIAGNOSTIC AVANCÉ INVITATION ══ -->
+        <div id="advancedDiagBanner" style="display:none;" class="dashboard-block adv-invite-banner">
+          <div class="adv-invite-inner">
+            <div class="adv-invite-text">
+              <p class="adv-invite-kicker">Affinez votre profil</p>
+              <h3 class="adv-invite-title">4 questions supplémentaires pour des recommandations plus précises.</h3>
+              <p class="adv-invite-lead">Votre diagnostic de base est complété. Quelques minutes supplémentaires permettront à MARYAN de mieux comprendre votre situation actuelle.</p>
+            </div>
+            <a href="/diagnostic/approfondi" class="adv-invite-btn">Affiner mon profil →</a>
+          </div>
+        </div>
+
         <section class="dashboard-block">
           <div class="dashboard-block-head">
             <div>
@@ -452,6 +464,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       });
 
       const diagnosticState = profileContext?.diagnosticState || buildDiagnosticStateFromProfileRow(profile);
+      const advancedDiagCompleted = !!(profile as any)?.advanced_diagnostic_completed;
+      const advancedDiagData = (profile as any)?.advanced_diagnostic_data as Record<string, unknown> | null | undefined;
 
       try {
         if (diagnosticState.diagnostic_key || diagnosticState.profile || diagnosticState.recommended_slugs?.length) {
@@ -468,9 +482,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         });
 
         if (maryanProfile) {
+          // Merge advanced diagnostic into profile for copilote enrichment
+          const advancedForProfile = advancedDiagData && typeof advancedDiagData === 'object'
+            ? {
+                situation_principale: advancedDiagData.situation_principale as string | undefined,
+                energie_principale: advancedDiagData.energie_principale as string | undefined,
+                profil_parole: advancedDiagData.profil_parole as 'aise' | 'construction' | 'stress' | undefined,
+                profil_exposition: advancedDiagData.profil_exposition as 'faible' | 'vecu' | 'anticipation' | undefined
+              }
+            : (() => {
+                try {
+                  const stored = localStorage.getItem('maryan_advanced_diag');
+                  if (stored) {
+                    const s = JSON.parse(stored) as Record<string, unknown>;
+                    return { situation_principale: s.situation_principale as string, energie_principale: s.energie_principale as string, profil_parole: s.profil_parole as 'aise' | 'construction' | 'stress', profil_exposition: s.profil_exposition as 'faible' | 'vecu' | 'anticipation' };
+                  }
+                } catch { /* noop */ }
+                return null;
+              })();
+
           localStorage.setItem('maryan_profile', JSON.stringify({
             ...maryanProfile,
-            diagnosticProfile: diagnosticState.profile
+            diagnosticProfile: diagnosticState.profile,
+            ...(advancedForProfile ? { advancedDiagnostic: advancedForProfile } : {})
           }));
         }
       } catch {
@@ -527,8 +561,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             .filter(Boolean);
         }
 
+        // Merge advanced resources if available
+        if (advancedDiagCompleted && advancedDiagData) {
+          const advSlugs = Array.isArray(advancedDiagData.advanced_resources)
+            ? (advancedDiagData.advanced_resources as string[])
+            : [];
+          const existingSlugs = new Set(resources.map(r => r.slug));
+          const advResources = advSlugs
+            .map(slug => maryanResources.find(r => r.slug === slug))
+            .filter(Boolean)
+            .filter(r => !existingSlugs.has(r!.slug));
+          resources = [...resources, ...advResources].slice(0, 8);
+        }
+
         if (topicsLead && !diagnosticState.profile) {
           topicsLead.textContent = "Des points d'appui sobres pour avancer tout de suite.";
+        }
+        if (topicsLead && advancedDiagCompleted && diagnosticState.profile) {
+          topicsLead.textContent = "Des ressources adaptées à votre profil et à votre situation actuelle.";
         }
 
         topicsGrid.innerHTML = resources.map((resource) => `
@@ -608,6 +658,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <a href="/diagnostic" class="btn-primary-v3">Faire le diagnostic →</a>
             </div>
           `;
+        }
+      }
+
+      // ── Invitation diagnostic avancé ──
+      {
+        const banner = document.getElementById('advancedDiagBanner');
+        if (banner) {
+          const baseDone = !!(diagnosticState.profile || diagnosticState.diagnostic_key);
+          if (baseDone && !advancedDiagCompleted) {
+            banner.style.display = 'block';
+          }
         }
       }
 
@@ -1392,6 +1453,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .diag-rec-item { font-size: 0.88rem; font-weight: 600; color: var(--deep); text-decoration: none; padding: 0.3rem 0; border-bottom: 1px solid var(--border); }
   .diag-rec-item:last-child { border-bottom: none; }
   .diag-rec-item:hover { color: var(--accent-red); }
+
+  /* ── INVITATION DIAGNOSTIC AVANCÉ ── */
+  .adv-invite-banner { background: linear-gradient(135deg, #0A192F 0%, #0d2540 100%); color: #fff; border-radius: 20px; padding: 2rem; }
+  .adv-invite-inner { display: flex; align-items: center; gap: 2rem; justify-content: space-between; flex-wrap: wrap; }
+  .adv-invite-kicker { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #ADFF2F; margin-bottom: 0.5rem; }
+  .adv-invite-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.3; }
+  .adv-invite-lead { font-size: 0.9rem; opacity: 0.75; line-height: 1.5; margin: 0; }
+  .adv-invite-btn { flex-shrink: 0; background: #ADFF2F; color: #0A192F; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 800; font-size: 0.95rem; text-decoration: none; white-space: nowrap; transition: opacity 0.2s; }
+  .adv-invite-btn:hover { opacity: 0.85; }
 
   @media (max-width: 720px) {
     .profile-form-grid { grid-template-columns: 1fr; }

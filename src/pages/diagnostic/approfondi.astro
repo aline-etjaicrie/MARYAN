@@ -1,0 +1,395 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Diagnostic approfondi — MARYAN"
+  description="4 questions supplémentaires pour affiner votre profil et obtenir des recommandations plus précises.">
+
+  <main class="adv-diag-page">
+    <!-- AUTH CHECK / LOADING -->
+    <div id="authLoading" class="adv-loading">
+      <div class="adv-spinner"></div>
+      <p>Vérification de votre accès…</p>
+    </div>
+
+    <!-- MAIN CONTENT (hidden until auth confirmed) -->
+    <div id="advContent" class="hidden">
+
+      <!-- INTRO -->
+      <div id="advIntro" class="adv-step active">
+        <div class="adv-container">
+          <p class="adv-kicker">Diagnostic approfondi</p>
+          <h1 class="adv-title">Affinez votre profil.</h1>
+          <p class="adv-lead">4 questions supplémentaires pour que MARYAN comprenne mieux votre situation actuelle et vous propose des ressources plus précises.</p>
+          <div class="adv-benefits">
+            <div class="adv-benefit">→ <span>Recommandations adaptées à votre situation du moment</span></div>
+            <div class="adv-benefit">→ <span>Copilote enrichi de votre contexte réel</span></div>
+            <div class="adv-benefit">→ <span>Priorités affinées pour votre mandat</span></div>
+          </div>
+          <button id="advStartBtn" class="adv-btn-primary adv-btn-big">Commencer — 2 minutes</button>
+          <p class="adv-hint">Confidentiel · Sauvegardé dans votre espace</p>
+        </div>
+      </div>
+
+      <!-- QUESTIONS -->
+      <div id="advQuestions" class="hidden">
+        <nav class="adv-nav">
+          <div class="adv-container">
+            <div class="adv-nav-inner">
+              <button class="adv-back-btn" id="advPrevBtn">← Retour</button>
+              <div class="adv-stepper">
+                <p id="advStepLabel" class="adv-step-label">Question 1 sur 4</p>
+                <div class="adv-progress-track"><div id="advProgressFill" class="adv-progress-fill"></div></div>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="adv-container adv-questions-layout">
+
+          <!-- Q1 : SITUATION -->
+          <div class="adv-step hidden" id="adv-q1">
+            <h2 class="adv-q-title">Votre situation en ce moment</h2>
+            <p class="adv-q-help">Quelle phrase décrit le mieux ce que vous traversez en ce moment dans votre mandat ?</p>
+            <div class="adv-options">
+              <button class="adv-opt" onclick="advPick(this,'situation','pouvoir',1)">Je ne sais pas vraiment où j'ai du pouvoir réel</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','conflit',1)">Je gère un conflit dans mon équipe ou ma majorité</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','decision',1)">Je dois prendre une décision importante sous pression</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','expose',1)">Je me sens exposé·e ou mis·e en cause</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','projet_bloque',1)">Je porte un projet mais ça n'avance pas</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','seul',1)">Je me sens seul·e dans mon mandat</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','surcharge',1)">Je suis surchargé·e et je ne sais plus quoi prioriser</button>
+              <button class="adv-opt" onclick="advPick(this,'situation','institutionnel',1)">Je veux mieux comprendre mon environnement institutionnel</button>
+            </div>
+          </div>
+
+          <!-- Q2 : ÉNERGIE -->
+          <div class="adv-step hidden" id="adv-q2">
+            <h2 class="adv-q-title">Ce qui vous prend le plus d'énergie</h2>
+            <div class="adv-options">
+              <button class="adv-opt" onclick="advPick(this,'energie','administration',2)">Les relations avec l'administration</button>
+              <button class="adv-opt" onclick="advPick(this,'energie','tensions_politiques',2)">Les tensions dans mon groupe politique</button>
+              <button class="adv-opt" onclick="advPick(this,'energie','sollicitations',2)">Les sollicitations des habitants</button>
+              <button class="adv-opt" onclick="advPick(this,'energie','parole_publique',2)">La prise de parole en public</button>
+              <button class="adv-opt" onclick="advPick(this,'energie','decisions_difficiles',2)">Les décisions difficiles à assumer</button>
+              <button class="adv-opt" onclick="advPick(this,'energie','charge_globale',2)">La charge de travail globale</button>
+            </div>
+          </div>
+
+          <!-- Q3 : PAROLE PUBLIQUE -->
+          <div class="adv-step hidden" id="adv-q3">
+            <h2 class="adv-q-title">Votre rapport à la parole publique</h2>
+            <div class="adv-options">
+              <button class="adv-opt" onclick="advPick(this,'parole','aise',3)">Je suis à l'aise, c'est un levier pour moi</button>
+              <button class="adv-opt" onclick="advPick(this,'parole','construction',3)">C'est en construction, j'ai des marges de progrès</button>
+              <button class="adv-opt" onclick="advPick(this,'parole','stress',3)">C'est une source de stress réel</button>
+            </div>
+          </div>
+
+          <!-- Q4 : EXPOSITION / MISE EN CAUSE -->
+          <div class="adv-step hidden" id="adv-q4">
+            <h2 class="adv-q-title">Exposition et mise en cause</h2>
+            <p class="adv-q-help">Avez-vous déjà vécu ou anticipez-vous une situation de mise en cause personnelle ou juridique dans votre mandat ?</p>
+            <div class="adv-options">
+              <button class="adv-opt" onclick="advPick(this,'exposition','non',4)">Non, pas pour l'instant</button>
+              <button class="adv-opt" onclick="advPick(this,'exposition','vecu',4)">J'ai déjà vécu une situation difficile</button>
+              <button class="adv-opt" onclick="advPick(this,'exposition','anticipation',4)">Je sens que ça pourrait arriver, j'y pense</button>
+            </div>
+          </div>
+
+          <!-- CALCUL -->
+          <div class="adv-step hidden text-center" id="adv-calc" style="padding: 4rem 0;">
+            <div class="adv-spinner" style="margin: 0 auto 2rem;"></div>
+            <h2 class="adv-q-title">Mise à jour de votre profil…</h2>
+            <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN intègre vos réponses pour affiner vos recommandations.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RÉSULTAT -->
+      <div id="advResult" class="hidden">
+        <div class="adv-container adv-result-layout">
+          <p class="adv-kicker" style="color: #2E7D32;">✓ Profil mis à jour</p>
+          <h2 class="adv-result-title">Vos recommandations sont affinées.</h2>
+          <p class="adv-result-lead">MARYAN a enrichi votre profil avec votre situation actuelle. Vos ressources et votre copilote sont maintenant plus précis.</p>
+
+          <div id="advResultPriorities" class="adv-result-priorities"></div>
+          <div id="advResultResources" class="adv-result-resources"></div>
+
+          <div class="adv-result-actions">
+            <a href="/mon-compte" class="adv-btn-primary adv-btn-big">Voir mon tableau de bord</a>
+            <a href="/copilote" class="adv-btn-secondary">Ouvrir le copilote</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <style>
+    :root {
+      --deep: #0A192F;
+      --neon: #ADFF2F;
+      --red: #E63946;
+      --bg: #F8F9FA;
+      --border: rgba(10, 25, 47, 0.08);
+    }
+
+    .adv-diag-page { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .adv-container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+
+    /* LOADING */
+    .adv-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 1rem; opacity: 0.6; }
+    .adv-spinner { width: 40px; height: 40px; border: 3px solid #EEE; border-top-color: var(--red); border-radius: 50%; animation: adv-spin 0.8s linear infinite; }
+    @keyframes adv-spin { to { transform: rotate(360deg); } }
+
+    /* STEP */
+    .adv-step { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .adv-step.active { display: block; opacity: 1; transform: translateY(0); }
+
+    /* INTRO */
+    #advIntro { padding: 8vh 0; }
+    .adv-kicker { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .adv-title { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .adv-lead { font-size: 1.2rem; line-height: 1.6; opacity: 0.8; margin-bottom: 2.5rem; }
+    .adv-benefits { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 3rem; }
+    .adv-benefit { display: flex; gap: 0.8rem; font-weight: 600; font-size: 1rem; }
+    .adv-hint { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+
+    /* NAV */
+    .adv-nav { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .adv-nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .adv-back-btn { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .adv-back-btn:hover { opacity: 1; }
+    .adv-stepper { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .adv-step-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .adv-progress-track { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .adv-progress-fill { height: 100%; background: var(--red); width: 25%; transition: width 0.4s ease; }
+
+    /* QUESTIONS */
+    .adv-questions-layout { padding-bottom: 5rem; }
+    .adv-q-title { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .adv-q-help { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+    .adv-options { display: flex; flex-direction: column; gap: 0.8rem; }
+    .adv-opt {
+      padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
+      text-align: left; font-size: 1.05rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s;
+      line-height: 1.3;
+    }
+    .adv-opt:hover { border-color: var(--deep); transform: translateX(5px); }
+    .adv-opt.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+
+    /* RÉSULTAT */
+    .adv-result-layout { padding: 6rem 0; }
+    .adv-result-title { font-size: clamp(2rem, 6vw, 3rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    .adv-result-lead { font-size: 1.15rem; opacity: 0.8; line-height: 1.6; margin-bottom: 3rem; }
+    .adv-result-priorities { margin-bottom: 3rem; }
+    .adv-result-priorities h3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1rem; }
+    .adv-result-priorities ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+    .adv-result-priorities li { padding-left: 1.8rem; position: relative; font-size: 1.1rem; font-weight: 600; color: #444; }
+    .adv-result-priorities li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+    .adv-result-resources { margin-bottom: 3rem; }
+    .adv-result-resources h3 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1rem; }
+    .adv-result-resources-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .adv-result-resource-link { display: block; padding: 1rem 1.2rem; background: #fff; border: 1.5px solid var(--border); border-radius: 12px; font-weight: 700; color: var(--deep); text-decoration: none; font-size: 0.95rem; transition: border-color 0.2s; }
+    .adv-result-resource-link:hover { border-color: var(--deep); }
+    .adv-result-actions { display: flex; flex-direction: column; gap: 1rem; }
+
+    /* BUTTONS */
+    .adv-btn-primary { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; display: inline-block; text-align: center; text-decoration: none; transition: all 0.2s; }
+    .adv-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .adv-btn-primary.adv-btn-big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    .adv-btn-secondary { display: inline-block; text-align: center; padding: 1.1rem 2.2rem; border-radius: 14px; border: 1.5px solid var(--deep); font-weight: 700; color: var(--deep); text-decoration: none; font-size: 1rem; }
+
+    @media (max-width: 600px) {
+      #advIntro { padding-top: 5vh; }
+      .adv-btn-primary.adv-btn-big { width: 100%; box-sizing: border-box; }
+      .adv-opt { font-size: 0.95rem; padding: 1rem 1.2rem; }
+    }
+  </style>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    import { processAdvancedDiagnosis } from '../../lib/diagnostic-personalization';
+    import { maryanResources } from '../../data/resources';
+
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+    function escapeHtml(v: unknown): string {
+      return String(v ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    const ADV_STEPS = ['adv-q1', 'adv-q2', 'adv-q3', 'adv-q4', 'adv-calc'];
+    const answers: Record<string, string> = {};
+    let currentStepIdx = 0;
+
+    function showAdvStep(id: string) {
+      document.querySelectorAll('.adv-step').forEach(s => {
+        s.classList.remove('active');
+        setTimeout(() => { if (!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
+      });
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.remove('hidden');
+        setTimeout(() => target.classList.add('active'), 50);
+      }
+      // Progress
+      const stepIdx = ADV_STEPS.indexOf(id);
+      if (stepIdx >= 0 && stepIdx < 4) {
+        document.getElementById('advStepLabel')!.textContent = `Question ${stepIdx + 1} sur 4`;
+        document.getElementById('advProgressFill')!.style.width = ((stepIdx + 1) / 4 * 100) + '%';
+      }
+    }
+
+    (window as any).advPick = (btn: HTMLButtonElement, key: string, val: string, stepIdx: number) => {
+      answers[key] = val;
+      const stepEl = btn.closest('.adv-step')!;
+      stepEl.querySelectorAll('.adv-opt').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+      currentStepIdx = stepIdx;
+
+      if (stepIdx < 4) {
+        setTimeout(() => showAdvStep(ADV_STEPS[stepIdx]), 350);
+      } else {
+        showAdvStep('adv-calc');
+        setTimeout(saveAndFinish, 1200);
+      }
+    };
+
+    document.getElementById('advPrevBtn')?.addEventListener('click', () => {
+      if (currentStepIdx > 1) {
+        currentStepIdx -= 1;
+        showAdvStep(ADV_STEPS[currentStepIdx - 1]);
+      }
+    });
+
+    async function saveAndFinish() {
+      const result = processAdvancedDiagnosis(answers);
+
+      // Persist to localStorage (update maryan_profile with advanced data)
+      try {
+        const rawProfile = localStorage.getItem('maryan_profile');
+        const existingProfile = rawProfile ? JSON.parse(rawProfile) : {};
+        localStorage.setItem('maryan_profile', JSON.stringify({
+          ...existingProfile,
+          advancedDiagnostic: {
+            situation_principale: result.situation_principale,
+            energie_principale: result.energie_principale,
+            profil_parole: result.profil_parole,
+            profil_exposition: result.profil_exposition
+          }
+        }));
+        localStorage.setItem('maryan_advanced_diag', JSON.stringify(result));
+      } catch { /* noop */ }
+
+      // Persist to Supabase
+      try {
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          await fetch('/api/profile-context', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ advancedDiagnosticState: result })
+          });
+        }
+      } catch { /* non-bloquant */ }
+
+      // Show result
+      const priorities = result.advanced_priorities;
+      const resources = result.advanced_resources
+        .map(slug => maryanResources.find(r => r.slug === slug))
+        .filter(Boolean);
+
+      const prioritiesEl = document.getElementById('advResultPriorities');
+      if (prioritiesEl && priorities.length) {
+        prioritiesEl.innerHTML = `
+          <h3>Vos priorités affinées</h3>
+          <ul>${priorities.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>
+        `;
+      }
+
+      const resourcesEl = document.getElementById('advResultResources');
+      if (resourcesEl && resources.length) {
+        resourcesEl.innerHTML = `
+          <h3>Ressources recommandées pour vous</h3>
+          <div class="adv-result-resources-list">
+            ${resources.map(r => `<a href="/ressources/${escapeHtml(r!.slug)}" class="adv-result-resource-link">${escapeHtml(r!.title)}</a>`).join('')}
+          </div>
+        `;
+      }
+
+      document.getElementById('advQuestions')!.classList.add('hidden');
+      document.getElementById('advResult')!.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // AUTH CHECK ON LOAD
+    async function init() {
+      if (!SUPABASE_URL || !SUPABASE_KEY) {
+        window.location.href = '/login?from=diagnostic-approfondi';
+        return;
+      }
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = '/login?from=diagnostic-approfondi';
+        return;
+      }
+
+      // Check if already completed
+      try {
+        const response = await fetch('/api/profile-context', {
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        });
+        if (response.ok) {
+          const data = await response.json() as { profile?: Record<string, unknown> };
+          const profile = data.profile;
+
+          // Skip Q1 if mandat_principal / role known
+          // Skip Q2 — always ask (situation of the moment)
+          // Skip taille if taille_ct known (not a question here anyway)
+
+          // If already completed advanced, prefill from localStorage
+          if (profile?.advanced_diagnostic_completed) {
+            const stored = localStorage.getItem('maryan_advanced_diag');
+            if (stored) {
+              try {
+                const prev = JSON.parse(stored) as Record<string, unknown>;
+                if (prev.situation_principale) {
+                  document.getElementById('advIntro')!.querySelector('h1')!.textContent = 'Mettre à jour votre profil.';
+                  (document.getElementById('advIntro')!.querySelector('.adv-lead') as HTMLElement).textContent = 'Votre diagnostic approfondi a déjà été complété. Vous pouvez le refaire pour mettre à jour vos recommandations.';
+                }
+              } catch { /* noop */ }
+            }
+          }
+        }
+      } catch { /* noop */ }
+
+      // Hide loader, show content
+      document.getElementById('authLoading')!.style.display = 'none';
+      document.getElementById('advContent')!.classList.remove('hidden');
+    }
+
+    document.getElementById('advStartBtn')?.addEventListener('click', () => {
+      document.getElementById('advIntro')!.classList.remove('active');
+      document.getElementById('advIntro')!.classList.add('hidden');
+      document.getElementById('advQuestions')!.classList.remove('hidden');
+      showAdvStep('adv-q1');
+    });
+
+    void init();
+  </script>
+</BaseLayout>

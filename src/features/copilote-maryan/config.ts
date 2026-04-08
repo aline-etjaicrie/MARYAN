@@ -28,6 +28,12 @@ export interface MaryanProfile {
   firstName?: string;
   commune?: string;
   source?: 'diagnostic' | 'dashboard' | 'derived';
+  advancedDiagnostic?: {
+    situation_principale?: string;
+    energie_principale?: string;
+    profil_parole?: 'aise' | 'construction' | 'stress';
+    profil_exposition?: 'faible' | 'vecu' | 'anticipation';
+  } | null;
 }
 
 export interface MaryanIntentAnalysis {
@@ -928,5 +934,16 @@ Tu tiens compte de ces éléments sans les réciter.`
 Règle : commence par cette scène, pas par le thème technique.`
     : '';
 
-  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${promptCGCT}\n\n${profileContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}`;
+  const adv = profile?.advancedDiagnostic;
+  const advancedContext = adv && (adv.situation_principale || adv.energie_principale)
+    ? `Diagnostic approfondi déclaré :
+- Situation actuelle : ${adv.situation_principale || 'non renseignée'}
+- Principal drain d'énergie : ${adv.energie_principale || 'non renseigné'}
+- Rapport à la parole publique : ${adv.profil_parole === 'aise' ? 'À l\'aise, levier actif' : adv.profil_parole === 'stress' ? 'Source de stress réel' : 'En construction'}
+- Niveau d'exposition/mise en cause : ${adv.profil_exposition === 'vecu' ? 'Situation déjà vécue' : adv.profil_exposition === 'anticipation' ? 'Anticipation d\'un risque' : 'Faible pour l\'instant'}
+
+Tu tiens compte de ces éléments déclarés pour affiner ta lecture de la situation.`
+    : '';
+
+  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${promptCGCT}\n\n${profileContext}\n\n${advancedContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}`;
 }

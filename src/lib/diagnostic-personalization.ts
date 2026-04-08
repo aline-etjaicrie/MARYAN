@@ -235,3 +235,164 @@ export function buildStoredDiagnosticEntry<T extends DiagnosticSeed>(
     recommended_slugs: recommendedSlugs
   };
 }
+
+// ── DIAGNOSTIC AVANCÉ ────────────────────────────────────────
+
+export type AdvancedDiagnosticInput = {
+  situation?: string;  // Q1 key
+  energie?: string;    // Q2 key
+  parole?: string;     // Q3 key: 'aise' | 'construction' | 'stress'
+  exposition?: string; // Q4 key: 'non' | 'vecu' | 'anticipation'
+};
+
+export type AdvancedDiagnosticResult = {
+  situation_principale: string;
+  energie_principale: string;
+  profil_parole: 'aise' | 'construction' | 'stress';
+  profil_exposition: 'faible' | 'vecu' | 'anticipation';
+  advanced_priorities: string[];
+  advanced_resources: string[];
+};
+
+const SITUATION_LABELS: Record<string, string> = {
+  pouvoir: "Je ne sais pas vraiment où j'ai du pouvoir réel",
+  conflit: "Je gère un conflit dans mon équipe ou ma majorité",
+  decision: "Je dois prendre une décision importante sous pression",
+  expose: "Je me sens exposé·e ou mis·e en cause",
+  projet_bloque: "Je porte un projet mais ça n'avance pas",
+  seul: "Je me sens seul·e dans mon mandat",
+  surcharge: "Je suis surchargé·e et je ne sais plus quoi prioriser",
+  institutionnel: "Je veux mieux comprendre mon environnement institutionnel"
+};
+
+const ENERGIE_LABELS: Record<string, string> = {
+  administration: "Les relations avec l'administration",
+  tensions_politiques: "Les tensions dans mon groupe politique",
+  sollicitations: "Les sollicitations des habitants",
+  parole_publique: "La prise de parole en public",
+  decisions_difficiles: "Les décisions difficiles à assumer",
+  charge_globale: "La charge de travail globale"
+};
+
+const SITUATION_PRIORITIES: Record<string, string[]> = {
+  pouvoir: [
+    "Cartographier où se situe votre levier réel",
+    "Clarifier ce qui relève de votre périmètre décisionnel",
+    "Reprendre l'initiative sur un dossier clé"
+  ],
+  conflit: [
+    "Sortir du conflit sans perdre le fond",
+    "Distinguer la relation et la décision",
+    "Sécuriser votre position publiquement"
+  ],
+  decision: [
+    "Structurer votre arbitrage avant d'agir",
+    "Identifier les risques invisibles",
+    "Tenir la décision une fois prise"
+  ],
+  expose: [
+    "Calibrer votre parole en situation exposée",
+    "Protéger votre position sans sur-réagir",
+    "Anticiper les scénarios de mise en cause"
+  ],
+  projet_bloque: [
+    "Dénouer le blocage sans forcer",
+    "Reformuler la commande vers l'administration",
+    "Reprendre le pilotage du dossier"
+  ],
+  seul: [
+    "Retrouver des relais fiables",
+    "Ne pas décider sous l'effet de l'isolement",
+    "Recréer une dynamique collective minimale"
+  ],
+  surcharge: [
+    "Hiérarchiser l'urgent vs l'important",
+    "Reprendre la main sur votre agenda",
+    "Déléguer sans perdre le contrôle"
+  ],
+  institutionnel: [
+    "Décrypter votre environnement institutionnel",
+    "Identifier les circuits de décision réels",
+    "Clarifier votre marge de manœuvre légale"
+  ]
+};
+
+const SITUATION_SLUGS: Record<string, string[]> = {
+  conflit: [
+    'gerer-une-tension-dans-la-majorite-ou-l-executif',
+    'seul-contre-tous-reunion',
+    'repondre-a-une-situation-sensible-sans-sur-reagir'
+  ],
+  expose: [
+    'se-positionner-sans-se-griller',
+    'reseaux-sociaux-elu-ce-quon-peut-dire',
+    'menaces-sur-elu-que-faire'
+  ],
+  projet_bloque: [
+    'cadrer-un-dossier-avant-qu-il-ne-t-echappe',
+    'administration-qui-freine',
+    'projet-bloque-sans-raison'
+  ],
+  seul: [
+    'gerer-la-fatigue-decisionnelle',
+    'etre-proche-sans-devenir-poreux-a-tout'
+  ],
+  surcharge: [
+    'prioriser-quand-tout-semble-urgent',
+    'gerer-boite-mail-elu',
+    'deleguer-sans-perdre-le-controle'
+  ]
+};
+
+const PAROLE_SLUGS: string[] = [
+  'preparer-une-prise-de-parole-delicate',
+  'prise-de-parole-reunion'
+];
+
+const EXPOSITION_SLUGS: string[] = [
+  'conflit-interets-comprendre-eviter',
+  'prise-illegale-interets-risque-concret'
+];
+
+export function processAdvancedDiagnosis(answers: AdvancedDiagnosticInput): AdvancedDiagnosticResult {
+  const slugSet = new Set<string>();
+
+  // Q1 slugs
+  const sitSlugs = answers.situation ? SITUATION_SLUGS[answers.situation] || [] : [];
+  sitSlugs.forEach(s => slugSet.add(s));
+
+  // Q3 slugs
+  if (answers.parole === 'stress') {
+    PAROLE_SLUGS.forEach(s => slugSet.add(s));
+  }
+
+  // Q4 slugs
+  if (answers.exposition === 'vecu' || answers.exposition === 'anticipation') {
+    EXPOSITION_SLUGS.forEach(s => slugSet.add(s));
+  }
+
+  const advanced_resources = [...slugSet].slice(0, 5);
+
+  const advanced_priorities: string[] = answers.situation
+    ? SITUATION_PRIORITIES[answers.situation] || []
+    : [
+        "Clarifier votre situation actuelle de mandat",
+        "Identifier votre principal levier d'action",
+        "Reprendre l'initiative sur vos priorités"
+      ];
+
+  const profil_parole: 'aise' | 'construction' | 'stress' =
+    answers.parole === 'aise' ? 'aise' : answers.parole === 'stress' ? 'stress' : 'construction';
+
+  const profil_exposition: 'faible' | 'vecu' | 'anticipation' =
+    answers.exposition === 'vecu' ? 'vecu' : answers.exposition === 'anticipation' ? 'anticipation' : 'faible';
+
+  return {
+    situation_principale: answers.situation ? (SITUATION_LABELS[answers.situation] || answers.situation) : '',
+    energie_principale: answers.energie ? (ENERGIE_LABELS[answers.energie] || answers.energie) : '',
+    profil_parole,
+    profil_exposition,
+    advanced_priorities: advanced_priorities.slice(0, 3),
+    advanced_resources
+  };
+}

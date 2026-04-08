@@ -34,12 +34,15 @@ const PROFILE_SELECT = [
   'last_diagnostic_summary',
   'profile_context',
   'profile_context_updated_at',
+  'advanced_diagnostic_completed',
+  'advanced_diagnostic_data',
   'created_at'
 ].join(', ');
 
 type ProfileContextRequestBody = {
   profile?: Record<string, unknown> | null;
   diagnosticState?: unknown;
+  advancedDiagnosticState?: Record<string, unknown> | null;
 };
 
 function json(payload: unknown, status = 200): Response {
@@ -191,6 +194,20 @@ export const POST: APIRoute = async ({ request }) => {
       };
       updates.profile_context_updated_at = nowIso;
       if (summary) updates.last_diagnostic_summary = summary;
+    }
+  }
+
+  if (body?.advancedDiagnosticState && typeof body.advancedDiagnosticState === 'object') {
+    const adv = body.advancedDiagnosticState as Record<string, unknown>;
+    // Basic sanitization — only allow known string/enum fields
+    const allowed = ['situation_principale', 'energie_principale', 'profil_parole', 'profil_exposition', 'advanced_priorities', 'advanced_resources'];
+    const sanitized: Record<string, unknown> = {};
+    for (const key of allowed) {
+      if (key in adv) sanitized[key] = adv[key];
+    }
+    if (Object.keys(sanitized).length) {
+      updates.advanced_diagnostic_completed = true;
+      updates.advanced_diagnostic_data = sanitized;
     }
   }
 
