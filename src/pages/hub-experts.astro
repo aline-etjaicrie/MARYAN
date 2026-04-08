@@ -1,375 +1,344 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import InternalHeader from '../components/InternalHeader.astro';
-import ExpertiseCard from '../components/ExpertiseCard.astro';
-import { thematicExpertises, transversalExpertises } from '../data/expertises';
 
-// Abstract avatars for experts (V3 Incarnation)
-const expertIcons = [
-  'M 12 4 L 4 20 L 20 20 Z', // Triangle
-  'M 4 4 H 20 V 20 H 4 Z',   // Square
-  'C 12 2, 2 12, 12 22, 22 12, 12 2 Z', // Circle/Diamond
-  'M 12 2 L 15 9 H 22 L 17 14 L 19 21 L 12 17 L 5 21 L 7 14 L 2 9 H 9 Z' // Star
+const expertises = [
+  {
+    icon: '⚖️',
+    title: 'Juridique & déontologie',
+    desc: 'Risques pénaux, conflits d\'intérêts, protection fonctionnelle, obligations statutaires.'
+  },
+  {
+    icon: '💰',
+    title: 'Finances publiques & budget',
+    desc: 'Lecture d\'un budget, marges de manœuvre, arbitrages financiers, dette et investissement.'
+  },
+  {
+    icon: '👥',
+    title: 'RH & management territorial',
+    desc: 'Relations avec les agents, conflits internes, management de l\'administration, situations de tension.'
+  },
+  {
+    icon: '🎤',
+    title: 'Communication & prise de parole',
+    desc: 'Gestion de crise, prise de parole publique, relations médias, communication de mandat.'
+  },
+  {
+    icon: '🏛️',
+    title: 'Gouvernance & stratégie territoriale',
+    desc: 'Conduite de projet, relations intercommunales, pilotage politique, gouvernance locale.'
+  },
+  {
+    icon: '🛡️',
+    title: 'Prévention des risques & VSS',
+    desc: 'Situations de harcèlement, VSS, signalement, posture de l\'élu face aux situations sensibles.'
+  }
+];
+
+const steps = [
+  {
+    num: '01',
+    title: 'Vous identifiez votre besoin',
+    text: 'Le copilote vous a aidé à cadrer. Vous savez ce dont vous avez besoin. Vous cherchez le bon interlocuteur.'
+  },
+  {
+    num: '02',
+    title: 'Vous êtes orienté vers le bon profil',
+    text: 'Selon votre situation, votre mandat, votre collectivité — pas un annuaire, une orientation ciblée.'
+  },
+  {
+    num: '03',
+    title: 'Vous échangez directement',
+    text: 'Conseil ponctuel, relecture, accompagnement — selon ce que l\'expert propose et ce dont vous avez besoin.'
+  }
 ];
 ---
-<BaseLayout
-  title="Le Hub d'Experts — MARYAN"
-  description="L'appui humain au cœur du dispositif. Une constellation d'experts pour éclairer vos arbitrages les plus sensibles."
->
 
+<BaseLayout
+  title="Hub experts — MARYAN"
+  description="Quand le copilote ne suffit plus. MARYAN vous oriente vers des experts du mandat local — juridique, finances, RH, communication, gouvernance."
+>
   <InternalHeader
-    label="Appui Humain & Relais"
-    title="Le Hub <span class='emphasis'>d'Experts</span> MARYAN"
-    subtitle="L'IA pour la méthode, l'expertise pour l'arbitrage. Un réseau de spécialistes du mandat local pour prendre le relais quand la situation l'exige."
+    label="Hub experts"
+    title="Quand MARYAN <span class='emphasis'>ne suffit plus</span>."
+    subtitle="Le copilote cadre, les ressources construisent. Parfois il faut un regard humain, spécialisé, sur votre situation. C'est le rôle du hub."
   />
 
-  <main class="hub-v3-main">
+  <main>
 
-    <!-- ── BANDEAU EN COURS + FORMULAIRE CANDIDATURE ── -->
-    <div class="hub-banner">
-      <div class="hub-banner-inner">
-
-        <div class="banner-statut">
-          <span class="banner-badge">En cours de constitution</span>
-          <h2 class="banner-titre">Le Hub d'Experts ouvre prochainement.</h2>
-          <p class="banner-texte">
-            Le réseau est en cours de construction. Les expertises présentées ci-dessous
-            reflètent les profils que nous recrutons. Si vous intervenez auprès des collectivités
-            et que vous voulez rejoindre MARYAN — candidatez.
-          </p>
-        </div>
-
-        <div class="banner-form-wrap" id="candidater">
-          <h3 class="form-titre">Rejoindre le réseau</h3>
-          <p class="form-sous-titre">Vous intervenez auprès des élus locaux ? Dites-nous qui vous êtes.</p>
-
-          <form id="expert-form" class="expert-form">
-            <div class="form-row">
-              <div class="form-champ">
-                <label for="expert-nom">Nom et prénom <span class="req">*</span></label>
-                <input type="text" id="expert-nom" name="nom" placeholder="Marie Dupont" required />
-              </div>
-              <div class="form-champ">
-                <label for="expert-email">Email <span class="req">*</span></label>
-                <input type="email" id="expert-email" name="email" placeholder="Adresse email" required />
-              </div>
-            </div>
-
-            <div class="form-champ">
-              <label for="expert-domaine">Domaine d'expertise principal <span class="req">*</span></label>
-              <select id="expert-domaine" name="domaine" required>
-                <option value="" disabled selected>Choisir un domaine</option>
-                <option>Fonctionnement des collectivités / exercice du mandat</option>
-                <option>Organisation du mandat et gestion du temps</option>
-                <option>Communication publique et pédagogie</option>
-                <option>Communication numérique et réseaux sociaux</option>
-                <option>Prise de parole et expression publique</option>
-                <option>Situations sensibles et gestion de crise</option>
-                <option>Urbanisme, aménagement, logement</option>
-                <option>Culture et patrimoine</option>
-                <option>Développement économique et attractivité</option>
-                <option>Insertion, solidarité et action sociale</option>
-                <option>Éducation, enfance et jeunesse</option>
-                <option>Transition écologique et cadre de vie</option>
-                <option>Finances locales et administration</option>
-                <option>Ressources humaines et management</option>
-                <option>Autre</option>
-              </select>
-            </div>
-
-            <div class="form-champ">
-              <label for="expert-linkedin">LinkedIn ou site web <span class="opt">(facultatif)</span></label>
-              <input type="url" id="expert-linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
-            </div>
-
-            <div class="form-champ">
-              <label for="expert-message">Présentez-vous en quelques lignes <span class="opt">(facultatif)</span></label>
-              <textarea id="expert-message" name="message" rows="4"
-                placeholder="Votre parcours, ce que vous apportez aux élus, vos modes d'intervention habituels…"></textarea>
-            </div>
-
-            <button type="submit" class="form-btn">Envoyer ma candidature →</button>
-            <p id="expert-feedback" class="expert-feedback" style="display:none"></p>
-          </form>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- NETWORK VISUALIZATION (ABSTRACT MATIERE) -->
-    <section class="section-v3 no-top bg-grid-reveal">
-      <div class="bg-grid-v3"></div>
-      <div class="container text-center">
-        <div class="hub-vision-box card-v3 border-neon">
-           <div class="constellation-svg">
-              <svg width="200" height="100" viewBox="0 0 200 100">
-                 <circle cx="20" cy="50" r="3" fill="var(--neon)" />
-                 <circle cx="100" cy="20" r="3" fill="var(--accent-red)" />
-                 <circle cx="100" cy="80" r="3" fill="var(--neon)" />
-                 <circle cx="180" cy="50" r="3" fill="var(--accent-red)" />
-                 <line x1="20" y1="50" x2="100" y2="20" stroke="var(--border)" stroke-width="1" />
-                 <line x1="20" y1="50" x2="100" y2="80" stroke="var(--border)" stroke-width="1" />
-                 <line x1="100" y1="20" x2="180" y2="50" stroke="var(--border)" stroke-width="1" />
-                 <line x1="100" y1="80" x2="180" y2="50" stroke="var(--border)" stroke-width="1" />
-                 <line x1="100" y1="20" x2="100" y2="80" stroke="var(--border)" stroke-dasharray="2,2" />
-              </svg>
-           </div>
-           <h3>Un réseau <span class="emphasis">hybridé</span></h3>
-           <p>
-              Prendre ses fonctions, porter une délégation technique, gérer une séquence sensible...
-              Notre réseau intervient en <em class="emphasis">complémentarité</em> de MARYAN pour proposer l'appui
-              juste : autonome, ciblé, progressif et surtout utile.
-           </p>
-           <div class="hub-stat-v3">
-              <span>+12 Experts</span>
-              <span>100% Mandats Locaux</span>
-           </div>
-        </div>
+    <!-- INTRO -->
+    <section class="section-v3">
+      <div class="container-narrow">
+        <p class="hub-intro-text">
+          Les ressources donnent le socle. Le copilote aide à formuler et cadrer.
+          Le hub prend le relais quand il faut un regard contextuel, qualifié, humain —
+          ou quand un crédit formation peut financer un accompagnement sur mesure.
+        </p>
       </div>
     </section>
 
-    <!-- TRANSVERSAL SECTION -->
-    <section class="section-v3 bg-light-ivory">
+    <!-- EXPERTISES -->
+    <section class="section-v3 bg-light">
       <div class="container">
-        <div class="section-header-v3">
-          <span class="label-v3">Mandat & Posture</span>
-          <h2>Expertises <span class="emphasis">transversales</span></h2>
-          <p class="intro-v3">Pour les enjeux communs à tous les élu·es : organisation, posture et stratégie.</p>
+        <div class="hub-section-head">
+          <span class="label-v3">Expertises</span>
+          <h2>Les domaines où un expert <span class="hub-accent">fait la différence</span>.</h2>
         </div>
-
-        <div class="hub-grid-v3">
-          {transversalExpertises.map((expertise) => (
-             <div class="expert-file-v3">
-                <ExpertiseCard expertise={expertise} />
-             </div>
+        <div class="hub-expertises-grid">
+          {expertises.map((exp) => (
+            <article class="card-v3 hub-expertise-card">
+              <span class="hub-expertise-icon">{exp.icon}</span>
+              <h3>{exp.title}</h3>
+              <p>{exp.desc}</p>
+            </article>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- THEMATIC SECTION -->
+    <!-- COMMENT ÇA MARCHE -->
     <section class="section-v3">
       <div class="container">
-        <div class="section-header-v3">
-          <span class="label-v3">Matières & Métiers</span>
-          <h2>Expertises <span class="emphasis">thématiques</span></h2>
-          <p class="intro-v3">Selon les dossiers du moment, certaines situations demandent un regard métier spécialisé.</p>
+        <div class="hub-section-head">
+          <span class="label-v3">Fonctionnement</span>
+          <h2>Simple. <span class="hub-accent">Sans engagement</span>.</h2>
         </div>
-
-        <div class="hub-grid-v3">
-          {thematicExpertises.map((expertise) => (
-             <div class="expert-file-v3">
-                <ExpertiseCard expertise={expertise} />
-             </div>
+        <div class="hub-steps-grid">
+          {steps.map((step) => (
+            <article class="card-v3 hub-step-card">
+              <span class="hub-step-num">{step.num}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
           ))}
+        </div>
+        <div class="hub-dif-encart">
+          <p>
+            Certains accompagnements sont mobilisables via le <strong>Droit Individuel à la Formation
+            des élus (DIF élu)</strong>. Renseignez-vous auprès de votre référent formation ou
+            contactez-nous pour être orienté·e.
+          </p>
+          <a
+            href="https://www.collectivites-locales.gouv.fr/finances-locales/droit-individuel-la-formation-des-elus"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hub-dif-link"
+          >En savoir plus sur le DIF élu →</a>
         </div>
       </div>
     </section>
 
-    <!-- FINAL CTA V3 (INCARNATION) -->
-    <section class="section-v3 bg-deep text-white text-center overflow-hidden">
-       <div class="glow-v3 glow-red"></div>
-       <div class="container-narrow">
-          <div class="final-hub-box">
-             <span class="label-v3">Co-construction</span>
-             <h2 class="text-white">Besoin d'un <span class="emphasis text-neon">éclairage</span> humain ?</h2>
-             <p class="intro-v3 text-white opacity-70">MARYAN qualifie votre besoin pour vous orienter vers l'expert le plus adapté à votre contexte local.</p>
-             <div class="hub-actions-v3">
-                <a href="/diagnostic" class="btn-primary-v3 big">👉 Faire mon diagnostic</a>
-                <a href="/contact" class="btn-secondary-v3 dark">Contacter directement l'équipe</a>
-             </div>
-          </div>
-       </div>
+    <!-- DEUX CTA -->
+    <section class="section-v3 bg-light">
+      <div class="container">
+        <div class="hub-cta-grid">
+          <article class="card-v3 hub-cta-card">
+            <h3>Vous avez besoin d'un appui ?</h3>
+            <p>Décrivez votre situation, on vous oriente vers le bon profil.</p>
+            <a href="/contact" class="btn-primary-v3">Faire une demande</a>
+          </article>
+          <article class="card-v3 hub-cta-card hub-cta-card--dark">
+            <h3>Vous travaillez avec des élus locaux ?</h3>
+            <p>Proposez votre expertise. On référence des profils sérieux, ancrés dans le réel du mandat.</p>
+            <a href="/contact" class="btn-secondary-v3">Proposer mon expertise</a>
+          </article>
+        </div>
+      </div>
     </section>
+
+    <!-- BANDEAU WIP -->
+    <section class="section-v3">
+      <div class="container-narrow">
+        <p class="hub-wip-text">
+          Le hub est en cours de constitution.<br />
+          Les premiers experts référencés seront disponibles prochainement.
+        </p>
+      </div>
+    </section>
+
   </main>
 </BaseLayout>
 
 <style>
-  .no-top { padding-top: 0 !important; }
-  .bg-light-ivory { background-color: #FDFBFA; }
-
-  /* ─── HUB VISION ─── */
-  .hub-vision-box {
-    max-width: 700px; margin: 0 auto; text-align: center; padding: 4rem;
-  }
-  .constellation-svg { margin-bottom: 2rem; opacity: 0.8; }
-  .hub-vision-box h3 { font-size: 2.25rem; margin-bottom: 1.5rem; }
-  .hub-vision-box p { font-size: 1.15rem; color: #54636C; line-height: 1.6; margin-bottom: 2rem; }
-  .hub-stat-v3 { display: flex; justify-content: center; gap: 3rem; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; color: var(--accent-red); border-top: 1px solid var(--border); padding-top: 2rem; }
-
-  /* ─── GRID / FILES ─── */
-  .section-header-v3 { text-align: left; margin-bottom: 4rem; max-width: 600px; }
-  .hub-grid-v3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem; }
-
-  .expert-file-v3 {
-    position: relative; transition: all 0.3s ease;
-  }
-  .expert-file-v3:hover { transform: translateY(-3px); }
-
-  .final-hub-box { padding: 4rem 0; position: relative; z-index: 2; }
-  .hub-actions-v3 { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-top: 3.5rem; }
-  .btn-secondary-v3.dark { background: transparent; color: white; border-color: rgba(255,255,255,0.2); }
-  .btn-secondary-v3.dark:hover { border-color: white; background: rgba(255,255,255,0.05); }
-
-  @media (max-width: 768px) {
-    .hub-grid-v3 { grid-template-columns: 1fr; }
-    .hub-vision-box { padding: 3rem 1.5rem; }
-    .section-header-v3 { text-align: center; }
-  }
-
-  /* ── BANDEAU + FORMULAIRE ── */
-  .hub-banner {
-    background: var(--color-surface, #f9fafb);
-    border-bottom: 1px solid var(--color-border, #e5e7eb);
-    padding: 3rem 1.5rem 3.5rem;
-  }
-  .hub-banner-inner {
-    max-width: 860px;
+  .hub-intro-text {
+    text-align: center;
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: var(--deep);
+    opacity: 0.82;
+    max-width: 54ch;
     margin: 0 auto;
+  }
+
+  .hub-section-head {
+    max-width: 46rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .hub-section-head h2 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.1;
+    margin: 0.3rem 0 0;
+  }
+
+  .hub-accent {
+    color: var(--neon);
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .hub-expertises-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: start;
-  }
-  @media (max-width: 768px) {
-    .hub-banner-inner { grid-template-columns: 1fr; gap: 2rem; }
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 
-  .banner-badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    margin-bottom: 1rem;
+  .hub-expertise-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.6rem;
   }
-  .banner-titre {
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin: 0 0 0.75rem;
-    color: var(--color-text, #111);
-    line-height: 1.3;
+
+  .hub-expertise-icon {
+    font-size: 1.6rem;
+    line-height: 1;
   }
-  .banner-texte {
+
+  .hub-expertise-card h3 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .hub-expertise-card p {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .hub-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hub-step-card {
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .hub-step-num {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--accent-red);
+  }
+
+  .hub-step-card h3 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .hub-step-card p {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .hub-dif-encart {
+    background: rgba(10, 25, 47, 0.04);
+    border: 1px solid rgba(10, 25, 47, 0.08);
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    max-width: 56rem;
+  }
+
+  .hub-dif-encart p {
+    margin: 0 0 0.6rem;
+    color: #54636c;
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+
+  .hub-dif-encart strong {
+    color: var(--deep);
+  }
+
+  .hub-dif-link {
     font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--deep);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hub-dif-link:hover {
+    color: var(--accent-red);
+  }
+
+  .hub-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .hub-cta-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hub-cta-card h3 {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .hub-cta-card p {
+    margin: 0;
+    color: #54636c;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .hub-cta-card--dark {
+    background: var(--deep);
+    border-color: var(--deep);
+  }
+
+  .hub-cta-card--dark h3 {
+    color: white;
+  }
+
+  .hub-cta-card--dark p {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .hub-wip-text {
+    text-align: center;
+    font-style: italic;
+    color: var(--deep);
+    opacity: 0.45;
     line-height: 1.7;
-    color: var(--color-text-secondary, #374151);
-    margin: 0;
+    font-size: 0.98rem;
   }
 
-  .form-titre {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin: 0 0 0.3rem;
-    color: var(--color-text, #111);
-  }
-  .form-sous-titre {
-    font-size: 0.85rem;
-    color: var(--color-muted, #6b7280);
-    margin: 0 0 1.5rem;
-  }
-
-  .expert-form { display: flex; flex-direction: column; gap: 1rem; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
-
-  .form-champ { display: flex; flex-direction: column; gap: 0.35rem; }
-  .form-champ label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-text, #111);
-  }
-  .req { color: #dc2626; }
-  .opt { font-weight: 400; color: var(--color-muted, #9ca3af); }
-
-  .form-champ input,
-  .form-champ select,
-  .form-champ textarea {
-    padding: 0.7rem 0.9rem;
-    border: 1.5px solid var(--color-border, #e5e7eb);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-family: inherit;
-    color: var(--color-text, #111);
-    background: var(--color-bg, #fff);
-    transition: border-color 0.15s;
-    resize: vertical;
-  }
-  .form-champ input:focus,
-  .form-champ select:focus,
-  .form-champ textarea:focus {
-    outline: none;
-    border-color: var(--color-accent, #1a1a1a);
-  }
-
-  .form-btn {
-    align-self: flex-start;
-    padding: 0.75rem 1.5rem;
-    background: var(--color-accent, #1a1a1a);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .form-btn:hover { opacity: 0.85; }
-  .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .expert-feedback {
-    font-size: 0.875rem;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    margin: 0;
-  }
-  .expert-feedback.ok { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-  .expert-feedback.erreur { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-</style>
-
-<script>
-  const form = document.getElementById('expert-form') as HTMLFormElement | null;
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const feedback = document.getElementById('expert-feedback') as HTMLElement;
-    const btn = form.querySelector<HTMLButtonElement>('.form-btn');
-
-    const nom = (document.getElementById('expert-nom') as HTMLInputElement).value.trim();
-    const email = (document.getElementById('expert-email') as HTMLInputElement).value.trim();
-    const domaine = (document.getElementById('expert-domaine') as HTMLSelectElement).value;
-    const linkedin = (document.getElementById('expert-linkedin') as HTMLInputElement).value.trim();
-    const message = (document.getElementById('expert-message') as HTMLTextAreaElement).value.trim();
-
-    if (btn) btn.disabled = true;
-
-    try {
-      const res = await fetch('/api/expert-candidature', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nom, email, domaine, linkedin, message })
-      });
-      const data = await res.json();
-      feedback.style.display = 'block';
-      if (res.ok) {
-        feedback.className = 'expert-feedback ok';
-        feedback.textContent = 'Candidature reçue — nous reviendrons vers vous.';
-        form.reset();
-      } else {
-        feedback.className = 'expert-feedback erreur';
-        feedback.textContent = `Erreur : ${data.error}`;
-      }
-    } catch {
-      feedback.style.display = 'block';
-      feedback.className = 'expert-feedback erreur';
-      feedback.textContent = 'Une erreur est survenue. Réessayez.';
-    } finally {
-      if (btn) btn.disabled = false;
+  @media (max-width: 900px) {
+    .hub-steps-grid {
+      grid-template-columns: 1fr;
     }
-  });
-</script>
+  }
+
+  @media (max-width: 720px) {
+    .hub-expertises-grid,
+    .hub-cta-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
