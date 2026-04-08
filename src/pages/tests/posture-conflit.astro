@@ -1,0 +1,381 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Ma posture face au conflit — MARYAN"
+  description="Comment gérez-vous vraiment les tensions dans votre mandat ? Un test pour repérer votre mode de gestion dominant et vos points de vigilance.">
+
+  <main class="diag-v1-launch">
+
+    <div id="introSection" class="diag-step-v4 active">
+      <div class="container-narrow text-center">
+        <p class="diag-kicker-v4">Test thématique · Abonné·e</p>
+        <h1 class="diag-title-v4">Ma posture face au conflit.</h1>
+        <p class="diag-lead-v4">Les tensions font partie du mandat. La vraie question, c'est comment vous les traversez. Ce test repère votre mode de gestion dominant — et ce qu'il vous coûte sans que vous le voyiez.</p>
+
+        <div class="diag-benefits-v4">
+          <div class="benefit-item">🔍 <span>Votre mode de gestion des conflits</span></div>
+          <div class="benefit-item">⚠️ <span>Les signaux d'alerte à surveiller</span></div>
+          <div class="benefit-item">🛠️ <span>Ce qui vous aiderait à mieux traverser les tensions</span></div>
+        </div>
+
+        <div class="diag-actions-v4">
+          <button class="btn-primary-v4 big" id="startBtn">Lancer le test</button>
+          <p class="diag-hint-v4">5 questions · ~3 minutes · Non obligatoire</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="questionsContainer" class="hidden">
+      <nav class="diag-nav-v4">
+        <div class="container-narrow">
+          <div class="nav-inner-v4">
+            <button class="back-link-v4" onclick="history.back()">← Retour</button>
+            <div class="stepper-v4">
+              <p id="stepLabel" class="step-label-v4">Question 1 sur 5</p>
+              <div class="progress-track-v4"><div id="progressFill" class="progress-fill-v4"></div></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-narrow questions-layout-v4">
+
+        <div class="diag-step-v4 hidden" id="q1-step">
+          <h2 class="q-label-v4">Quand une tension émerge dans votre mandat, votre premier réflexe c'est…</h2>
+          <p class="q-help-v4">Pas ce que vous voudriez faire — ce que vous faites vraiment dans les premières heures.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'reflexe','affronter',1)">L'affronter directement avant qu'elle grossisse</button>
+            <button class="opt-v4" onclick="pick(this,'reflexe','attendre',1)">Attendre de voir si ça se règle seul</button>
+            <button class="opt-v4" onclick="pick(this,'reflexe','contourner',1)">Trouver un moyen de contourner le problème</button>
+            <button class="opt-v4" onclick="pick(this,'reflexe','absorber',1)">Absorber la tension pour protéger le collectif</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q2-step">
+          <h2 class="q-label-v4">Quel type de tension vous coûte le plus d'énergie en ce moment ?</h2>
+          <p class="q-help-v4">Celle qui prend le plus de place dans votre tête, même quand vous n'êtes plus en réunion.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'type','equipe',2)">Une tension avec quelqu'un dans mon équipe ou ma majorité</button>
+            <button class="opt-v4" onclick="pick(this,'type','opposition',2)">Un affrontement avec l'opposition</button>
+            <button class="opt-v4" onclick="pick(this,'type','citoyen',2)">Une friction avec des habitant·es ou des associations</button>
+            <button class="opt-v4" onclick="pick(this,'type','interne',2)">Un conflit interne que je n'arrive pas à nommer clairement</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q3-step">
+          <h2 class="q-label-v4">Quand un conflit dure, ce que vous faites le plus souvent c'est…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'strategie','tenir',3)">Tenir votre position en espérant que l'autre cède</button>
+            <button class="opt-v4" onclick="pick(this,'strategie','negocier',3)">Chercher un compromis qui satisfasse les deux parties</button>
+            <button class="opt-v4" onclick="pick(this,'strategie','isoler',3)">Mettre la personne ou le sujet à distance pour préserver l'ensemble</button>
+            <button class="opt-v4" onclick="pick(this,'strategie','escalader',3)">Monter d'un cran pour forcer une résolution</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q4-step">
+          <h2 class="q-label-v4">Qu'est-ce qui vous indique que vous gérez mal une tension ?</h2>
+          <p class="q-help-v4">Le signe que quelque chose ne tourne pas rond dans votre façon de traverser ce moment.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'signal','rumination',4)">Je n'arrête pas d'y penser, même la nuit</button>
+            <button class="opt-v4" onclick="pick(this,'signal','evitement',4)">J'évite certaines personnes ou réunions</button>
+            <button class="opt-v4" onclick="pick(this,'signal','durcissement',4)">Je deviens plus rigide ou plus cassant·e que d'habitude</button>
+            <button class="opt-v4" onclick="pick(this,'signal','fatigue',4)">Je me sens épuisé·e sans raison apparente</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden" id="q5-step">
+          <h2 class="q-label-v4">Quand un conflit se termine, vous ressentez surtout…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'apres','soulagement',5)">Du soulagement — enfin c'est derrière moi</button>
+            <button class="opt-v4" onclick="pick(this,'apres','insatisfaction',5)">De l'insatisfaction — je n'ai pas dit tout ce que je voulais</button>
+            <button class="opt-v4" onclick="pick(this,'apres','doute',5)">Du doute — est-ce que j'ai bien géré ?</button>
+            <button class="opt-v4" onclick="pick(this,'apres','ok',5)">Peu de chose — les conflits font partie du jeu</button>
+          </div>
+        </div>
+
+        <div class="diag-step-v4 hidden text-center" id="calculating-step" style="padding: 4rem 0;">
+           <div class="loader-v4"></div>
+           <h2 class="q-label-v4">Votre profil se construit</h2>
+           <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN relie vos réflexes, votre stratégie et vos signaux d'alerte pour vous donner une lecture utile.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="resultSection" class="diag-result-v4 hidden">
+       <div class="container-narrow">
+
+          <header class="res-header-v4">
+             <span class="label-v4">Votre posture face au conflit</span>
+             <h2 id="resProfilTitle" class="res-title-v4">—</h2>
+          </header>
+
+          <div class="res-body-v4">
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">1. Comment vous traversez les tensions</h3>
+                <p id="resProfilText" class="res-text-v4"></p>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">2. Ce que ça vous apporte</h3>
+                <div class="vigilance-card-v4">
+                   <p id="resForceText"></p>
+                </div>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">3. Les signaux à surveiller</h3>
+                <ul id="resSignauxList" class="res-list-v4"></ul>
+             </section>
+
+             <section class="res-reco-v4">
+                <h3 class="section-title-v4">4. Ce qui vous aiderait vraiment</h3>
+                <p id="resAideText" class="res-text-v4" style="margin-bottom:2rem;"></p>
+                <div id="resCTA" class="res-actions-v4"></div>
+             </section>
+
+             <section class="res-email-v4" id="emailBox">
+                <h3>Recevoir votre profil</h3>
+                <p>Gardez une trace de cette lecture pour y revenir au prochain moment de tension.</p>
+                <div class="email-input-v4">
+                   <input type="email" id="emailInput" placeholder="Adresse email" />
+                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
+                </div>
+             </section>
+
+             <footer class="res-footer-v4 text-center">
+                <p>Les tensions non nommées finissent toujours par coûter plus cher.</p>
+                <a href="/tests" class="btn-link-v4">Voir les autres tests</a>
+             </footer>
+
+          </div>
+       </div>
+    </div>
+
+  </main>
+
+  <style>
+    :root { --deep: #0A192F; --neon: #ADFF2F; --red: #E63946; --bg: #F8F9FA; --border: rgba(10, 25, 47, 0.08); }
+    .diag-v1-launch { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .container-narrow { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
+    .diag-step-v4 { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .diag-step-v4.active { display: block; opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+    #introSection { padding: 8vh 0; }
+    .diag-kicker-v4 { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .diag-title-v4 { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .diag-lead-v4 { font-size: 1.25rem; line-height: 1.5; opacity: 0.8; margin-bottom: 3rem; }
+    .diag-benefits-v4 { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; text-align: left; max-width: 440px; margin-inline: auto; }
+    .benefit-item { display: flex; align-items: center; gap: 1rem; font-weight: 600; font-size: 1.1rem; }
+    .diag-hint-v4 { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+    .diag-nav-v4 { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .nav-inner-v4 { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .back-link-v4 { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .back-link-v4:hover { opacity: 1; }
+    .stepper-v4 { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .step-label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .progress-track-v4 { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .progress-fill-v4 { height: 100%; background: var(--red); width: 20%; transition: width 0.4s ease; }
+    .questions-layout-v4 { padding-bottom: 5rem; }
+    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .q-help-v4 { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+    .options-v4 { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-v4 { padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px; text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s; line-height: 1.3; }
+    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .opt-v4.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+    .diag-result-v4 { padding: 6rem 0; background: #FFFDF8; }
+    .res-title-v4 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4rem; }
+    .res-section-v4 { margin-bottom: 4rem; }
+    .section-title-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 1.5rem; }
+    .res-text-v4 { font-size: 1.2rem; line-height: 1.6; color: #333; }
+    .vigilance-card-v4 { background: #fff; border: 1.5px solid var(--deep); padding: 2.5rem; border-radius: 20px; font-size: 1.3rem; font-weight: 700; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    .res-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .res-list-v4 li { position: relative; padding-left: 2rem; font-size: 1.15rem; font-weight: 600; color: #444; }
+    .res-list-v4 li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+    .res-reco-v4 { background: var(--deep); color: #fff; padding: 4rem; border-radius: 32px; margin: 5rem 0; }
+    .res-reco-v4 .section-title-v4 { color: var(--neon); }
+    .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
+    .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
+    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
+    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
+    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
+    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
+    .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
+    .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .btn-primary-v4.big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    .btn-secondary-v4 { background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.2); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+    .btn-secondary-v4:hover { background: rgba(255,255,255,0.2); }
+    .btn-link-v4 { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; }
+    .btn-link-v4:hover { opacity: 1; }
+    .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) {
+      #introSection { padding-top: 5vh; }
+      .diag-title-v4 { font-size: 2.4rem; }
+      .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
+      .email-input-v4 { flex-direction: column; }
+      .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
+      .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; }
+    }
+  </style>
+
+  <script is:inline>
+    const state = { answers: {}, step: 0 };
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
+
+    function showStep(id) {
+       document.querySelectorAll('.diag-step-v4').forEach(s => {
+          s.classList.remove('active');
+          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
+       });
+       const target = document.getElementById(id);
+       if(target) { target.classList.remove('hidden'); setTimeout(() => target.classList.add('active'), 50); }
+       const idx = STEPS.indexOf(id.replace('-step', ''));
+       if(idx > 0 && idx < 6) {
+          document.getElementById('stepLabel').innerText = `Question ${idx} sur 5`;
+          document.getElementById('progressFill').style.width = (idx / 5) * 100 + '%';
+       }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+       document.getElementById('introSection').classList.add('hidden');
+       document.getElementById('questionsContainer').classList.remove('hidden');
+       showStep('q1-step');
+    });
+
+    window.pick = (btn, key, val, stepIdx) => {
+       state.answers[key] = val;
+       btn.closest('.diag-step-v4').querySelectorAll('.opt-v4').forEach(o => o.classList.remove('selected'));
+       btn.classList.add('selected');
+       if(stepIdx < 5) { setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350); }
+       else { showStep('calculating-step'); setTimeout(processTest, 1500); }
+    };
+
+    function processTest() {
+       const a = state.answers;
+       let score = { confrontant: 0, absorbeur: 0, contourneur: 0, evitant: 0 };
+
+       if (a.reflexe === 'affronter') score.confrontant += 3;
+       if (a.reflexe === 'attendre') score.evitant += 3;
+       if (a.reflexe === 'contourner') score.contourneur += 3;
+       if (a.reflexe === 'absorber') score.absorbeur += 3;
+       if (a.strategie === 'tenir') score.confrontant += 2;
+       if (a.strategie === 'negocier') score.absorbeur += 2;
+       if (a.strategie === 'isoler') score.contourneur += 2;
+       if (a.strategie === 'escalader') score.confrontant += 1;
+       if (a.signal === 'rumination') score.absorbeur += 2;
+       if (a.signal === 'evitement') score.evitant += 2;
+       if (a.signal === 'durcissement') score.confrontant += 2;
+       if (a.signal === 'fatigue') score.absorbeur += 1;
+       if (a.apres === 'soulagement') score.evitant += 1;
+       if (a.apres === 'insatisfaction') score.contourneur += 2;
+       if (a.apres === 'doute') score.absorbeur += 1;
+       if (a.apres === 'ok') score.confrontant += 1;
+
+       const maxProfil = Object.entries(score).sort((x,y) => y[1]-x[1])[0][0];
+
+       const profils = {
+          confrontant: {
+             title: "Le face-à-face direct.",
+             description: "Quand une tension apparaît, vous allez droit au but. Vous préférez nommer le problème, affronter la situation et forcer une résolution plutôt que de laisser quelque chose s'installer. C'est souvent efficace — mais ça peut amplifier les conflits quand la situation demandait plus de temps ou de délicatesse.",
+             force: "Vous ne laissez pas les tensions pourrir. Dans un environnement où beaucoup de choses se règlent dans les couloirs et les non-dits, votre capacité à nommer ce qui ne va pas est souvent ce qui débloque les situations.",
+             signaux: [
+                "Surveiller quand votre directivité durcit la position de l'autre plutôt que de l'ouvrir",
+                "Repérer les situations où le conflit demandait d'abord à être entendu, pas résolu",
+                "Éviter de confondre clarté et brutalité — les deux ne produisent pas les mêmes effets"
+             ],
+             aide: "Travailler le tempo : apprendre à différer d'un temps court (24h) avant d'entrer dans le conflit vous permettrait de choisir le bon moment et le bon registre, sans perdre votre capacité à aller au fond des choses."
+          },
+          absorbeur: {
+             title: "Le porteur silencieux.",
+             description: "Vous prenez sur vous. Vous gérez les tensions en les absorbant, en protégeant le collectif, en faisant tenir l'ensemble. C'est une posture généreuse — et épuisante. Elle fonctionne jusqu'à ce qu'elle ne fonctionne plus, souvent d'un coup.",
+             force: "Vous êtes un stabilisateur pour les autres. Votre capacité à contenir les tensions sans les amplifier crée un espace où les choses peuvent se calmer — ce qui est parfois exactement ce dont une équipe a besoin.",
+             signaux: [
+                "Repérer quand l'absorption devient de l'accumulation — et que la fatigue commence à filtrer dans votre comportement",
+                "Éviter de laisser des tensions non réglées s'installer parce que vous avez 'géré' à court terme",
+                "Surveiller le moment où vous devenez le seul à porter ce que tout le monde devrait partager"
+             ],
+             aide: "Identifier une ou deux tensions que vous portez seul·e en ce moment et poser la question : est-ce à moi de les porter, ou est-ce que j'ai pris ça par défaut ? Travailler à rendre visible ce que vous absorbez — pas pour vous plaindre, mais pour que les responsabilités soient mieux réparties."
+          },
+          contourneur: {
+             title: "Le stratège latéral.",
+             description: "Vous ne fuyez pas les conflits — vous les contournez. Vous trouvez les angles, les alternatives, les formulations qui permettent d'avancer sans entrer dans l'affrontement direct. C'est souvent efficace à court terme. Mais ça peut laisser des situations non réglées sur le fond.",
+             force: "Vous évitez des confrontations inutiles qui coûteraient plus qu'elles ne résoudraient. Votre capacité à trouver des voies de sortie créatives préserve des relations et des équilibres que d'autres auraient abîmés.",
+             signaux: [
+                "Repérer les situations où le contournement a seulement reporté le problème sans le résoudre",
+                "Éviter que votre stratégie soit perçue comme de l'esquive ou du manque de courage politique",
+                "Surveiller les tensions qui reviennent parce qu'elles n'ont jamais été vraiment nommées"
+             ],
+             aide: "Identifier une situation que vous avez contournée récemment et vous demander : est-ce que le fond du problème est réglé ? Dans certains cas, le seul vrai traitement est de nommer la tension directement — même si c'est inconfortable."
+          },
+          evitant: {
+             title: "L'esquiveur·se discret·e.",
+             description: "Face aux tensions, votre réflexe est d'attendre — que ça passe, que ça se règle, que le temps fasse son travail. Parfois c'est juste. Souvent, ça laisse des situations s'installer et grossir jusqu'à ce qu'elles ne puissent plus être ignorées.",
+             force: "Vous ne surréagissez pas. Là où d'autres entrent en conflit inutilement, vous laissez du temps aux situations de se stabiliser — ce qui évite des escalades qui n'avaient pas lieu d'être.",
+             signaux: [
+                "Repérer les situations où votre attente a laissé le problème s'aggraver ou se cristalliser",
+                "Éviter d'interpréter l'évitement comme de la sagesse quand c'est de l'inconfort face au conflit",
+                "Surveiller si certaines personnes ont appris qu'elles pouvaient compter sur votre silence"
+             ],
+             aide: "Commencer par identifier une tension que vous attendez de voir se résoudre seule — et poser la question honnêtement : est-ce que j'attends parce que c'est le bon timing, ou parce que j'évite ? Dans les mandats exposés, la plupart des conflits ne se règlent pas seuls."
+          }
+       };
+
+       const p = profils[maxProfil];
+
+       document.getElementById('resProfilTitle').textContent = p.title;
+       document.getElementById('resProfilText').textContent = p.description;
+       document.getElementById('resForceText').textContent = p.force;
+       document.getElementById('resSignauxList').innerHTML = p.signaux.map(s => `<li>${s}</li>`).join('');
+       document.getElementById('resAideText').textContent = p.aide;
+       document.getElementById('resCTA').innerHTML = `
+         <a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Travailler ça avec le copilote</a>
+         <a href="/tests" class="btn-secondary-v4">Voir les autres tests</a>
+         <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir mon profil</button>
+       `;
+
+       localStorage.setItem('maryan_test_conflit', JSON.stringify({ answers: a, profil: maxProfil, title: p.title, date: new Date().toLocaleDateString('fr-FR') }));
+       window.dispatchEvent(new CustomEvent('maryan:test-result', { detail: { test_slug: 'posture-conflit', level: maxProfil, score: null } }));
+       document.getElementById('questionsContainer').classList.add('hidden');
+       document.getElementById('resultSection').classList.remove('hidden');
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.submitEmail = () => {
+       const email = document.getElementById('emailInput').value.trim();
+       if(!email) return;
+       localStorage.setItem('user_email', email);
+       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre profil vous attend sur ${email}.</p>`;
+    };
+  </script>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+    const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    window.addEventListener('maryan:test-result', async (e: Event) => {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      fetch('/api/save-test-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify((e as CustomEvent).detail)
+      }).catch(() => {});
+    });
+  </script>
+
+  <script>
+    import { getCurrentSessionPlan } from '../../lib/client-plan';
+    getCurrentSessionPlan().then(({ plan }) => {
+      if (plan !== 'plus' && plan !== 'admin') {
+        window.location.href = '/offres?message=abonne';
+      }
+    });
+  </script>
+</BaseLayout>

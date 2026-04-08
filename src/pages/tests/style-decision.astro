@@ -1,0 +1,438 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Mon style de décision — MARYAN"
+  description="Découvrez comment vous décidez vraiment. Un test pour mieux vous connaître en tant qu'élu·e et ajuster votre façon d'arbitrer.">
+
+  <main class="diag-v1-launch">
+
+    <!-- 1. ÉCRAN D'ENTRÉE -->
+    <div id="introSection" class="diag-step-v4 active">
+      <div class="container-narrow text-center">
+        <p class="diag-kicker-v4">Test thématique · Abonné·e</p>
+        <h1 class="diag-title-v4">Mon style de décision.</h1>
+        <p class="diag-lead-v4">Comment décidez-vous vraiment ? Pas en théorie — en pratique, sous pression, dans le vif du mandat. Ce test vous aide à repérer votre profil décisionnel et les points à surveiller.</p>
+
+        <div class="diag-benefits-v4">
+          <div class="benefit-item">🧭 <span>Votre profil décisionnel</span></div>
+          <div class="benefit-item">⚡ <span>Vos forces et angles morts</span></div>
+          <div class="benefit-item">🎯 <span>2 ajustements concrets pour décider mieux</span></div>
+        </div>
+
+        <div class="diag-actions-v4">
+          <button class="btn-primary-v4 big" id="startBtn">Lancer le test</button>
+          <p class="diag-hint-v4">5 questions · ~3 minutes · Non obligatoire</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS WRAPPER -->
+    <div id="questionsContainer" class="hidden">
+      <!-- STEPPER & PROGRESS -->
+      <nav class="diag-nav-v4">
+        <div class="container-narrow">
+          <div class="nav-inner-v4">
+            <button class="back-link-v4" id="prevBtn" onclick="history.back()">← Retour</button>
+            <div class="stepper-v4">
+              <p id="stepLabel" class="step-label-v4">Question 1 sur 5</p>
+              <div class="progress-track-v4"><div id="progressFill" class="progress-fill-v4"></div></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-narrow questions-layout-v4">
+
+        <!-- Q1 : VITESSE -->
+        <div class="diag-step-v4 hidden" id="q1-step">
+          <h2 class="q-label-v4">Quand vous devez prendre une décision importante, votre premier réflexe c'est…</h2>
+          <p class="q-help-v4">Pensez à une décision récente, pas à ce que vous voudriez faire idéalement.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'vitesse','rapide',1)">Décider vite pour ne pas laisser la situation s'enliser</button>
+            <button class="opt-v4" onclick="pick(this,'vitesse','consulter',1)">Consulter les bonnes personnes avant de trancher</button>
+            <button class="opt-v4" onclick="pick(this,'vitesse','attendre',1)">Attendre d'avoir plus d'éléments pour être sûr·e</button>
+            <button class="opt-v4" onclick="pick(this,'vitesse','analyser',1)">Analyser les options en détail avant de bouger</button>
+          </div>
+        </div>
+
+        <!-- Q2 : PRESSION -->
+        <div class="diag-step-v4 hidden" id="q2-step">
+          <h2 class="q-label-v4">Sous pression ou dans l'urgence, vous avez tendance à…</h2>
+          <p class="q-help-v4">Pas ce que vous faites quand tout va bien — ce qui se passe quand ça chauffe.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'pression','tranche',2)">Trancher encore plus vite pour reprendre la main</button>
+            <button class="opt-v4" onclick="pick(this,'pression','fige',2)">Hésiter plus longtemps que d'habitude</button>
+            <button class="opt-v4" onclick="pick(this,'pression','adapte',2)">Vous adapter à ce qui est possible plutôt qu'à ce qui est idéal</button>
+            <button class="opt-v4" onclick="pick(this,'pression','isole',2)">Vous replier sur vous-même pour ne pas décider sous influence</button>
+          </div>
+        </div>
+
+        <!-- Q3 : CONSENSUS -->
+        <div class="diag-step-v4 hidden" id="q3-step">
+          <h2 class="q-label-v4">Quand votre entourage n'est pas d'accord avec vous, vous…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'consensus','maintiens',3)">Maintenez votre position si vous êtes convaincu·e</button>
+            <button class="opt-v4" onclick="pick(this,'consensus','ajuste',3)">Ajustez souvent votre position pour trouver un terrain commun</button>
+            <button class="opt-v4" onclick="pick(this,'consensus','reporte',3)">Reportez la décision pour laisser le temps à chacun de converger</button>
+            <button class="opt-v4" onclick="pick(this,'consensus','contourne',3)">Avancez quand même, quitte à expliquer après</button>
+          </div>
+        </div>
+
+        <!-- Q4 : REGRET -->
+        <div class="diag-step-v4 hidden" id="q4-step">
+          <h2 class="q-label-v4">Après une décision difficile, ce qui vous revient le plus souvent c'est…</h2>
+          <p class="q-help-v4">Ce qui tourne dans la tête, même quand la décision est prise.</p>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'regret','contenu',4)">Avoir bien choisi sur le fond ?</button>
+            <button class="opt-v4" onclick="pick(this,'regret','maniere',4)">Avoir bien géré la manière de l'annoncer ?</button>
+            <button class="opt-v4" onclick="pick(this,'regret','tempo',4)">Avoir agi au bon moment ?</button>
+            <button class="opt-v4" onclick="pick(this,'regret','impact',4)">Ce que les autres vont en penser ?</button>
+          </div>
+        </div>
+
+        <!-- Q5 : RISQUE -->
+        <div class="diag-step-v4 hidden" id="q5-step">
+          <h2 class="q-label-v4">Face à une décision risquée mais nécessaire, vous…</h2>
+          <div class="options-v4">
+            <button class="opt-v4" onclick="pick(this,'risque','assume',5)">L'assumez clairement, quitte à être seul·e</button>
+            <button class="opt-v4" onclick="pick(this,'risque','partage',5)">Cherchez à partager la responsabilité avec d'autres</button>
+            <button class="opt-v4" onclick="pick(this,'risque','minimise',5)">Cherchez à la rendre la moins visible possible</button>
+            <button class="opt-v4" onclick="pick(this,'risque','reencadre',5)">La recadrez pour en réduire la portée perçue</button>
+          </div>
+        </div>
+
+        <!-- TRANSITION -->
+        <div class="diag-step-v4 hidden text-center" id="calculating-step" style="padding: 4rem 0;">
+           <div class="loader-v4"></div>
+           <h2 class="q-label-v4">Votre profil se dessine</h2>
+           <p style="opacity:0.6; max-width:400px; margin: 0 auto;">MARYAN analyse votre style, vos réflexes sous pression et vos angles morts pour construire une lecture utile.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. RÉSULTAT FINAL -->
+    <div id="resultSection" class="diag-result-v4 hidden">
+       <div class="container-narrow">
+
+          <header class="res-header-v4">
+             <span class="label-v4">Votre profil décisionnel</span>
+             <h2 id="resProfilTitle" class="res-title-v4">—</h2>
+          </header>
+
+          <div class="res-body-v4">
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">1. Comment vous décidez</h3>
+                <p id="resProfilText" class="res-text-v4"></p>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">2. Votre force principale</h3>
+                <div class="vigilance-card-v4">
+                   <p id="resForceText"></p>
+                </div>
+             </section>
+
+             <section class="res-section-v4">
+                <h3 class="section-title-v4">3. Vos angles morts à surveiller</h3>
+                <ul id="resAnglesList" class="res-list-v4"></ul>
+             </section>
+
+             <section class="res-reco-v4">
+                <h3 class="section-title-v4">4. Deux ajustements pour décider mieux</h3>
+                <p id="resAjustText" class="res-text-v4" style="margin-bottom:2rem;"></p>
+                <div id="resCTA" class="res-actions-v4"></div>
+             </section>
+
+             <section class="res-email-v4" id="emailBox">
+                <h3>Recevoir votre profil</h3>
+                <p>Gardez une trace de ce profil pour y revenir, le partager avec un pair ou le comparer avec un prochain test.</p>
+                <div class="email-input-v4">
+                   <input type="email" id="emailInput" placeholder="Adresse email" />
+                   <button class="btn-primary-v4" onclick="submitEmail()">Recevoir</button>
+                </div>
+             </section>
+
+             <footer class="res-footer-v4 text-center">
+                <p>Décider seul·e, c'est souvent décider dans le flou.</p>
+                <a href="/tests" class="btn-link-v4">Voir les autres tests</a>
+             </footer>
+
+          </div>
+       </div>
+    </div>
+
+  </main>
+
+  <style>
+    :root {
+      --deep: #0A192F;
+      --neon: #ADFF2F;
+      --red: #E63946;
+      --bg: #F8F9FA;
+      --card-bg: #FFFFFF;
+      --border: rgba(10, 25, 47, 0.08);
+    }
+
+    .diag-v1-launch { background: var(--bg); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--deep); }
+    .container-narrow { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; width: 100%; box-sizing: border-box; }
+
+    .diag-step-v4 { opacity: 0; transform: translateY(10px); transition: all 0.4s ease; display: none; }
+    .diag-step-v4.active { display: block; opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+
+    #introSection { padding: 8vh 0; }
+    .diag-kicker-v4 { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; color: var(--red); margin-bottom: 1.5rem; }
+    .diag-title-v4 { font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .diag-lead-v4 { font-size: 1.25rem; line-height: 1.5; opacity: 0.8; margin-bottom: 3rem; }
+
+    .diag-benefits-v4 { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 4rem; text-align: left; max-width: 440px; margin-inline: auto; }
+    .benefit-item { display: flex; align-items: center; gap: 1rem; font-weight: 600; font-size: 1.1rem; }
+    .diag-hint-v4 { margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+
+    .diag-nav-v4 { padding: 2rem 0; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; position: sticky; top: 0; z-index: 10; }
+    .nav-inner-v4 { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .back-link-v4 { background: none; border: none; font-weight: 700; color: var(--deep); opacity: 0.4; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .back-link-v4:hover { opacity: 1; }
+    .stepper-v4 { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .step-label-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #999; letter-spacing: 0.05em; }
+    .progress-track-v4 { width: 100px; height: 4px; background: #EEE; border-radius: 99px; overflow: hidden; }
+    .progress-fill-v4 { height: 100%; background: var(--red); width: 20%; transition: width 0.4s ease; }
+
+    .questions-layout-v4 { padding-bottom: 5rem; }
+    .q-label-v4 { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.2; font-weight: 800; margin-bottom: 1rem; }
+    .q-help-v4 { font-size: 1rem; opacity: 0.6; line-height: 1.5; margin-bottom: 2.5rem; }
+
+    .options-v4 { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-v4 {
+      padding: 1.2rem 1.5rem; background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
+      text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--deep); cursor: pointer; transition: all 0.2s;
+      line-height: 1.3;
+    }
+    .opt-v4:hover { border-color: var(--deep); transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .opt-v4.selected { border-width: 2.5px; border-color: var(--deep); background: #FAFBFD; }
+
+    .diag-result-v4 { padding: 6rem 0; background: #FFFDF8; }
+    .res-title-v4 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4rem; }
+    .res-section-v4 { margin-bottom: 4rem; }
+    .section-title-v4 { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 1.5rem; }
+    .res-text-v4 { font-size: 1.2rem; line-height: 1.6; color: #333; }
+
+    .vigilance-card-v4 { background: #fff; border: 1.5px solid var(--deep); padding: 2.5rem; border-radius: 20px; font-size: 1.3rem; font-weight: 700; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+
+    .res-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    .res-list-v4 li { position: relative; padding-left: 2rem; font-size: 1.15rem; font-weight: 600; color: #444; }
+    .res-list-v4 li::before { content: "→"; position: absolute; left: 0; color: var(--red); font-weight: 800; }
+
+    .res-reco-v4 { background: var(--deep); color: #fff; padding: 4rem; border-radius: 32px; margin: 5rem 0; position: relative; overflow: hidden; }
+    .res-reco-v4 .section-title-v4 { color: var(--neon); }
+    .res-reco-v4 .res-text-v4 { color: #fff; opacity: 0.9; }
+    .res-actions-v4 { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .res-email-v4 { background: #fff; border: 1px solid #EEE; padding: 3rem; border-radius: 24px; margin-bottom: 5rem; text-align: center; }
+    .res-email-v4 h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .res-email-v4 p { opacity: 0.6; margin-bottom: 2rem; max-width: 440px; margin-inline: auto; line-height: 1.5; }
+    .email-input-v4 { display: flex; gap: 0.5rem; max-width: 480px; margin-inline: auto; }
+    .email-input-v4 input { flex: 1; padding: 1.1rem 1.4rem; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; }
+
+    .btn-primary-v4 { background: var(--deep); color: #fff; border: none; padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-block; text-align: center; text-decoration: none; }
+    .btn-primary-v4:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .btn-primary-v4.big { font-size: 1.2rem; padding: 1.4rem 3.5rem; border-radius: 18px; }
+    .btn-secondary-v4 { background: rgba(255,255,255,0.1); color: #fff; border: 1.5px solid rgba(255,255,255,0.2); padding: 1.1rem 2.2rem; border-radius: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+    .btn-secondary-v4:hover { background: rgba(255,255,255,0.2); }
+    .btn-link-v4 { font-weight: 700; color: var(--deep); text-decoration: none; opacity: 0.5; }
+    .btn-link-v4:hover { opacity: 1; }
+
+    .loader-v4 { width: 44px; height: 44px; border: 4px solid #E5E7EB; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 2rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      #introSection { padding-top: 5vh; }
+      .diag-title-v4 { font-size: 2.4rem; }
+      .diag-lead-v4 { font-size: 1.1rem; }
+      .res-reco-v4 { padding: 2.5rem 1.5rem; border-radius: 24px; margin: 3rem 0; }
+      .email-input-v4 { flex-direction: column; }
+      .btn-primary-v4.big { width: 100%; box-sizing: border-box; }
+      .opt-v4 { padding: 1rem 1.2rem; font-size: 1rem; border-radius: 14px; }
+    }
+  </style>
+
+  <script is:inline>
+    const state = { answers: {}, step: 0 };
+    const STEPS = ['intro', 'q1', 'q2', 'q3', 'q4', 'q5', 'calc'];
+
+    function showStep(id) {
+       document.querySelectorAll('.diag-step-v4').forEach(s => {
+          s.classList.remove('active');
+          setTimeout(() => { if(!s.classList.contains('active')) s.classList.add('hidden'); }, 300);
+       });
+       const target = document.getElementById(id);
+       if(target) {
+          target.classList.remove('hidden');
+          setTimeout(() => target.classList.add('active'), 50);
+       }
+       const idx = STEPS.indexOf(id.replace('-step', ''));
+       if(idx > 0 && idx < 6) {
+          document.getElementById('stepLabel').innerText = `Question ${idx} sur 5`;
+          document.getElementById('progressFill').style.width = (idx / 5) * 100 + '%';
+       }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+       document.getElementById('introSection').classList.add('hidden');
+       document.getElementById('questionsContainer').classList.remove('hidden');
+       showStep('q1-step');
+    });
+
+    window.pick = (btn, key, val, stepIdx) => {
+       state.answers[key] = val;
+       const stepEl = btn.closest('.diag-step-v4');
+       stepEl.querySelectorAll('.opt-v4').forEach(opt => opt.classList.remove('selected'));
+       btn.classList.add('selected');
+
+       if(stepIdx < 5) {
+          setTimeout(() => showStep(STEPS[stepIdx + 1] + '-step'), 350);
+       } else {
+          showStep('calculating-step');
+          setTimeout(processTest, 1500);
+       }
+    };
+
+    function processTest() {
+       const a = state.answers;
+
+       let score = { franc: 0, prudent: 0, consensuel: 0, influence: 0 };
+
+       if (a.vitesse === 'rapide') score.franc += 2;
+       if (a.vitesse === 'attendre' || a.vitesse === 'analyser') score.prudent += 2;
+       if (a.vitesse === 'consulter') score.consensuel += 2;
+
+       if (a.pression === 'tranche') score.franc += 2;
+       if (a.pression === 'fige') score.prudent += 2;
+       if (a.pression === 'adapte') score.consensuel += 1;
+       if (a.pression === 'isole') score.franc += 1;
+
+       if (a.consensus === 'maintiens') score.franc += 2;
+       if (a.consensus === 'ajuste') score.consensuel += 2;
+       if (a.consensus === 'reporte') score.prudent += 2;
+       if (a.consensus === 'contourne') score.franc += 1;
+
+       if (a.regret === 'contenu') score.prudent += 1;
+       if (a.regret === 'maniere') score.consensuel += 1;
+       if (a.regret === 'tempo') score.prudent += 1;
+       if (a.regret === 'impact') score.influence += 3;
+
+       if (a.risque === 'assume') score.franc += 2;
+       if (a.risque === 'partage') score.consensuel += 2;
+       if (a.risque === 'minimise') score.influence += 2;
+       if (a.risque === 'reencadre') score.prudent += 1;
+
+       const maxProfil = Object.entries(score).sort((a,b) => b[1]-a[1])[0][0];
+
+       const profils = {
+          franc: {
+             title: "Décideur·se franc·he.",
+             description: "Vous tranchez. C'est une vraie force dans un mandat exposé : vous ne laissez pas les situations s'enliser et vous portez vos choix clairement. Mais cette rapidité peut parfois vous précéder — décider avant d'avoir assez écouté, ou avant que les autres soient prêts à suivre.",
+             force: "Vous ne fuyez pas la décision. Dans un environnement où tout le monde hésite, cette solidité est précieuse pour tenir le cap et avancer.",
+             angles: [
+                "Vérifier que votre vitesse ne court-circuite pas les personnes qui doivent être embarquées",
+                "Prendre un temps minimal de cadrage même quand l'urgence semble évidente",
+                "Distinguer les décisions qui gagnent à être rapides de celles qui gagnent à être mûries"
+             ],
+             ajust: "Introduisez une micro-pause avant les décisions importantes : 10 minutes pour noter les objections que les autres pourraient soulever. Et après une décision difficile, prenez le temps d'expliquer le raisonnement — pas pour vous justifier, mais pour embarquer."
+          },
+          prudent: {
+             title: "Arbitre prudent·e.",
+             description: "Vous prenez le temps de comprendre avant de bouger. Votre vigilance évite des erreurs que d'autres commettent en allant trop vite. Mais cette prudence peut parfois être perçue comme de l'hésitation — ou vous coûter en réactivité dans des situations qui exigent une réponse claire et rapide.",
+             force: "Vous analysez avant d'agir. Cette rigueur vous permet de prendre des décisions plus solides, mieux argumentées, et moins souvent à défaire.",
+             angles: [
+                "Identifier les situations où attendre aggrave la situation plutôt que de la clarifier",
+                "Éviter que la recherche d'information devienne une façon d'éviter de trancher",
+                "Calibrer votre niveau d'analyse au niveau réel de la décision (tout ne mérite pas 3 jours de réflexion)"
+             ],
+             ajust: "Fixez-vous des délais de décision explicites, même courts. Et entraînez-vous à décider avec 80% de l'information plutôt que 100% — dans la plupart des situations de mandat, les 20% restants n'auraient rien changé."
+          },
+          consensuel: {
+             title: "Décideur·se consensuel·le.",
+             description: "Vous décidez avec les autres. Cette posture crée de la cohésion, réduit les frictions et produit des décisions mieux acceptées. Mais elle peut vous exposer à deux risques : diluer votre position sous la pression du groupe, ou retarder des décisions qui n'avaient pas besoin de consensus pour être prises.",
+             force: "Vous embarquez les autres dans vos décisions. Ce n'est pas seulement une posture politique — c'est une compétence rare qui améliore la mise en œuvre.",
+             angles: [
+                "Repérer quand la consultation devient une façon de reporter une décision que vous seul·e devez assumer",
+                "Savoir quand votre rôle est de décider, pas de faire converger",
+                "Tenir votre position même quand le groupe penche ailleurs, si vous êtes convaincu·e"
+             ],
+             ajust: "Avant chaque consultation, posez-vous la question : est-ce que je consulte pour décider mieux, ou pour ne pas décider seul·e ? Et identifiez les sujets sur lesquels votre position doit être non négociable — pour que votre souplesse sur le reste ait du poids."
+          },
+          influence: {
+             title: "Décideur·se sous influence.",
+             description: "Votre radar sur l'impact perçu est très actif. Vous anticipez ce que les autres vont penser, et ça peut vous rendre réactif·ve et à l'écoute — deux qualités réelles. Mais ce filtre peut aussi brouiller votre propre jugement : vous décidez parfois en fonction de ce qui sera bien reçu plutôt que de ce qui est juste.",
+             force: "Vous êtes attentif·ve aux signaux faibles et à la réception politique de vos décisions. Ça vous évite des erreurs de communication que d'autres font sans s'en rendre compte.",
+             angles: [
+                "Distinguer ce que vous pensez vraiment de ce que vous pensez que les autres veulent entendre",
+                "Éviter de reculer sur des décisions solides par peur de l'impopularité",
+                "Reprendre de la distance avec les réactions immédiates — ce qui crée du bruit au moment ne définit pas la bonne décision"
+             ],
+             ajust: "Avant de finaliser une décision, notez votre position initiale — avant de savoir ce que les autres en pensent. Comparez-la à ce que vous décidez réellement. L'écart est votre marge de progression. Et travaillez à distinguer les décisions qui méritent d'être adaptées à la réception de celles qui doivent être assumées malgré elle."
+          }
+       };
+
+       const p = profils[maxProfil];
+
+       const ctas = `
+         <a href="/copilote" class="btn-primary-v4 big" style="background:#E1FF01; color:#0B192C;">Travailler ça avec le copilote</a>
+         <a href="/tests" class="btn-secondary-v4">Voir les autres tests</a>
+         <button class="btn-link-v4" style="color:#fff; margin-top:1rem; background:none; border:none; cursor:pointer;" onclick="document.getElementById('emailBox').scrollIntoView({behavior:'smooth'})">Recevoir mon profil</button>
+       `;
+
+       document.getElementById('resProfilTitle').textContent = p.title;
+       document.getElementById('resProfilText').textContent = p.description;
+       document.getElementById('resForceText').textContent = p.force;
+       document.getElementById('resAnglesList').innerHTML = p.angles.map(a => `<li>${a}</li>`).join('');
+       document.getElementById('resAjustText').textContent = p.ajust;
+       document.getElementById('resCTA').innerHTML = ctas;
+
+       localStorage.setItem('maryan_test_decision', JSON.stringify({ answers: a, profil: maxProfil, title: p.title, date: new Date().toLocaleDateString('fr-FR') }));
+       window.dispatchEvent(new CustomEvent('maryan:test-result', { detail: { test_slug: 'style-decision', level: maxProfil, score: null } }));
+
+       document.getElementById('questionsContainer').classList.add('hidden');
+       document.getElementById('resultSection').classList.remove('hidden');
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.submitEmail = () => {
+       const email = document.getElementById('emailInput').value.trim();
+       if(!email) return;
+       localStorage.setItem('user_email', email);
+       document.getElementById('emailBox').innerHTML = `<h3 style="color:#0B192C;">✓ C'est envoyé.</h3><p>Votre profil décisionnel vous attend sur ${email}.</p>`;
+    };
+  </script>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+    const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    window.addEventListener('maryan:test-result', async (e: Event) => {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      fetch('/api/save-test-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify((e as CustomEvent).detail)
+      }).catch(() => {});
+    });
+  </script>
+
+  <script>
+    import { getCurrentSessionPlan } from '../../lib/client-plan';
+    getCurrentSessionPlan().then(({ plan }) => {
+      if (plan !== 'plus' && plan !== 'admin') {
+        window.location.href = '/offres?message=abonne';
+      }
+    });
+  </script>
+</BaseLayout>
