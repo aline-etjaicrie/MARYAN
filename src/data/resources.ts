@@ -1187,6 +1187,378 @@ export const maryanResources: MaryanResource[] = [
     ctaType: "formation_irl",
     irlPotential: true,
     priority: "haute"
+  },
+  {
+    id: "annoncer-decision-difficile",
+    title: "Annoncer une décision difficile",
+    slug: "annoncer-decision-difficile",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Comment porter une décision impopulaire sans fragiliser votre légitimité.",
+    intro: "Une décision prise ou à venir suscite incompréhension ou opposition. Ce n'est pas uniquement l'adhésion à la décision qui est en jeu, mais la perception de sa légitimité, la compréhension de ses raisons et la confiance dans celui ou celle qui décide.",
+    understand: [
+      "Ce n'est pas uniquement l'adhésion à la décision qui est en jeu.",
+      "La perception de légitimité compte autant que les raisons objectives.",
+      "Surjustifier fragilise souvent plus que cela ne protège."
+    ],
+    commonTrap: "Chercher à justifier en détail. Le message devient illisible, l'attention se perd et la décision apparaît fragile.",
+    actions: [
+      "Dire clairement le pourquoi.",
+      "Assumer la décision sans fuite.",
+      "Distinguer explication et justification.",
+      "Ouvrir un espace de discussion sans fragiliser la décision."
+    ],
+    reflex: "Assumer sans rigidité. Expliquer sans chercher à convaincre à tout prix.",
+    targetRoles: ["maire", "adjoint", "majorite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["arbitrage", "exposition"],
+    useCases: ["décision", "annonce", "communication"],
+    tags: [
+      "décision difficile",
+      "annonce",
+      "légitimité",
+      "parole",
+      "communication",
+      "impopulaire"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+  {
+    id: "decider-contexte-flou",
+    title: "Décider avec une information incomplète",
+    slug: "decider-contexte-flou",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comment sécuriser le cadre de décision quand toutes les données ne sont pas encore stabilisées.",
+    intro: "Vous devez décider alors que toutes les données ne sont pas disponibles. Le mandat implique de décider sans certitude totale. L'enjeu est moins d'avoir toutes les réponses que de sécuriser le cadre de décision.",
+    understand: [
+      "Le mandat implique de décider sans certitude totale.",
+      "Attendre d'avoir toutes les données est souvent impossible et parfois contre-productif.",
+      "Ne pas décider est aussi une décision, avec ses propres conséquences."
+    ],
+    commonTrap: "Attendre indéfiniment pour éviter l'erreur. La situation se dégrade, la décision est subie et la perte de maîtrise s'installe.",
+    actions: [
+      "Clarifier ce qui est sûr et ce qui reste incertain.",
+      "Identifier les risques principaux.",
+      "Décider par étapes si la situation le permet."
+    ],
+    reflex: "Décider avec méthode, pas avec certitude.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["arbitrage", "surcharge", "besoin_methode"],
+    useCases: ["décision", "arbitrage", "méthode"],
+    tags: [
+      "décision",
+      "contexte flou",
+      "incertitude",
+      "arbitrage",
+      "méthode",
+      "prise de décision"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+  {
+    id: "discours-premier-mois",
+    title: "Réussir son premier discours de mandat",
+    slug: "discours-premier-mois",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Les repères essentiels pour marquer les esprits sans tomber dans les pièges de la langue de bois.",
+    intro: "Le premier discours est un moment fondateur. Ce n'est pas un exercice de style, c'est un acte politique qui définit votre posture pour les années à venir.",
+    understand: [
+      "Le premier discours définit une posture pour toute la suite du mandat.",
+      "La proximité concrète parle plus que les grandes intentions.",
+      "La structure compte autant que le contenu."
+    ],
+    commonTrap: "Remercier tout le monde pendant de longues minutes avant d'entrer dans le vif. L'attention se perd et la vision reste invisible.",
+    actions: [
+      "Commencer par une image concrète ou une rencontre de terrain.",
+      "Expliquer sa conviction profonde en deux phrases simples.",
+      "Utiliser la structure Héritage / Action / Humain.",
+      "Parler sans lire, avec des fiches mots-clés."
+    ],
+    reflex: "Un discours réussi dit une vision claire, pas un programme détaillé.",
+    targetRoles: ["maire", "adjoint", "majorite"],
+    experienceLevels: ["debutant"],
+    diagnosticProfiles: ["mandat_recent", "prise_de_parole"],
+    useCases: ["discours", "premier mandat", "prise de parole"],
+    tags: [
+      "discours",
+      "premier mandat",
+      "prise de parole",
+      "mandat récent",
+      "communication",
+      "langue de bois"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+  {
+    id: "mains-dans-le-cambouis",
+    title: "Mettre les mains dans le cambouis (et y rester)",
+    slug: "mains-dans-le-cambouis",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comment cadrer un projet communal complexe sans s'y noyer, de la décision au lancement.",
+    intro: "On commence souvent un projet avec enthousiasme. On se réveille six mois plus tard avec des réunions interminables, des coûts qui explosent et une impression de subir. La méthode de cadrage permet de rester maître de l'agenda.",
+    understand: [
+      "Sans objectif mesurable et daté, un projet dérive presque toujours.",
+      "Tout projet a trois ennemis invisibles : le timing de l'opposition, le timing administratif et le timing électoral.",
+      "Le premier pas concret vaut souvent mieux qu'une étude coûteuse."
+    ],
+    commonTrap: "Lancer une étude avant d'avoir rencontré les parties prenantes directes. On perd du temps et de la crédibilité.",
+    actions: [
+      "Formuler l'objectif de manière mesurable et datée.",
+      "Identifier les trois freins invisibles avant de lancer.",
+      "Poser les trois questions décisionnelles : qui gagne quoi, que se passe-t-il si on ne fait rien, quel est le prix politique.",
+      "Faire un premier geste concret et peu coûteux avant toute chose."
+    ],
+    reflex: "Un objectif non daté n'est pas un objectif, c'est une intention.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["besoin_methode", "arbitrage", "surcharge"],
+    useCases: ["projet", "cadrage", "méthode", "pilotage"],
+    tags: [
+      "projet",
+      "cadrage",
+      "méthode",
+      "pilotage",
+      "gestion de projet",
+      "décision",
+      "priorité"
+    ],
+    ctaType: "copilote",
+    irlPotential: true,
+    priority: "moyenne"
+  },
+  {
+    id: "polemique-reseaux-sociaux",
+    title: "Gérer une polémique sur les réseaux sociaux",
+    slug: "polemique-reseaux-sociaux",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Comment sortir de la réaction immédiate et protéger votre parole institutionnelle en ligne.",
+    intro: "Une publication, une décision ou une prise de parole suscite des réactions rapides, parfois virulentes, en ligne. Dans le mandat local, l'élu est à la fois responsable politique et représentant institutionnel. Toute réponse en ligne engage donc plus qu'une simple prise de position personnelle.",
+    understand: [
+      "Ce n'est pas uniquement une critique de fond, c'est une combinaison d'exposition publique immédiate et de pression à répondre vite.",
+      "Toute réponse en ligne engage la parole institutionnelle, pas seulement la personne.",
+      "Ne pas répondre immédiatement peut être une décision politique souveraine."
+    ],
+    commonTrap: "Répondre immédiatement pour reprendre la main. Vous vous placez alors en réaction pure, à un rythme que vous ne maîtrisez pas.",
+    actions: [
+      "Prendre un temps court pour sortir de l'émotion et de la réaction de défense.",
+      "Distinguer les faits bruts des perceptions individuelles.",
+      "Décider si une réponse publique immédiate est réellement utile.",
+      "Ne pas répondre à chaque commentaire individuel."
+    ],
+    reflex: "Vous ne gérez pas les réseaux. Vous pilotez une situation politique dans laquelle votre parole a une portée institutionnelle forte.",
+    sensitiveNote: "Si le sujet est sérieux, il ne se règlera jamais uniquement en ligne. Il doit être traité dans des espaces adaptés : échange direct, réunion, travail avec les services.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["exposition", "prise_de_parole", "tension_relationnelle"],
+    useCases: ["réseaux sociaux", "polémique", "communication de crise"],
+    tags: [
+      "réseaux sociaux",
+      "polémique",
+      "communication de crise",
+      "parole",
+      "exposition",
+      "gestion de crise"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+  {
+    id: "reagir-interpellation-agressive",
+    title: "Réagir à une interpellation agressive",
+    slug: "reagir-interpellation-agressive",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Comment ne pas se laisser entraîner dans le conflit et reprendre la main sur la situation.",
+    intro: "Vous êtes interpellé·e vivement, que ce soit en public, lors d'une réunion de quartier ou sur le terrain. La tension monte. Les deux premières réactions naturelles — répondre sur le même ton ou se justifier immédiatement — sont souvent les pires.",
+    understand: [
+      "Répondre sur le même ton escalade la situation et fragilise le statut d'élu·e.",
+      "Se justifier immédiatement adopte une posture de défense qui valide l'agression.",
+      "Le silence tactique est un outil, pas une capitulation."
+    ],
+    commonTrap: "Répondre sur le même ton ou se justifier immédiatement. Ces deux réactions valident l'agression et fragilisent le statut d'élu·e.",
+    actions: [
+      "Marquer un silence tactique de quelques secondes.",
+      "Reformuler l'émotion de l'interlocuteur avant de répondre sur le fond.",
+      "Rappeler le cadre du mandat et les conditions d'un échange utile.",
+      "Proposer un rendez-vous ultérieur si la tension ne redescend pas."
+    ],
+    reflex: "Ne décidez rien sous la pression. Proposez de reprendre dans un cadre adapté.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "exposition"],
+    useCases: ["conflit", "tension", "interpellation", "terrain"],
+    tags: [
+      "interpellation",
+      "agression",
+      "conflit",
+      "tension",
+      "posture",
+      "terrain",
+      "réunion publique"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "haute"
+  },
+  {
+    id: "reperes-parole-republicains",
+    title: "10 Repères pour tenir son mandat",
+    slug: "reperes-parole-republicains",
+    pillar: "agir",
+    format: "fiche",
+    promise: "Des briques de sens pour reprendre de la hauteur et asseoir votre autorité républicaine.",
+    intro: "Quand la situation se fragmente ou que le débat devient purement émotionnel, il est nécessaire de revenir au cadre. Ces repères permettent d'asseoir la parole institutionnelle dans les moments de tension ou de polarisation.",
+    understand: [
+      "La parole républicaine s'appuie sur des valeurs fondatrices, pas uniquement sur des arguments circonstanciels.",
+      "Ces repères permettent de sortir du débat émotionnel en revenant au cadre commun.",
+      "Les grandes références républicaines ont des traductions concrètes dans le mandat local."
+    ],
+    commonTrap: "Répondre sur le fond immédiatement sans remonter au cadre commun. L'échange reste émotionnel et la légitimité n'est pas rétablie.",
+    actions: [
+      "Identifier le registre du débat avant de choisir un repère.",
+      "Traduire le repère républicain dans la situation concrète.",
+      "S'appuyer sur le cadre commun pour dépolariser le débat."
+    ],
+    reflex: "Quand le débat se polarise, revenir au cadre. La République comme socle, pas comme argument.",
+    targetRoles: ["maire", "adjoint", "majorite", "opposition"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["arbitrage", "prise_de_parole", "exposition"],
+    useCases: ["parole publique", "débat", "légitimité", "valeurs"],
+    tags: [
+      "République",
+      "laïcité",
+      "démocratie",
+      "valeurs",
+      "parole institutionnelle",
+      "références",
+      "débat"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "moyenne"
+  },
+  {
+    id: "repondre-habitant-direct",
+    title: "Répondre à une interpellation directe",
+    slug: "repondre-habitant-direct",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Comment gérer un habitant insistant ou désagréable sans se laisser déborder par l'émotion.",
+    intro: "Un habitant vous interpelle directement, parfois de manière insistante sur le terrain. Au-delà de la question technique posée, il y a souvent une attente forte de reconnaissance et de prise en compte directe.",
+    understand: [
+      "Ce qui est exprimé est souvent une attente de reconnaissance autant qu'une demande technique.",
+      "Si la personne ne se sent pas entendue, l'échange se bloque ou s'envenime.",
+      "Écouter d'abord n'est pas une faiblesse, c'est une méthode."
+    ],
+    commonTrap: "Répondre immédiatement avec une solution technique ou un argument d'autorité avant que la personne se sente entendue.",
+    actions: [
+      "Écouter le propos jusqu'au bout sans interrompre.",
+      "Reformuler calmement la problématique avant toute réponse.",
+      "Répondre dans un second temps, une fois l'écoute marquée."
+    ],
+    reflex: "Une réponse juste pour l'élu commence par une écoute réelle de l'administré.",
+    targetRoles: ["maire", "adjoint", "majorite"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["tension_relationnelle"],
+    useCases: ["habitant", "terrain", "écoute", "interpellation"],
+    tags: [
+      "habitant",
+      "terrain",
+      "interpellation",
+      "écoute",
+      "relation usager",
+      "posture"
+    ],
+    ctaType: "copilote",
+    irlPotential: false,
+    priority: "moyenne"
+  },
+  {
+    id: "reunion-publique-difficile",
+    title: "Réunion publique sous tension",
+    slug: "reunion-publique-difficile",
+    pillar: "se_proteger",
+    format: "fiche",
+    promise: "Comment tenir le cadre collectif face à des habitants hostiles ou des débordements potentiels.",
+    intro: "Dans une réunion avec des habitants où les positions sont déjà marquées, le risque de débordement est réel. Ce n'est pas uniquement un échange d'arguments. Il s'agit de reconnaissance, de légitimité et de capacité à tenir un cadre collectif.",
+    understand: [
+      "La manière de conduire la réunion compte autant que le fond.",
+      "Chercher à convaincre trop tôt empêche d'être entendu.",
+      "Une réunion publique est un espace politique dont la tenue conditionne la suite."
+    ],
+    commonTrap: "Chercher à convaincre trop tôt. Les participants n'entendent plus, la réunion bascule en confrontation et la parole perd en légitimité.",
+    actions: [
+      "Poser un cadre clair dès le début de la réunion.",
+      "Expliciter l'objectif de la réunion pour tous.",
+      "Laisser un temps d'expression avant toute réponse.",
+      "Reformuler avant de répondre."
+    ],
+    reflex: "Il ne s'agit pas de gagner la réunion. Il s'agit de permettre qu'elle tienne.",
+    targetRoles: ["maire", "adjoint", "majorite"],
+    experienceLevels: ["debutant", "intermediaire", "confirme"],
+    diagnosticProfiles: ["tension_relationnelle", "exposition"],
+    useCases: ["réunion publique", "tension", "concertation", "habitants"],
+    tags: [
+      "réunion publique",
+      "tension",
+      "conflit",
+      "habitants",
+      "cadre",
+      "concertation",
+      "légitimité"
+    ],
+    ctaType: "formation_irl",
+    irlPotential: true,
+    priority: "haute"
+  },
+  {
+    id: "travailler-services-mairie",
+    title: "Travailler avec l'administration",
+    slug: "travailler-services-mairie",
+    pillar: "comprendre",
+    format: "fiche",
+    promise: "Comment trouver le bon équilibre entre pilotage politique et expertise technique.",
+    intro: "La relation quotidienne entre l'élu et ses services est un pilier du mandat. Un équilibre entre responsabilité politique, expertise technique et fonctionnement collectif est à trouver et à tenir dans la durée.",
+    understand: [
+      "Les élu·es fixent le cap politique, les services proposent les modalités techniques.",
+      "La confusion des rôles crée des tensions et une perte d'efficacité.",
+      "Le micro-management épuise sans améliorer la qualité des décisions."
+    ],
+    commonTrap: "Confondre les rôles : intervenir trop directement dans l'exécution ou, à l'inverse, attendre des services qu'ils portent la décision politique.",
+    actions: [
+      "Clarifier les objectifs politiques dès le début.",
+      "Laisser les services proposer les solutions techniques.",
+      "Organiser des points de suivi réguliers."
+    ],
+    reflex: "Fixer le cap sans entrer dans l'exécution.",
+    targetRoles: ["maire", "adjoint", "majorite", "interco"],
+    experienceLevels: ["debutant", "intermediaire"],
+    diagnosticProfiles: ["mandat_recent", "gouvernance", "besoin_methode"],
+    useCases: ["administration", "services", "gouvernance", "pilotage"],
+    tags: [
+      "administration",
+      "services",
+      "gouvernance",
+      "pilotage",
+      "rôles",
+      "management",
+      "micro-management"
+    ],
+    ctaType: "offre_individuelle",
+    irlPotential: true,
+    priority: "haute"
   }
 ];
 
