@@ -374,7 +374,30 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     import { getCurrentSessionPlan } from '../../lib/client-plan';
     getCurrentSessionPlan().then(({ plan }) => {
       if (plan !== 'plus' && plan !== 'admin') {
-        window.location.href = '/offres?message=abonne';
+        const s = document.createElement('style');
+        s.textContent = `
+          #tests-paywall { position: fixed; inset: 0; background: #F8F9FA; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 2rem; font-family: 'Inter', system-ui, sans-serif; }
+          .tpw-box { max-width: 520px; text-align: center; }
+          .tpw-kicker { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #E63946; margin-bottom: 1.5rem; }
+          .tpw-title { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem; color: #0A192F; letter-spacing: -0.02em; }
+          .tpw-text { font-size: 1.05rem; line-height: 1.6; opacity: 0.7; color: #0A192F; margin-bottom: 2.5rem; }
+          .tpw-btn { display: inline-block; background: #0A192F; color: #fff; padding: 1.1rem 2.4rem; border-radius: 14px; font-weight: 800; font-size: 1rem; text-decoration: none; }
+          .tpw-back { display: block; font-size: 0.9rem; font-weight: 600; color: #0A192F; opacity: 0.5; text-decoration: none; margin-top: 1.2rem; }
+          .tpw-back:hover { opacity: 1; }
+        `;
+        document.head.appendChild(s);
+        const overlay = document.createElement('div');
+        overlay.id = 'tests-paywall';
+        overlay.innerHTML = `
+          <div class="tpw-box">
+            <p class="tpw-kicker">Accès abonnés</p>
+            <h2 class="tpw-title">Cette auto-évaluation est réservée aux abonnés MARYAN Plus</h2>
+            <p class="tpw-text">Les 5 auto-évaluations vous aident à mieux vous connaître en tant qu'élu·e et affinent vos recommandations personnalisées.</p>
+            <a href="/offres" class="tpw-btn">Découvrir MARYAN Plus →</a>
+            <a href="/mon-compte" class="tpw-back">← Retour au dashboard</a>
+          </div>
+        `;
+        document.body.appendChild(overlay);
       }
     });
   </script>
