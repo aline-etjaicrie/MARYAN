@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page introuvable — Maryan"
+  description="Cette page n'existe pas."
+>
+  <div class="not-found">
+    <div class="not-found-inner">
+      <span class="not-found-code">404</span>
+      <h1>Cette page n'existe pas.</h1>
+      <p>Mais votre situation, elle, est bien réelle.<br />Maryan peut vous aider à la cadrer.</p>
+      <div class="not-found-actions">
+        <a href="/" class="btn-secondary-v3 btn-outline-white">Retour à l'accueil</a>
+        <a href="/copilote" class="btn-primary-v3 btn-neon">Essayer le copilote</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .not-found {
+      background: var(--deep);
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1.5rem;
+    }
+
+    .not-found-inner {
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .not-found-code {
+      display: block;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-weight: 700;
+      font-size: clamp(6rem, 20vw, 12rem);
+      color: var(--neon);
+      line-height: 1;
+      text-transform: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .not-found-inner h1 {
+      color: white;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin: 0 0 1rem;
+    }
+
+    .not-found-inner p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      line-height: 1.65;
+      margin: 0 0 2.5rem;
+    }
+
+    .not-found-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-neon {
+      background: var(--neon);
+      color: var(--deep);
+      border-color: var(--neon);
+    }
+
+    .btn-neon:hover,
+    .btn-neon:focus-visible {
+      background: white !important;
+      border-color: white !important;
+    }
+
+    .btn-outline-white {
+      background: transparent;
+      color: white;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-outline-white:hover,
+    .btn-outline-white:focus-visible {
+      background: white !important;
+      color: var(--deep) !important;
+      border-color: white !important;
+    }
+
+    @media (max-width: 480px) {
+      .not-found-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .not-found-actions a {
+        text-align: center;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  </style>
+</BaseLayout>
