@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Layout from '../layouts/BaseLayout.astro';
 import heroScene from '../assets/maryan-hero-mandat.png';
+import hubPortraits from '../assets/hub-experts-portraits.png';
 
 const situations = [
   {
@@ -176,13 +177,25 @@ const resourceCards = [
 
     <!-- 5. HUB EXPERTS -->
     <section class="scroll-card" style="background: #0A192F;">
-      <div class="scroll-card-inner">
-        <span class="section-eyebrow eyebrow-neon">Experts &amp; formation</span>
-        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Un appui humain, quand <span class="accent-keyword">il le faut</span>.</h2>
-        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Les ressources donnent les repères. Le copilote aide à mettre les choses en mots. Le hub permet ensuite de solliciter un expert ou d'envisager un accompagnement sur mesure.</p>
-        <div class="hub-cta-group">
-          <a href="/hub-experts" class="btn-neon-stack">Trouver un expert →</a>
-          <a href="/hub-experts" class="btn-outline-white btn-secondary-v3">Proposer mon expertise</a>
+      <div class="hub-experts-layout">
+        <div class="scroll-card-inner">
+          <span class="section-eyebrow eyebrow-neon">Experts &amp; formation</span>
+          <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Un appui humain, quand <span class="accent-keyword">il le faut</span>.</h2>
+          <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Les ressources donnent les repères. Le copilote aide à mettre les choses en mots. Le hub permet ensuite de solliciter un expert ou d'envisager un accompagnement sur mesure.</p>
+          <div class="hub-cta-group">
+            <a href="/hub-experts" class="btn-neon-stack">Trouver un expert →</a>
+            <a href="/hub-experts" class="btn-outline-white btn-secondary-v3">Proposer mon expertise</a>
+          </div>
+        </div>
+        <div class="hub-experts-photo">
+          <Image
+            src={hubPortraits}
+            alt="Portraits de professionnels experts accompagnant les élus locaux."
+            class="hub-photo-img"
+            widths={[600, 900]}
+            sizes="(max-width: 768px) 100vw, 45vw"
+            quality={84}
+          />
         </div>
       </div>
     </section>
@@ -623,6 +636,33 @@ const resourceCards = [
     }
 
     /* ─── HUB EXPERTS ─── */
+    .hub-experts-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      width: 100%;
+    }
+    .hub-experts-photo {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .hub-photo-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+    @media (max-width: 768px) {
+      .hub-experts-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .hub-experts-photo {
+        order: -1;
+      }
+    }
     .hub-cta-group {
       display: flex;
       flex-wrap: wrap;
