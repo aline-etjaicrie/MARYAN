@@ -346,6 +346,12 @@ h4 em {
   display: inline-block;
   line-height: 1;
 }
+.header-logo-img {
+  display: block;
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
 .header-nav {
   display: flex;
   align-items: center;

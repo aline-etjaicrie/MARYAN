@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import { Image } from 'astro:assets';
+import logoMaryan from '../assets/logo-header-maryan.png';
 
 interface Props {
   title?: string;
@@ -35,7 +37,13 @@ const {
     <header class="site-header">
       <div class="container header-inner">
         <a href="/" class="header-logo" aria-label="Retour à l'accueil MARYAN">
-          <span class="header-logo-wordmark">MARYAN</span>
+          <Image
+            src={logoMaryan}
+            alt="MARYAN"
+            class="header-logo-img"
+            height={32}
+            loading="eager"
+          />
         </a>
         <nav class="header-nav">
           <a href="/diagnostic" class="nav-primary">Diagnostic</a>
