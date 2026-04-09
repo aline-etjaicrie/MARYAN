@@ -216,23 +216,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <a href="/copilote?mode=document" class="btn-link">Créer un document →</a>
           </div>
 
-          <!-- Dossiers -->
-          <div class="docs-folders-bar" id="docsFoldersBar">
-            <div id="docsFoldersList" class="docs-folders-list"></div>
-            <button id="docsNewFolderBtn" class="docs-new-folder-btn" type="button">+ Nouveau dossier</button>
-          </div>
-          <div id="docsNewFolderForm" class="docs-new-folder-form" style="display:none">
-            <input id="docsNewFolderInput" type="text" class="docs-folder-input" placeholder="Nom du dossier" maxlength="60" />
-            <button id="docsNewFolderSave" class="btn-mode-sm-primary" type="button">Créer</button>
-            <button id="docsNewFolderCancel" class="btn-mode-sm-outline" type="button">Annuler</button>
-          </div>
-
           <!-- Liste des documents -->
           <div id="docsListContainer" class="docs-list-container">
             <div id="docsLoading" class="docs-loading">Chargement…</div>
             <div id="docsEmpty" class="docs-empty" style="display:none">
-              <p>Aucun document dans ce dossier.</p>
-              <a href="/copilote?mode=document" class="btn-primary-v3">Créer un compte rendu ou analyser un document</a>
+              <p>Vous n'avez pas encore de documents sauvegardés.</p>
+              <a href="/copilote" class="btn-primary-v3">Créer un compte rendu ou analyser un document</a>
             </div>
             <div id="docsList" class="docs-list" style="display:none"></div>
           </div>
@@ -716,18 +705,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       });
 
       // ══════════════════════════════════════════════════
-      // MES DOCUMENTS — logique complète
+      // MES DOCUMENTS — liste plate, triée par date
       // ══════════════════════════════════════════════════
       {
-        let currentDossier: string | null = null;
-        let allDossiers: string[] = [];
         let pendingDeleteId: string | null = null;
         let currentDocContent: string = '';
 
-        const TYPE_ICONS: Record<string, string> = {
-          'compte-rendu': '🎙️',
-          'document': '📄',
-          'note': '💬'
+        const TYPE_LABELS: Record<string, string> = {
+          'compte-rendu': 'compte rendu',
+          'document': 'document',
+          'note': 'note'
         };
 
         function escDoc(s: unknown): string {
@@ -735,7 +722,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         function fmtDate(iso: string): string {
-          try { return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }); }
+          try { return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
           catch { return ''; }
         }
 
@@ -767,94 +754,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           return out.join('\n');
         }
 
-        async function loadDossiers() {
-          try {
-            const res = await fetch('/api/documents', { headers: { Authorization: `Bearer ${token}` } });
-            if (!res.ok) return;
-            const data = await res.json() as { dossiers?: string[] };
-            allDossiers = data.dossiers || [];
-            // Dossiers par défaut toujours présents
-            const defaults = ['Réunions', 'Documents', 'Notes'];
-            defaults.forEach(d => { if (!allDossiers.includes(d)) allDossiers.unshift(d); });
-            renderFolders();
-            if (!currentDossier) {
-              currentDossier = allDossiers[0] || 'Réunions';
-            }
-            loadDocuments(currentDossier);
-          } catch { /* noop */ }
-        }
-
-        function renderFolders() {
-          const list = document.getElementById('docsFoldersList')!;
-          list.innerHTML = allDossiers.map(d => `
-            <span class="docs-folder-chip${currentDossier === d ? ' docs-folder-btn--active' : ''}" data-folder="${escDoc(d)}">
-              <button class="docs-folder-btn${currentDossier === d ? ' docs-folder-btn--active' : ''}"
-                data-folder-select="${escDoc(d)}" type="button" title="Clic : sélectionner · Double-clic : renommer">
-                ${escDoc(d)}
-              </button>
-            </span>
-          `).join('');
-
-          // Sélectionner dossier
-          list.querySelectorAll('[data-folder-select]').forEach(btn => {
-            btn.addEventListener('click', () => {
-              currentDossier = btn.getAttribute('data-folder-select');
-              renderFolders();
-              loadDocuments(currentDossier!);
-              closePanelIfOpen();
-            });
-
-            // Double-clic → renommer
-            btn.addEventListener('dblclick', (e) => {
-              e.stopPropagation();
-              const folderName = btn.getAttribute('data-folder-select')!;
-              const chip = btn.closest('[data-folder]') as HTMLElement;
-              const input = document.createElement('input');
-              input.type = 'text';
-              input.value = folderName;
-              input.className = 'docs-folder-rename-input';
-              input.maxLength = 60;
-              chip.innerHTML = '';
-              chip.appendChild(input);
-              input.focus();
-              input.select();
-
-              async function commitRename() {
-                const newName = input.value.trim();
-                if (!newName || newName === folderName) {
-                  renderFolders();
-                  return;
-                }
-                try {
-                  const res = await fetch('/api/documents', {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                    body: JSON.stringify({ rename_folder: { from: folderName, to: newName } })
-                  });
-                  if (res.ok) {
-                    const idx = allDossiers.indexOf(folderName);
-                    if (idx !== -1) allDossiers[idx] = newName;
-                    if (currentDossier === folderName) currentDossier = newName;
-                    renderFolders();
-                    loadDocuments(currentDossier!);
-                  } else {
-                    renderFolders();
-                  }
-                } catch {
-                  renderFolders();
-                }
-              }
-
-              input.addEventListener('blur', commitRename);
-              input.addEventListener('keydown', (ev: KeyboardEvent) => {
-                if (ev.key === 'Enter') { input.blur(); }
-                if (ev.key === 'Escape') { input.value = folderName; input.blur(); }
-              });
-            });
-          });
-        }
-
-        async function loadDocuments(dossier: string) {
+        async function loadDocuments() {
           const loadingEl = document.getElementById('docsLoading')!;
           const emptyEl = document.getElementById('docsEmpty')!;
           const listEl = document.getElementById('docsList')!;
@@ -863,12 +763,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           listEl.style.display = 'none';
 
           try {
-            const res = await fetch(`/api/documents?dossier=${encodeURIComponent(dossier)}`, {
+            const res = await fetch('/api/documents', {
               headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) throw new Error();
             const data = await res.json() as { documents?: any[] };
-            const docs = data.documents || [];
+            const docs = (data.documents || []).sort(
+              (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
             loadingEl.style.display = 'none';
             if (!docs.length) {
               emptyEl.style.display = 'block';
@@ -888,45 +790,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           listEl.innerHTML = docs.map(doc => `
             <div class="docs-item" data-doc-id="${escDoc(doc.id)}">
               <div class="docs-item-main">
-                <span class="docs-item-icon">${escDoc(TYPE_ICONS[doc.type] || '📄')}</span>
                 <div class="docs-item-info">
                   <span class="docs-item-title" data-read-doc="${escDoc(doc.id)}">${escDoc(doc.titre)}</span>
-                  <span class="docs-item-meta">${fmtDate(doc.created_at)}</span>
+                  <span class="docs-item-meta">
+                    <span class="docs-item-type-label">${escDoc(TYPE_LABELS[doc.type] || doc.type)}</span>
+                    · ${fmtDate(doc.created_at)}
+                  </span>
                 </div>
               </div>
               <div class="docs-item-actions">
-                <select class="docs-move-select" data-move-doc="${escDoc(doc.id)}" title="Déplacer vers">
-                  <option value="">Déplacer…</option>
-                  ${allDossiers.filter(d => d !== currentDossier).map(d => `<option value="${escDoc(d)}">${escDoc(d)}</option>`).join('')}
-                </select>
+                <button class="docs-copy-btn" data-copy-doc="${escDoc(doc.id)}" type="button">Copier</button>
                 <button class="docs-delete-btn" data-delete-doc="${escDoc(doc.id)}" type="button" title="Supprimer">🗑</button>
               </div>
             </div>
           `).join('');
 
-          // Read doc
+          // Read doc (clic sur le titre)
           listEl.querySelectorAll('[data-read-doc]').forEach(el => {
             el.addEventListener('click', () => openDoc(el.getAttribute('data-read-doc')!));
           });
 
-          // Move doc
-          listEl.querySelectorAll('[data-move-doc]').forEach(sel => {
-            sel.addEventListener('change', async () => {
-              const docId = sel.getAttribute('data-move-doc')!;
-              const newDossier = (sel as HTMLSelectElement).value;
-              if (!newDossier) return;
+          // Copier le contenu du document
+          listEl.querySelectorAll('[data-copy-doc]').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              e.stopPropagation();
+              const docId = btn.getAttribute('data-copy-doc')!;
               try {
-                await fetch('/api/documents', {
-                  method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify({ id: docId, dossier: newDossier })
-                });
-                loadDocuments(currentDossier!);
+                const res = await fetch(`/api/documents?id=${docId}`, { headers: { Authorization: `Bearer ${token}` } });
+                if (!res.ok) return;
+                const data = await res.json() as { document?: any };
+                const content = data.document?.contenu || '';
+                await navigator.clipboard.writeText(content);
+                (btn as HTMLButtonElement).textContent = '✓ Copié';
+                setTimeout(() => { (btn as HTMLButtonElement).textContent = 'Copier'; }, 2000);
               } catch { /* noop */ }
             });
           });
 
-          // Delete doc
+          // Supprimer
           listEl.querySelectorAll('[data-delete-doc]').forEach(btn => {
             btn.addEventListener('click', () => {
               pendingDeleteId = btn.getAttribute('data-delete-doc');
@@ -944,7 +845,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             if (!doc) return;
             currentDocContent = doc.contenu || '';
             document.getElementById('docsPanelTitle')!.textContent = doc.titre || 'Document';
-            document.getElementById('docsPanelType')!.textContent = (TYPE_ICONS[doc.type] || '📄') + ' ' + doc.type;
+            document.getElementById('docsPanelType')!.textContent = TYPE_LABELS[doc.type] || doc.type;
             document.getElementById('docsPanelDate')!.textContent = fmtDate(doc.created_at);
             document.getElementById('docsPanelContent')!.innerHTML = renderDocMarkdown(currentDocContent);
             document.getElementById('docsListContainer')!.style.display = 'none';
@@ -967,31 +868,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           });
         });
 
-        // New folder
-        document.getElementById('docsNewFolderBtn')?.addEventListener('click', () => {
-          document.getElementById('docsNewFolderForm')!.style.display = 'flex';
-          (document.getElementById('docsNewFolderInput') as HTMLInputElement).focus();
-        });
-
-        document.getElementById('docsNewFolderCancel')?.addEventListener('click', () => {
-          document.getElementById('docsNewFolderForm')!.style.display = 'none';
-          (document.getElementById('docsNewFolderInput') as HTMLInputElement).value = '';
-        });
-
-        document.getElementById('docsNewFolderSave')?.addEventListener('click', () => {
-          const input = document.getElementById('docsNewFolderInput') as HTMLInputElement;
-          const name = input.value.trim();
-          if (!name) return;
-          if (!allDossiers.includes(name)) {
-            allDossiers.push(name);
-            currentDossier = name;
-            renderFolders();
-            loadDocuments(name);
-          }
-          document.getElementById('docsNewFolderForm')!.style.display = 'none';
-          input.value = '';
-        });
-
         // Delete modal
         document.getElementById('docsDeleteConfirm')?.addEventListener('click', async () => {
           if (!pendingDeleteId) return;
@@ -1003,7 +879,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
               body: JSON.stringify({ id: pendingDeleteId })
             });
-            loadDocuments(currentDossier!);
+            loadDocuments();
           } catch { /* noop */ }
           pendingDeleteId = null;
         });
@@ -1014,7 +890,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         });
 
         // Init
-        loadDossiers();
+        loadDocuments();
       }
 
       document.getElementById('logoutBtn')?.addEventListener('click', async () => {
@@ -1746,6 +1622,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-weight: 600;
   }
 
+  .docs-item-type-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(10, 25, 47, 0.4);
+  }
+
   .docs-item-actions {
     display: flex;
     align-items: center;
@@ -1753,18 +1638,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     flex-shrink: 0;
   }
 
-  .docs-move-select {
-    border: 1px solid rgba(10, 25, 47, 0.12);
+  .docs-copy-btn {
+    appearance: none;
+    border: 1px solid rgba(10, 25, 47, 0.15);
     border-radius: 6px;
-    padding: 0.3rem 0.6rem;
+    background: transparent;
+    cursor: pointer;
     font: inherit;
     font-size: 0.8rem;
+    font-weight: 600;
     color: rgba(10, 25, 47, 0.55);
-    background: white;
-    cursor: pointer;
-    outline: none;
-    max-width: 130px;
+    padding: 0.25rem 0.65rem;
+    transition: border-color 0.15s, color 0.15s;
   }
+
+  .docs-copy-btn:hover { border-color: var(--deep); color: var(--deep); }
 
   .docs-delete-btn {
     appearance: none;
