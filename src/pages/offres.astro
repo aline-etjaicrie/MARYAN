@@ -202,7 +202,11 @@ const easyToMobilizeItems = [
               <ul class="plan-list">
                 {plan.features.map((feature) => <li>{feature}</li>)}
               </ul>
-              <a href={plan.checkoutUrl} class:list={[‘w-full’, plan.featured ? ‘btn-primary-v3 btn-neon’ : ‘btn-secondary-v3’]}>
+              <a
+                href={plan.checkoutUrl}
+                data-checkout-url={plan.checkoutUrl}
+                class:list={[‘w-full’, ‘checkout-link’, plan.featured ? ‘btn-primary-v3 btn-neon’ : ‘btn-secondary-v3’]}
+              >
                 {plan.cta}
               </a>
             </article>
@@ -414,6 +418,31 @@ const easyToMobilizeItems = [
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  document.querySelectorAll<HTMLAnchorElement>('.checkout-link').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const checkoutUrl = link.getAttribute('data-checkout-url');
+      if (!checkoutUrl) return;
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = '/login?redirect=/offres';
+        return;
+      }
+
+      window.open(checkoutUrl, '_blank');
+    });
+  });
+</script>
 
 <style>
   .offres-page {
