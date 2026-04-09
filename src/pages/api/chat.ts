@@ -19,6 +19,7 @@ interface CopilotRequestBody {
   messages?: CopilotMessage[];
   mode?: MaryanSituationMode | string;
   message?: string;
+  _overrideSystemPrompt?: string;
 }
 
 interface SuggestedResource {
@@ -80,21 +81,25 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const isAgentMode = !!agentId;
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
-    const baseMessages = isAgentMode
-      ? [
-          {
-            role: 'user' as const,
-            content: buildAgentPrimingMessage(profile, body?.mode, latestUserMessage)
-          },
-          ...messages
-        ]
-      : [
-          {
-            role: 'system' as const,
-            content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage)
-          },
-          ...messages
-        ];
+    const overrideSystemPrompt = body?._overrideSystemPrompt || null;
+
+    const baseMessages = overrideSystemPrompt
+      ? [{ role: 'system' as const, content: overrideSystemPrompt }, ...messages]
+      : isAgentMode
+        ? [
+            {
+              role: 'user' as const,
+              content: buildAgentPrimingMessage(profile, body?.mode, latestUserMessage)
+            },
+            ...messages
+          ]
+        : [
+            {
+              role: 'system' as const,
+              content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage)
+            },
+            ...messages
+          ];
 
     const basePayload = isAgentMode
       ? {
