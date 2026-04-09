@@ -241,7 +241,7 @@ const resourceCards = [
     </section>
 
     <!-- 8. EXPLORER AUSSI -->
-    <section class="scroll-card light" style="background: #FDFBF8; align-items: flex-start; padding-top: 80px;">
+    <section class="scroll-card light" style="background: #FDFBF8; align-items: flex-start; padding-top: 80px; padding-bottom: 60px;">
       <div style="width: 100%;">
         <span class="section-eyebrow eyebrow-dark" style="margin-bottom: 32px; font-size: 1rem; letter-spacing: 0.1em;">Explorer aussi</span>
         <div class="grid-4">
@@ -249,29 +249,15 @@ const resourceCards = [
             <span class="mini-card-accent" style="background: #C6FF4D;"></span>
             <span class="mini-card-label">Les mots</span>
             <strong class="mini-card-title">La langue politique, traduite.</strong>
-            <p class="mini-card-body">Un glossaire vivant, construit avec les élu·e·s, pour nommer ce qui se passe vraiment.</p>
-            <a href="/mots" class="mini-card-link">Explorer →</a>
+            <p class="mini-card-body">La langue institutionnelle est un outil d'exclusion autant qu'un outil de gouvernance. DGF, délibération, mandat impératif, pouvoir de police — MARYAN construit un glossaire vivant, avec les élu·e·s, pour nommer ce qui se passe vraiment.</p>
+            <a href="/mots" class="mini-card-link">Explorer le glossaire →</a>
           </div>
           <div class="mini-card">
             <span class="mini-card-accent" style="background: #E43644;"></span>
             <span class="mini-card-label">À propos</span>
             <strong class="mini-card-title">Un outil engagé, pas partisan.</strong>
-            <p class="mini-card-body">Né d'un constat simple sur le mandat local et ceux qui l'exercent chaque soir.</p>
+            <p class="mini-card-body">MARYAN est né d'un constat simple : entre la formation et l'exercice quotidien du mandat, il manque quelque chose. Un appui plus immédiat, plus lisible, plus ajusté à la réalité de ceux qui tiennent un conseil municipal un mardi soir.</p>
             <a href="/a-propos" class="mini-card-link">Lire →</a>
-          </div>
-          <div class="mini-card">
-            <span class="mini-card-accent" style="background: #C6FF4D;"></span>
-            <span class="mini-card-label">Tests</span>
-            <strong class="mini-card-title">Quelle est votre posture d'élu·e ?</strong>
-            <p class="mini-card-body">5 auto-évaluations pour mieux vous situer dans votre mandat.</p>
-            <a href="/tests" class="mini-card-link">Faire un test →</a>
-          </div>
-          <div class="mini-card">
-            <span class="mini-card-accent" style="background: #E43644;"></span>
-            <span class="mini-card-label">Hub experts</span>
-            <strong class="mini-card-title">Quand MARYAN ne suffit plus.</strong>
-            <p class="mini-card-body">Un regard humain, qualifié, contextuel — ou un accompagnement sur mesure.</p>
-            <a href="/hub-experts" class="mini-card-link">Trouver un expert →</a>
           </div>
         </div>
       </div>
@@ -363,7 +349,7 @@ const resourceCards = [
     /* ─── GRILLE EXPLORER ─── */
     .grid-4 {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
 
@@ -372,7 +358,8 @@ const resourceCards = [
       background: #fff;
       border: 0.5px solid rgba(10,25,47,0.1);
       border-radius: 12px;
-      padding: 20px;
+      padding: 20px 20px 20px;
+      padding-bottom: 20px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -860,7 +847,7 @@ const resourceCards = [
     }
 
     @media (max-width: 768px) {
-      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-4 { grid-template-columns: 1fr; }
       .scroll-card { padding: 60px 6%; min-height: auto; }
 
       /* Hub Experts mobile */
@@ -977,8 +964,5 @@ const resourceCards = [
       }
     }
 
-    @media (max-width: 480px) {
-      .grid-4 { grid-template-columns: 1fr; }
-    }
   </style>
 </Layout>
