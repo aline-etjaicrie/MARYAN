@@ -75,6 +75,17 @@ span.emphasis, em {
   text-transform: none;
 }
 
+/* Ne pas appliquer le style éditorial aux em générés par le markdown dans les bulles du copilote */
+.msg-bubble em,
+.result-markdown em {
+  font-family: inherit;
+  font-style: italic;
+  font-weight: inherit;
+  display: inline;
+  color: inherit;
+  text-transform: inherit;
+}
+
 h1 .emphasis,
 h2 .emphasis,
 h3 .emphasis,
