@@ -75,20 +75,18 @@ const resourceCards = [
 
   <!-- 1. HERO -->
   <section class="home-hero">
-    <!-- Photo fond droit -->
-    <div class="hero-image">
-      <Image
-        src={heroScene}
-        alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
-        class="hero-photo"
-        widths={[720, 960, 1280]}
-        sizes="(max-width: 768px) 100vw, 60vw"
-        quality={84}
-        loading="eager"
-        fetchpriority="high"
-      />
-    </div>
-    <!-- Dégradé gauche → transparent -->
+    <!-- Photo plein fond -->
+    <Image
+      src={heroScene}
+      alt="Écharpe tricolore, carnet, lunettes et smartphone posés sur une table de travail."
+      class="hero-photo"
+      widths={[720, 960, 1280]}
+      sizes="100vw"
+      quality={84}
+      loading="eager"
+      fetchpriority="high"
+    />
+    <!-- Dégradé par-dessus -->
     <div class="hero-gradient"></div>
     <!-- Contenu texte -->
     <div class="container">
@@ -181,77 +179,53 @@ const resourceCards = [
     </section>
 
     <!-- 5. HUB EXPERTS -->
-    <section class="scroll-card hub-card" style="background: #0A192F;">
-      <!-- Photo fond gauche -->
-      <div class="hub-image">
-        <Image
-          src={hubPortraits}
-          alt="Portraits de professionnels experts accompagnant les élus locaux."
-          class="hub-photo"
-          widths={[600, 900, 1200]}
-          sizes="(max-width: 768px) 100vw, 55vw"
-          quality={84}
-        />
-      </div>
-      <!-- Dégradé droite → transparent -->
-      <div class="hub-gradient"></div>
-      <!-- Texte à droite -->
-      <div class="hub-content">
-        <span class="section-eyebrow eyebrow-neon">Experts &amp; formation</span>
-        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Un appui humain, quand <span class="accent-keyword">il le faut</span>.</h2>
-        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Les ressources donnent les repères. Le copilote aide à mettre les choses en mots. Le hub permet ensuite de solliciter un expert ou d'envisager un accompagnement sur mesure.</p>
-        <div class="hub-cta-group">
-          <a href="/hub-experts" class="btn-neon-stack">Trouver un expert →</a>
-          <a href="/hub-experts" class="btn-outline-white btn-secondary-v3">Proposer mon expertise</a>
+    <section class="scroll-card" style="background: #0A192F;">
+      <div class="scroll-card-split">
+        <div class="scroll-card-img-wrap">
+          <Image src={hubPortraits} alt="Portraits de professionnels experts." class="scroll-card-image" widths={[400, 700]} sizes="(max-width: 768px) 0vw, 42vw" quality={84} />
+          <div class="scroll-card-img-overlay" style="--ov: #0A192F;"></div>
+        </div>
+        <div class="scroll-card-inner">
+          <span class="section-eyebrow eyebrow-neon">Experts &amp; formation</span>
+          <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Un appui humain, quand <span class="accent-keyword">il le faut</span>.</h2>
+          <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Les ressources donnent les repères. Le copilote aide à mettre les choses en mots. Le hub permet ensuite de solliciter un expert ou d'envisager un accompagnement sur mesure.</p>
+          <div class="hub-cta-group">
+            <a href="/hub-experts" class="btn-neon-stack">Trouver un expert →</a>
+            <a href="/hub-experts" class="btn-outline-white btn-secondary-v3">Proposer mon expertise</a>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- 6. DROITS & DEVOIRS -->
-    <section class="scroll-card light droits-card" style="background: #F4F4F0;">
-      <!-- Photo fond gauche -->
-      <div class="droits-image">
-        <Image
-          src={droitsImg}
-          alt="Documents administratifs et enveloppe officielle."
-          class="droits-photo"
-          widths={[600, 900, 1200]}
-          sizes="(max-width: 768px) 100vw, 55vw"
-          quality={84}
-        />
-      </div>
-      <!-- Dégradé droite → transparent -->
-      <div class="droits-gradient"></div>
-      <!-- Texte à droite -->
-      <div class="droits-content">
-        <span class="section-eyebrow eyebrow-dark">Droits &amp; devoirs</span>
-        <h2 style="color: #0A192F; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Vous avez plus de <span class="accent-keyword">pouvoir</span> que vous ne le pensez.</h2>
-        <p style="color: rgba(10,25,47,0.6); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Formation, protection fonctionnelle, droit d'alerte, indemnités — la loi vous protège. Encore faut-il le savoir, et savoir s'en saisir. MARYAN vous aide à connaître le cadre exact dans lequel vous exercez votre mandat.</p>
-        <a href="/droits" class="btn-dark-stack">Lire les droits &amp; devoirs →</a>
+    <section class="scroll-card light" style="background: #F4F4F0;">
+      <div class="scroll-card-split">
+        <div class="scroll-card-inner">
+          <span class="section-eyebrow eyebrow-dark">Droits &amp; devoirs</span>
+          <h2 style="color: #0A192F; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Vous avez plus de <span class="accent-keyword">pouvoir</span> que vous ne le pensez.</h2>
+          <p style="color: rgba(10,25,47,0.6); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Formation, protection fonctionnelle, droit d'alerte, indemnités — la loi vous protège. Encore faut-il le savoir, et savoir s'en saisir. MARYAN vous aide à connaître le cadre exact dans lequel vous exercez votre mandat.</p>
+          <a href="/droits" class="btn-dark-stack">Lire les droits &amp; devoirs →</a>
+        </div>
+        <div class="scroll-card-img-wrap">
+          <Image src={droitsImg} alt="Documents administratifs et enveloppe officielle." class="scroll-card-image" widths={[400, 700]} sizes="(max-width: 768px) 0vw, 42vw" quality={84} />
+          <div class="scroll-card-img-overlay" style="--ov: #F4F4F0;"></div>
+        </div>
       </div>
     </section>
 
     <!-- 7. DÉCRYPTAGE -->
-    <section class="scroll-card dec-card" style="background: #0A192F;">
-      <!-- Photo fond gauche -->
-      <div class="dec-image">
-        <Image
-          src={decryptageImg}
-          alt="Espace de travail politique et médiatique."
-          class="dec-photo"
-          widths={[600, 900, 1200]}
-          sizes="(max-width: 768px) 100vw, 45vw"
-          quality={84}
-        />
-      </div>
-      <!-- Dégradé droite → transparent -->
-      <div class="dec-gradient"></div>
-      <!-- Texte à droite -->
-      <div class="dec-content">
-        <span class="section-eyebrow eyebrow-neon">Décryptage</span>
-        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
-        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
-        <a href="/blog" class="btn-neon-stack">Lire les articles →</a>
+    <section class="scroll-card" style="background: #0A192F;">
+      <div class="scroll-card-split">
+        <div class="scroll-card-img-wrap">
+          <Image src={decryptageImg} alt="Espace de travail politique et médiatique." class="scroll-card-image" widths={[400, 700]} sizes="(max-width: 768px) 0vw, 42vw" quality={84} />
+          <div class="scroll-card-img-overlay" style="--ov: #0A192F;"></div>
+        </div>
+        <div class="scroll-card-inner">
+          <span class="section-eyebrow eyebrow-neon">Décryptage</span>
+          <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
+          <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
+          <a href="/blog" class="btn-neon-stack">Lire les articles →</a>
+        </div>
       </div>
     </section>
 
@@ -459,10 +433,6 @@ const resourceCards = [
     }
 
     /* ─── ANIMATIONS ─── */
-    @keyframes heroImageIn {
-      from { opacity: 0; transform: translateX(32px) rotate(1.5deg); }
-      to   { opacity: 1; transform: translateX(0)    rotate(1.5deg); }
-    }
     @keyframes heroTextIn {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -479,37 +449,27 @@ const resourceCards = [
       overflow: hidden;
     }
 
-    /* Photo fond droit */
-    .hero-image {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 50%;
-      height: 100%;
-      transform-origin: top right;
-      transform: rotate(1.5deg);
-      box-shadow: -12px 16px 48px rgba(0, 0, 0, 0.35);
-      animation: heroImageIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      animation-delay: 0.2s;
-      opacity: 0;
-    }
-
+    /* Photo plein fond */
     .hero-photo {
-      display: block;
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       object-fit: cover;
       object-position: 54% 52%;
+      z-index: 0;
     }
 
     /* Dégradé */
     .hero-gradient {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 70%;
-      height: 100%;
-      background: linear-gradient(to right, #0A192F 55%, transparent 100%);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(
+        to right,
+        #0A192F 45%,
+        rgba(10,25,47,0.7) 65%,
+        rgba(10,25,47,0.1) 100%
+      );
       z-index: 1;
     }
 
@@ -702,53 +662,34 @@ const resourceCards = [
       justify-content: center;
     }
 
-    /* ─── HUB EXPERTS ─── */
-    @keyframes hubImageIn {
-      from { opacity: 0; transform: translateX(-32px) rotate(-1.5deg); }
-      to   { opacity: 1; transform: translateX(0)     rotate(-1.5deg); }
-    }
-
-    .hub-card {
-      position: relative;
-      padding: 80px 5vw;
-    }
-
-    .hub-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 45%;
-      height: 100%;
-      transform-origin: top left;
-      transform: rotate(-1.5deg);
-      box-shadow: 12px 16px 48px rgba(0, 0, 0, 0.35);
-      animation: hubImageIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      animation-delay: 0.2s;
-      opacity: 0;
-    }
-
-    .hub-photo {
-      display: block;
+    /* ─── SECTIONS AVEC IMAGE (split layout) ─── */
+    .scroll-card-split {
+      display: flex;
+      align-items: center;
+      gap: 40px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
-
-    .hub-gradient {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 70%;
-      height: 100%;
-      background: linear-gradient(to left, #0A192F 55%, transparent 100%);
-      z-index: 1;
-    }
-
-    .hub-content {
+    .scroll-card-img-wrap {
       position: relative;
-      z-index: 2;
-      max-width: 42%;
-      margin-left: auto;
+      width: 42%;
+      flex-shrink: 0;
+      max-height: 320px;
+      overflow: hidden;
+    }
+    .scroll-card-image {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+    .scroll-card-img-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      background:
+        linear-gradient(to right, var(--ov) 0%, transparent 35%, transparent 65%, var(--ov) 100%),
+        linear-gradient(to bottom, var(--ov) 0%, transparent 20%, transparent 80%, var(--ov) 100%);
     }
 
     .hub-cta-group {
@@ -771,81 +712,6 @@ const resourceCards = [
       border-color: white !important;
     }
 
-    /* ─── DÉCRYPTAGE ─── */
-    @keyframes decImageIn {
-      from { opacity: 0; transform: translateX(-32px) rotate(-1.5deg); }
-      to   { opacity: 1; transform: translateX(0)     rotate(-1.5deg); }
-    }
-    .dec-card { position: relative; padding: 80px 5vw; }
-    .dec-image {
-      position: absolute;
-      top: 0; left: 0;
-      width: 45%; height: 100%;
-      transform-origin: top left;
-      transform: rotate(-1.5deg);
-      box-shadow: 12px 16px 48px rgba(0, 0, 0, 0.35);
-      animation: decImageIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      animation-delay: 0.2s;
-      opacity: 0;
-    }
-    .dec-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .dec-gradient {
-      position: absolute;
-      top: 0; right: 0;
-      width: 70%; height: 100%;
-      background: linear-gradient(to left, #0A192F 55%, transparent 100%);
-      z-index: 1;
-    }
-    .dec-content { position: relative; z-index: 2; max-width: 42%; margin-left: auto; }
-
-    /* ─── DROITS & DEVOIRS ─── */
-    @keyframes droitsImageIn {
-      from { opacity: 0; transform: translateX(32px) rotate(1.5deg); }
-      to   { opacity: 1; transform: translateX(0)    rotate(1.5deg); }
-    }
-
-    .droits-card {
-      position: relative;
-      padding: 80px 5vw;
-    }
-
-    .droits-image {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 45%;
-      height: 100%;
-      transform-origin: top right;
-      transform: rotate(1.5deg);
-      box-shadow: -12px 16px 48px rgba(0, 0, 0, 0.12);
-      animation: droitsImageIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      animation-delay: 0.2s;
-      opacity: 0;
-    }
-
-    .droits-photo {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .droits-gradient {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 70%;
-      height: 100%;
-      background: linear-gradient(to right, #F4F4F0 55%, transparent 100%);
-      z-index: 1;
-    }
-
-    .droits-content {
-      position: relative;
-      z-index: 2;
-      max-width: 42%;
-      margin-left: 0;
-    }
 
     /* ─── CTA FINAL ─── */
     .final-cta-section {
@@ -892,37 +758,10 @@ const resourceCards = [
       .grid-4 { grid-template-columns: 1fr; }
       .scroll-card { padding: 60px 6%; min-height: auto; }
 
-      /* Hub Experts mobile */
-      .hub-card { padding: 2rem 5vw; }
-      .hub-image {
-        position: relative;
-        width: 100%;
-        height: 220px;
-        transform: rotate(0deg);
-        box-shadow: none;
-        margin-bottom: 1.5rem;
-      }
-      .hub-gradient { display: none; }
-      .hub-content { max-width: 100%; margin-left: 0; }
-
-      /* Décryptage mobile */
-      .dec-card { padding: 2rem 5vw; }
-      .dec-image { position: relative; width: 100%; height: 220px; transform: rotate(0deg); box-shadow: none; margin-bottom: 1.5rem; }
-      .dec-gradient { display: none; }
-      .dec-content { max-width: 100%; margin-left: 0; }
-
-      /* Droits mobile */
-      .droits-card { padding: 2rem 5vw; }
-      .droits-image {
-        position: relative;
-        width: 100%;
-        height: 220px;
-        transform: rotate(0deg);
-        box-shadow: none;
-        margin-bottom: 1.5rem;
-      }
-      .droits-gradient { display: none; }
-      .droits-content { max-width: 100%; margin-left: 0; }
+      /* Images sections — masquées sur mobile */
+      .scroll-card-img-wrap { display: none; }
+      .scroll-card-split { gap: 0; }
+      .scroll-card-inner { max-width: 100%; }
 
       /* Hero mobile */
       .home-hero {
