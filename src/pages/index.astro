@@ -126,7 +126,7 @@ const resourceCards = [
     </section>
 
     <!-- 3. MÉTHODE -->
-    <section id="comment-ca-marche" class="scroll-card light" style="background: #FDFBF8;">
+    <section id="comment-ca-marche" class="scroll-card" style="background: #0A192F;">
       <div class="container">
         <div class="section-head">
           <span class="label-v3">Méthode</span>
@@ -188,22 +188,22 @@ const resourceCards = [
     </section>
 
     <!-- 6. DROITS & DEVOIRS -->
-    <section class="scroll-card" style="background: #0A192F;">
+    <section class="scroll-card light" style="background: #F4F4F0;">
       <div class="scroll-card-inner">
-        <span class="section-eyebrow eyebrow-neon">Droits &amp; devoirs</span>
-        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Vous avez plus de <span class="accent-keyword">pouvoir</span> que vous ne le pensez.</h2>
-        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Formation, protection fonctionnelle, droit d'alerte, indemnités — la loi vous protège. Encore faut-il le savoir, et savoir s'en saisir. MARYAN vous aide à connaître le cadre exact dans lequel vous exercez votre mandat.</p>
-        <a href="/droits" class="btn-neon-stack">Lire les droits &amp; devoirs →</a>
+        <span class="section-eyebrow eyebrow-dark">Droits &amp; devoirs</span>
+        <h2 style="color: #0A192F; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Vous avez plus de <span class="accent-keyword">pouvoir</span> que vous ne le pensez.</h2>
+        <p style="color: rgba(10,25,47,0.6); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Formation, protection fonctionnelle, droit d'alerte, indemnités — la loi vous protège. Encore faut-il le savoir, et savoir s'en saisir. MARYAN vous aide à connaître le cadre exact dans lequel vous exercez votre mandat.</p>
+        <a href="/droits" class="btn-dark-stack">Lire les droits &amp; devoirs →</a>
       </div>
     </section>
 
     <!-- 7. DÉCRYPTAGE -->
-    <section class="scroll-card light" style="background: #F4F4F0;">
+    <section class="scroll-card" style="background: #0A192F;">
       <div class="scroll-card-inner">
-        <span class="section-eyebrow eyebrow-dark">Décryptage</span>
-        <h2 style="color: #0A192F; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
-        <p style="color: rgba(10,25,47,0.6); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
-        <a href="/blog" class="btn-dark-stack">Lire les articles →</a>
+        <span class="section-eyebrow eyebrow-neon">Décryptage</span>
+        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
+        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
+        <a href="/blog" class="btn-neon-stack">Lire les articles →</a>
       </div>
     </section>
 
@@ -375,6 +375,37 @@ const resourceCards = [
       color: #0A192F;
       text-decoration: none;
       margin-top: 4px;
+    }
+
+    /* ─── DARK CARD — textes sur fond sombre ─── */
+    .scroll-card:not(.light) .label-v3 {
+      color: #C6FF4D;
+      border-color: rgba(198, 255, 77, 0.25);
+      background: rgba(198, 255, 77, 0.07);
+    }
+    .scroll-card:not(.light) .section-head h2 {
+      color: #F4F4F0;
+    }
+    .scroll-card:not(.light) .section-intro {
+      color: rgba(244, 244, 240, 0.65);
+    }
+    .scroll-card:not(.light) .card-v3 {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .scroll-card:not(.light) .step-card h3,
+    .scroll-card:not(.light) .usage-card h3 {
+      color: #F4F4F0;
+    }
+    .scroll-card:not(.light) .step-card p,
+    .scroll-card:not(.light) .usage-card p {
+      color: rgba(244, 244, 240, 0.65);
+    }
+    .scroll-card:not(.light) .step-index {
+      color: #C6FF4D;
+    }
+    .scroll-card:not(.light) .result-line {
+      border-top-color: rgba(255, 255, 255, 0.12);
     }
 
     /* ─── TOKENS ─── */
