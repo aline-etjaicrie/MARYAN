@@ -63,27 +63,6 @@ const resourceCards = [
     href: '/ressources/reagir-interpellation-agressive'
   }
 ];
-
-const scenarios = [
-  {
-    title: 'Délibération technique',
-    before: 'Vous lisez. Vous relisez. Vous ne savez pas quoi en dire politiquement.',
-    after: 'Vous savez ce qui est en jeu, ce que vous pouvez défendre et comment le formuler.'
-  },
-  {
-    title: 'Interpellation sensible',
-    before: 'Vous improvisez. Vous en dites trop ou pas assez.',
-    after: 'Une réponse cadrée, avec ce que vous pouvez promettre et ce que vous ne pouvez pas.'
-  },
-  {
-    title: 'Décision à arbitrer',
-    before: 'Trop d\'options, pas de lisibilité, difficile de trancher sans se fragiliser.',
-    after: 'Un arbitrage argumentable, avec les bons points de vigilance.'
-  }
-];
-
-const individualOffer = ['Diagnostic initial', 'Copilote', 'Ressources', 'Activation immédiate'];
-const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à partir de 5 élu·es', 'Tarif ajusté'];
 ---
 
 <Layout
@@ -122,121 +101,116 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     </div>
   </section>
 
-  <!-- 2. SITUATIONS -->
-  <section class="section-v3">
-    <div class="container">
-      <div class="section-head">
-        <span class="label-v3">Situations réelles</span>
-        <h2>Vous connaissez ces <span class="accent-keyword">moments</span>.</h2>
-      </div>
-      <div class="situations-grid">
-        {situations.map((item) => (
-          <article class="usage-card card-v3">
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-            <p class="result-line">
-              <span>Résultat :</span> {item.result}
-            </p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. MÉTHODE -->
-  <section id="comment-ca-marche" class="section-v3 section-how">
-    <div class="container">
-      <div class="section-head">
-        <span class="label-v3">Méthode</span>
-        <h2>En <span class="accent-keyword">pratique</span>, ça donne ça.</h2>
-        <p class="section-intro">
-          Vous décrivez ce que vous vivez.
-          Maryan fait remonter ce qui compte vraiment.
-        </p>
-      </div>
-      <div class="steps-grid">
-        {steps.map((step, index) => (
-          <article class="step-card card-v3">
-            <span class="step-index">{String(index + 1).padStart(2, '0')}</span>
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. RESSOURCES -->
-  <section class="section-v3 section-resources">
-    <div class="container">
-      <div class="section-head">
-        <span class="label-v3">Bibliothèque de ressources</span>
-        <h2>Pas des articles. Des fiches pour <span class="accent-keyword">tenir sa posture</span>.</h2>
-        <p class="section-intro">
-          Courtes, pédagos, ancrées dans le réel du mandat.
-          Entre le décryptage et le coaching — sans le jargon des deux.
-        </p>
-      </div>
-      <div class="resources-grid">
-        {resourceCards.map((card) => (
-          <a href={card.href} class="resource-card card-v3">
-            <h3>{card.title}</h3>
-            <p>{card.desc}</p>
-            <span class="resource-link-label">Lire la fiche →</span>
-          </a>
-        ))}
-      </div>
-      <div class="section-cta-center">
-        <a href="/ressources" class="btn-primary-v3">Accéder aux ressources</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. HUB EXPERTS -->
-  <section class="section-v3 section-hub">
-    <div class="container">
-      <div class="hub-shell">
-        <div class="section-head section-head-light">
-          <span class="label-v3">Experts & formation</span>
-          <h2>Quand <span class="accent-keyword">Maryan</span> ne suffit plus.</h2>
-        </div>
-        <p class="hub-text">
-          Les ressources donnent le socle. Le copilote aide à formuler.
-          Le hub prend le relais quand il faut un regard humain, qualifié, contextuel —
-          ou quand un crédit formation peut financer un accompagnement sur mesure.
-        </p>
-        <div class="hub-cta-group">
-          <a href="/hub-experts" class="btn-primary-v3 btn-neon">Trouver un expert</a>
-          <a href="/hub-experts" class="btn-secondary-v3 btn-outline-white">Proposer mon expertise</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7. SCROLL-STACK -->
+  <!-- 2–8. SCROLL-STACK — toutes sections intermédiaires -->
   <div class="scroll-stack">
 
+    <!-- 2. SITUATIONS -->
+    <section class="scroll-card light" style="background: #F4F4F0;">
+      <div class="container">
+        <div class="section-head">
+          <span class="label-v3">Situations réelles</span>
+          <h2>Vous connaissez ces <span class="accent-keyword">moments</span>.</h2>
+        </div>
+        <div class="situations-grid">
+          {situations.map((item) => (
+            <article class="usage-card card-v3">
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <p class="result-line">
+                <span>Résultat :</span> {item.result}
+              </p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MÉTHODE -->
+    <section id="comment-ca-marche" class="scroll-card light" style="background: #FDFBF8;">
+      <div class="container">
+        <div class="section-head">
+          <span class="label-v3">Méthode</span>
+          <h2>En <span class="accent-keyword">pratique</span>, ça donne ça.</h2>
+          <p class="section-intro">
+            Vous décrivez ce que vous vivez.
+            Maryan fait remonter ce qui compte vraiment.
+          </p>
+        </div>
+        <div class="steps-grid">
+          {steps.map((step, index) => (
+            <article class="step-card card-v3">
+              <span class="step-index">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. RESSOURCES -->
+    <section class="scroll-card light" style="background: #F4F4F0;">
+      <div class="container">
+        <div class="section-head">
+          <span class="label-v3">Bibliothèque de ressources</span>
+          <h2>Pas des articles. Des fiches pour <span class="accent-keyword">tenir sa posture</span>.</h2>
+          <p class="section-intro">
+            Courtes, pédagos, ancrées dans le réel du mandat.
+            Entre le décryptage et le coaching — sans le jargon des deux.
+          </p>
+        </div>
+        <div class="resources-grid">
+          {resourceCards.map((card) => (
+            <a href={card.href} class="resource-card card-v3">
+              <h3>{card.title}</h3>
+              <p>{card.desc}</p>
+              <span class="resource-link-label">Lire la fiche →</span>
+            </a>
+          ))}
+        </div>
+        <div class="section-cta-center">
+          <a href="/ressources" class="btn-primary-v3">Accéder aux ressources</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. HUB EXPERTS -->
+    <section class="scroll-card" style="background: #0A192F;">
+      <div class="scroll-card-inner">
+        <span class="section-eyebrow eyebrow-neon">Experts &amp; formation</span>
+        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Quand Maryan <span class="accent-keyword">ne suffit plus</span>.</h2>
+        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Les ressources donnent le socle. Le copilote aide à formuler. Le hub prend le relais quand il faut un regard humain, qualifié, contextuel — ou quand un crédit formation peut financer un accompagnement sur mesure.</p>
+        <div class="hub-cta-group">
+          <a href="/hub-experts" class="btn-neon-stack">Trouver un expert →</a>
+          <a href="/hub-experts" class="btn-outline-white btn-secondary-v3">Proposer mon expertise</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. DROITS & DEVOIRS -->
     <section class="scroll-card" style="background: #0A192F;">
       <div class="scroll-card-inner">
         <span class="section-eyebrow eyebrow-neon">Droits &amp; devoirs</span>
-        <h2 style="color: #F4F4F0; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Vous avez plus de pouvoir que vous ne le pensez.</h2>
-        <p style="color: rgba(244,244,240,0.65); font-size: 1rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Formation, protection fonctionnelle, droit d'alerte, indemnités — la loi vous protège. Encore faut-il le savoir, et savoir s'en saisir. MARYAN vous aide à connaître le cadre exact dans lequel vous exercez votre mandat.</p>
+        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Vous avez plus de <span class="accent-keyword">pouvoir</span> que vous ne le pensez.</h2>
+        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Formation, protection fonctionnelle, droit d'alerte, indemnités — la loi vous protège. Encore faut-il le savoir, et savoir s'en saisir. MARYAN vous aide à connaître le cadre exact dans lequel vous exercez votre mandat.</p>
         <a href="/droits" class="btn-neon-stack">Lire les droits &amp; devoirs →</a>
       </div>
     </section>
 
-    <section class="scroll-card" style="background: #F4F4F0;">
+    <!-- 7. DÉCRYPTAGE -->
+    <section class="scroll-card light" style="background: #F4F4F0;">
       <div class="scroll-card-inner">
         <span class="section-eyebrow eyebrow-dark">Décryptage</span>
-        <h2 style="color: #0A192F; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de l'intérieur.</h2>
-        <p style="color: rgba(10,25,47,0.6); font-size: 1rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
+        <h2 style="color: #0A192F; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
+        <p style="color: rgba(10,25,47,0.6); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
         <a href="/blog" class="btn-dark-stack">Lire les articles →</a>
       </div>
     </section>
 
-    <section class="scroll-card" style="background: #FDFBF8; align-items: flex-start; padding-top: 80px;">
+    <!-- 8. EXPLORER AUSSI -->
+    <section class="scroll-card light" style="background: #FDFBF8; align-items: flex-start; padding-top: 80px;">
       <div style="width: 100%;">
-        <span class="section-eyebrow eyebrow-dark" style="margin-bottom: 32px;">Explorer aussi</span>
+        <span class="section-eyebrow eyebrow-dark" style="margin-bottom: 32px; font-size: 1rem; letter-spacing: 0.1em;">Explorer aussi</span>
         <div class="grid-4">
           <div class="mini-card">
             <span class="mini-card-accent" style="background: #C6FF4D;"></span>
@@ -272,7 +246,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
   </div>
 
-  <!-- 8. CTA FINAL -->
+  <!-- 9. CTA FINAL -->
   <section class="section-v3 final-cta-section">
     <div class="container">
       <div class="final-cta-panel">
@@ -291,7 +265,11 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
   <style>
     /* ─── SCROLL-STACK ─── */
-    .scroll-stack { position: relative; }
+    .scroll-stack {
+      position: relative;
+      margin: 0;
+      padding: 0;
+    }
     .scroll-card {
       position: sticky;
       top: 0;
@@ -304,10 +282,21 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     .scroll-card:nth-child(1) { z-index: 1; }
     .scroll-card:nth-child(2) { z-index: 2; }
     .scroll-card:nth-child(3) { z-index: 3; }
+    .scroll-card:nth-child(4) { z-index: 4; }
+    .scroll-card:nth-child(5) { z-index: 5; }
+    .scroll-card:nth-child(6) { z-index: 6; }
+    .scroll-card:nth-child(7) { z-index: 7; }
     .scroll-card-inner { max-width: 640px; }
 
+    /* Annule le padding latéral du container à l'intérieur des scroll-cards */
+    .scroll-card .container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    /* ─── EYEBROW ─── */
     .section-eyebrow {
-      font-size: 0.7rem;
+      font-size: 0.85rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       display: block;
@@ -316,6 +305,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     .eyebrow-neon { color: #C6FF4D; }
     .eyebrow-dark { color: rgba(10,25,47,0.45); }
 
+    /* ─── BOUTONS STACK ─── */
     .btn-neon-stack {
       background: #C6FF4D;
       color: #0A192F;
@@ -337,12 +327,14 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       display: inline-block;
     }
 
+    /* ─── GRILLE EXPLORER ─── */
     .grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
 
+    /* ─── MINI-CARDS ─── */
     .mini-card {
       background: #fff;
       border: 0.5px solid rgba(10,25,47,0.1);
@@ -360,19 +352,19 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       margin-bottom: 4px;
     }
     .mini-card-label {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: rgba(10,25,47,0.4);
     }
     .mini-card-title {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #0A192F;
       line-height: 1.3;
     }
     .mini-card-body {
-      font-size: 0.8rem;
+      font-size: 0.875rem;
       color: rgba(10,25,47,0.55);
       line-height: 1.5;
       flex: 1;
@@ -392,6 +384,12 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       font-style: italic;
       font-weight: 700;
       text-transform: none;
+    }
+
+    /* Variante sur fond clair : texte sombre + contour néon */
+    .scroll-card.light .accent-keyword {
+      color: #0A192F;
+      -webkit-text-stroke: 1px #C6FF4D;
     }
 
     /* ─── HERO ─── */
@@ -418,6 +416,12 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       letter-spacing: -0.03em;
       margin: 0 0 1rem;
       text-wrap: balance;
+    }
+
+    /* Le h1 du hero est sur fond sombre → accent-keyword reste neon */
+    .home-hero .accent-keyword {
+      color: var(--neon);
+      -webkit-text-stroke: 0;
     }
 
     .hero-subtitle {
@@ -449,7 +453,6 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       border-color: white !important;
     }
 
-
     .hero-product {
       overflow: hidden;
       display: flex;
@@ -463,7 +466,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       object-position: 54% 52%;
     }
 
-    /* ─── SECTION HEAD + ICONS ─── */
+    /* ─── SECTION HEAD ─── */
     .section-head {
       max-width: 46rem;
       margin-bottom: 2rem;
@@ -476,11 +479,10 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     }
 
     .section-head h2 {
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
       margin: 0 0 0.85rem;
       text-wrap: balance;
     }
-
 
     .section-intro {
       margin: 0;
@@ -498,7 +500,6 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
     .usage-card h3,
     .step-card h3,
-    .scenario-card h3,
     .offer-card h3 {
       margin: 0 0 0.65rem;
       font-size: 1.2rem;
@@ -507,7 +508,6 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
     .usage-card p,
     .step-card p,
-    .scenario-card p,
     .offer-card p {
       margin: 0;
       color: #54636c;
@@ -527,10 +527,6 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
     }
 
     /* ─── MÉTHODE ─── */
-    .section-how {
-      background: linear-gradient(180deg, #f8f9fa 0%, #eef3f7 100%);
-    }
-
     .steps-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -595,69 +591,12 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       justify-content: center;
     }
 
-    /* ─── IMPACT CONCRET ─── */
-    .scenario-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
-    .scenario-lines {
-      display: grid;
-      gap: 0.7rem;
-      margin-top: 0.7rem;
-      padding-top: 0.8rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .scenario-lines strong {
-      color: var(--deep);
-    }
-
     /* ─── HUB EXPERTS ─── */
-    .hub-shell {
-      background: var(--deep);
-      border-radius: 28px;
-      padding: 3rem;
-    }
-
-    .section-head-light h2,
-    .section-head-light p {
-      color: white;
-    }
-
-    .section-head-light .label-v3 {
-      color: white;
-    }
-
-    .section-head-light .label-v3::before {
-      background: white;
-    }
-
-    .hub-text {
-      color: rgba(255, 255, 255, 0.8);
-      line-height: 1.7;
-      max-width: 56ch;
-      margin: 0 0 2rem;
-    }
-
     .hub-cta-group {
       display: flex;
       flex-wrap: wrap;
       gap: 0.9rem;
       align-items: center;
-    }
-
-    .btn-neon {
-      background: var(--neon);
-      color: var(--deep);
-      border-color: var(--neon);
-    }
-
-    .btn-neon:hover,
-    .btn-neon:focus-visible {
-      background: white !important;
-      border-color: white !important;
     }
 
     .btn-outline-white {
@@ -673,85 +612,9 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       border-color: white !important;
     }
 
-    /* ─── ACCÈS + PRIX ─── */
-    .offers-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
-    .offer-card {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .offer-audience {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-red);
-    }
-
-    .offer-price {
-      font-weight: 800;
-      font-size: 1.05rem;
-      color: var(--deep);
-      margin: 0 !important;
-    }
-
-    .clean-list {
-      list-style: none;
-      display: grid;
-      gap: 0.5rem;
-      margin: 0;
-      padding: 0;
-    }
-
-    .clean-list li {
-      position: relative;
-      padding-left: 1rem;
-      color: #54636c;
-      line-height: 1.5;
-    }
-
-    .clean-list li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0.68rem;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--neon);
-      transform: translateY(-50%);
-    }
-
-    .offer-card-dark {
-      background: var(--deep);
-      border-radius: 32px;
-      padding: 3rem;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .offer-card-dark h3,
-    .offer-card-dark li {
-      color: white;
-    }
-
-    .offer-card-dark .offer-audience {
-      color: var(--neon);
-    }
-
-    .offer-card-dark .clean-list li::before {
-      background: white;
-    }
-
     /* ─── CTA FINAL ─── */
     .final-cta-section {
-      padding-top: 2rem;
+      padding-top: 0;
     }
 
     .final-cta-panel {
@@ -782,13 +645,8 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 1024px) {
-      .hero-grid,
-      .offers-grid {
+      .hero-grid {
         grid-template-columns: 1fr;
-      }
-
-      .offer-card-dark {
-        padding: 2rem;
       }
 
       .final-cta-panel {
@@ -801,14 +659,11 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       .grid-4 { grid-template-columns: repeat(2, 1fr); }
       .scroll-card { padding: 60px 6%; min-height: auto; }
       .home-hero {
-        padding: 2rem 0 2rem;
+        padding: 2rem 0;
         overflow: hidden;
       }
 
-      /* Cache l'image sur mobile pour garder le hero compact */
-      .hero-product {
-        display: none;
-      }
+      .hero-product { display: none; }
 
       .hero-copy h1 {
         font-size: clamp(1.75rem, 8vw, 2.4rem);
@@ -834,12 +689,9 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
         justify-content: center;
       }
 
-
       .situations-grid,
       .steps-grid,
-      .resources-grid,
-      .scenario-grid,
-      .offers-grid {
+      .resources-grid {
         grid-template-columns: 1fr;
       }
 
@@ -864,14 +716,7 @@ const teamOffer = ['Pack groupe jusqu\'à 8 élu·es', 'Offre collectivité à p
       .usage-card,
       .step-card,
       .resource-card,
-      .scenario-card,
-      .offer-card,
       .final-cta-panel {
-        padding: 1.5rem;
-      }
-
-      .offer-card-dark,
-      .hub-shell {
         padding: 1.5rem;
       }
 
