@@ -891,13 +891,13 @@ export function buildAgentPrimingMessage(
     profileLine,
     `Situation prioritaire : ${analysis.primarySituation}.`,
     `Expérience probable : ${analysis.experienceLevel}.`,
-    `Fragilités ou tensions : ${analysis.fragilitySignals.join(', ')}.`,
+    `Fragilités ou tensions détectées dans le message : ${analysis.fragilitySignals.filter(s => s !== 'fragilité non explicitement formulée').length > 0 ? analysis.fragilitySignals.join(', ') : 'aucune tension explicite dans le message — ne pas en supposer'}.`,
     `Moment du mandat : ${analysis.mandateMoments.join(', ')}.`,
     `Besoin réel : ${analysis.realNeeds.join(', ')}.`,
     `Thème technique secondaire : ${analysis.technicalThemes.join(', ') || 'aucun dominant'}.`,
     `Style de réponse attendu : ${analysis.responseStyle}.`,
     `Mode implicite à suivre : ${prettifyLabel(resolvedMode)}.`,
-    'Si la situation est floue : lis en une phrase, pose UNE seule question courte, sans conseil. Si elle est claire : propose 2 à 3 options concrètes numérotées + Bon réflexe. Si demande précise ou trame : À retenir, Faites maintenant, Bon réflexe.',
+    'Ne suppose jamais de contexte, de tensions ou d\'historique que le message ne mentionne pas explicitement. Si la situation est floue : lis uniquement ce qui est écrit en une phrase, pose UNE seule question courte, sans conseil. Si elle est claire : propose 2 à 3 options concrètes numérotées + Bon réflexe. Si demande précise ou trame : À retenir, Faites maintenant, Bon réflexe.',
     "Si le message exprime surtout une peur, un flottement, un manque de repères ou une surcharge, commence par cela et non par le thème technique."
   ].join('\n');
 }
