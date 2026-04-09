@@ -4,6 +4,7 @@ import Layout from '../layouts/BaseLayout.astro';
 import heroScene from '../assets/maryan-hero-mandat.png';
 import hubPortraits from '../assets/hub-experts-portraits.png';
 import droitsImg from '../assets/droits-devoirs-documents.png';
+import decryptageImg from '../assets/decryptage-espace-travail.png';
 
 const situations = [
   {
@@ -231,11 +232,25 @@ const resourceCards = [
     </section>
 
     <!-- 7. DÉCRYPTAGE -->
-    <section class="scroll-card" style="background: #0A192F;">
-      <div class="scroll-card-inner">
+    <section class="scroll-card dec-card" style="background: #0A192F;">
+      <!-- Photo fond gauche -->
+      <div class="dec-image">
+        <Image
+          src={decryptageImg}
+          alt="Espace de travail politique et médiatique."
+          class="dec-photo"
+          widths={[600, 900, 1200]}
+          sizes="(max-width: 768px) 100vw, 45vw"
+          quality={84}
+        />
+      </div>
+      <!-- Dégradé droite → transparent -->
+      <div class="dec-gradient"></div>
+      <!-- Texte à droite -->
+      <div class="dec-content">
         <span class="section-eyebrow eyebrow-neon">Décryptage</span>
-        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 560px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
-        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 480px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
+        <h2 style="color: #F4F4F0; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; max-width: 480px; margin-bottom: 16px; line-height: 1.25;">Le mandat local, vu de <span class="accent-keyword">l'intérieur</span>.</h2>
+        <p style="color: rgba(244,244,240,0.65); font-size: 1.05rem; max-width: 420px; line-height: 1.75; margin-bottom: 28px;">Des articles longs, sans jargon et sans langue de bois. Pour comprendre ce qui se joue vraiment dans une délibération, une commission, un conseil municipal. Pas de l'information — de l'analyse.</p>
         <a href="/blog" class="btn-neon-stack">Lire les articles →</a>
       </div>
     </section>
@@ -756,6 +771,33 @@ const resourceCards = [
       border-color: white !important;
     }
 
+    /* ─── DÉCRYPTAGE ─── */
+    @keyframes decImageIn {
+      from { opacity: 0; transform: translateX(-32px) rotate(-1.5deg); }
+      to   { opacity: 1; transform: translateX(0)     rotate(-1.5deg); }
+    }
+    .dec-card { position: relative; padding: 80px 5vw; }
+    .dec-image {
+      position: absolute;
+      top: 0; left: 0;
+      width: 45%; height: 100%;
+      transform-origin: top left;
+      transform: rotate(-1.5deg);
+      box-shadow: 12px 16px 48px rgba(0, 0, 0, 0.35);
+      animation: decImageIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: 0.2s;
+      opacity: 0;
+    }
+    .dec-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .dec-gradient {
+      position: absolute;
+      top: 0; right: 0;
+      width: 70%; height: 100%;
+      background: linear-gradient(to left, #0A192F 55%, transparent 100%);
+      z-index: 1;
+    }
+    .dec-content { position: relative; z-index: 2; max-width: 42%; margin-left: auto; }
+
     /* ─── DROITS & DEVOIRS ─── */
     @keyframes droitsImageIn {
       from { opacity: 0; transform: translateX(32px) rotate(1.5deg); }
@@ -862,6 +904,12 @@ const resourceCards = [
       }
       .hub-gradient { display: none; }
       .hub-content { max-width: 100%; margin-left: 0; }
+
+      /* Décryptage mobile */
+      .dec-card { padding: 2rem 5vw; }
+      .dec-image { position: relative; width: 100%; height: 220px; transform: rotate(0deg); box-shadow: none; margin-bottom: 1.5rem; }
+      .dec-gradient { display: none; }
+      .dec-content { max-width: 100%; margin-left: 0; }
 
       /* Droits mobile */
       .droits-card { padding: 2rem 5vw; }
