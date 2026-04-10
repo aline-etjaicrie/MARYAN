@@ -18,12 +18,6 @@ type SuggestedResource = {
   promise: string;
 };
 
-type AssistantReply = {
-  html: string;
-  plainText: string;
-  resources: SuggestedResource[];
-};
-
 type DiagnosticAnswers = Record<string, string>;
 
 // --- Session limit helpers (sessionStorage + signed token) ---
@@ -414,29 +408,76 @@ function initCopilot(rootElement: HTMLElement) {
     const mode = inferMaryanSituationMode(text, state.userProfile);
 
     try {
-      const reply = await getAssistantReply({
-        endpoint,
-        profile: state.userProfile,
-        history: state.history,
-        message: text,
-        mode,
-        sessionToken: getSessionToken()
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profile: state.userProfile,
+          messages: state.history,
+          message: text,
+          mode,
+          ...(getSessionToken() ? { sessionToken: getSessionToken() } : {})
+        })
       });
 
+      if (response.status === 402) {
+        removeTyping(typing);
+        showPaywall();
+        return;
+      }
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({})) as { error?: string };
+        removeTyping(typing);
+        addMessage('assistant', formatAssistantReply(errData.error || 'Erreur de connexion.'), true);
+        return;
+      }
+
+      const newToken = response.headers.get('X-Session-Token');
+      if (newToken) setSessionToken(newToken);
+
       removeTyping(typing);
-      addMessage('assistant', reply.html, true);
-      state.history.push({ role: 'assistant', content: reply.plainText });
+      const { bubble } = addStreamingBubble();
+
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+      let sseBuffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lines = sseBuffer.split('\n');
+        sseBuffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(data) as { choices?: Array<{ delta?: { content?: string } }> };
+            const token = parsed.choices?.[0]?.delta?.content;
+            if (token) {
+              fullText += token;
+              bubble.innerHTML = renderStreamingText(fullText);
+              chatThread.scrollTo({ top: chatThread.scrollHeight });
+            }
+          } catch {}
+        }
+      }
+
+      bubble.innerHTML = formatAssistantReply(fullText);
+      chatThread.scrollTo({ top: chatThread.scrollHeight, behavior: 'smooth' });
+      state.history.push({ role: 'assistant', content: fullText });
 
       if (!hasPlusAccess(state.userProfile) && state.msgCount >= FREE_LIMIT) {
         showPaywall();
       }
     } catch (error) {
       removeTyping(typing);
-      if (error instanceof Error && error.message === '__PAYWALL__') {
-        showPaywall();
-      } else {
-        addMessage('assistant', formatAssistantReply(getErrorMessage(error)), true);
-      }
+      addMessage('assistant', formatAssistantReply(getErrorMessage(error)), true);
     } finally {
       state.isBusy = false;
       syncInputUi();
@@ -484,6 +525,24 @@ function initCopilot(rootElement: HTMLElement) {
     element.remove();
   }
 
+  function addStreamingBubble(): { bubble: HTMLElement } {
+    const wrapper = document.createElement('article');
+    wrapper.className = 'msg assistant';
+
+    const sender = document.createElement('span');
+    sender.className = 'msg-sender';
+    sender.textContent = 'MARYAN';
+    wrapper.appendChild(sender);
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    wrapper.appendChild(bubble);
+
+    messages.appendChild(wrapper);
+    chatThread.scrollTo({ top: chatThread.scrollHeight, behavior: 'smooth' });
+    return { bubble };
+  }
+
   function showPaywall() {
     if (state.paywallShown) return;
 
@@ -508,61 +567,14 @@ function initCopilot(rootElement: HTMLElement) {
   }
 }
 
-async function getAssistantReply({
-  endpoint,
-  profile,
-  history,
-  message,
-  mode,
-  sessionToken
-}: {
-  endpoint: string;
-  profile: MaryanProfile | null;
-  history: HistoryMessage[];
-  message: string;
-  mode: MaryanSituationMode;
-  sessionToken: string | null;
-}): Promise<AssistantReply> {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      profile,
-      messages: history,
-      message,
-      mode,
-      ...(sessionToken ? { sessionToken } : {})
-    })
-  });
-
-  const data = (await response.json().catch(() => ({}))) as {
-    reply?: string;
-    error?: string;
-    resources?: SuggestedResource[];
-    sessionToken?: string;
-    paywallTriggered?: boolean;
-  };
-
-  if (response.status === 402 || data.paywallTriggered) {
-    throw new Error('__PAYWALL__');
-  }
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Le copilote ne répond pas pour le moment.');
-  }
-
-  if (typeof data.sessionToken === 'string') {
-    setSessionToken(data.sessionToken);
-  }
-
-  const reply = data.reply || "Je n'ai pas pu générer de réponse.";
-  const resources = Array.isArray(data.resources) ? data.resources.slice(0, 2) : [];
-
-  return {
-    html: formatAssistantReply(reply, resources),
-    plainText: reply,
-    resources
-  };
+function renderStreamingText(text: string): string {
+  const escaped = escapeHtml(text);
+  const blocks = escaped
+    .split(/\n{2,}/)
+    .map(b => b.trim())
+    .filter(Boolean);
+  if (!blocks.length) return '<p></p>';
+  return blocks.map(b => `<p>${b.replace(/\n/g, '<br>')}</p>`).join('');
 }
 
 function formatAssistantReply(text: string, resources: SuggestedResource[] = []): string {
