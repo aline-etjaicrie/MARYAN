@@ -31,17 +31,6 @@ interface CopilotRequestBody {
   sessionToken?: string;
 }
 
-interface SuggestedResource {
-  title: string;
-  slug: string;
-  promise: string;
-}
-
-interface CompletionResult {
-  reply: string;
-  finishReason: string | null;
-}
-
 // SESSION LIMIT (signed HMAC token — stateless, server-enforced)
 const SESSION_LIMIT_SECRET =
   (import.meta.env.MARYAN_SESSION_SECRET as string) ||
@@ -75,8 +64,6 @@ function decodeSessionToken(token: string): { count: number; id: string } | null
 const MISTRAL_AGENTS_URL = 'https://api.mistral.ai/v1/agents/completions';
 const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
 const DEFAULT_MODEL = 'mistral-large-latest';
-const CONTINUATION_PROMPT =
-  "Continuez uniquement à partir du dernier mot, sans répéter le début. Terminez proprement la section en cours. Si nécessaire, ajoutez seulement un bloc « Bon réflexe » très court.";
 
 export const prerender = false;
 
@@ -89,12 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
     DEFAULT_MODEL;
 
   if (!apiKey) {
-    return json(
-      {
-        error: 'Configuration MISTRAL_API_KEY manquante sur Vercel.'
-      },
-      503
-    );
+    return json({ error: 'Configuration MISTRAL_API_KEY manquante sur Vercel.' }, 503);
   }
 
   let body: CopilotRequestBody | null;
@@ -159,96 +141,53 @@ export const POST: APIRoute = async ({ request }) => {
             ...messages
           ];
 
-    const basePayload = isAgentMode
+    const payload = isAgentMode
       ? {
           agent_id: agentId,
           messages: baseMessages,
-          max_tokens: 460,
-          temperature: 0.35
+          max_tokens: 800,
+          temperature: 0.35,
+          stream: true
         }
       : {
           model,
           messages: baseMessages,
-          max_tokens: 460,
-          temperature: 0.35
+          max_tokens: 800,
+          temperature: 0.35,
+          stream: true
         };
 
-    const firstPass = await requestCompletion(url, apiKey, basePayload);
-    let reply = firstPass.reply || 'Je n’ai pas pu générer de réponse utile pour le moment.';
+    const upstream = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(payload)
+    });
 
-    if (shouldContinueReply(reply, firstPass.finishReason)) {
-      const continuationPayload = isAgentMode
-        ? {
-            agent_id: agentId,
-            messages: [
-              ...baseMessages,
-              { role: 'assistant' as const, content: reply },
-              { role: 'user' as const, content: CONTINUATION_PROMPT }
-            ],
-            max_tokens: 180,
-            temperature: 0.2
-          }
-        : {
-            model,
-            messages: [
-              ...baseMessages,
-              { role: 'assistant' as const, content: reply },
-              { role: 'user' as const, content: CONTINUATION_PROMPT }
-            ],
-            max_tokens: 180,
-            temperature: 0.2
-          };
-
-      const continuation = await requestCompletion(url, apiKey, continuationPayload);
-      reply = mergeReplyParts(reply, continuation.reply);
+    if (!upstream.ok) {
+      const errData = (await upstream.json().catch(() => ({}))) as Record<string, any>;
+      const apiError = errData?.message || errData?.error?.message || "Le moteur Mistral n'a pas pu répondre.";
+      return json({ error: apiError }, upstream.status);
     }
 
-    return json({
-      reply,
-      resources: [],
-      ...(newSessionToken !== null ? { sessionToken: newSessionToken } : {})
-    });
+    const responseHeaders: Record<string, string> = {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'X-Accel-Buffering': 'no'
+    };
+    if (newSessionToken) {
+      responseHeaders['X-Session-Token'] = newSessionToken;
+    }
+
+    return new Response(upstream.body, { status: 200, headers: responseHeaders });
   } catch (e: any) {
-    const status = typeof e?.status === 'number' ? e.status : 500;
-    return json(
-      {
-        error: `Erreur de connexion : ${e.message}`
-      },
-      status
-    );
+    return json({ error: `Erreur de connexion : ${e.message}` }, 500);
   }
 };
 
 export const ALL: APIRoute = async () => json({ error: 'Méthode non autorisée.' }, 405);
-
-async function requestCompletion(
-  url: string,
-  apiKey: string,
-  payload: Record<string, unknown>
-): Promise<CompletionResult> {
-  const upstream = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify(payload)
-  });
-
-  const data = (await upstream.json().catch(() => ({}))) as Record<string, any>;
-
-  if (!upstream.ok) {
-    const apiError = data?.message || data?.error?.message || 'Le moteur Mistral n’a pas pu répondre.';
-    const error = new Error(apiError);
-    (error as Error & { status?: number }).status = upstream.status;
-    throw error;
-  }
-
-  return {
-    reply: extractReply(data),
-    finishReason: extractFinishReason(data)
-  };
-}
 
 function isCopilotMessage(value: unknown): value is CopilotMessage {
   if (!value || typeof value !== 'object') return false;
@@ -258,85 +197,6 @@ function isCopilotMessage(value: unknown): value is CopilotMessage {
     typeof candidate.content === 'string' &&
     candidate.content.trim().length > 0
   );
-}
-
-function extractReply(data: Record<string, any>): string {
-  const content = data?.choices?.[0]?.message?.content;
-
-  if (typeof content === 'string') {
-    return content.trim();
-  }
-
-  if (Array.isArray(content)) {
-    return content
-      .map((item) => {
-        if (typeof item === 'string') return item;
-        if (item && typeof item.text === 'string') return item.text;
-        if (item && typeof item.content === 'string') return item.content;
-        return '';
-      })
-      .join('\n')
-      .trim();
-  }
-
-  if (content && typeof content.text === 'string') {
-    return content.text.trim();
-  }
-
-  return '';
-}
-
-function extractFinishReason(data: Record<string, any>): string | null {
-  const finishReason = data?.choices?.[0]?.finish_reason;
-  return typeof finishReason === 'string' ? finishReason : null;
-}
-
-function shouldContinueReply(reply: string, finishReason: string | null): boolean {
-  const trimmed = reply.trim();
-  if (!trimmed) return false;
-
-  const normalized = normalizeText(trimmed);
-  if (finishReason && !['stop', 'eos', 'eos_token'].includes(finishReason)) {
-    return true;
-  }
-
-  if (/(bon reflexe|a retenir|faites maintenant)\s*:?\s*$/i.test(normalized)) {
-    return true;
-  }
-
-  return /\b(a|a la|a l|au|aux|avec|ce|cet|cette|dans|de|des|du|d|en|et|la|le|les|ou|par|pour|que|qui|sur|un|une)\s*$/i.test(
-    normalized
-  );
-}
-
-function mergeReplyParts(initialReply: string, continuationReply: string): string {
-  const first = initialReply.trimEnd();
-  const second = continuationReply.trim();
-
-  if (!second) return first;
-
-  const normalizedFirst = normalizeText(first);
-  const normalizedSecond = normalizeText(second);
-  if (normalizedSecond && normalizedFirst.endsWith(normalizedSecond)) {
-    return first;
-  }
-
-  const compactJoin = /\b(a|a la|a l|au|aux|avec|ce|cet|cette|dans|de|des|du|d|en|et|la|le|les|ou|par|pour|que|qui|sur|un|une)\s*$/i.test(
-    normalizeText(first)
-  );
-  const separator = compactJoin ? ' ' : second.startsWith('Bon réflexe') || second.startsWith('Bon reflexe') ? '\n\n' : ' ';
-
-  return `${first}${separator}${second}`.trim();
-}
-
-function normalizeText(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9'\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
 }
 
 function json(payload: Record<string, unknown>, status = 200): Response {
