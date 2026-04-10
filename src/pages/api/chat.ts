@@ -285,6 +285,9 @@ function selectResourcesForMessage(
 ): SuggestedResource[] {
   const msg = userMessage.toLowerCase();
 
+  console.log('=== DEBUG MATCHING ===');
+  console.log('Message:', msg.substring(0, 100));
+
   // Détection du domaine principal — ordre évalué de haut en bas, risk en priorité absolue
   const isRisk =
     msg.includes('conflit d\'intérêt') || msg.includes('conflit d intérêt') ||
@@ -334,6 +337,11 @@ function selectResourcesForMessage(
     msg.includes('avance pas') || msg.includes('bloqué') ||
     msg.includes('arbitrage');
 
+  console.log('Domaines détectés:', {
+    isRisk, isAdminTension, isInternalConflict,
+    isSpeaking, isBudget, isProject, isParticipation
+  });
+
   // Sélection stricte par domaine détecté — ordre de priorité décroissant
   let targetUseCases: string[] = [];
 
@@ -358,13 +366,19 @@ function selectResourcesForMessage(
     targetUseCases = ['participation', 'concertation', 'reunion_publique', 'habitants'];
   }
 
+  console.log('targetUseCases:', targetUseCases);
+
   // Filtrage strict par useCases normalisés
   if (targetUseCases.length > 0) {
     const normalizedTargets = targetUseCases.map(normalizeUseCase);
-    const matched = allResources
-      .filter(r => r.useCases?.some(uc => normalizedTargets.includes(normalizeUseCase(uc))))
+    const allMatched = allResources
+      .filter(r => r.useCases?.some(uc => normalizedTargets.includes(normalizeUseCase(uc))));
+    const matched = allMatched
       .filter(r => r.priority === 'haute')
       .slice(0, 2);
+
+    console.log('Ressources matchées (avant filtre haute):', allMatched.map(r => r.slug));
+    console.log('Ressources retournées:', matched.map(r => r.slug));
 
     if (matched.length > 0) {
       return matched.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
@@ -372,10 +386,9 @@ function selectResourcesForMessage(
   }
 
   // Fallback : ressources haute priorité sans contrainte de domaine
-  return allResources
-    .filter(r => r.priority === 'haute')
-    .slice(0, 2)
-    .map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
+  const fallback = allResources.filter(r => r.priority === 'haute').slice(0, 2);
+  console.log('Ressources retournées (fallback):', fallback.map(r => r.slug));
+  return fallback.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
 }
 
 function normalizeText(value: string): string {
