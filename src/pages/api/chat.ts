@@ -163,6 +163,9 @@ export const POST: APIRoute = async ({ request }) => {
       reply = mergeReplyParts(reply, continuation.reply);
     }
 
+    console.log('[DEBUG] REPLY START:', reply.substring(0, 400));
+    console.log('[DEBUG] HAS PAPERCLIP:', reply.includes('📎'));
+
     return json({
       reply,
       resources: []
