@@ -527,6 +527,12 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
       </main>
 
       <footer class="app-input-bar">
+        <p class="ia-notice">
+          🔒 Ce copilote est propulsé par Mistral AI.
+          Ne saisissez pas de données personnelles identifiantes
+          sur des tiers.
+          <a href="/confidentialite#ia">En savoir plus</a>
+        </p>
         <p class="privacy-notice">Pour votre confidentialité, évitez de mentionner des noms de personnes ou des informations permettant d'identifier des tiers.</p>
         <div class="attach-preview hidden" data-attach-preview>
           <span data-attach-filename class="attach-preview-name"></span>
@@ -1613,6 +1619,24 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
 
     .input-wrap textarea::placeholder {
       color: rgba(10, 25, 47, 0.46);
+    }
+
+    .ia-notice {
+      width: min(100%, 50rem);
+      margin: 0 auto 0.55rem;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.74rem;
+      line-height: 1.45;
+      color: rgba(10,25,47,0.55);
+      background: rgba(10,25,47,0.03);
+      border: 1px solid rgba(10,25,47,0.08);
+      border-radius: 0.75rem;
+      text-align: center;
+    }
+    .ia-notice a {
+      color: var(--deep);
+      font-weight: 700;
+      text-decoration: underline;
     }
 
     .privacy-notice {
