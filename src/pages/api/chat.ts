@@ -89,6 +89,18 @@ export const POST: APIRoute = async ({ request }) => {
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
     const overrideSystemPrompt = body?._overrideSystemPrompt || null;
 
+    const systemPrompt = (!overrideSystemPrompt && !isAgentMode)
+      ? buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage, buildResourcesCatalog(maryanResources))
+      : '';
+
+    if (systemPrompt) {
+      const bibIdx = systemPrompt.indexOf('BIBLIOTHÈQUE');
+      console.log('[DEBUG] PROMPT RESSOURCES:', bibIdx >= 0
+        ? systemPrompt.substring(bibIdx, bibIdx + 200)
+        : '⚠️ section BIBLIOTHÈQUE non trouvée');
+      console.log('[DEBUG] PROMPT LENGTH:', systemPrompt.length);
+    }
+
     const baseMessages = overrideSystemPrompt
       ? [{ role: 'system' as const, content: overrideSystemPrompt }, ...messages]
       : isAgentMode
@@ -102,7 +114,7 @@ export const POST: APIRoute = async ({ request }) => {
         : [
             {
               role: 'system' as const,
-              content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage, buildResourcesCatalog(maryanResources))
+              content: systemPrompt
             },
             ...messages
           ];
