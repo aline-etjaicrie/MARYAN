@@ -838,7 +838,7 @@ Tu tiens compte de ces éléments déclarés pour affiner ta lecture de la situa
   const cgctSection = MODES_WITH_CGCT.includes(resolvedMode) ? `\n\n${promptCGCT}` : '';
 
   const catalogSection = resourcesCatalog
-    ? `\n\nBIBLIOTHÈQUE DE RESSOURCES DISPONIBLES\nTu as accès aux fiches suivantes. Pour chaque réponse, tu PEUX (pas obligatoire) recommander 1 ou 2 fiches si elles correspondent exactement à la situation.\n\nRègles absolues :\n- Tu choisis toi-même les fiches les plus pertinentes\n- Tu n'es pas obligé d'en recommander si aucune ne correspond\n- Maximum 2 fiches par réponse\n- Tu expliques en une phrase pourquoi cette fiche\n\nFormat de recommandation (si pertinent) :\n📎 [titre de la fiche]\n[Une phrase qui explique pourquoi cette fiche maintenant]\nLire la fiche → /ressources/[slug]\n\nCATALOGUE :\n${resourcesCatalog}`
+    ? `\n\nFICHES DISPONIBLES — choisis 1 ou 2 maximum si elles correspondent exactement :\n${resourcesCatalog}\n\nRègles :\n- Maximum 2 fiches par réponse\n- N'en recommande aucune si aucune ne correspond exactement\n- Explique en une phrase pourquoi cette fiche dans cette situation\n\nFormat obligatoire :\n📎 [titre exact] — [une phrase pourquoi]\nLien : /ressources/[slug]`
     : '';
 
   return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}${cgctSection}\n\n${profileContext}\n\n${advancedContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}${catalogSection}`;

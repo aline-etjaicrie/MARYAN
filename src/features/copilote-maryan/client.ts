@@ -731,14 +731,26 @@ function detectResourceBlock(block: string): { title: string; reason: string; sl
   const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
   if (!lines.length || !lines[0].startsWith('📎')) return null;
 
-  const title = lines[0].replace(/^📎\s*/, '').trim();
-  const linkLine = lines.find((l) => l.includes('Lire la fiche') && l.includes('/ressources/'));
+  const firstLine = lines[0].replace(/^📎\s*/, '').trim();
+
+  // New format: 📎 Titre — raison (single line), then Lien : /ressources/slug
+  const dashIdx = firstLine.indexOf(' — ');
+  const linkLine = lines.find((l) => l.includes('/ressources/'));
   if (!linkLine) return null;
 
-  const slugMatch = linkLine.match(/\/ressources\/([^/\s]+)/);
+  const slugMatch = linkLine.match(/\/ressources\/([^/\s)]+)/);
   if (!slugMatch) return null;
-
   const slug = slugMatch[1];
+
+  if (dashIdx !== -1) {
+    // New compact format
+    const title = firstLine.slice(0, dashIdx).trim();
+    const reason = firstLine.slice(dashIdx + 3).trim();
+    return { title, reason, slug };
+  }
+
+  // Legacy multi-line format: 📎 Titre \n raison \n Lire la fiche → /ressources/slug
+  const title = firstLine;
   const reason = lines.filter((l) => l !== lines[0] && l !== linkLine).join(' ').trim();
   return { title, reason, slug };
 }

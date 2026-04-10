@@ -13,7 +13,7 @@ import type { MaryanResource } from '../../data/types';
 
 function buildResourcesCatalog(resources: MaryanResource[]): string {
   return resources
-    .map(r => `- ${r.slug} | ${r.title} | ${r.useCases?.join(', ') || ''}`)
+    .map(r => `- ${r.slug} | ${r.title}`)
     .join('\n');
 }
 
