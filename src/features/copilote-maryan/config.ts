@@ -788,7 +788,8 @@ export function buildAgentPrimingMessage(
 export function buildSystemPrompt(
   profile: MaryanProfile | null,
   mode?: string,
-  latestUserMessage = ''
+  latestUserMessage = '',
+  resourcesCatalog = ''
 ): string {
   const profileContext = profile
     ? `Profil connu :
@@ -828,5 +829,9 @@ Règle : commence par cette scène, pas par le thème technique.`
 Tu tiens compte de ces éléments déclarés pour affiner ta lecture de la situation.`
     : '';
 
-  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${promptCGCT}\n\n${profileContext}\n\n${advancedContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}`;
+  const catalogSection = resourcesCatalog
+    ? `\n\nBIBLIOTHÈQUE DE RESSOURCES DISPONIBLES\nTu as accès aux fiches suivantes. Pour chaque réponse, tu PEUX (pas obligatoire) recommander 1 ou 2 fiches si elles correspondent exactement à la situation.\n\nRègles absolues :\n- Tu choisis toi-même les fiches les plus pertinentes\n- Tu n'es pas obligé d'en recommander si aucune ne correspond\n- Maximum 2 fiches par réponse\n- Tu expliques en une phrase pourquoi cette fiche\n\nFormat de recommandation (si pertinent) :\n📎 [titre de la fiche]\n[Une phrase qui explique pourquoi cette fiche maintenant]\nLire la fiche → /ressources/[slug]\n\nCATALOGUE :\n${resourcesCatalog}`
+    : '';
+
+  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${promptCGCT}\n\n${profileContext}\n\n${advancedContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}${catalogSection}`;
 }

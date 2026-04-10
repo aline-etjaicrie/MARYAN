@@ -559,6 +559,13 @@ function formatAssistantReply(text: string, resources: SuggestedResource[] = [])
       return;
     }
 
+    const resourceMatch = detectResourceBlock(block);
+    if (resourceMatch) {
+      flushSection();
+      html.push(renderResourceBlock(resourceMatch));
+      return;
+    }
+
     if (currentSection) {
       currentSection.blocks.push(renderReplyBlock(block));
       return;
@@ -665,6 +672,29 @@ function renderResourceSuggestions(resources: SuggestedResource[]): string {
     .join('');
 
   return `<section class="reply-section"><h3>Ressources à lire</h3><ul class="reply-resource-list">${items}</ul></section>`;
+}
+
+function detectResourceBlock(block: string): { title: string; reason: string; slug: string } | null {
+  const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
+  if (!lines.length || !lines[0].startsWith('📎')) return null;
+
+  const title = lines[0].replace(/^📎\s*/, '').trim();
+  const linkLine = lines.find((l) => l.includes('Lire la fiche') && l.includes('/ressources/'));
+  if (!linkLine) return null;
+
+  const slugMatch = linkLine.match(/\/ressources\/([^/\s]+)/);
+  if (!slugMatch) return null;
+
+  const slug = slugMatch[1];
+  const reason = lines.filter((l) => l !== lines[0] && l !== linkLine).join(' ').trim();
+  return { title, reason, slug };
+}
+
+function renderResourceBlock(resource: { title: string; reason: string; slug: string }): string {
+  const reasonHtml = resource.reason
+    ? `<span class="reply-resource-promise">${escapeHtml(trimParagraph(resource.reason))}</span>`
+    : '';
+  return `<section class="reply-section"><ul class="reply-resource-list"><li><a class="reply-resource-link" href="/ressources/${encodeURIComponent(resource.slug)}/">${escapeHtml(resource.title)}</a>${reasonHtml}</li></ul></section>`;
 }
 
 function isListLine(line: string): boolean {

@@ -9,6 +9,12 @@ import {
 import { maryanResources } from '../../data/resources';
 import type { MaryanResource } from '../../data/types';
 
+function buildResourcesCatalog(resources: MaryanResource[]): string {
+  return resources
+    .map(r => `- ${r.slug} | ${r.title} | ${r.useCases?.join(', ') || ''}`)
+    .join('\n');
+}
+
 interface CopilotMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -96,7 +102,7 @@ export const POST: APIRoute = async ({ request }) => {
         : [
             {
               role: 'system' as const,
-              content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage)
+              content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage, buildResourcesCatalog(maryanResources))
             },
             ...messages
           ];
@@ -147,7 +153,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({
       reply,
-      resources: selectResourcesForMessage(latestUserMessage, maryanResources)
+      resources: []
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;
@@ -268,126 +274,6 @@ function mergeReplyParts(initialReply: string, continuationReply: string): strin
   const separator = compactJoin ? ' ' : second.startsWith('Bon réflexe') || second.startsWith('Bon reflexe') ? '\n\n' : ' ';
 
   return `${first}${separator}${second}`.trim();
-}
-
-function normalizeUseCase(str: string): string {
-  return str
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '_')
-    .trim();
-}
-
-function selectResourcesForMessage(
-  userMessage: string,
-  allResources: MaryanResource[]
-): SuggestedResource[] {
-  const msg = userMessage.toLowerCase();
-
-  // Détection du domaine principal — ordre évalué de haut en bas, risk en priorité absolue
-  const isRisk =
-    msg.includes('conflit d\'intérêt') || msg.includes('conflit d intérêt') ||
-    msg.includes('probité') || msg.includes('vss') ||
-    msg.includes('harcèlement') || msg.includes('harcelement') ||
-    msg.includes('pénal') || msg.includes('mise en cause') ||
-    msg.includes('accusation') || msg.includes('accusé') ||
-    msg.includes('signalement') || msg.includes('corruption') ||
-    msg.includes('favoritisme') || msg.includes('déontologie');
-
-  const isParticipation =
-    msg.includes('habitant') || msg.includes('réunion publique') ||
-    msg.includes('concertation') || msg.includes('citoyen') ||
-    msg.includes('participation');
-
-  const isAdminTension =
-    msg.includes('service') || msg.includes('administration') ||
-    msg.includes('drg') || msg.includes('dgs') || msg.includes('drh') ||
-    msg.includes('agent') || msg.includes('techni') ||
-    msg.includes('bloqu') || msg.includes('fonctionnaire') ||
-    msg.includes('direction') || msg.includes('secrétaire général') ||
-    msg.includes('dga') || msg.includes('chef de service') ||
-    msg.includes('instruction') || msg.includes('refus');
-
-  const isInternalConflict =
-    msg.includes('majorité') || msg.includes('adjoint') ||
-    msg.includes('collègue') || msg.includes('équipe') ||
-    msg.includes('groupe') || msg.includes('tension interne') ||
-    msg.includes('maire') || msg.includes('désaccord') ||
-    msg.includes('friction') || msg.includes('tensions') ||
-    msg.includes('exécutif');
-
-  const isSpeaking =
-    msg.includes('parole') || msg.includes('discours') ||
-    msg.includes('conseil municipal') || msg.includes('réunion') ||
-    msg.includes('prise de parole') || msg.includes('speech') ||
-    msg.includes('allocution') || msg.includes('inauguration') ||
-    msg.includes('cérémonie') || msg.includes('vœux') ||
-    msg.includes('protocole');
-
-  const isBudget =
-    msg.includes('budget') || msg.includes('finance') ||
-    msg.includes('dépense') || msg.includes('investissement');
-
-  const isProject =
-    msg.includes('projet') || msg.includes('dossier') ||
-    msg.includes('avance pas') || msg.includes('bloqué') ||
-    msg.includes('arbitrage');
-
-  const isCommunication =
-    msg.includes('facebook') || msg.includes('instagram') ||
-    msg.includes('twitter') || msg.includes('post') ||
-    msg.includes('commentaire') || msg.includes('réseau') ||
-    msg.includes('media') || msg.includes('presse') ||
-    msg.includes('article') || msg.includes('interview') ||
-    msg.includes('journaliste') || msg.includes('publier') ||
-    msg.includes('communiqué') || msg.includes('répondre') ||
-    msg.includes('critique publique') || msg.includes('attaque');
-
-  // Sélection stricte par domaine détecté — ordre de priorité décroissant
-  let targetUseCases: string[] = [];
-
-  if (isRisk) {
-    targetUseCases = [
-      'situation_sensible', 'risque_politique', 'prevention', 'crise',
-      'ethique', 'protection', 'conflit_interets', 'prise_illegale',
-      'deontologie', 'protection_juridique', 'protection_penale',
-      'vss', 'harcelement', 'menaces', 'accusation', 'securite'
-    ];
-  } else if (isAdminTension && !isParticipation) {
-    targetUseCases = ['administration', 'services', 'gouvernance', 'relations_internes', 'blocage'];
-  } else if (isInternalConflict) {
-    targetUseCases = ['conflit', 'majorite', 'tension_relationnelle', 'executif', 'reunion'];
-  } else if (isSpeaking) {
-    targetUseCases = ['prise_de_parole', 'communication', 'conseil_municipal', 'discours'];
-  } else if (isBudget) {
-    targetUseCases = ['budget', 'finances'];
-  } else if (isCommunication) {
-    targetUseCases = ['reseaux_sociaux', 'communication', 'exposition', 'crise', 'reponse', 'media', 'prise_de_parole'];
-  } else if (isProject) {
-    targetUseCases = ['projet', 'blocage', 'pilotage', 'cadrage', 'arbitrage'];
-  } else if (isParticipation) {
-    targetUseCases = ['participation', 'concertation', 'reunion_publique', 'habitants'];
-  }
-
-  // Filtrage strict par useCases normalisés
-  if (targetUseCases.length > 0) {
-    const normalizedTargets = targetUseCases.map(normalizeUseCase);
-    const matched = allResources
-      .filter(r => r.useCases?.some(uc => normalizedTargets.includes(normalizeUseCase(uc))))
-      .filter(r => r.priority === 'haute')
-      .slice(0, 2);
-
-    if (matched.length > 0) {
-      return matched.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
-    }
-  }
-
-  // Fallback : ressources haute priorité sans contrainte de domaine
-  return allResources
-    .filter(r => r.priority === 'haute')
-    .slice(0, 2)
-    .map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
 }
 
 function normalizeText(value: string): string {
