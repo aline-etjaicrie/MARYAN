@@ -181,7 +181,10 @@ export const POST: APIRoute = async ({ request }) => {
       responseHeaders['X-Session-Token'] = newSessionToken;
     }
 
-    return new Response(upstream.body, { status: 200, headers: responseHeaders });
+    // DEBUG TEMPORAIRE — à supprimer après diagnostic
+    const responseText = await upstream.text();
+    console.log('MISTRAL RAW SSE:', responseText.substring(0, 800));
+    return new Response(responseText, { status: 200, headers: responseHeaders });
   } catch (e: any) {
     return json({ error: `Erreur de connexion : ${e.message}` }, 500);
   }
