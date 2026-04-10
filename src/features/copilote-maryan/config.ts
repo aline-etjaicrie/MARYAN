@@ -829,9 +829,17 @@ Règle : commence par cette scène, pas par le thème technique.`
 Tu tiens compte de ces éléments déclarés pour affiner ta lecture de la situation.`
     : '';
 
+  // CGCT uniquement pour les modes juridiquement sensibles — évite d'alourdir inutilement
+  const MODES_WITH_CGCT: MaryanSituationMode[] = [
+    'vigilance_risque',
+    'explication_pedagogique',
+    'arbitrage_cadrage'
+  ];
+  const cgctSection = MODES_WITH_CGCT.includes(resolvedMode) ? `\n\n${promptCGCT}` : '';
+
   const catalogSection = resourcesCatalog
     ? `\n\nBIBLIOTHÈQUE DE RESSOURCES DISPONIBLES\nTu as accès aux fiches suivantes. Pour chaque réponse, tu PEUX (pas obligatoire) recommander 1 ou 2 fiches si elles correspondent exactement à la situation.\n\nRègles absolues :\n- Tu choisis toi-même les fiches les plus pertinentes\n- Tu n'es pas obligé d'en recommander si aucune ne correspond\n- Maximum 2 fiches par réponse\n- Tu expliques en une phrase pourquoi cette fiche\n\nFormat de recommandation (si pertinent) :\n📎 [titre de la fiche]\n[Une phrase qui explique pourquoi cette fiche maintenant]\nLire la fiche → /ressources/[slug]\n\nCATALOGUE :\n${resourcesCatalog}`
     : '';
 
-  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}\n\n${promptCGCT}\n\n${profileContext}\n\n${advancedContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}${catalogSection}`;
+  return `${SYSTEM_PROMPT_BASE}\n\n${droitsElusPromptContext}${cgctSection}\n\n${profileContext}\n\n${advancedContext}\n\n${analysisContext}\n\n${PROMPTS_BY_MODE[resolvedMode]}${catalogSection}`;
 }

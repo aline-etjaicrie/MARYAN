@@ -93,14 +93,6 @@ export const POST: APIRoute = async ({ request }) => {
       ? buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage, buildResourcesCatalog(maryanResources))
       : '';
 
-    if (systemPrompt) {
-      const bibIdx = systemPrompt.indexOf('BIBLIOTHÈQUE');
-      console.log('[DEBUG] PROMPT RESSOURCES:', bibIdx >= 0
-        ? systemPrompt.substring(bibIdx, bibIdx + 200)
-        : '⚠️ section BIBLIOTHÈQUE non trouvée');
-      console.log('[DEBUG] PROMPT LENGTH:', systemPrompt.length);
-    }
-
     const baseMessages = overrideSystemPrompt
       ? [{ role: 'system' as const, content: overrideSystemPrompt }, ...messages]
       : isAgentMode
@@ -162,9 +154,6 @@ export const POST: APIRoute = async ({ request }) => {
       const continuation = await requestCompletion(url, apiKey, continuationPayload);
       reply = mergeReplyParts(reply, continuation.reply);
     }
-
-    console.log('[DEBUG] REPLY START:', reply.substring(0, 400));
-    console.log('[DEBUG] HAS PAPERCLIP:', reply.includes('📎'));
 
     return json({
       reply,
