@@ -334,6 +334,16 @@ function selectResourcesForMessage(
     msg.includes('avance pas') || msg.includes('bloqué') ||
     msg.includes('arbitrage');
 
+  const isCommunication =
+    msg.includes('facebook') || msg.includes('instagram') ||
+    msg.includes('twitter') || msg.includes('post') ||
+    msg.includes('commentaire') || msg.includes('réseau') ||
+    msg.includes('media') || msg.includes('presse') ||
+    msg.includes('article') || msg.includes('interview') ||
+    msg.includes('journaliste') || msg.includes('publier') ||
+    msg.includes('communiqué') || msg.includes('répondre') ||
+    msg.includes('critique publique') || msg.includes('attaque');
+
   // Sélection stricte par domaine détecté — ordre de priorité décroissant
   let targetUseCases: string[] = [];
 
@@ -352,6 +362,8 @@ function selectResourcesForMessage(
     targetUseCases = ['prise_de_parole', 'communication', 'conseil_municipal', 'discours'];
   } else if (isBudget) {
     targetUseCases = ['budget', 'finances'];
+  } else if (isCommunication) {
+    targetUseCases = ['reseaux_sociaux', 'communication', 'exposition', 'crise', 'reponse', 'media', 'prise_de_parole'];
   } else if (isProject) {
     targetUseCases = ['projet', 'blocage', 'pilotage', 'cadrage', 'arbitrage'];
   } else if (isParticipation) {

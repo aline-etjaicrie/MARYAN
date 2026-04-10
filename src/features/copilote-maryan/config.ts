@@ -82,9 +82,8 @@ export const SUGGESTIONS = [
 ];
 
 export const WELCOME_PARAGRAPHS = [
-  'Bonjour, je suis MARYAN, votre copilote de mandat.',
-  "Je vous aide d'abord à relire la situation que vous vivez, puis à retrouver un cadre clair, des repères concrets et la bonne prochaine étape.",
-  'Par quoi commençons-nous ?'
+  'Bonjour. Je suis MARYAN, ton copilote de mandat.',
+  "Dis-moi ce qui se passe — on commence par là."
 ];
 
 export const PROFILE_REQUIRED_HTML =
