@@ -1,8 +1,10 @@
 import type { APIRoute } from 'astro';
+import { createHmac, randomUUID } from 'crypto';
 import {
   buildAgentPrimingMessage,
   buildSystemPrompt,
   inferMaryanSituationMode,
+  FREE_LIMIT,
   type MaryanProfile,
   type MaryanSituationMode
 } from '../../features/copilote-maryan/config';
@@ -26,6 +28,7 @@ interface CopilotRequestBody {
   mode?: MaryanSituationMode | string;
   message?: string;
   _overrideSystemPrompt?: string;
+  sessionToken?: string;
 }
 
 interface SuggestedResource {
@@ -37,6 +40,35 @@ interface SuggestedResource {
 interface CompletionResult {
   reply: string;
   finishReason: string | null;
+}
+
+// SESSION LIMIT (signed HMAC token — stateless, server-enforced)
+const SESSION_LIMIT_SECRET =
+  (import.meta.env.MARYAN_SESSION_SECRET as string) ||
+  (process.env.MARYAN_SESSION_SECRET as string) ||
+  'maryan-session-limit-v1';
+
+function encodeSessionToken(count: number, id: string): string {
+  const sig = createHmac('sha256', SESSION_LIMIT_SECRET)
+    .update(`${count}:${id}`)
+    .digest('hex')
+    .slice(0, 24);
+  return Buffer.from(JSON.stringify({ count, id, sig })).toString('base64');
+}
+
+function decodeSessionToken(token: string): { count: number; id: string } | null {
+  try {
+    const obj = JSON.parse(Buffer.from(token, 'base64').toString()) as Record<string, unknown>;
+    if (typeof obj.count !== 'number' || typeof obj.id !== 'string' || typeof obj.sig !== 'string') return null;
+    const expected = createHmac('sha256', SESSION_LIMIT_SECRET)
+      .update(`${obj.count}:${obj.id}`)
+      .digest('hex')
+      .slice(0, 24);
+    if (expected !== obj.sig) return null;
+    return { count: obj.count, id: obj.id };
+  } catch {
+    return null;
+  }
 }
 
 // MISTRAL API ENDPOINTS
@@ -82,6 +114,22 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (!messages.length) {
     return json({ error: 'Aucun message à traiter.' }, 400);
+  }
+
+  // Vérification serveur de la limite de session
+  const isPlusUser = typeof profile?.plan === 'string' && profile.plan.toLowerCase().includes('plus');
+  let newSessionToken: string | null = null;
+
+  if (!isPlusUser) {
+    const rawToken = typeof body?.sessionToken === 'string' ? body.sessionToken.trim() : '';
+    const session = rawToken ? decodeSessionToken(rawToken) : null;
+    const currentCount = session?.count ?? 0;
+
+    if (currentCount >= FREE_LIMIT) {
+      return json({ error: 'Limite de messages atteinte.', paywallTriggered: true }, 402);
+    }
+
+    newSessionToken = encodeSessionToken(currentCount + 1, session?.id ?? randomUUID());
   }
 
   try {
@@ -157,7 +205,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({
       reply,
-      resources: []
+      resources: [],
+      ...(newSessionToken !== null ? { sessionToken: newSessionToken } : {})
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;

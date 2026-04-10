@@ -26,6 +26,29 @@ type AssistantReply = {
 
 type DiagnosticAnswers = Record<string, string>;
 
+// --- Session limit helpers (sessionStorage + signed token) ---
+const SESSION_KEY = 'maryan_session_v1';
+
+function getSessionToken(): string | null {
+  try { return sessionStorage.getItem(SESSION_KEY); }
+  catch { return null; }
+}
+
+function setSessionToken(token: string): void {
+  try { sessionStorage.setItem(SESSION_KEY, token); }
+  catch {}
+}
+
+function getSessionCount(): number {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return 0;
+    const obj = JSON.parse(atob(raw)) as Record<string, unknown>;
+    return typeof obj.count === 'number' ? obj.count : 0;
+  } catch { return 0; }
+}
+// ---
+
 const root = document.querySelector<HTMLElement>('[data-maryan-copilot-root]');
 
 if (root) {
@@ -64,9 +87,9 @@ function initCopilot(rootElement: HTMLElement) {
   const profileStatus = rootElement.querySelector<HTMLElement>('[data-profile-status]');
 
   const state = {
-    msgCount: 0,
+    msgCount: getSessionCount(),
     isBusy: false,
-    isBlocked: false,
+    isBlocked: getSessionCount() >= FREE_LIMIT,
     paywallShown: false,
     history: [] as HistoryMessage[],
     userProfile: loadProfile()
@@ -396,7 +419,8 @@ function initCopilot(rootElement: HTMLElement) {
         profile: state.userProfile,
         history: state.history,
         message: text,
-        mode
+        mode,
+        sessionToken: getSessionToken()
       });
 
       removeTyping(typing);
@@ -408,7 +432,11 @@ function initCopilot(rootElement: HTMLElement) {
       }
     } catch (error) {
       removeTyping(typing);
-      addMessage('assistant', formatAssistantReply(getErrorMessage(error)), true);
+      if (error instanceof Error && error.message === '__PAYWALL__') {
+        showPaywall();
+      } else {
+        addMessage('assistant', formatAssistantReply(getErrorMessage(error)), true);
+      }
     } finally {
       state.isBusy = false;
       syncInputUi();
@@ -485,13 +513,15 @@ async function getAssistantReply({
   profile,
   history,
   message,
-  mode
+  mode,
+  sessionToken
 }: {
   endpoint: string;
   profile: MaryanProfile | null;
   history: HistoryMessage[];
   message: string;
   mode: MaryanSituationMode;
+  sessionToken: string | null;
 }): Promise<AssistantReply> {
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -500,7 +530,8 @@ async function getAssistantReply({
       profile,
       messages: history,
       message,
-      mode
+      mode,
+      ...(sessionToken ? { sessionToken } : {})
     })
   });
 
@@ -508,13 +539,23 @@ async function getAssistantReply({
     reply?: string;
     error?: string;
     resources?: SuggestedResource[];
+    sessionToken?: string;
+    paywallTriggered?: boolean;
   };
+
+  if (response.status === 402 || data.paywallTriggered) {
+    throw new Error('__PAYWALL__');
+  }
 
   if (!response.ok) {
     throw new Error(data.error || 'Le copilote ne répond pas pour le moment.');
   }
 
-  const reply = data.reply || "Je n’ai pas pu générer de réponse.";
+  if (typeof data.sessionToken === 'string') {
+    setSessionToken(data.sessionToken);
+  }
+
+  const reply = data.reply || "Je n'ai pas pu générer de réponse.";
   const resources = Array.isArray(data.resources) ? data.resources.slice(0, 2) : [];
 
   return {
@@ -527,7 +568,7 @@ async function getAssistantReply({
 function formatAssistantReply(text: string, resources: SuggestedResource[] = []): string {
   const cleaned = text.replace(/\r\n/g, '\n').trim();
   if (!cleaned) {
-    return '<p>Je n’ai pas pu formuler une réponse utile pour le moment.</p>';
+    return "<p>Je n'ai pas pu formuler une réponse utile pour le moment.</p>";
   }
 
   const blocks = cleaned
