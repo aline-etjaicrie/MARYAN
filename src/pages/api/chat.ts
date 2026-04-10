@@ -147,7 +147,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({
       reply,
-      resources: getSuggestedResources(latestUserMessage, profile, resolvedMode)
+      resources: selectResourcesForMessage(latestUserMessage, maryanResources)
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;
@@ -270,69 +270,85 @@ function mergeReplyParts(initialReply: string, continuationReply: string): strin
   return `${first}${separator}${second}`.trim();
 }
 
-function getSuggestedResources(
-  latestUserMessage: string,
-  profile: MaryanProfile | null,
-  resolvedMode: MaryanSituationMode
+function selectResourcesForMessage(
+  userMessage: string,
+  allResources: MaryanResource[]
 ): SuggestedResource[] {
-  const corpus = [
-    latestUserMessage,
-    profile?.summary || '',
-    profile?.themeLabel || '',
-    ...(profile?.tags || []),
-    profile?.tailleCt || '',
-    profile?.typeCt || '',
-    profile?.metierHorsMandat || '',
-    resolvedMode.replaceAll('_', ' ')
-  ].join(' ');
+  const msg = userMessage.toLowerCase();
 
-  const textTokens = new Set(tokenize(corpus));
+  // Détection du domaine principal
+  const isRisk =
+    msg.includes('conflit d\'intérêt') || msg.includes('probité') ||
+    msg.includes('vss') || msg.includes('harcèlement') ||
+    msg.includes('pénal') || msg.includes('mise en cause') ||
+    msg.includes('accusation');
 
-  return maryanResources
-    .map((resource) => ({
-      resource,
-      score: scoreResource(resource, textTokens)
-    }))
-    .filter(({ score }) => score >= 3)
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      if (a.resource.priority === 'haute' && b.resource.priority !== 'haute') return -1;
-      if (a.resource.priority !== 'haute' && b.resource.priority === 'haute') return 1;
-      return 0;
-    })
-    .slice(0, 2)
-    .map(({ resource }) => ({
-      title: resource.title,
-      slug: resource.slug,
-      promise: resource.promise
-    }));
-}
+  const isParticipation =
+    msg.includes('habitant') || msg.includes('réunion publique') ||
+    msg.includes('concertation') || msg.includes('citoyen') ||
+    msg.includes('participation');
 
-function scoreResource(resource: MaryanResource, textTokens: Set<string>): number {
-  let score = resource.priority === 'haute' ? 1 : 0;
+  const isAdminTension =
+    msg.includes('service') || msg.includes('administration') ||
+    msg.includes('drg') || msg.includes('dgs') ||
+    msg.includes('agent') || msg.includes('techni') ||
+    msg.includes('bloqu') || msg.includes('fonctionnaire') ||
+    msg.includes('direction');
 
-  const candidates = [
-    resource.title,
-    resource.promise,
-    ...resource.tags,
-    ...resource.useCases
-  ];
+  const isInternalConflict =
+    msg.includes('majorité') || msg.includes('adjoint') ||
+    msg.includes('collègue') || msg.includes('équipe') ||
+    msg.includes('groupe') || msg.includes('tension interne');
 
-  for (const candidate of candidates) {
-    const candidateTokens = tokenize(candidate);
-    const overlaps = candidateTokens.filter((token) => textTokens.has(token));
-    if (!overlaps.length) continue;
+  const isSpeaking =
+    msg.includes('parole') || msg.includes('discours') ||
+    msg.includes('conseil municipal') || msg.includes('réunion') ||
+    msg.includes('prise de parole') || msg.includes('speech');
 
-    score += Math.min(overlaps.length, candidate === resource.title ? 4 : 3);
+  const isBudget =
+    msg.includes('budget') || msg.includes('finance') ||
+    msg.includes('dépense') || msg.includes('investissement');
+
+  const isProject =
+    msg.includes('projet') || msg.includes('dossier') ||
+    msg.includes('avance pas') || msg.includes('bloqué');
+
+  // Sélection stricte par domaine détecté — ordre de priorité décroissant
+  let targetUseCases: string[] = [];
+
+  if (isRisk) {
+    targetUseCases = ['ethique', 'protection', 'conflit_interets', 'menaces', 'harcelement'];
+  } else if (isAdminTension && !isParticipation) {
+    targetUseCases = ['administration', 'services', 'gouvernance', 'relations_internes', 'blocage'];
+  } else if (isInternalConflict) {
+    targetUseCases = ['conflit', 'majorite', 'tension_relationnelle', 'executif', 'reunion'];
+  } else if (isSpeaking) {
+    targetUseCases = ['prise_de_parole', 'communication', 'conseil_municipal', 'discours'];
+  } else if (isBudget) {
+    targetUseCases = ['budget', 'finances', 'arbitrage'];
+  } else if (isProject) {
+    targetUseCases = ['projet', 'blocage', 'pilotage', 'cadrage'];
+  } else if (isParticipation) {
+    targetUseCases = ['participation', 'concertation', 'reunion_publique', 'habitants'];
   }
 
-  return score;
-}
+  // Filtrage strict par useCases du domaine détecté
+  if (targetUseCases.length > 0) {
+    const matched = allResources
+      .filter(r => r.useCases && r.useCases.some(uc => targetUseCases.includes(uc)))
+      .filter(r => r.priority === 'haute')
+      .slice(0, 2);
 
-function tokenize(value: string): string[] {
-  return normalizeText(value)
-    .split(' ')
-    .filter((token) => token.length > 2);
+    if (matched.length > 0) {
+      return matched.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
+    }
+  }
+
+  // Fallback : ressources haute priorité sans contrainte de domaine
+  return allResources
+    .filter(r => r.priority === 'haute')
+    .slice(0, 2)
+    .map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
 }
 
 function normalizeText(value: string): string {
