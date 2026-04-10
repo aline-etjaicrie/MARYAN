@@ -270,18 +270,30 @@ function mergeReplyParts(initialReply: string, continuationReply: string): strin
   return `${first}${separator}${second}`.trim();
 }
 
+function normalizeUseCase(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_')
+    .trim();
+}
+
 function selectResourcesForMessage(
   userMessage: string,
   allResources: MaryanResource[]
 ): SuggestedResource[] {
   const msg = userMessage.toLowerCase();
 
-  // Détection du domaine principal
+  // Détection du domaine principal — ordre évalué de haut en bas, risk en priorité absolue
   const isRisk =
-    msg.includes('conflit d\'intérêt') || msg.includes('probité') ||
-    msg.includes('vss') || msg.includes('harcèlement') ||
+    msg.includes('conflit d\'intérêt') || msg.includes('conflit d intérêt') ||
+    msg.includes('probité') || msg.includes('vss') ||
+    msg.includes('harcèlement') || msg.includes('harcelement') ||
     msg.includes('pénal') || msg.includes('mise en cause') ||
-    msg.includes('accusation');
+    msg.includes('accusation') || msg.includes('accusé') ||
+    msg.includes('signalement') || msg.includes('corruption') ||
+    msg.includes('favoritisme') || msg.includes('déontologie');
 
   const isParticipation =
     msg.includes('habitant') || msg.includes('réunion publique') ||
@@ -290,20 +302,28 @@ function selectResourcesForMessage(
 
   const isAdminTension =
     msg.includes('service') || msg.includes('administration') ||
-    msg.includes('drg') || msg.includes('dgs') ||
+    msg.includes('drg') || msg.includes('dgs') || msg.includes('drh') ||
     msg.includes('agent') || msg.includes('techni') ||
     msg.includes('bloqu') || msg.includes('fonctionnaire') ||
-    msg.includes('direction');
+    msg.includes('direction') || msg.includes('secrétaire général') ||
+    msg.includes('dga') || msg.includes('chef de service') ||
+    msg.includes('instruction') || msg.includes('refus');
 
   const isInternalConflict =
     msg.includes('majorité') || msg.includes('adjoint') ||
     msg.includes('collègue') || msg.includes('équipe') ||
-    msg.includes('groupe') || msg.includes('tension interne');
+    msg.includes('groupe') || msg.includes('tension interne') ||
+    msg.includes('maire') || msg.includes('désaccord') ||
+    msg.includes('friction') || msg.includes('tensions') ||
+    msg.includes('exécutif');
 
   const isSpeaking =
     msg.includes('parole') || msg.includes('discours') ||
     msg.includes('conseil municipal') || msg.includes('réunion') ||
-    msg.includes('prise de parole') || msg.includes('speech');
+    msg.includes('prise de parole') || msg.includes('speech') ||
+    msg.includes('allocution') || msg.includes('inauguration') ||
+    msg.includes('cérémonie') || msg.includes('vœux') ||
+    msg.includes('protocole');
 
   const isBudget =
     msg.includes('budget') || msg.includes('finance') ||
@@ -311,13 +331,19 @@ function selectResourcesForMessage(
 
   const isProject =
     msg.includes('projet') || msg.includes('dossier') ||
-    msg.includes('avance pas') || msg.includes('bloqué');
+    msg.includes('avance pas') || msg.includes('bloqué') ||
+    msg.includes('arbitrage');
 
   // Sélection stricte par domaine détecté — ordre de priorité décroissant
   let targetUseCases: string[] = [];
 
   if (isRisk) {
-    targetUseCases = ['ethique', 'protection', 'conflit_interets', 'menaces', 'harcelement'];
+    targetUseCases = [
+      'situation_sensible', 'risque_politique', 'prevention', 'crise',
+      'ethique', 'protection', 'conflit_interets', 'prise_illegale',
+      'deontologie', 'protection_juridique', 'protection_penale',
+      'vss', 'harcelement', 'menaces', 'accusation', 'securite'
+    ];
   } else if (isAdminTension && !isParticipation) {
     targetUseCases = ['administration', 'services', 'gouvernance', 'relations_internes', 'blocage'];
   } else if (isInternalConflict) {
@@ -325,38 +351,20 @@ function selectResourcesForMessage(
   } else if (isSpeaking) {
     targetUseCases = ['prise_de_parole', 'communication', 'conseil_municipal', 'discours'];
   } else if (isBudget) {
-    targetUseCases = ['budget', 'finances', 'arbitrage'];
+    targetUseCases = ['budget', 'finances'];
   } else if (isProject) {
-    targetUseCases = ['projet', 'blocage', 'pilotage', 'cadrage'];
+    targetUseCases = ['projet', 'blocage', 'pilotage', 'cadrage', 'arbitrage'];
   } else if (isParticipation) {
     targetUseCases = ['participation', 'concertation', 'reunion_publique', 'habitants'];
   }
 
-  // Détermination du domaine détecté pour les logs
-  const detectedDomain = isRisk ? 'isRisk'
-    : isAdminTension && !isParticipation ? 'isAdminTension'
-    : isInternalConflict ? 'isInternalConflict'
-    : isSpeaking ? 'isSpeaking'
-    : isBudget ? 'isBudget'
-    : isProject ? 'isProject'
-    : isParticipation ? 'isParticipation'
-    : 'aucun';
-
-  // Filtrage strict par useCases du domaine détecté
+  // Filtrage strict par useCases normalisés
   if (targetUseCases.length > 0) {
+    const normalizedTargets = targetUseCases.map(normalizeUseCase);
     const matched = allResources
-      .filter(r => r.useCases && r.useCases.some(uc => targetUseCases.includes(uc)))
+      .filter(r => r.useCases?.some(uc => normalizedTargets.includes(normalizeUseCase(uc))))
       .filter(r => r.priority === 'haute')
       .slice(0, 2);
-
-    // [DEBUG TEMPORAIRE] Diagnostic sélection ressources
-    console.log('[MARYAN resources]', {
-      domaine: detectedDomain,
-      targetUseCases,
-      matchesAvantPriorite: allResources.filter(r => r.useCases?.some(uc => targetUseCases.includes(uc))).length,
-      matchesHautePriorite: matched.length,
-      retournees: matched.map(r => r.title)
-    });
 
     if (matched.length > 0) {
       return matched.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
@@ -364,13 +372,10 @@ function selectResourcesForMessage(
   }
 
   // Fallback : ressources haute priorité sans contrainte de domaine
-  const fallback = allResources.filter(r => r.priority === 'haute').slice(0, 2);
-  // [DEBUG TEMPORAIRE] Fallback
-  console.log('[MARYAN resources] fallback', {
-    domaine: detectedDomain,
-    retournees: fallback.map(r => r.title)
-  });
-  return fallback.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
+  return allResources
+    .filter(r => r.priority === 'haute')
+    .slice(0, 2)
+    .map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
 }
 
 function normalizeText(value: string): string {
