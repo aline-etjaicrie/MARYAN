@@ -332,6 +332,16 @@ function selectResourcesForMessage(
     targetUseCases = ['participation', 'concertation', 'reunion_publique', 'habitants'];
   }
 
+  // Détermination du domaine détecté pour les logs
+  const detectedDomain = isRisk ? 'isRisk'
+    : isAdminTension && !isParticipation ? 'isAdminTension'
+    : isInternalConflict ? 'isInternalConflict'
+    : isSpeaking ? 'isSpeaking'
+    : isBudget ? 'isBudget'
+    : isProject ? 'isProject'
+    : isParticipation ? 'isParticipation'
+    : 'aucun';
+
   // Filtrage strict par useCases du domaine détecté
   if (targetUseCases.length > 0) {
     const matched = allResources
@@ -339,16 +349,28 @@ function selectResourcesForMessage(
       .filter(r => r.priority === 'haute')
       .slice(0, 2);
 
+    // [DEBUG TEMPORAIRE] Diagnostic sélection ressources
+    console.log('[MARYAN resources]', {
+      domaine: detectedDomain,
+      targetUseCases,
+      matchesAvantPriorite: allResources.filter(r => r.useCases?.some(uc => targetUseCases.includes(uc))).length,
+      matchesHautePriorite: matched.length,
+      retournees: matched.map(r => r.title)
+    });
+
     if (matched.length > 0) {
       return matched.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
     }
   }
 
   // Fallback : ressources haute priorité sans contrainte de domaine
-  return allResources
-    .filter(r => r.priority === 'haute')
-    .slice(0, 2)
-    .map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
+  const fallback = allResources.filter(r => r.priority === 'haute').slice(0, 2);
+  // [DEBUG TEMPORAIRE] Fallback
+  console.log('[MARYAN resources] fallback', {
+    domaine: detectedDomain,
+    retournees: fallback.map(r => r.title)
+  });
+  return fallback.map(r => ({ title: r.title, slug: r.slug, promise: r.promise }));
 }
 
 function normalizeText(value: string): string {
