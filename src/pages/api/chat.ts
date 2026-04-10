@@ -1,13 +1,21 @@
 import type { APIRoute } from 'astro';
+import { createHmac, randomUUID } from 'crypto';
 import {
   buildAgentPrimingMessage,
   buildSystemPrompt,
   inferMaryanSituationMode,
+  FREE_LIMIT,
   type MaryanProfile,
   type MaryanSituationMode
 } from '../../features/copilote-maryan/config';
 import { maryanResources } from '../../data/resources';
 import type { MaryanResource } from '../../data/types';
+
+function buildResourcesCatalog(resources: MaryanResource[]): string {
+  return resources
+    .map(r => `- ${r.slug} | ${r.title} | ${r.useCases?.join(', ') || ''}`)
+    .join('\n');
+}
 
 interface CopilotMessage {
   role: 'user' | 'assistant';
@@ -20,6 +28,7 @@ interface CopilotRequestBody {
   mode?: MaryanSituationMode | string;
   message?: string;
   _overrideSystemPrompt?: string;
+  sessionToken?: string;
 }
 
 interface SuggestedResource {
@@ -31,6 +40,35 @@ interface SuggestedResource {
 interface CompletionResult {
   reply: string;
   finishReason: string | null;
+}
+
+// SESSION LIMIT (signed HMAC token — stateless, server-enforced)
+const SESSION_LIMIT_SECRET =
+  (import.meta.env.MARYAN_SESSION_SECRET as string) ||
+  (process.env.MARYAN_SESSION_SECRET as string) ||
+  'maryan-session-limit-v1';
+
+function encodeSessionToken(count: number, id: string): string {
+  const sig = createHmac('sha256', SESSION_LIMIT_SECRET)
+    .update(`${count}:${id}`)
+    .digest('hex')
+    .slice(0, 24);
+  return Buffer.from(JSON.stringify({ count, id, sig })).toString('base64');
+}
+
+function decodeSessionToken(token: string): { count: number; id: string } | null {
+  try {
+    const obj = JSON.parse(Buffer.from(token, 'base64').toString()) as Record<string, unknown>;
+    if (typeof obj.count !== 'number' || typeof obj.id !== 'string' || typeof obj.sig !== 'string') return null;
+    const expected = createHmac('sha256', SESSION_LIMIT_SECRET)
+      .update(`${obj.count}:${obj.id}`)
+      .digest('hex')
+      .slice(0, 24);
+    if (expected !== obj.sig) return null;
+    return { count: obj.count, id: obj.id };
+  } catch {
+    return null;
+  }
 }
 
 // MISTRAL API ENDPOINTS
@@ -78,10 +116,30 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Aucun message à traiter.' }, 400);
   }
 
+  // Vérification serveur de la limite de session
+  const isPlusUser = typeof profile?.plan === 'string' && profile.plan.toLowerCase().includes('plus');
+  let newSessionToken: string | null = null;
+
+  if (!isPlusUser) {
+    const rawToken = typeof body?.sessionToken === 'string' ? body.sessionToken.trim() : '';
+    const session = rawToken ? decodeSessionToken(rawToken) : null;
+    const currentCount = session?.count ?? 0;
+
+    if (currentCount >= FREE_LIMIT) {
+      return json({ error: 'Limite de messages atteinte.', paywallTriggered: true }, 402);
+    }
+
+    newSessionToken = encodeSessionToken(currentCount + 1, session?.id ?? randomUUID());
+  }
+
   try {
     const isAgentMode = !!agentId;
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
     const overrideSystemPrompt = body?._overrideSystemPrompt || null;
+
+    const systemPrompt = (!overrideSystemPrompt && !isAgentMode)
+      ? buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage, buildResourcesCatalog(maryanResources))
+      : '';
 
     const baseMessages = overrideSystemPrompt
       ? [{ role: 'system' as const, content: overrideSystemPrompt }, ...messages]
@@ -96,7 +154,7 @@ export const POST: APIRoute = async ({ request }) => {
         : [
             {
               role: 'system' as const,
-              content: buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage)
+              content: systemPrompt
             },
             ...messages
           ];
@@ -147,7 +205,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     return json({
       reply,
-      resources: getSuggestedResources(latestUserMessage, profile, resolvedMode)
+      resources: [],
+      ...(newSessionToken !== null ? { sessionToken: newSessionToken } : {})
     });
   } catch (e: any) {
     const status = typeof e?.status === 'number' ? e.status : 500;
@@ -268,71 +327,6 @@ function mergeReplyParts(initialReply: string, continuationReply: string): strin
   const separator = compactJoin ? ' ' : second.startsWith('Bon réflexe') || second.startsWith('Bon reflexe') ? '\n\n' : ' ';
 
   return `${first}${separator}${second}`.trim();
-}
-
-function getSuggestedResources(
-  latestUserMessage: string,
-  profile: MaryanProfile | null,
-  resolvedMode: MaryanSituationMode
-): SuggestedResource[] {
-  const corpus = [
-    latestUserMessage,
-    profile?.summary || '',
-    profile?.themeLabel || '',
-    ...(profile?.tags || []),
-    profile?.tailleCt || '',
-    profile?.typeCt || '',
-    profile?.metierHorsMandat || '',
-    resolvedMode.replaceAll('_', ' ')
-  ].join(' ');
-
-  const textTokens = new Set(tokenize(corpus));
-
-  return maryanResources
-    .map((resource) => ({
-      resource,
-      score: scoreResource(resource, textTokens)
-    }))
-    .filter(({ score }) => score >= 3)
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      if (a.resource.priority === 'haute' && b.resource.priority !== 'haute') return -1;
-      if (a.resource.priority !== 'haute' && b.resource.priority === 'haute') return 1;
-      return 0;
-    })
-    .slice(0, 2)
-    .map(({ resource }) => ({
-      title: resource.title,
-      slug: resource.slug,
-      promise: resource.promise
-    }));
-}
-
-function scoreResource(resource: MaryanResource, textTokens: Set<string>): number {
-  let score = resource.priority === 'haute' ? 1 : 0;
-
-  const candidates = [
-    resource.title,
-    resource.promise,
-    ...resource.tags,
-    ...resource.useCases
-  ];
-
-  for (const candidate of candidates) {
-    const candidateTokens = tokenize(candidate);
-    const overlaps = candidateTokens.filter((token) => textTokens.has(token));
-    if (!overlaps.length) continue;
-
-    score += Math.min(overlaps.length, candidate === resource.title ? 4 : 3);
-  }
-
-  return score;
-}
-
-function tokenize(value: string): string[] {
-  return normalizeText(value)
-    .split(' ')
-    .filter((token) => token.length > 2);
 }
 
 function normalizeText(value: string): string {
