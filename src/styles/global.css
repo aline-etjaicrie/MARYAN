@@ -71,7 +71,7 @@ span.emphasis, em {
   font-style: italic;
   font-weight: 500;
   display: inline-block;
-  color: var(--neon);
+  color: var(--accent-red);
   text-transform: none;
 }
 
@@ -86,6 +86,16 @@ span.emphasis, em {
   text-transform: inherit;
 }
 
+/* Sur fond sombre (hero, footer, sections navy) — emphasis reste néon */
+.home-hero span.emphasis,
+.home-hero em,
+.site-footer span.emphasis,
+.site-footer em,
+.cookie-bar span.emphasis,
+.cookie-bar em {
+  color: var(--neon);
+}
+
 h1 .emphasis,
 h2 .emphasis,
 h3 .emphasis,
@@ -94,7 +104,7 @@ h1 em,
 h2 em,
 h3 em,
 h4 em {
-  color: var(--neon) !important;
+  color: var(--accent-red) !important;
 }
 
 /* ──────────────────────────────────────────────────────────────────────────

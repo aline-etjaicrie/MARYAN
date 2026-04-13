@@ -431,15 +431,25 @@ const easyToMobilizeItems = [
       const checkoutUrl = link.getAttribute('data-checkout-url');
       if (!checkoutUrl) return;
 
+      // Ouvre la fenêtre de manière synchrone (avant tout await)
+      // pour ne pas être bloqué par les popup-blockers
+      const win = window.open('', '_blank');
+
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
+        win?.close();
         window.location.href = '/login?redirect=/offres';
         return;
       }
 
-      window.open(checkoutUrl, '_blank');
+      if (win) {
+        win.location.href = checkoutUrl;
+      } else {
+        // Fallback si le popup a quand même été bloqué
+        window.location.href = checkoutUrl;
+      }
     });
   });
 </script>
@@ -454,7 +464,7 @@ const easyToMobilizeItems = [
   }
 
   .accent-keyword {
-    color: var(--neon) !important;
+    color: var(--accent-red) !important;
     font-family: var(--font-accent);
     font-style: italic;
     font-weight: 700;

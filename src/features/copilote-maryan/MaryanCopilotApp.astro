@@ -853,13 +853,41 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
           })
         });
 
-        const data = await res.json() as Record<string, any>;
-
-        if (!res.ok || data.error) {
-          throw new Error(data.message || data.error || 'Erreur lors de la génération.');
+        if (res.status === 402) {
+          throw new Error('Service réservé aux abonné·es MARYAN Plus.');
+        }
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({})) as Record<string, any>;
+          throw new Error(errData.error || `Erreur ${res.status} — réessayez.`);
         }
 
-        crResult = data.reply || '';
+        // Lecture du flux SSE (stream: true côté API)
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() ?? '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const payload = line.slice(6).trim();
+            if (payload === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(payload) as Record<string, any>;
+              const delta = parsed?.choices?.[0]?.delta?.content;
+              if (typeof delta === 'string') fullText += delta;
+            } catch { /* chunk partiel */ }
+          }
+        }
+
+        if (!fullText.trim()) throw new Error('Réponse vide — réessayez.');
+
+        crResult = fullText;
         document.getElementById('cr-result-content')!.innerHTML = renderMarkdown(crResult);
         document.getElementById('cr-input-phase')!.style.display = 'none';
         document.getElementById('cr-result-phase')!.style.display = '';
