@@ -37,7 +37,8 @@ async function isSubscribed(token: string): Promise<boolean> {
     .eq('id', user.id)
     .single();
   const plan = (data?.plan as string | null) || '';
-  return plan.toLowerCase().includes('plus');
+  const p = plan.toLowerCase();
+  return p.includes('plus') || p === 'admin';
 }
 
 const ANALYSE_PROMPT = `Tu es un assistant de l'élu local français. Analyse ce document et réponds en JSON strict avec les champs suivants :

@@ -99,7 +99,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Vérification serveur de la limite de session
-  const isPlusUser = typeof profile?.plan === 'string' && profile.plan.toLowerCase().includes('plus');
+  const isPlusUser = typeof profile?.plan === 'string' && (profile.plan.toLowerCase().includes('plus') || profile.plan.toLowerCase() === 'admin');
   let newSessionToken: string | null = null;
 
   if (!isPlusUser) {
