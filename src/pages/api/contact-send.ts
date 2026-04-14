@@ -6,6 +6,7 @@ export const prerender = false;
 const RESEND_API_KEY = process.env.RESEND_API_KEY as string;
 
 export const POST: APIRoute = async ({ request }) => {
+  console.log('RESEND KEY présente:', !!process.env.RESEND_API_KEY);
   try {
     const data = await request.json();
     const { firstname, lastname, email, mandate, citySize, subject, message } = data;
@@ -29,13 +30,14 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (RESEND_API_KEY) {
       const resend = new Resend(RESEND_API_KEY);
-      const { error: sendError } = await resend.emails.send({
+      const { data: resendData, error: sendError } = await resend.emails.send({
         from: 'MARYAN <contact@etjaicrie.com>',
         to: 'aline@etjaicrie.com',
         replyTo: email,
         subject: `[MARYAN Contact] ${subject}`,
         html: htmlBody
       });
+      console.log('Resend result:', JSON.stringify({ data: resendData, error: sendError }));
       if (sendError) {
         console.error("Resend error:", sendError);
         return new Response(JSON.stringify({ error: "Erreur lors de l'envoi de l'email." }), {
