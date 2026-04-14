@@ -31,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (RESEND_API_KEY) {
       const resend = new Resend(RESEND_API_KEY);
       const { data: resendData, error: sendError } = await resend.emails.send({
-        from: 'MARYAN <contact@etjaicrie.com>',
+        from: 'MARYAN <bonjour@maryanapp.fr>',
         to: 'aline@etjaicrie.com',
         replyTo: email,
         subject: `[MARYAN Contact] ${subject}`,
