@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-  const stripeKey = import.meta.env.STRIPE_SECRET_KEY;
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
   
   if (!stripeKey) {
     console.error('STRIPE_SECRET_KEY is missing');
@@ -34,8 +34,8 @@ export const POST: APIRoute = async ({ request }) => {
         },
       ],
       mode: 'subscription',
-      success_url: `${import.meta.env.PUBLIC_SITE_URL}/mon-compte?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${import.meta.env.PUBLIC_SITE_URL}/offres`,
+      success_url: `${process.env.PUBLIC_SITE_URL}/mon-compte?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.PUBLIC_SITE_URL}/offres`,
       customer_email: customerEmail || undefined,
       allow_promotion_codes: true,
       billing_address_collection: 'required',

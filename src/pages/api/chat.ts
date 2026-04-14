@@ -33,7 +33,6 @@ interface CopilotRequestBody {
 
 // SESSION LIMIT (signed HMAC token — stateless, server-enforced)
 const SESSION_LIMIT_SECRET =
-  (import.meta.env.MARYAN_SESSION_SECRET as string) ||
   (process.env.MARYAN_SESSION_SECRET as string) ||
   'maryan-session-limit-v1';
 
@@ -68,12 +67,9 @@ const DEFAULT_MODEL = 'mistral-large-latest';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = (import.meta.env.MISTRAL_API_KEY as string) || (process.env.MISTRAL_API_KEY as string);
-  const agentId = (import.meta.env.MISTRAL_AGENT_ID as string) || (process.env.MISTRAL_AGENT_ID as string);
-  const model =
-    (import.meta.env.MISTRAL_MODEL as string) ||
-    (process.env.MISTRAL_MODEL as string) ||
-    DEFAULT_MODEL;
+  const apiKey = process.env.MISTRAL_API_KEY as string;
+  const agentId = process.env.MISTRAL_AGENT_ID as string;
+  const model = (process.env.MISTRAL_MODEL as string) || DEFAULT_MODEL;
 
   if (!apiKey) {
     return json({ error: 'Configuration MISTRAL_API_KEY manquante sur Vercel.' }, 503);

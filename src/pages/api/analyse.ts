@@ -3,12 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 
 export const prerender = false;
 
-const MISTRAL_API_KEY =
-  (import.meta.env.MISTRAL_API_KEY as string) || (process.env.MISTRAL_API_KEY as string);
-const SUPABASE_URL =
-  (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
-const SUPABASE_SERVICE_KEY =
-  (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
+const MISTRAL_API_KEY = process.env.MISTRAL_API_KEY as string;
+const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL as string;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY as string;
 
 const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
 const VISION_MODEL = 'pixtral-12b-2409';
