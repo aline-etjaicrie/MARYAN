@@ -256,9 +256,15 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
           <strong class="hub-card-label">Discuter avec MARYAN</strong>
           <span class="hub-card-desc">Posez une question, explorez une situation, trouvez une piste.</span>
         </button>
+        <button class="hub-card" data-hub-mode="synthese" type="button">
+          <span class="hub-card-icon">📋</span>
+          <strong class="hub-card-label">Synthèse de réunion</strong>
+          <span class="hub-card-desc">Collez vos notes — MARYAN produit points clés, décisions et suites à donner.</span>
+        </button>
       </div>
       <div class="hub-footer-links">
         <a href="/">← Accueil</a>
+        <a href="/mon-mandat" id="hubMandatLink" style="display:none">Mon mandat</a>
         <a href="/mon-compte">Mon espace MARYAN</a>
       </div>
     </div>
@@ -409,6 +415,50 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
               <p id="doc-res-prochain" class="doc-result-text"></p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODE SYNTHÈSE DE RÉUNION
+       ══════════════════════════════════════════════════ -->
+  <div id="maryan-synthese-mode" class="maryan-mode-screen" style="display:none">
+    <header class="mode-header">
+      <button class="mode-back-btn" data-hub-back type="button">← Changer de mode</button>
+      <span class="mode-header-title">Synthèse de réunion</span>
+    </header>
+
+    <div class="mode-body">
+      <!-- Phase 1 : saisie -->
+      <div id="syn-input-phase">
+        <div class="mode-card">
+          <p class="mode-intro">Collez vos notes ou la transcription de la réunion — MARYAN produit une synthèse structurée avec points clés, décisions et suites à donner.</p>
+          <label class="cr-label" for="syn-textarea">Vos notes brutes</label>
+          <textarea id="syn-textarea" class="cr-textarea" rows="12" placeholder="Copiez-collez ici vos notes, un relevé de décisions, une transcription, un compte rendu brut…"></textarea>
+          <p id="syn-input-error" class="mode-error" style="display:none"></p>
+          <div class="mode-actions">
+            <button id="syn-generate-btn" class="btn-mode-primary" type="button">
+              <span id="syn-btn-label">Générer la synthèse</span>
+              <span id="syn-btn-spinner" class="mode-spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 : résultat -->
+      <div id="syn-result-phase" style="display:none">
+        <div class="mode-card">
+          <div class="result-actions-top">
+            <h2 class="result-heading">Synthèse générée</h2>
+            <div class="result-btn-row">
+              <button id="syn-copy-btn" class="btn-mode-secondary" type="button">Copier</button>
+              <button id="syn-save-btn" class="btn-mode-secondary" type="button">Enregistrer dans Mon mandat</button>
+              <button id="syn-new-btn" class="btn-mode-outline" type="button">Nouvelle synthèse</button>
+            </div>
+          </div>
+          <p id="syn-save-status" class="save-status" style="display:none"></p>
+          <div id="syn-result-content" class="result-markdown"></div>
         </div>
       </div>
     </div>
@@ -573,6 +623,35 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
     </div>
   </div>
 
+  <!-- Modal "Sauvegarder comme sujet" depuis le chat -->
+  <div id="chatSujetModal" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(10,25,47,.45);display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(2px);">
+    <div style="background:white;border-radius:20px;padding:2rem;max-width:400px;width:100%;box-shadow:0 24px 60px rgba(10,25,47,.2);">
+      <h2 style="font-size:1.1rem;color:var(--deep);margin-bottom:1.1rem;">Sauvegarder comme sujet</h2>
+      <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;">
+        <label style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(10,25,47,.5);" for="chatSujetTitre">Titre du sujet</label>
+        <input type="text" id="chatSujetTitre" placeholder="Nommez ce sujet…" maxlength="200" autocomplete="off"
+          style="padding:.75rem .9rem;border:1.5px solid rgba(10,25,47,.12);border-radius:10px;font:inherit;font-size:.96rem;color:var(--deep);background:#FAFAF8;outline:none;" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.25rem;">
+        <label style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(10,25,47,.5);" for="chatSujetType">Type</label>
+        <select id="chatSujetType" style="padding:.75rem .9rem;border:1.5px solid rgba(10,25,47,.12);border-radius:10px;font:inherit;font-size:.96rem;color:var(--deep);background:#FAFAF8;outline:none;appearance:none;cursor:pointer;">
+          <option value="general">Général</option>
+          <option value="idee">Idée</option>
+          <option value="dossier">Dossier</option>
+          <option value="reunion">Réunion</option>
+          <option value="prise_de_parole">Prise de parole</option>
+          <option value="vigilance">Vigilance</option>
+          <option value="projet">Projet</option>
+        </select>
+      </div>
+      <p id="chatSujetError" style="color:var(--accent-red);font-size:.82rem;display:none;margin-bottom:.75rem;"></p>
+      <div style="display:flex;gap:.75rem;">
+        <button id="chatSujetCancel" type="button" style="background:transparent;border:none;color:rgba(10,25,47,.5);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:underline;padding:.75rem 0;">Annuler</button>
+        <button id="chatSujetSubmit" type="button" style="flex:1;background:var(--deep);color:white;border:none;border-radius:10px;font:inherit;font-size:.95rem;font-weight:700;cursor:pointer;padding:.85rem 1.5rem;transition:background .15s;">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     import './client.ts';
   </script>
@@ -654,27 +733,35 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
     }
 
     // ── Mode state ─────────────────────────────────────────────────
-    type HubMode = 'compte-rendu' | 'document' | 'chat' | null;
-    let currentMode: HubMode = null;
+    type HubMode = 'compte-rendu' | 'document' | 'chat' | 'synthese' | null;
 
     const hubEl = document.getElementById('maryan-hub')!;
     const crModeEl = document.getElementById('maryan-cr-mode')!;
     const docModeEl = document.getElementById('maryan-doc-mode')!;
+    const synModeEl = document.getElementById('maryan-synthese-mode')!;
     const chatRootEl = document.querySelector('[data-maryan-copilot-root]') as HTMLElement;
 
+    // Affiche le lien Mon mandat dans le hub si l'utilisateur est connecté
+    getAccessToken().then(token => {
+      if (token) {
+        const mandatLink = document.getElementById('hubMandatLink');
+        if (mandatLink) mandatLink.style.display = '';
+      }
+    });
+
     function showHub() {
-      currentMode = null;
       hubEl.style.display = '';
       crModeEl.style.display = 'none';
       docModeEl.style.display = 'none';
+      synModeEl.style.display = 'none';
       chatRootEl.style.display = 'none';
     }
 
     function showMode(mode: HubMode) {
-      currentMode = mode;
       hubEl.style.display = 'none';
       crModeEl.style.display = mode === 'compte-rendu' ? '' : 'none';
       docModeEl.style.display = mode === 'document' ? '' : 'none';
+      synModeEl.style.display = mode === 'synthese' ? '' : 'none';
       chatRootEl.style.display = mode === 'chat' ? '' : 'none';
     }
 
@@ -737,7 +824,7 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
     // MODE COMPTE RENDU
     // ═══════════════════════════════════════════════════════════
     let crResult = '';
-    let crRecognition: SpeechRecognition | null = null;
+    let crRecognition: any = null; // Web Speech API — pas de types officiels TS
     let crIsRecording = false;
 
     // Tab switching
@@ -783,7 +870,7 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
         crMicStatus.textContent = '🔴 Dictée en cours…';
       };
 
-      crRecognition.onresult = (event: SpeechRecognitionEvent) => {
+      crRecognition.onresult = (event: any) => {
         let interim = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
@@ -1137,8 +1224,9 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
     });
 
     // ── Shared helpers ─────────────────────────────────────────────
-    function showSaveStatus(mode: 'cr' | 'doc', message: string, isError: boolean) {
+    function showSaveStatus(mode: 'cr' | 'doc' | 'syn', message: string, isError: boolean) {
       const el = document.getElementById(`${mode}-save-status`)!;
+      if (!el) return;
       el.textContent = message;
       el.className = 'save-status' + (isError ? ' save-status--error' : ' save-status--ok');
       el.style.display = 'block';
@@ -1153,6 +1241,264 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
         reader.readAsDataURL(file);
       });
     }
+
+    // ═══════════════════════════════════════════════════════════
+    // MODE SYNTHÈSE DE RÉUNION
+    // ═══════════════════════════════════════════════════════════
+    const SYNTHESE_SYSTEM = `Tu es MARYAN, assistant des élus municipaux français.
+On te fournit des notes brutes de réunion. Produis une synthèse structurée, sobre et directement utile pour un élu.
+
+FORMAT DE SORTIE :
+
+## Points clés
+[3 à 5 points essentiels à retenir — une phrase par point, pas de remplissage]
+
+## Décisions
+[Décisions actées. Si aucune : "Aucune décision formelle actée."]
+
+## Points de vigilance
+[Ce qui mérite attention : zones grises, désaccords non résolus, risques identifiés]
+
+## Suites à donner
+[Format : Action — Responsable si mentionné — Échéance si mentionnée]
+
+RÈGLES : ton factuel, ne jamais inventer d'éléments absents des notes, maximum 350 mots.`;
+
+    let synResult = '';
+
+    const synGenerateBtn = document.getElementById('syn-generate-btn') as HTMLButtonElement;
+    const synBtnLabel = document.getElementById('syn-btn-label')!;
+    const synBtnSpinner = document.getElementById('syn-btn-spinner')!;
+    const synInputError = document.getElementById('syn-input-error')!;
+
+    synGenerateBtn?.addEventListener('click', async () => {
+      const textarea = document.getElementById('syn-textarea') as HTMLTextAreaElement;
+      const content = textarea.value.trim();
+
+      if (!content) {
+        synInputError.textContent = 'Collez vos notes avant de générer.';
+        synInputError.style.display = 'block';
+        return;
+      }
+      if (content.length < 50) {
+        synInputError.textContent = 'Les notes semblent trop courtes. Ajoutez plus de contenu.';
+        synInputError.style.display = 'block';
+        return;
+      }
+
+      synInputError.style.display = 'none';
+      synGenerateBtn.disabled = true;
+      synBtnLabel.textContent = 'Génération…';
+      synBtnSpinner.style.display = 'inline-block';
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content }],
+            _overrideSystemPrompt: SYNTHESE_SYSTEM,
+            mode: 'synthese_reunion'
+          })
+        });
+
+        if (!res.ok) throw new Error('Erreur serveur');
+        const data = await res.json() as { reply?: string };
+        synResult = data.reply || '';
+
+        document.getElementById('syn-result-content')!.innerHTML = renderMarkdown(synResult);
+        document.getElementById('syn-input-phase')!.style.display = 'none';
+        document.getElementById('syn-result-phase')!.style.display = '';
+      } catch (err) {
+        synInputError.textContent = 'Erreur lors de la génération. Vérifiez votre connexion et réessayez.';
+        synInputError.style.display = 'block';
+      } finally {
+        synGenerateBtn.disabled = false;
+        synBtnLabel.textContent = 'Générer la synthèse';
+        synBtnSpinner.style.display = 'none';
+      }
+    });
+
+    document.getElementById('syn-copy-btn')?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(synResult);
+        const btn = document.getElementById('syn-copy-btn')!;
+        btn.textContent = '✓ Copié';
+        setTimeout(() => { btn.textContent = 'Copier'; }, 2000);
+      } catch { /* noop */ }
+    });
+
+    document.getElementById('syn-save-btn')?.addEventListener('click', async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        showSaveStatus('syn', 'Connectez-vous pour sauvegarder.', true);
+        return;
+      }
+      const saveBtn = document.getElementById('syn-save-btn') as HTMLButtonElement;
+      saveBtn.disabled = true;
+      try {
+        const res = await fetch('/api/mandat-syntheses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ contenu: synResult, type: 'reunion' })
+        });
+        const data = await res.json() as Record<string, any>;
+        if (!res.ok) throw new Error(data.error || 'Erreur');
+        showSaveStatus('syn', '✓ Synthèse enregistrée dans Mon mandat', false);
+        saveBtn.textContent = 'Enregistré ✓';
+      } catch (e: any) {
+        showSaveStatus('syn', e.message, true);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    document.getElementById('syn-new-btn')?.addEventListener('click', () => {
+      synResult = '';
+      const textarea = document.getElementById('syn-textarea') as HTMLTextAreaElement;
+      if (textarea) textarea.value = '';
+      document.getElementById('syn-result-phase')!.style.display = 'none';
+      document.getElementById('syn-input-phase')!.style.display = '';
+      document.getElementById('syn-save-status')!.style.display = 'none';
+      const saveBtn = document.getElementById('syn-save-btn') as HTMLButtonElement;
+      if (saveBtn) saveBtn.textContent = 'Enregistrer dans Mon mandat';
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // ACTIONS DE SORTIE DEPUIS LE CHAT
+    // 📌 Sauvegarder comme sujet  |  📝 En faire une note
+    // Apparaissent à partir du 2e message de la session
+    // ═══════════════════════════════════════════════════════════
+    const messagesContainer = document.querySelector('[data-messages]');
+
+    function appendChatActions(msgEl: HTMLElement) {
+      if (msgEl.querySelector('.chat-msg-actions')) return;
+
+      const bubble = msgEl.querySelector('.msg-bubble');
+      if (!bubble) return;
+
+      const contentText = bubble.textContent?.trim() || '';
+      const sessionId = 'chat_' + Date.now();
+
+      const actionsEl = document.createElement('div');
+      actionsEl.className = 'chat-msg-actions';
+      actionsEl.innerHTML = `
+        <button type="button" class="chat-action-btn" data-chat-action="sujet">📌 Sujet</button>
+        <button type="button" class="chat-action-btn" data-chat-action="note">📝 Note</button>
+      `;
+
+      msgEl.appendChild(actionsEl);
+
+      actionsEl.querySelector('[data-chat-action="sujet"]')?.addEventListener('click', () => {
+        openSujetModal(contentText);
+      });
+
+      actionsEl.querySelector('[data-chat-action="note"]')?.addEventListener('click', async (e) => {
+        const btn = e.currentTarget as HTMLButtonElement;
+        btn.disabled = true;
+        btn.textContent = '📝 Enregistrement…';
+        const token = await getAccessToken();
+        if (!token) {
+          btn.textContent = '📝 Connectez-vous';
+          btn.disabled = false;
+          return;
+        }
+        try {
+          await fetch('/api/mandat-notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ contenu: contentText, session_copilote_id: sessionId })
+          });
+          btn.textContent = '📝 Note enregistrée ✓';
+          setTimeout(() => {
+            btn.textContent = '📝 Note';
+            btn.disabled = false;
+          }, 3000);
+        } catch {
+          btn.textContent = '📝 Erreur';
+          btn.disabled = false;
+        }
+      });
+    }
+
+    // Observer les nouveaux messages assistant
+    if (messagesContainer) {
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node instanceof HTMLElement &&
+                node.classList.contains('msg') &&
+                node.classList.contains('assistant')) {
+              // N'ajoute les actions que si l'utilisateur a déjà envoyé au moins 1 message
+              const userMsgs = messagesContainer.querySelectorAll('.msg.user');
+              if (userMsgs.length >= 1) {
+                appendChatActions(node);
+              }
+            }
+          }
+        }
+      });
+      observer.observe(messagesContainer, { childList: true, subtree: false });
+    }
+
+    // Modal sujet depuis le chat
+    const chatSujetModal = document.getElementById('chatSujetModal') as HTMLElement;
+    const chatSujetSubmit = document.getElementById('chatSujetSubmit') as HTMLButtonElement;
+    const chatSujetCancel = document.getElementById('chatSujetCancel') as HTMLButtonElement;
+    const chatSujetError = document.getElementById('chatSujetError') as HTMLElement;
+    const chatSujetTitre = document.getElementById('chatSujetTitre') as HTMLInputElement;
+    const chatSujetType = document.getElementById('chatSujetType') as HTMLSelectElement;
+
+    function openSujetModal(prefill: string) {
+      chatSujetTitre.value = prefill.slice(0, 80).replace(/\n/g, ' ');
+      chatSujetError.style.display = 'none';
+      chatSujetModal.style.display = 'flex';
+      setTimeout(() => chatSujetTitre?.focus(), 50);
+    }
+
+    function closeSujetModal() { chatSujetModal.style.display = 'none'; }
+
+    chatSujetCancel?.addEventListener('click', closeSujetModal);
+    chatSujetModal?.addEventListener('click', (e) => { if (e.target === chatSujetModal) closeSujetModal(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && chatSujetModal?.style.display === 'flex') closeSujetModal();
+    });
+
+    chatSujetSubmit?.addEventListener('click', async () => {
+      const titre = chatSujetTitre?.value.trim();
+      if (!titre) {
+        chatSujetError.textContent = 'Le titre est requis.';
+        chatSujetError.style.display = 'block';
+        return;
+      }
+      chatSujetSubmit.disabled = true;
+      chatSujetSubmit.textContent = 'Enregistrement…';
+      chatSujetError.style.display = 'none';
+
+      const token = await getAccessToken();
+      if (!token) {
+        chatSujetError.textContent = 'Connectez-vous pour sauvegarder.';
+        chatSujetError.style.display = 'block';
+        chatSujetSubmit.disabled = false;
+        chatSujetSubmit.textContent = 'Sauvegarder';
+        return;
+      }
+
+      try {
+        await fetch('/api/mandat-sujets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ titre, type: chatSujetType?.value || 'general', statut: 'a_clarifier' })
+        });
+        closeSujetModal();
+      } catch {
+        chatSujetError.textContent = 'Erreur. Réessayez.';
+        chatSujetError.style.display = 'block';
+      } finally {
+        chatSujetSubmit.disabled = false;
+        chatSujetSubmit.textContent = 'Sauvegarder';
+      }
+    });
   </script>
 
   <style>
@@ -2045,8 +2391,42 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
 
     @media (min-width: 640px) {
       .hub-cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
       }
+    }
+
+    /* ── ACTIONS DE SORTIE CHAT ── */
+    .chat-msg-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.4rem 0.25rem 0;
+      flex-wrap: wrap;
+    }
+
+    .chat-action-btn {
+      appearance: none;
+      border: 1px solid rgba(10, 25, 47, 0.12);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(10, 25, 47, 0.65);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .chat-action-btn:hover {
+      border-color: var(--deep);
+      color: var(--deep);
+      background: white;
+    }
+
+    .chat-action-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
     }
 
     /* ── MODE SCREENS ── */

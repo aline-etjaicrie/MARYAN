@@ -13,7 +13,8 @@ export type MaryanSituationMode =
   | 'cadre_relation_projet'
   | 'ia_usage_reflechi'
   | 'vigilance_risque'
-  | 'cadrage_general';
+  | 'cadrage_general'
+  | 'synthese_reunion';
 
 export interface MaryanProfile {
   key: string;
@@ -336,7 +337,27 @@ Style attendu :
 - utile ;
 - concis ;
 - structuré ;
-- centré sur la prochaine étape utile.`
+- centré sur la prochaine étape utile.`,
+
+  synthese_reunion: `Mode : synthèse de réunion.
+
+Tu reçois des notes brutes de réunion. Produis une synthèse structurée et sobre.
+
+FORMAT STRICT :
+
+## Points clés
+[3 à 5 points essentiels — une phrase par point, pas de remplissage]
+
+## Décisions
+[Décisions actées. Si aucune : "Aucune décision formelle actée."]
+
+## Points de vigilance
+[Ce qui mérite attention : zones grises, désaccords non résolus, risques identifiés]
+
+## Suites à donner
+[Format : Action — Responsable si mentionné — Échéance si mentionnée]
+
+Règles : ton factuel, ne jamais inventer, maximum 350 mots. Si les notes sont insuffisantes, indique ce qui manque.`
 };
 
 const EXPERIENCE_MARKERS = {
@@ -406,7 +427,7 @@ const TECHNICAL_THEME_MARKERS: Record<string, string[]> = {
   agir_politique: ['majorite', 'opposition', 'executif', 'groupe politique', 'coalition']
 };
 
-const SIGNAL_GROUPS: Record<Exclude<MaryanSituationMode, 'cadrage_general'>, string[]> = {
+const SIGNAL_GROUPS: Record<Exclude<MaryanSituationMode, 'cadrage_general' | 'synthese_reunion'>, string[]> = {
   prise_de_reperes: [
     'jeune elue',
     'jeune elu',
@@ -610,6 +631,7 @@ function prettifyLabel(value: string): string {
     ia_usage_reflechi: "usage réfléchi de l'IA",
     vigilance_risque: 'vigilance / sécurisation du risque',
     cadrage_general: 'cadrage général',
+    synthese_reunion: 'synthèse de réunion',
     premier_conseil: 'premier conseil',
     debut_mandat: 'début de mandat',
     echeance_proche: 'échéance très proche',
@@ -714,7 +736,8 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
     cadre_relation_projet: ['clarification des attentes', 'cadre', 'gestion du décalage'],
     ia_usage_reflechi: ['discernement', 'bon usage', 'relecture critique'],
     vigilance_risque: ['identification du risque', 'action immédiate', 'orientation protection'],
-    cadrage_general: ['clarification', 'première étape utile']
+    cadrage_general: ['clarification', 'première étape utile'],
+    synthese_reunion: ['structuration', 'points clés', 'suites à donner']
   };
 
   const responseStyleMap: Record<MaryanSituationMode, string> = {
@@ -728,7 +751,8 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
     cadre_relation_projet: 'net, relationnel, centré sur le cadre',
     ia_usage_reflechi: 'pratique, prudent, orienté discernement',
     vigilance_risque: 'grave sans dramatiser, factuel, action immédiate',
-    cadrage_general: 'concis, clair, orienté action'
+    cadrage_general: 'concis, clair, orienté action',
+    synthese_reunion: 'factuel, structuré, directement utilisable'
   };
 
   const primarySituationMap: Record<MaryanSituationMode, string> = {
@@ -742,7 +766,8 @@ export function analyzeMaryanIntent(message: string, profile: MaryanProfile | nu
     cadre_relation_projet: 'décalage de cadre avec un porteur de projet',
     ia_usage_reflechi: "usage de l'IA à calibrer avec discernement",
     vigilance_risque: 'risque juridique, comportemental ou réputationnel à sécuriser',
-    cadrage_general: 'situation à clarifier'
+    cadrage_general: 'situation à clarifier',
+    synthese_reunion: 'notes de réunion à structurer'
   };
 
   return {

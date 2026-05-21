@@ -64,6 +64,7 @@ const {
           <a href="/hub-experts">Hub experts</a>
           <a href="/droits">Droits & devoirs</a>
           <a href="/blog">Décryptage</a>
+          <a href="/mon-mandat" id="mandatNavLink" class="nav-mandat" style="display:none">Mon mandat</a>
           <a href="/login" id="accountEntry" class="header-compte">Se connecter</a>
         </nav>
       </div>
@@ -183,6 +184,9 @@ const {
           if (headerLink) { headerLink.setAttribute('href', '/mon-compte'); headerLink.textContent = headerLabel; }
           const footerLink = document.getElementById('footerAccountEntry');
           if (footerLink) { footerLink.setAttribute('href', '/mon-compte'); footerLink.textContent = 'Mon compte'; }
+
+          const mandatLink = document.getElementById('mandatNavLink');
+          if (mandatLink) { (mandatLink as HTMLElement).style.display = ''; }
         });
       }
     </script>
@@ -209,6 +213,15 @@ const {
   }
   .footer-legal-links a:hover {
     color: rgba(255, 255, 255, 0.85);
+  }
+  .nav-mandat {
+    font-weight: 700;
+    color: var(--neon);
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.18s;
+  }
+  .nav-mandat:hover {
+    border-bottom-color: var(--neon);
   }
   .cookie-bar {
     position: fixed;

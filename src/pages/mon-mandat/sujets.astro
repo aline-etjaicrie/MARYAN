@@ -1,0 +1,324 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/mon-mandat.css';
+---
+
+<BaseLayout
+  title="Mes sujets — MARYAN"
+  description="Votre pipeline de sujets de mandat : classez, priorisez, avancez."
+>
+  <main class="kanban-page">
+    <div class="container">
+
+      <a href="/mon-mandat" class="kanban-back">← Mon mandat</a>
+
+      <div class="kanban-header">
+        <div class="kanban-header-left">
+          <h1>Mes sujets</h1>
+          <p>Glissez les cartes d'une colonne à l'autre pour suivre l'avancement.</p>
+        </div>
+        <button id="openAddModal" class="btn-primary-v3" style="padding:.85rem 1.6rem;font-size:.9rem;" type="button">
+          + Ajouter un sujet
+        </button>
+      </div>
+
+      <div id="boardLoading" class="mandat-loading">Chargement…</div>
+
+      <div id="kanbanBoard" class="kanban-board" style="display:none;">
+        <div class="kanban-col" data-statut="a_clarifier">
+          <div class="kanban-col-header">
+            <span class="kanban-col-label">À clarifier</span>
+            <span class="kanban-col-count" id="count-a_clarifier">0</span>
+          </div>
+          <div class="kanban-cards" id="col-a_clarifier"></div>
+        </div>
+        <div class="kanban-col" data-statut="a_arbitrer">
+          <div class="kanban-col-header">
+            <span class="kanban-col-label">À arbitrer</span>
+            <span class="kanban-col-count" id="count-a_arbitrer">0</span>
+          </div>
+          <div class="kanban-cards" id="col-a_arbitrer"></div>
+        </div>
+        <div class="kanban-col" data-statut="a_faire">
+          <div class="kanban-col-header">
+            <span class="kanban-col-label">À faire</span>
+            <span class="kanban-col-count" id="count-a_faire">0</span>
+          </div>
+          <div class="kanban-cards" id="col-a_faire"></div>
+        </div>
+        <div class="kanban-col" data-statut="fait">
+          <div class="kanban-col-header">
+            <span class="kanban-col-label">Fait</span>
+            <span class="kanban-col-count" id="count-fait">0</span>
+          </div>
+          <div class="kanban-cards" id="col-fait"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal ajout sujet -->
+  <div id="addModal" class="mandat-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="mandat-modal">
+      <h2 id="modalTitle">Nouveau sujet</h2>
+      <form id="addSujetForm" novalidate>
+        <div class="mandat-modal-field">
+          <label for="sujetTitre">Titre du sujet</label>
+          <input type="text" id="sujetTitre" name="titre" placeholder="Ex : Budget primitif 2025" required maxlength="200" autocomplete="off" />
+        </div>
+        <div class="mandat-modal-field">
+          <label for="sujetType">Type</label>
+          <select id="sujetType" name="type">
+            <option value="general">Général</option>
+            <option value="idee">Idée</option>
+            <option value="dossier">Dossier</option>
+            <option value="reunion">Réunion</option>
+            <option value="prise_de_parole">Prise de parole</option>
+            <option value="vigilance">Vigilance</option>
+            <option value="projet">Projet</option>
+          </select>
+        </div>
+        <div class="mandat-modal-field">
+          <label for="sujetStatut">Colonne de départ</label>
+          <select id="sujetStatut" name="statut">
+            <option value="a_clarifier">À clarifier</option>
+            <option value="a_arbitrer">À arbitrer</option>
+            <option value="a_faire">À faire</option>
+          </select>
+        </div>
+        <div class="mandat-modal-actions">
+          <button type="button" id="cancelModal" class="mandat-btn-cancel">Annuler</button>
+          <button type="submit" id="submitSujet" class="mandat-btn-submit">Créer le sujet</button>
+        </div>
+        <p id="addError" style="color:var(--accent-red);font-size:.85rem;margin-top:.75rem;display:none;"></p>
+      </form>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  const STATUTS = ['a_clarifier', 'a_arbitrer', 'a_faire', 'fait'] as const;
+  type Statut = typeof STATUTS[number];
+
+  const STATUT_LABELS: Record<Statut, string> = {
+    a_clarifier: 'À clarifier',
+    a_arbitrer: 'À arbitrer',
+    a_faire: 'À faire',
+    fait: 'Fait'
+  };
+
+  const TYPE_LABELS: Record<string, string> = {
+    general: 'Général', idee: 'Idée', dossier: 'Dossier',
+    reunion: 'Réunion', prise_de_parole: 'Prise de parole',
+    vigilance: 'Vigilance', projet: 'Projet'
+  };
+
+  function esc(v: unknown): string {
+    return String(v ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function shortDate(iso: string): string {
+    try { return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }); }
+    catch { return ''; }
+  }
+
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    window.location.href = '/login';
+  } else {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = '/login';
+    } else {
+      const token = session.access_token;
+      let allSujets: any[] = [];
+
+      // ── Render board ──────────────────────────────────────────────────────
+      function renderBoard(sujets: any[]) {
+        allSujets = sujets;
+
+        STATUTS.forEach(statut => {
+          const col = document.getElementById(`col-${statut}`)!;
+          const count = document.getElementById(`count-${statut}`)!;
+          const items = sujets.filter(s => s.statut === statut);
+          count.textContent = String(items.length);
+
+          col.innerHTML = items.length
+            ? items.map(s => buildCard(s)).join('')
+            : `<p style="font-size:.8rem;color:rgba(10,25,47,.3);text-align:center;padding:.75rem 0;">Vide</p>`;
+
+          // Attach card events
+          col.querySelectorAll<HTMLElement>('.kanban-card').forEach(card => {
+            const id = card.dataset.id!;
+
+            // Drag & drop (desktop)
+            card.addEventListener('dragstart', (e) => {
+              card.classList.add('dragging');
+              e.dataTransfer?.setData('text/plain', id);
+            });
+            card.addEventListener('dragend', () => {
+              card.classList.remove('dragging');
+            });
+
+            // Delete
+            card.querySelector('.kanban-card-del')?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              if (confirm('Supprimer ce sujet ?')) deleteCard(id);
+            });
+
+            // Mobile: statut select
+            const sel = card.querySelector<HTMLSelectElement>('.kanban-card-move');
+            if (sel) {
+              sel.addEventListener('change', () => moveCard(id, sel.value as Statut));
+            }
+          });
+        });
+
+        // Drop zones
+        document.querySelectorAll<HTMLElement>('.kanban-col').forEach(col => {
+          const statut = col.dataset.statut as Statut;
+
+          col.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            col.classList.add('drag-over');
+          });
+          col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+          col.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            col.classList.remove('drag-over');
+            const id = e.dataTransfer?.getData('text/plain');
+            if (id && statut) await moveCard(id, statut);
+          });
+        });
+      }
+
+      function buildCard(s: any): string {
+        const otherStatuts = STATUTS.filter(st => st !== s.statut);
+        return `
+          <div class="kanban-card" draggable="true" data-id="${esc(s.id)}">
+            <div class="kanban-card-titre">${esc(s.titre)}</div>
+            <div class="kanban-card-footer">
+              <div style="display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;">
+                <span class="mandat-type-badge">${esc(TYPE_LABELS[s.type] || s.type)}</span>
+                <span class="kanban-card-date">${shortDate(s.created_at)}</span>
+              </div>
+              <div class="kanban-card-actions">
+                <button class="kanban-card-del" type="button" title="Supprimer">✕</button>
+              </div>
+            </div>
+            <select class="kanban-card-move" aria-label="Déplacer vers" value="${esc(s.statut)}">
+              ${otherStatuts.map(st => `<option value="${st}">→ ${STATUT_LABELS[st]}</option>`).join('')}
+            </select>
+          </div>`;
+      }
+
+      async function moveCard(id: string, newStatut: Statut) {
+        try {
+          const res = await fetch('/api/mandat-sujets', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ id, statut: newStatut })
+          });
+          if (!res.ok) throw new Error();
+          const updated = allSujets.map(s => s.id === id ? { ...s, statut: newStatut, updated_at: new Date().toISOString() } : s);
+          renderBoard(updated);
+        } catch { /* noop */ }
+      }
+
+      async function deleteCard(id: string) {
+        try {
+          await fetch('/api/mandat-sujets', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ id })
+          });
+          renderBoard(allSujets.filter(s => s.id !== id));
+        } catch { /* noop */ }
+      }
+
+      // ── Load sujets ───────────────────────────────────────────────────────
+      async function loadSujets() {
+        const loading = document.getElementById('boardLoading')!;
+        const board = document.getElementById('kanbanBoard')!;
+        try {
+          const res = await fetch('/api/mandat-sujets', { headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          const { sujets } = await res.json() as { sujets: any[] };
+          loading.style.display = 'none';
+          board.style.display = 'grid';
+          renderBoard(sujets);
+        } catch {
+          loading.textContent = 'Erreur de chargement.';
+        }
+      }
+
+      await loadSujets();
+
+      // ── Modal ─────────────────────────────────────────────────────────────
+      const modal = document.getElementById('addModal') as HTMLElement;
+      const openBtn = document.getElementById('openAddModal')!;
+      const cancelBtn = document.getElementById('cancelModal')!;
+      const form = document.getElementById('addSujetForm') as HTMLFormElement;
+      const errorEl = document.getElementById('addError') as HTMLElement;
+      const submitBtn = document.getElementById('submitSujet') as HTMLButtonElement;
+
+      function openModal() {
+        form.reset();
+        errorEl.style.display = 'none';
+        modal.style.display = 'flex';
+        setTimeout(() => (document.getElementById('sujetTitre') as HTMLInputElement)?.focus(), 50);
+      }
+
+      function closeModal() { modal.style.display = 'none'; }
+
+      openBtn.addEventListener('click', openModal);
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display !== 'none') closeModal(); });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const titre = (document.getElementById('sujetTitre') as HTMLInputElement).value.trim();
+        const type = (document.getElementById('sujetType') as HTMLSelectElement).value;
+        const statut = (document.getElementById('sujetStatut') as HTMLSelectElement).value;
+
+        if (!titre) {
+          errorEl.textContent = 'Le titre est requis.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Création…';
+        errorEl.style.display = 'none';
+
+        try {
+          const res = await fetch('/api/mandat-sujets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ titre, type, statut })
+          });
+          if (!res.ok) throw new Error();
+          const { sujet } = await res.json() as { sujet: any };
+          closeModal();
+          renderBoard([sujet, ...allSujets]);
+        } catch {
+          errorEl.textContent = 'Erreur lors de la création. Réessayez.';
+          errorEl.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Créer le sujet';
+        }
+      });
+    }
+  }
+</script>

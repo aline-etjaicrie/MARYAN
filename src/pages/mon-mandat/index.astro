@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/mon-mandat.css';
+---
+
+<BaseLayout
+  title="Mon mandat — MARYAN"
+  description="Votre espace de travail de mandat : sujets actifs, notes et synthèses."
+>
+  <main class="mandat-page">
+    <div class="container mandat-layout">
+
+      <aside class="mandat-sidebar">
+        <nav class="mandat-sidenav" aria-label="Navigation Mon mandat">
+          <span class="mandat-sidenav-title">Mon mandat</span>
+          <a href="/mon-mandat" class="active">Vue d'ensemble</a>
+          <a href="/mon-mandat/sujets">Mes sujets</a>
+          <div class="mandat-sidenav-sep"></div>
+          <a href="/copilote">Copilote</a>
+          <a href="/mon-compte">Mon compte</a>
+        </nav>
+      </aside>
+
+      <div class="mandat-main">
+
+        <div class="mandat-page-header">
+          <div>
+            <h1 id="mandatHello">Mon mandat</h1>
+            <p id="mandatSub">Chargement…</p>
+          </div>
+          <a href="/copilote" class="btn-primary-v3" style="padding:.85rem 1.6rem;font-size:.9rem;">
+            Ouvrir le copilote
+          </a>
+        </div>
+
+        <!-- Sujets actifs -->
+        <div class="mandat-block">
+          <div class="mandat-block-head">
+            <h2>Sujets en cours</h2>
+            <a href="/mon-mandat/sujets" class="btn-link">Voir tous →</a>
+          </div>
+          <div id="sujetsContainer">
+            <p class="mandat-loading">Chargement…</p>
+          </div>
+        </div>
+
+        <!-- Notes récentes -->
+        <div class="mandat-block">
+          <div class="mandat-block-head">
+            <h2>Notes récentes</h2>
+          </div>
+          <div id="notesContainer">
+            <p class="mandat-loading">Chargement…</p>
+          </div>
+        </div>
+
+        <!-- Synthèse récente -->
+        <div class="mandat-block">
+          <div class="mandat-block-head">
+            <h2>Dernière synthèse</h2>
+          </div>
+          <div id="syntheseContainer">
+            <p class="mandat-loading">Chargement…</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+  const STATUT_LABELS: Record<string, string> = {
+    a_clarifier: 'À clarifier',
+    a_arbitrer: 'À arbitrer',
+    a_faire: 'À faire',
+    fait: 'Fait'
+  };
+
+  const TYPE_LABELS: Record<string, string> = {
+    general: 'Général',
+    idee: 'Idée',
+    dossier: 'Dossier',
+    reunion: 'Réunion',
+    prise_de_parole: 'Prise de parole',
+    vigilance: 'Vigilance',
+    projet: 'Projet'
+  };
+
+  function esc(v: unknown): string {
+    return String(v ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function shortDate(iso: string): string {
+    try { return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }); }
+    catch { return ''; }
+  }
+
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    window.location.href = '/login';
+  } else {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = '/login';
+    } else {
+      const token = session.access_token;
+
+      // ── Profil
+      try {
+        const res = await fetch('/api/profile-context', { headers: { Authorization: `Bearer ${token}` } });
+        if (res.ok) {
+          const ctx = await res.json();
+          const firstName = ctx?.profile?.first_name || '';
+          const role = ctx?.profile?.role || '';
+          const commune = ctx?.profile?.commune || '';
+          const helloEl = document.getElementById('mandatHello');
+          const subEl = document.getElementById('mandatSub');
+          if (helloEl) helloEl.textContent = firstName ? `Bonjour ${firstName}` : 'Mon mandat';
+          if (subEl && role) {
+            subEl.textContent = [role, commune ? `· ${commune}` : ''].filter(Boolean).join(' ');
+          } else if (subEl) {
+            subEl.textContent = 'Votre espace de travail de mandat.';
+          }
+        }
+      } catch { /* noop */ }
+
+      // ── Sujets actifs (hors "fait", 3 max)
+      {
+        const container = document.getElementById('sujetsContainer')!;
+        try {
+          const res = await fetch('/api/mandat-sujets', { headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          const { sujets } = await res.json() as { sujets: any[] };
+          const actifs = sujets.filter(s => s.statut !== 'fait').slice(0, 3);
+
+          if (!actifs.length) {
+            container.innerHTML = `
+              <p class="mandat-empty">Aucun sujet en cours.</p>
+              <a href="/mon-mandat/sujets" class="btn-primary-v3" style="margin-top:.85rem;padding:.8rem 1.4rem;font-size:.88rem;">
+                Créer un premier sujet
+              </a>`;
+          } else {
+            container.innerHTML = `
+              <div class="mandat-sujets-grid">
+                ${actifs.map(s => `
+                  <a href="/mon-mandat/sujets" class="mandat-sujet-card">
+                    <span class="mandat-sujet-titre">${esc(s.titre)}</span>
+                    <div class="mandat-sujet-meta">
+                      <span class="mandat-type-badge">${esc(TYPE_LABELS[s.type] || s.type)}</span>
+                      <span class="mandat-statut-badge mandat-statut-badge--${esc(s.statut)}">${esc(STATUT_LABELS[s.statut] || s.statut)}</span>
+                      <span class="mandat-sujet-date">${shortDate(s.updated_at)}</span>
+                    </div>
+                  </a>`).join('')}
+              </div>`;
+          }
+        } catch {
+          container.innerHTML = '<p class="mandat-empty">Impossible de charger les sujets.</p>';
+        }
+      }
+
+      // ── Notes récentes (2 max)
+      {
+        const container = document.getElementById('notesContainer')!;
+        try {
+          const res = await fetch('/api/mandat-notes', { headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          const { notes } = await res.json() as { notes: any[] };
+          const recent = notes.slice(0, 2);
+
+          if (!recent.length) {
+            container.innerHTML = '<p class="mandat-empty">Aucune note enregistrée. Sauvegardez une réponse du copilote pour commencer.</p>';
+          } else {
+            container.innerHTML = `
+              <div class="mandat-notes-list">
+                ${recent.map(n => `
+                  <div class="mandat-note-item">
+                    <div class="mandat-note-preview">${esc(n.contenu.slice(0, 200))}${n.contenu.length > 200 ? '…' : ''}</div>
+                    <div class="mandat-note-meta">${shortDate(n.created_at)}${n.session_copilote_id ? ' · depuis le copilote' : ''}</div>
+                  </div>`).join('')}
+              </div>`;
+          }
+        } catch {
+          container.innerHTML = '<p class="mandat-empty">Impossible de charger les notes.</p>';
+        }
+      }
+
+      // ── Synthèse récente (1 max)
+      {
+        const container = document.getElementById('syntheseContainer')!;
+        const TYPE_SYNTH: Record<string, string> = {
+          reunion: 'Réunion', note_cabinet: 'Note cabinet',
+          recap_dossier: 'Récap dossier', point_etape: 'Point d\'étape', autre: 'Autre'
+        };
+        try {
+          const res = await fetch('/api/mandat-syntheses', { headers: { Authorization: `Bearer ${token}` } });
+          if (!res.ok) throw new Error();
+          const { syntheses } = await res.json() as { syntheses: any[] };
+          const last = syntheses[0];
+
+          if (!last) {
+            container.innerHTML = '<p class="mandat-empty">Aucune synthèse enregistrée. Utilisez le mode "Synthèse de réunion" dans le copilote.</p>';
+          } else {
+            container.innerHTML = `
+              <div class="mandat-synthese-card">
+                <div class="mandat-synthese-titre">${esc(last.titre || 'Synthèse sans titre')}</div>
+                <div class="mandat-synthese-preview">${esc(last.contenu)}</div>
+                <div class="mandat-synthese-meta">${esc(TYPE_SYNTH[last.type] || last.type)} · ${shortDate(last.created_at)}</div>
+              </div>`;
+          }
+        } catch {
+          container.innerHTML = '<p class="mandat-empty">Impossible de charger les synthèses.</p>';
+        }
+      }
+    }
+  }
+</script>

@@ -105,6 +105,55 @@ const resourceCards = [
     </div>
   </section>
 
+  <!-- HOME CONNECTÉE — masquée par défaut, révélée si session active -->
+  <section id="home-connectee" style="display:none; background:#F4F4F0; padding:3rem 0 2rem;">
+    <div class="container">
+
+      <!-- Bloc actions -->
+      <div class="hc-header">
+        <span class="label-v3">Que voulez-vous faire ?</span>
+      </div>
+      <div class="hc-actions-grid">
+        <a href="/copilote?mode=chat&intent=decider" class="hc-action-card">
+          <span class="hc-action-icon">⚖️</span>
+          <span class="hc-action-label">Je dois décider</span>
+        </a>
+        <a href="/copilote?mode=chat&intent=cadrer" class="hc-action-card">
+          <span class="hc-action-icon">💡</span>
+          <span class="hc-action-label">Je veux cadrer une idée</span>
+        </a>
+        <a href="/copilote?mode=chat&intent=parole" class="hc-action-card">
+          <span class="hc-action-icon">🎤</span>
+          <span class="hc-action-label">Je prépare une prise de parole</span>
+        </a>
+        <a href="/copilote?mode=chat&intent=sensible" class="hc-action-card">
+          <span class="hc-action-icon">🛡️</span>
+          <span class="hc-action-label">J'ai un sujet sensible</span>
+        </a>
+        <a href="/droits" class="hc-action-card">
+          <span class="hc-action-icon">📖</span>
+          <span class="hc-action-label">Je veux comprendre mes droits</span>
+        </a>
+        <a href="/mon-mandat/sujets" class="hc-action-card">
+          <span class="hc-action-icon">📌</span>
+          <span class="hc-action-label">Je veux retrouver un sujet</span>
+        </a>
+      </div>
+
+      <!-- Bloc contextuel -->
+      <div id="hc-context" style="display:none; margin-top:2rem;">
+        <div class="hc-context-inner">
+          <div id="hc-profile-info" class="hc-context-meta"></div>
+          <div id="hc-suggestions" class="hc-context-suggestions"></div>
+        </div>
+        <div id="hc-mandat-link" style="margin-top:1.25rem;">
+          <a href="/mon-mandat" class="hc-mandat-link">Mon espace mandat →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- 2–8. SCROLL-STACK — toutes sections intermédiaires -->
   <div class="scroll-stack">
 
@@ -848,5 +897,207 @@ const resourceCards = [
       }
     }
 
+    /* ── HOME CONNECTÉE ── */
+    .hc-header { margin-bottom: 1.25rem; }
+
+    .hc-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .hc-action-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 1.1rem 1.1rem 1rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      text-decoration: none;
+      color: var(--deep);
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .hc-action-card:hover {
+      border-color: var(--deep);
+      transform: translateY(-2px);
+    }
+
+    .hc-action-icon { font-size: 1.4rem; }
+
+    .hc-action-label {
+      font-size: 0.92rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .hc-context-inner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.25rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.25rem 1.4rem;
+      align-items: start;
+    }
+
+    .hc-context-meta {
+      font-size: 0.88rem;
+      color: #52616B;
+      line-height: 1.55;
+      min-width: 160px;
+    }
+
+    .hc-context-meta strong {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--deep);
+      margin-bottom: 0.2rem;
+    }
+
+    .hc-context-suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .hc-suggestion-link {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--deep);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #FAFAF8;
+      transition: border-color 0.15s;
+    }
+
+    .hc-suggestion-link:hover { border-color: var(--deep); }
+
+    .hc-mandat-link {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--accent-red);
+      text-decoration: none;
+      gap: 0.25rem;
+    }
+
+    .hc-mandat-link:hover { text-decoration: underline; }
+
+    @media (max-width: 720px) {
+      .hc-actions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .hc-context-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hc-actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+
+    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL as string;
+    const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string;
+
+    const GENERIC_RESOURCES = [
+      { slug: 'qui-decide-quoi-dans-la-collectivite', title: 'Qui décide quoi dans la collectivité' },
+      { slug: 'le-conseil-municipal-a-quoi-il-sert-vraiment', title: 'Le conseil municipal : à quoi ça sert vraiment' },
+      { slug: 'prendre-la-parole-en-conseil', title: 'Prendre la parole en conseil' },
+      { slug: 'comment-se-prend-une-decision-dans-une-commune', title: 'Comment se prend une décision dans une commune' }
+    ];
+
+    const RESOURCES_BY_PROFILE: Record<string, { slug: string; title: string }[]> = {
+      mandat_recent:           [{ slug: 'trouver-sa-place-dans-le-mandat', title: 'Trouver sa place dans le mandat' }, { slug: 'premier-conseil-municipal-erreurs', title: 'Premier conseil municipal' }],
+      arbitrage:               [{ slug: 'arbitrer-une-decision-sensible', title: 'Arbitrer une décision sensible' }, { slug: 'prioriser-quand-tout-semble-urgent', title: 'Prioriser quand tout semble urgent' }],
+      isolement:               [{ slug: 'trouver-sa-place-dans-le-mandat', title: 'Trouver sa place dans le mandat' }, { slug: 'gerer-une-tension-dans-la-majorite-ou-l-executif', title: 'Gérer une tension dans la majorité' }],
+      surcharge:               [{ slug: 'prioriser-quand-tout-semble-urgent', title: 'Prioriser quand tout semble urgent' }, { slug: 'inscrire-action-temps-mandat', title: 'Inscrire son action dans le temps du mandat' }],
+      exposition:              [{ slug: 'repondre-critique-publique', title: 'Répondre à une critique publique' }, { slug: 'polemique-reseaux-sociaux', title: 'Polémique sur les réseaux sociaux' }],
+      tension_relationnelle:   [{ slug: 'gerer-une-tension-dans-la-majorite-ou-l-executif', title: 'Gérer une tension dans la majorité' }, { slug: 'elus-administration-qui-fait-quoi', title: 'Élus / administration : qui fait quoi' }],
+      besoin_methode:          [{ slug: 'role-reel-elu-decision-publique', title: 'Le rôle réel de l\'élu dans la décision' }, { slug: 'inscrire-action-temps-mandat', title: 'Inscrire son action dans le temps du mandat' }],
+      prise_de_parole:         [{ slug: 'prendre-la-parole-en-conseil', title: 'Prendre la parole en conseil' }, { slug: 'repondre-critique-publique', title: 'Répondre à une critique publique' }],
+      gouvernance:             [{ slug: 'qui-decide-quoi-dans-la-collectivite', title: 'Qui décide quoi dans la collectivité' }, { slug: 'comment-se-prend-une-decision-dans-une-commune', title: 'Comment se prend une décision' }]
+    };
+
+    const MANDAT_LABELS: Record<string, string> = {
+      maire: 'Maire', adjoint_maire: 'Adjoint au maire',
+      conseiller_maj: 'Conseiller municipal (majorité)', conseiller_opp: 'Conseiller municipal (opposition)',
+      president_interco: "Président d'intercommunalité"
+    };
+
+    const TAILLE_LABELS: Record<string, string> = {
+      moins500: '< 500 hab.', '500-3500': '500–3 500 hab.',
+      '3500-10000': '3 500–10 000 hab.', '10000-50000': '10 000–50 000 hab.', plus50000: '+ 50 000 hab.'
+    };
+
+    function esc(v: unknown): string {
+      return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    if (SUPABASE_URL && SUPABASE_KEY) {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        const homeSection = document.getElementById('home-connectee');
+        if (homeSection) homeSection.style.display = '';
+
+        // Charger le profil pour le bloc contextuel
+        try {
+          const res = await fetch('/api/profile-context', {
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          if (!res.ok) return;
+          const ctx = await res.json();
+          const profile = ctx?.profile;
+          const diagState = ctx?.diagnosticState;
+
+          const profileEl = document.getElementById('hc-profile-info');
+          const suggestionsEl = document.getElementById('hc-suggestions');
+          const contextBlock = document.getElementById('hc-context');
+
+          if (profileEl && profile) {
+            const role = MANDAT_LABELS[profile.role] || profile.role || '';
+            const taille = TAILLE_LABELS[profile.taille_ct] || '';
+            if (role || taille || profile.commune) {
+              profileEl.innerHTML = `
+                <strong>${esc(profile.first_name || 'Votre profil')}</strong>
+                ${role ? `<span>${esc(role)}</span>` : ''}
+                ${profile.commune ? `<span>${esc(profile.commune)}</span>` : ''}
+                ${taille ? `<span>${esc(taille)}</span>` : ''}
+              `.replace(/<span><\/span>/g, '');
+            }
+          }
+
+          if (suggestionsEl) {
+            const diagnosticProfile = diagState?.profile;
+            const recs = diagnosticProfile
+              ? (RESOURCES_BY_PROFILE[diagnosticProfile] || GENERIC_RESOURCES.slice(0, 2))
+              : GENERIC_RESOURCES.slice(0, 2);
+
+            suggestionsEl.innerHTML = recs.slice(0, 2).map(r =>
+              `<a href="/ressources/${esc(r.slug)}" class="hc-suggestion-link">${esc(r.title)}</a>`
+            ).join('');
+          }
+
+          if (contextBlock && (profile?.role || diagState?.profile)) {
+            contextBlock.style.display = '';
+          }
+        } catch { /* noop */ }
+      }
+    }
+  </script>
 </Layout>
