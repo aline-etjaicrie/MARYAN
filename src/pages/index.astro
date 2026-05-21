@@ -1060,7 +1060,7 @@ const resourceCards = [
           const res = await fetch('/api/profile-context', {
             headers: { Authorization: `Bearer ${session.access_token}` }
           });
-          if (!res.ok) return;
+          if (!res.ok) throw new Error();
           const ctx = await res.json();
           const profile = ctx?.profile;
           const diagState = ctx?.diagnosticState;
