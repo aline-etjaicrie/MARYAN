@@ -1,10 +1,34 @@
 // À supprimer si Stripe hosted links est définitif
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
 
 export const prerender = false;
 
+const SUPABASE_URL =
+  (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+const SUPABASE_SERVICE_KEY =
+  (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
+
+function getToken(request: Request): string | null {
+  const auth = request.headers.get('Authorization') || '';
+  return auth.startsWith('Bearer ') ? auth.slice(7) : null;
+}
+
 export const POST: APIRoute = async ({ request }) => {
+  const token = getToken(request);
+  if (!token) {
+    return new Response(JSON.stringify({ error: 'Non authentifié.' }), { status: 401 });
+  }
+
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) {
+      return new Response(JSON.stringify({ error: 'Token invalide.' }), { status: 401 });
+    }
+  }
+
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   
   if (!stripeKey) {

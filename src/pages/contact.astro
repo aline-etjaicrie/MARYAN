@@ -160,39 +160,35 @@ import InternalHeader from '../components/InternalHeader.astro';
     const form = document.getElementById('contactForm');
     const wrapper = document.getElementById('contactFormWrapper');
     const success = document.getElementById('successState');
-    const btn = document.getElementById('submitBtn');
 
-    form.addEventListener('submit', async (e) => {
+    const MANDATS = { maire: 'Maire', adjoint: 'Adjoint·e au maire', conseiller: 'Conseiller·e municipal', cabinet: 'Cabinet / Direction', autre: 'Autre' };
+    const SUJETS = { demo: 'Demande de démonstration', devis: 'Devis collectivité', appui: 'Appui sur une situation précise', autre: 'Autre question' };
+    const TAILLES = { petite: 'Moins de 5 000 hab.', moyenne: '5 000 - 20 000 hab.', grande: 'Plus de 20 000 hab.', interco: 'Intercommunalité' };
+
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      
-      btn.innerText = "Transmission...";
-      btn.disabled = true;
-
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      try {
-        const response = await fetch('/api/contact-send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-          wrapper.classList.add('hidden');
-          success.classList.remove('hidden');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          alert("Une erreur est survenue. Veuillez réessayer ou utiliser le formulaire de contact.");
-          btn.innerText = "Envoyer ma demande";
-          btn.disabled = false;
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Connexion échouée. Veuillez vérifier votre réseau.");
-        btn.innerText = "Envoyer ma demande";
-        btn.disabled = false;
-      }
+      const d = Object.fromEntries(new FormData(form).entries());
+      const sujet = SUJETS[d.subject] || d.subject;
+      const corps = [
+        `Prénom : ${d.firstname || '—'}`,
+        `Nom : ${d.lastname || '—'}`,
+        `Email : ${d.email || '—'}`,
+        `Mandat : ${MANDATS[d.mandate] || d.mandate || '—'}`,
+        `Collectivité : ${TAILLES[d.citySize] || d.citySize || '—'}`,
+        `Objet : ${sujet}`,
+        '',
+        d.message || '(pas de message)',
+        '',
+        '---',
+        'Envoyé depuis maryanapp.fr'
+      ].join('\n');
+      const mailto = `mailto:aline@etjaicrie.com?subject=${encodeURIComponent('[MARYAN] ' + sujet)}&body=${encodeURIComponent(corps)}`;
+      window.location.href = mailto;
+      setTimeout(() => {
+        wrapper.classList.add('hidden');
+        success.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 400);
     });
   </script>
 </BaseLayout>

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createHmac, randomUUID } from 'crypto';
+import { createClient } from '@supabase/supabase-js';
 import {
   buildAgentPrimingMessage,
   buildSystemPrompt,
@@ -27,8 +28,17 @@ interface CopilotRequestBody {
   messages?: CopilotMessage[];
   mode?: MaryanSituationMode | string;
   message?: string;
-  _overrideSystemPrompt?: string;
   sessionToken?: string;
+}
+
+const SUPABASE_URL =
+  (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+const SUPABASE_SERVICE_KEY =
+  (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
+
+function getToken(request: Request): string | null {
+  const auth = request.headers.get('Authorization') || '';
+  return auth.startsWith('Bearer ') ? auth.slice(7) : null;
 }
 
 // SESSION LIMIT (signed HMAC token — stateless, server-enforced)
@@ -67,6 +77,15 @@ const DEFAULT_MODEL = 'mistral-large-latest';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
+  const token = getToken(request);
+  if (!token) return json({ error: 'Non authentifié.' }, 401);
+
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) return json({ error: 'Token invalide.' }, 401);
+  }
+
   const apiKey = process.env.MISTRAL_API_KEY as string;
   const agentId = process.env.MISTRAL_AGENT_ID as string;
   const model = (process.env.MISTRAL_MODEL as string) || DEFAULT_MODEL;
@@ -113,29 +132,26 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const isAgentMode = !!agentId;
     const url = isAgentMode ? MISTRAL_AGENTS_URL : MISTRAL_CHAT_URL;
-    const overrideSystemPrompt = body?._overrideSystemPrompt || null;
 
-    const systemPrompt = (!overrideSystemPrompt && !isAgentMode)
+    const systemPrompt = !isAgentMode
       ? buildSystemPrompt(profile, body?.mode || resolvedMode, latestUserMessage, buildResourcesCatalog(maryanResources))
       : '';
 
-    const baseMessages = overrideSystemPrompt
-      ? [{ role: 'system' as const, content: overrideSystemPrompt }, ...messages]
-      : isAgentMode
-        ? [
-            {
-              role: 'user' as const,
-              content: buildAgentPrimingMessage(profile, body?.mode, latestUserMessage)
-            },
-            ...messages
-          ]
-        : [
-            {
-              role: 'system' as const,
-              content: systemPrompt
-            },
-            ...messages
-          ];
+    const baseMessages = isAgentMode
+      ? [
+          {
+            role: 'user' as const,
+            content: buildAgentPrimingMessage(profile, body?.mode, latestUserMessage)
+          },
+          ...messages
+        ]
+      : [
+          {
+            role: 'system' as const,
+            content: systemPrompt
+          },
+          ...messages
+        ];
 
     const payload = isAgentMode
       ? {
