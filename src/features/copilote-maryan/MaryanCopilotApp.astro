@@ -411,6 +411,21 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
               <p id="doc-res-prochain" class="doc-result-text"></p>
             </div>
           </div>
+
+          <div class="doc-discuss-block">
+            <p class="doc-result-label">Continuer la discussion</p>
+            <div id="doc-discuss-thread" class="doc-discuss-thread"></div>
+            <div class="doc-discuss-input-row">
+              <textarea
+                id="doc-discuss-input"
+                class="doc-discuss-textarea"
+                rows="1"
+                placeholder="Posez une question sur ce document…"
+              ></textarea>
+              <button id="doc-discuss-send" class="btn-mode-primary" type="button" disabled>Envoyer</button>
+            </div>
+            <p id="doc-discuss-error" class="mode-error" style="display:none"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -1036,6 +1051,8 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
     let docSelectedFiles: File[] = [];
     let docResultText = '';
     let docFileName = '';
+    let docDiscussHistory: { role: 'user' | 'assistant'; content: string }[] = [];
+    let docDiscussBusy = false;
 
     const docDropZone = document.getElementById('doc-drop-zone')!;
     const docFileInput = document.getElementById('doc-file-input') as HTMLInputElement;
@@ -1192,6 +1209,11 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
 
         document.getElementById('doc-input-phase')!.style.display = 'none';
         document.getElementById('doc-result-phase')!.style.display = '';
+
+        // Amorce la discussion avec la synthèse, sans encore afficher de bulle.
+        docDiscussHistory = [{ role: 'assistant', content: docResultText }];
+        document.getElementById('doc-discuss-thread')!.innerHTML = '';
+        (document.getElementById('doc-discuss-send') as HTMLButtonElement).disabled = true;
       } catch (e: any) {
         docInputError.textContent = e.message || 'Erreur de connexion. Réessayez.';
         docInputError.style.display = 'block';
@@ -1244,11 +1266,141 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
       docResultText = '';
       docFileName = '';
       docFileInput.value = '';
+      docDiscussHistory = [];
+      document.getElementById('doc-discuss-thread')!.innerHTML = '';
+      (document.getElementById('doc-discuss-input') as HTMLTextAreaElement).value = '';
       renderDocFilePreviews();
       document.getElementById('doc-result-phase')!.style.display = 'none';
       document.getElementById('doc-input-phase')!.style.display = '';
       document.getElementById('doc-save-status')!.style.display = 'none';
     });
+
+    // ── Discussion après analyse ─────────────────────────────────────
+    const docDiscussThread = document.getElementById('doc-discuss-thread')!;
+    const docDiscussInput = document.getElementById('doc-discuss-input') as HTMLTextAreaElement;
+    const docDiscussSend = document.getElementById('doc-discuss-send') as HTMLButtonElement;
+    const docDiscussError = document.getElementById('doc-discuss-error')!;
+
+    function autoResizeDocDiscuss() {
+      docDiscussInput.style.height = 'auto';
+      docDiscussInput.style.height = `${Math.min(docDiscussInput.scrollHeight, 140)}px`;
+    }
+
+    docDiscussInput.addEventListener('input', () => {
+      autoResizeDocDiscuss();
+      docDiscussSend.disabled = docDiscussBusy || !docDiscussInput.value.trim();
+    });
+
+    docDiscussInput.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!docDiscussSend.disabled) void sendDocDiscussMessage();
+      }
+    });
+
+    docDiscussSend.addEventListener('click', () => void sendDocDiscussMessage());
+
+    function addDocDiscussBubble(role: 'user' | 'assistant', html: string): HTMLElement {
+      const wrapper = document.createElement('article');
+      wrapper.className = `msg ${role}`;
+      if (role === 'assistant') {
+        const sender = document.createElement('span');
+        sender.className = 'msg-sender';
+        sender.textContent = 'MARYAN';
+        wrapper.appendChild(sender);
+      }
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.innerHTML = html;
+      wrapper.appendChild(bubble);
+      docDiscussThread.appendChild(wrapper);
+      return bubble;
+    }
+
+    async function sendDocDiscussMessage() {
+      const text = docDiscussInput.value.trim();
+      if (!text || docDiscussBusy) return;
+
+      docDiscussError.style.display = 'none';
+      docDiscussBusy = true;
+      docDiscussSend.disabled = true;
+      docDiscussInput.value = '';
+      autoResizeDocDiscuss();
+
+      addDocDiscussBubble('user', `<p>${escapeDocDiscuss(text)}</p>`);
+      docDiscussHistory.push({ role: 'user', content: text });
+
+      const typingBubble = addDocDiscussBubble('assistant', '<span class="doc-discuss-typing">…</span>');
+
+      try {
+        const token = await getAccessToken();
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        let profile: unknown = null;
+        try {
+          const stored = localStorage.getItem('maryan_profile');
+          if (stored) profile = JSON.parse(stored);
+        } catch { /* noop */ }
+
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ messages: docDiscussHistory, message: text, profile })
+        });
+
+        if (!res.ok || !res.body) {
+          const data = await res.json().catch(() => ({})) as { error?: string };
+          throw new Error(data.error || 'Erreur lors de la discussion.');
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+        let sseBuffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          sseBuffer += decoder.decode(value, { stream: true });
+          const lines = sseBuffer.split('\n');
+          sseBuffer = lines.pop() || '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const chunk = line.slice(6).trim();
+            if (chunk === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(chunk) as { choices?: Array<{ delta?: { content?: string } }> };
+              const token = parsed.choices?.[0]?.delta?.content;
+              if (token) {
+                fullText += token;
+                typingBubble.innerHTML = renderMarkdown(fullText);
+                docDiscussThread.scrollTop = docDiscussThread.scrollHeight;
+              }
+            } catch { /* noop */ }
+          }
+        }
+
+        typingBubble.innerHTML = renderMarkdown(fullText || 'Je n\'ai pas pu formuler de réponse.');
+        docDiscussHistory.push({ role: 'assistant', content: fullText });
+      } catch (e: any) {
+        typingBubble.remove();
+        docDiscussError.textContent = e.message || 'Erreur de connexion. Réessayez.';
+        docDiscussError.style.display = 'block';
+        docDiscussHistory.pop(); // retire le message utilisateur non abouti
+      } finally {
+        docDiscussBusy = false;
+        docDiscussSend.disabled = !docDiscussInput.value.trim();
+        docDiscussInput.focus();
+      }
+    }
+
+    function escapeDocDiscuss(value: string): string {
+      return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
 
     // ── Shared helpers ─────────────────────────────────────────────
     function showSaveStatus(mode: 'cr' | 'doc' | 'syn', message: string, isError: boolean) {
@@ -2930,6 +3082,53 @@ RÈGLES : ton factuel, ne jamais inventer d'éléments absents des notes, maximu
       font-size: 0.96rem;
       line-height: 1.5;
       color: var(--deep);
+    }
+
+    .doc-discuss-block {
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(10, 25, 47, 0.08);
+    }
+
+    .doc-discuss-thread {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin: 0.9rem 0;
+    }
+
+    .doc-discuss-thread:empty {
+      margin: 0;
+    }
+
+    .doc-discuss-input-row {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-end;
+    }
+
+    .doc-discuss-textarea {
+      flex: 1;
+      resize: none;
+      max-height: 140px;
+      padding: 0.75rem 0.9rem;
+      border: 1.5px solid rgba(10, 25, 47, 0.12);
+      border-radius: 12px;
+      font: inherit;
+      font-size: 0.95rem;
+      color: var(--deep);
+      background: #FAFAF8;
+    }
+
+    .doc-discuss-textarea:focus {
+      outline: none;
+      border-color: var(--deep);
+      background: #fff;
+    }
+
+    .doc-discuss-input-row .btn-mode-primary {
+      flex-shrink: 0;
+      padding: 0.75rem 1.3rem;
     }
 
     @media (max-width: 600px) {
