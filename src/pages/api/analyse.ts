@@ -3,9 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 
 export const prerender = false;
 
-const MISTRAL_API_KEY = process.env.MISTRAL_API_KEY as string;
-const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL as string;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY as string;
+const MISTRAL_API_KEY =
+  (import.meta.env.MISTRAL_API_KEY as string) || (process.env.MISTRAL_API_KEY as string);
+const SUPABASE_URL =
+  (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+const SUPABASE_SERVICE_KEY =
+  (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
 
 const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
 const VISION_MODEL = 'pixtral-12b-2409';
@@ -116,8 +119,21 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (!upstream.ok) {
-      const errData = await upstream.json().catch(() => ({})) as Record<string, any>;
-      const msg = errData?.message || errData?.error?.message || 'Erreur Mistral.';
+      const rawBody = await upstream.text();
+      let errData: Record<string, any> = {};
+      try { errData = JSON.parse(rawBody); } catch { /* body not JSON */ }
+
+      const detail = Array.isArray(errData?.detail)
+        ? errData.detail.map((d: any) => d?.msg || JSON.stringify(d)).join(' ; ')
+        : errData?.detail;
+
+      const msg =
+        errData?.message ||
+        errData?.error?.message ||
+        detail ||
+        (rawBody ? rawBody.slice(0, 300) : `Erreur Mistral (HTTP ${upstream.status}).`);
+
+      console.error('[analyse] Mistral upstream error:', upstream.status, rawBody.slice(0, 1000));
       return json({ error: msg }, upstream.status);
     }
 
