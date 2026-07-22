@@ -11,7 +11,9 @@ const SUPABASE_SERVICE_KEY =
   (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
 
 const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
-const VISION_MODEL = 'pixtral-12b-2409';
+// pixtral-12b-2409 a été retiré par Mistral le 2/12/2025 ; mistral-large-latest
+// gère à la fois la vision et la compréhension de documents (document_url).
+const VISION_MODEL = 'mistral-large-latest';
 const TEXT_MODEL = 'mistral-large-latest';
 
 function json(payload: unknown, status = 200): Response {
@@ -86,7 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
           content: [
             {
               type: 'image_url',
-              image_url: { url: `data:${mimeType};base64,${fileData}` }
+              image_url: `data:${mimeType};base64,${fileData}`
             },
             { type: 'text', text: ANALYSE_PROMPT }
           ]
@@ -100,7 +102,7 @@ export const POST: APIRoute = async ({ request }) => {
           content: [
             {
               type: 'document_url',
-              document_url: { url: `data:application/pdf;base64,${fileData}` }
+              document_url: `data:application/pdf;base64,${fileData}`
             },
             { type: 'text', text: ANALYSE_PROMPT }
           ]
