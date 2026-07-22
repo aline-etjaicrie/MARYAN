@@ -77,10 +77,12 @@ const DEFAULT_MODEL = 'mistral-large-latest';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
+  // Le mode chat gratuit fonctionne sans compte (limite FREE_LIMIT messages via
+  // sessionToken signé). Un token n'est requis que pour les comptes connectés
+  // (Plus/admin) — s'il est présent, il doit être valide.
   const token = getToken(request);
-  if (!token) return json({ error: 'Non authentifié.' }, 401);
 
-  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+  if (token && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) return json({ error: 'Token invalide.' }, 401);

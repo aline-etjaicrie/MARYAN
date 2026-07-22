@@ -60,7 +60,7 @@ export const GET: APIRoute = async ({ request }) => {
 
   let query = supabase
     .from('mandat_syntheses')
-    .select('id, titre, type, sujet_id, created_at')
+    .select('id, titre, contenu, type, sujet_id, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 

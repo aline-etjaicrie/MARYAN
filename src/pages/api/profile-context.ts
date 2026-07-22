@@ -11,8 +11,10 @@ import {
 
 export const prerender = false;
 
-const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL as string;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY as string;
+const SUPABASE_URL =
+  (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+const SUPABASE_SERVICE_KEY =
+  (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
 
 const PROFILE_SELECT = [
   'id',
@@ -79,7 +81,12 @@ async function getAuthenticatedProfile(request: Request) {
     return { error: json({ error: 'Token invalide.' }, 401) };
   }
 
-  await ensureProfileRecord(supabase, user);
+  try {
+    await ensureProfileRecord(supabase, user);
+  } catch (err) {
+    console.error('[profile-context] ensureProfileRecord failed:', err);
+    return { error: json({ error: 'Impossible de charger le profil.' }, 500) };
+  }
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
@@ -198,12 +205,34 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (body?.advancedDiagnosticState && typeof body.advancedDiagnosticState === 'object') {
     const adv = body.advancedDiagnosticState as Record<string, unknown>;
-    // Basic sanitization — only allow known string/enum fields
-    const allowed = ['situation_principale', 'energie_principale', 'profil_parole', 'profil_exposition', 'advanced_priorities', 'advanced_resources'];
+    const PROFIL_PAROLE_VALUES = new Set(['aise', 'construction', 'stress']);
+    const PROFIL_EXPOSITION_VALUES = new Set(['faible', 'vecu', 'anticipation']);
+    const MAX_STRING_LEN = 500;
+
     const sanitized: Record<string, unknown> = {};
-    for (const key of allowed) {
-      if (key in adv) sanitized[key] = adv[key];
+
+    const situationPrincipale = normalizeOptionalString(adv.situation_principale);
+    if (situationPrincipale) sanitized.situation_principale = situationPrincipale.slice(0, MAX_STRING_LEN);
+
+    const energiePrincipale = normalizeOptionalString(adv.energie_principale);
+    if (energiePrincipale) sanitized.energie_principale = energiePrincipale.slice(0, MAX_STRING_LEN);
+
+    const profilParole = normalizeOptionalString(adv.profil_parole);
+    if (profilParole && PROFIL_PAROLE_VALUES.has(profilParole)) sanitized.profil_parole = profilParole;
+
+    const profilExposition = normalizeOptionalString(adv.profil_exposition);
+    if (profilExposition && PROFIL_EXPOSITION_VALUES.has(profilExposition)) sanitized.profil_exposition = profilExposition;
+
+    if (Array.isArray(adv.advanced_priorities)) {
+      const priorities = adv.advanced_priorities.filter((p): p is string => typeof p === 'string').slice(0, 10);
+      if (priorities.length) sanitized.advanced_priorities = priorities;
     }
+
+    if (Array.isArray(adv.advanced_resources)) {
+      const resources = adv.advanced_resources.filter((r): r is string => typeof r === 'string').slice(0, 20);
+      if (resources.length) sanitized.advanced_resources = resources;
+    }
+
     if (Object.keys(sanitized).length) {
       updates.advanced_diagnostic_completed = true;
       updates.advanced_diagnostic_data = sanitized;

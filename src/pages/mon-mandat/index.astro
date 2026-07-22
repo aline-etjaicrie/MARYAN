@@ -137,29 +137,33 @@ import '../../styles/mon-mandat.css';
         const container = document.getElementById('sujetsContainer')!;
         try {
           const res = await fetch('/api/mandat-sujets', { headers: { Authorization: `Bearer ${token}` } });
-          if (!res.ok) throw new Error();
-          const { sujets } = await res.json() as { sujets: any[] };
-          const actifs = sujets.filter(s => s.statut !== 'fait').slice(0, 3);
-
-          if (!actifs.length) {
-            container.innerHTML = `
-              <p class="mandat-empty">Aucun sujet en cours.</p>
-              <a href="/mon-mandat/sujets" class="btn-primary-v3" style="margin-top:.85rem;padding:.8rem 1.4rem;font-size:.88rem;">
-                Créer un premier sujet
-              </a>`;
+          if (res.status === 401) {
+            window.location.href = '/login';
           } else {
-            container.innerHTML = `
-              <div class="mandat-sujets-grid">
-                ${actifs.map(s => `
-                  <a href="/mon-mandat/sujets" class="mandat-sujet-card">
-                    <span class="mandat-sujet-titre">${esc(s.titre)}</span>
-                    <div class="mandat-sujet-meta">
-                      <span class="mandat-type-badge">${esc(TYPE_LABELS[s.type] || s.type)}</span>
-                      <span class="mandat-statut-badge mandat-statut-badge--${esc(s.statut)}">${esc(STATUT_LABELS[s.statut] || s.statut)}</span>
-                      <span class="mandat-sujet-date">${shortDate(s.updated_at)}</span>
-                    </div>
-                  </a>`).join('')}
-              </div>`;
+            if (!res.ok) throw new Error();
+            const { sujets } = await res.json() as { sujets: any[] };
+            const actifs = sujets.filter(s => s.statut !== 'fait').slice(0, 3);
+
+            if (!actifs.length) {
+              container.innerHTML = `
+                <p class="mandat-empty">Aucun sujet en cours.</p>
+                <a href="/mon-mandat/sujets" class="btn-primary-v3" style="margin-top:.85rem;padding:.8rem 1.4rem;font-size:.88rem;">
+                  Créer un premier sujet
+                </a>`;
+            } else {
+              container.innerHTML = `
+                <div class="mandat-sujets-grid">
+                  ${actifs.map(s => `
+                    <a href="/mon-mandat/sujets" class="mandat-sujet-card">
+                      <span class="mandat-sujet-titre">${esc(s.titre)}</span>
+                      <div class="mandat-sujet-meta">
+                        <span class="mandat-type-badge">${esc(TYPE_LABELS[s.type] || s.type)}</span>
+                        <span class="mandat-statut-badge mandat-statut-badge--${esc(s.statut)}">${esc(STATUT_LABELS[s.statut] || s.statut)}</span>
+                        <span class="mandat-sujet-date">${shortDate(s.updated_at)}</span>
+                      </div>
+                    </a>`).join('')}
+                </div>`;
+            }
           }
         } catch {
           container.innerHTML = '<p class="mandat-empty">Impossible de charger les sujets.</p>';
@@ -171,21 +175,25 @@ import '../../styles/mon-mandat.css';
         const container = document.getElementById('notesContainer')!;
         try {
           const res = await fetch('/api/mandat-notes', { headers: { Authorization: `Bearer ${token}` } });
-          if (!res.ok) throw new Error();
-          const { notes } = await res.json() as { notes: any[] };
-          const recent = notes.slice(0, 2);
-
-          if (!recent.length) {
-            container.innerHTML = '<p class="mandat-empty">Aucune note enregistrée. Sauvegardez une réponse du copilote pour commencer.</p>';
+          if (res.status === 401) {
+            window.location.href = '/login';
           } else {
-            container.innerHTML = `
-              <div class="mandat-notes-list">
-                ${recent.map(n => `
-                  <div class="mandat-note-item">
-                    <div class="mandat-note-preview">${esc(n.contenu.slice(0, 200))}${n.contenu.length > 200 ? '…' : ''}</div>
-                    <div class="mandat-note-meta">${shortDate(n.created_at)}${n.session_copilote_id ? ' · depuis le copilote' : ''}</div>
-                  </div>`).join('')}
-              </div>`;
+            if (!res.ok) throw new Error();
+            const { notes } = await res.json() as { notes: any[] };
+            const recent = notes.slice(0, 2);
+
+            if (!recent.length) {
+              container.innerHTML = '<p class="mandat-empty">Aucune note enregistrée. Sauvegardez une réponse du copilote pour commencer.</p>';
+            } else {
+              container.innerHTML = `
+                <div class="mandat-notes-list">
+                  ${recent.map(n => `
+                    <div class="mandat-note-item">
+                      <div class="mandat-note-preview">${esc(n.contenu.slice(0, 200))}${n.contenu.length > 200 ? '…' : ''}</div>
+                      <div class="mandat-note-meta">${shortDate(n.created_at)}${n.session_copilote_id ? ' · depuis le copilote' : ''}</div>
+                    </div>`).join('')}
+                </div>`;
+            }
           }
         } catch {
           container.innerHTML = '<p class="mandat-empty">Impossible de charger les notes.</p>';
@@ -201,19 +209,23 @@ import '../../styles/mon-mandat.css';
         };
         try {
           const res = await fetch('/api/mandat-syntheses', { headers: { Authorization: `Bearer ${token}` } });
-          if (!res.ok) throw new Error();
-          const { syntheses } = await res.json() as { syntheses: any[] };
-          const last = syntheses[0];
-
-          if (!last) {
-            container.innerHTML = '<p class="mandat-empty">Aucune synthèse enregistrée. Utilisez le mode "Synthèse de réunion" dans le copilote.</p>';
+          if (res.status === 401) {
+            window.location.href = '/login';
           } else {
-            container.innerHTML = `
-              <div class="mandat-synthese-card">
-                <div class="mandat-synthese-titre">${esc(last.titre || 'Synthèse sans titre')}</div>
-                <div class="mandat-synthese-preview">${esc(last.contenu)}</div>
-                <div class="mandat-synthese-meta">${esc(TYPE_SYNTH[last.type] || last.type)} · ${shortDate(last.created_at)}</div>
-              </div>`;
+            if (!res.ok) throw new Error();
+            const { syntheses } = await res.json() as { syntheses: any[] };
+            const last = syntheses[0];
+
+            if (!last) {
+              container.innerHTML = '<p class="mandat-empty">Aucune synthèse enregistrée. Utilisez le mode "Synthèse de réunion" dans le copilote.</p>';
+            } else {
+              container.innerHTML = `
+                <div class="mandat-synthese-card">
+                  <div class="mandat-synthese-titre">${esc(last.titre || 'Synthèse sans titre')}</div>
+                  <div class="mandat-synthese-preview">${esc(last.contenu)}</div>
+                  <div class="mandat-synthese-meta">${esc(TYPE_SYNTH[last.type] || last.type)} · ${shortDate(last.created_at)}</div>
+                </div>`;
+            }
           }
         } catch {
           container.innerHTML = '<p class="mandat-empty">Impossible de charger les synthèses.</p>';

@@ -4,8 +4,10 @@ import { ensureProfileRecord } from '../../lib/profiles';
 
 export const prerender = false;
 
-const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL as string;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY as string;
+const SUPABASE_URL =
+  (import.meta.env.PUBLIC_SUPABASE_URL as string) || (process.env.PUBLIC_SUPABASE_URL as string);
+const SUPABASE_SERVICE_KEY =
+  (import.meta.env.SUPABASE_SERVICE_KEY as string) || (process.env.SUPABASE_SERVICE_KEY as string);
 
 const ALLOWED_FIELDS = new Set([
   'first_name',
@@ -55,7 +57,12 @@ export const POST: APIRoute = async ({ request }) => {
   } = await supabase.auth.getUser(token);
   if (authError || !user) return json({ error: 'Token invalide.' }, 401);
 
-  await ensureProfileRecord(supabase, user);
+  try {
+    await ensureProfileRecord(supabase, user);
+  } catch (err) {
+    console.error('[update-profile] ensureProfileRecord failed:', err);
+    return json({ error: 'Impossible de charger le profil.' }, 500);
+  }
 
   let body: Record<string, unknown> | null = null;
   try {

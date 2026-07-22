@@ -215,7 +215,8 @@ import '../../styles/mon-mandat.css';
                 <button class="kanban-card-del" type="button" title="Supprimer">✕</button>
               </div>
             </div>
-            <select class="kanban-card-move" aria-label="Déplacer vers" value="${esc(s.statut)}">
+            <select class="kanban-card-move" aria-label="Déplacer vers">
+              <option value="" selected disabled>Déplacer vers…</option>
               ${otherStatuts.map(st => `<option value="${st}">→ ${STATUT_LABELS[st]}</option>`).join('')}
             </select>
           </div>`;
@@ -231,18 +232,27 @@ import '../../styles/mon-mandat.css';
           if (!res.ok) throw new Error();
           const updated = allSujets.map(s => s.id === id ? { ...s, statut: newStatut, updated_at: new Date().toISOString() } : s);
           renderBoard(updated);
-        } catch { /* noop */ }
+        } catch {
+          alert('Le déplacement a échoué. Réessayez.');
+          renderBoard(allSujets);
+        }
       }
 
       async function deleteCard(id: string) {
         try {
-          await fetch('/api/mandat-sujets', {
+          const res = await fetch('/api/mandat-sujets', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({ id })
           });
+          if (!res.ok) {
+            alert('La suppression a échoué. Réessayez.');
+            return;
+          }
           renderBoard(allSujets.filter(s => s.id !== id));
-        } catch { /* noop */ }
+        } catch {
+          alert('La suppression a échoué. Réessayez.');
+        }
       }
 
       // ── Load sujets ───────────────────────────────────────────────────────
@@ -251,6 +261,10 @@ import '../../styles/mon-mandat.css';
         const board = document.getElementById('kanbanBoard')!;
         try {
           const res = await fetch('/api/mandat-sujets', { headers: { Authorization: `Bearer ${token}` } });
+          if (res.status === 401) {
+            window.location.href = '/login';
+            return;
+          }
           if (!res.ok) throw new Error();
           const { sujets } = await res.json() as { sujets: any[] };
           loading.style.display = 'none';
