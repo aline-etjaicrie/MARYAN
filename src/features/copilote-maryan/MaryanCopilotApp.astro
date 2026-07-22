@@ -350,17 +350,13 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
 
           <div id="doc-drop-zone" class="doc-drop-zone" role="button" tabindex="0" aria-label="Zone de dépôt de fichier">
             <div class="doc-drop-icon">📄</div>
-            <p class="doc-drop-title">Glissez votre document ici</p>
-            <p class="doc-drop-sub">ou <button type="button" id="doc-browse-btn" class="btn-inline-link">choisissez un fichier</button></p>
-            <p class="doc-drop-formats">PDF, JPG, PNG · max 10 Mo</p>
-            <input type="file" id="doc-file-input" accept=".pdf,image/jpeg,image/png" style="display:none" />
+            <p class="doc-drop-title">Glissez vos documents ici</p>
+            <p class="doc-drop-sub">ou <button type="button" id="doc-browse-btn" class="btn-inline-link">choisissez un ou deux fichiers</button></p>
+            <p class="doc-drop-formats">PDF, JPG, PNG · max 10 Mo chacun · jusqu'à 2 documents</p>
+            <input type="file" id="doc-file-input" accept=".pdf,image/jpeg,image/png" multiple style="display:none" />
           </div>
 
-          <div id="doc-file-preview" class="doc-file-preview" style="display:none">
-            <span class="doc-file-icon">📎</span>
-            <span id="doc-file-name" class="doc-file-name"></span>
-            <button type="button" id="doc-remove-file" class="doc-remove-btn" aria-label="Supprimer">✕</button>
-          </div>
+          <div id="doc-file-preview-list" class="doc-file-preview-list"></div>
 
           <div class="form-group-doc">
             <label class="form-label-doc" for="doc-type-select">Type de document</label>
@@ -377,7 +373,7 @@ import { FREE_LIMIT, PARCOURS_TYPES, PROFILE_REQUIRED_HTML, SUGGESTIONS, WELCOME
 
           <div class="mode-actions">
             <button id="doc-analyse-btn" class="btn-mode-primary" type="button" disabled>
-              <span id="doc-btn-label">Analyser le document</span>
+              <span id="doc-btn-label">Analyser</span>
               <span id="doc-btn-spinner" class="mode-spinner" style="display:none"></span>
             </button>
           </div>
@@ -1036,16 +1032,15 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
     // ═══════════════════════════════════════════════════════════
     // MODE DOCUMENT
     // ═══════════════════════════════════════════════════════════
-    let docSelectedFile: File | null = null;
+    const MAX_DOC_FILES = 2;
+    let docSelectedFiles: File[] = [];
     let docResultText = '';
     let docFileName = '';
 
     const docDropZone = document.getElementById('doc-drop-zone')!;
     const docFileInput = document.getElementById('doc-file-input') as HTMLInputElement;
     const docBrowseBtn = document.getElementById('doc-browse-btn')!;
-    const docFilePreview = document.getElementById('doc-file-preview')!;
-    const docFileNameEl = document.getElementById('doc-file-name')!;
-    const docRemoveFile = document.getElementById('doc-remove-file')!;
+    const docFilePreviewList = document.getElementById('doc-file-preview-list')!;
     const docAnalyseBtn = document.getElementById('doc-analyse-btn') as HTMLButtonElement;
     const docInputError = document.getElementById('doc-input-error')!;
 
@@ -1061,23 +1056,57 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
     docDropZone.addEventListener('drop', (e: DragEvent) => {
       e.preventDefault();
       docDropZone.classList.remove('doc-drop-zone--over');
-      const file = e.dataTransfer?.files?.[0];
-      if (file) handleDocFile(file);
+      const files = Array.from(e.dataTransfer?.files || []);
+      files.forEach(handleDocFile);
     });
     docFileInput.addEventListener('change', () => {
-      if (docFileInput.files?.[0]) handleDocFile(docFileInput.files[0]);
-    });
-    docRemoveFile.addEventListener('click', () => {
-      docSelectedFile = null;
+      const files = Array.from(docFileInput.files || []);
+      files.forEach(handleDocFile);
       docFileInput.value = '';
-      docFilePreview.style.display = 'none';
-      docDropZone.style.display = '';
-      docAnalyseBtn.disabled = true;
     });
+
+    function renderDocFilePreviews() {
+      docFilePreviewList.innerHTML = '';
+      docSelectedFiles.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'doc-file-preview';
+
+        const icon = document.createElement('span');
+        icon.className = 'doc-file-icon';
+        icon.textContent = '📎';
+
+        const name = document.createElement('span');
+        name.className = 'doc-file-name';
+        name.textContent = file.name;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'doc-remove-btn';
+        removeBtn.setAttribute('aria-label', 'Supprimer');
+        removeBtn.textContent = '✕';
+        removeBtn.addEventListener('click', () => {
+          docSelectedFiles.splice(index, 1);
+          docInputError.style.display = 'none';
+          renderDocFilePreviews();
+        });
+
+        item.append(icon, name, removeBtn);
+        docFilePreviewList.appendChild(item);
+      });
+
+      docDropZone.style.display = docSelectedFiles.length >= MAX_DOC_FILES ? 'none' : '';
+      docAnalyseBtn.disabled = docSelectedFiles.length === 0;
+    }
 
     function handleDocFile(file: File) {
       const maxSize = 10 * 1024 * 1024;
       const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+
+      if (docSelectedFiles.length >= MAX_DOC_FILES) {
+        docInputError.textContent = `Vous pouvez joindre au maximum ${MAX_DOC_FILES} documents.`;
+        docInputError.style.display = 'block';
+        return;
+      }
       if (!allowed.includes(file.type)) {
         docInputError.textContent = 'Format non supporté. Utilisez PDF, JPG ou PNG.';
         docInputError.style.display = 'block';
@@ -1089,16 +1118,12 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
         return;
       }
       docInputError.style.display = 'none';
-      docSelectedFile = file;
-      docFileName = file.name;
-      docFileNameEl.textContent = file.name;
-      docFilePreview.style.display = 'flex';
-      docDropZone.style.display = 'none';
-      docAnalyseBtn.disabled = false;
+      docSelectedFiles.push(file);
+      renderDocFilePreviews();
     }
 
     docAnalyseBtn.addEventListener('click', async () => {
-      if (!docSelectedFile) return;
+      if (!docSelectedFiles.length) return;
       const docBtnLabel = document.getElementById('doc-btn-label')!;
       const docBtnSpinner = document.getElementById('doc-btn-spinner')!;
       docAnalyseBtn.disabled = true;
@@ -1109,14 +1134,16 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
       try {
         const token = await getAccessToken();
         const docType = (document.getElementById('doc-type-select') as HTMLSelectElement).value;
-        const base64 = await fileToBase64(docSelectedFile);
+        const documents = await Promise.all(
+          docSelectedFiles.map(async (file) => ({ fileData: await fileToBase64(file), mimeType: file.type }))
+        );
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
         const res = await fetch('/api/analyse', {
           method: 'POST',
           headers,
-          body: JSON.stringify({ fileData: base64, mimeType: docSelectedFile.type, docType })
+          body: JSON.stringify({ documents, docType })
         });
 
         const data = await res.json() as Record<string, any>;
@@ -1135,6 +1162,8 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
         }
 
         if (!res.ok || data.error) throw new Error(data.error || 'Erreur lors de l\'analyse.');
+
+        docFileName = docSelectedFiles.map((file) => file.name).join(' + ');
 
         // Build text for copy/save
         docResultText = [
@@ -1211,13 +1240,11 @@ RÈGLES : ton sobre et factuel, pas de remplissage, ne jamais inventer, suggesti
 
     // New doc analysis
     document.getElementById('doc-new-btn')?.addEventListener('click', () => {
-      docSelectedFile = null;
+      docSelectedFiles = [];
       docResultText = '';
       docFileName = '';
       docFileInput.value = '';
-      docFilePreview.style.display = 'none';
-      docDropZone.style.display = '';
-      docAnalyseBtn.disabled = true;
+      renderDocFilePreviews();
       document.getElementById('doc-result-phase')!.style.display = 'none';
       document.getElementById('doc-input-phase')!.style.display = '';
       document.getElementById('doc-save-status')!.style.display = 'none';
@@ -2798,6 +2825,16 @@ RÈGLES : ton factuel, ne jamais inventer d'éléments absents des notes, maximu
       cursor: pointer;
       text-decoration: underline;
       padding: 0;
+    }
+
+    .doc-file-preview-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .doc-file-preview-list:not(:empty) {
+      margin-top: 0.75rem;
     }
 
     .doc-file-preview {

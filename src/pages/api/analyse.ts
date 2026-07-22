@@ -12,9 +12,10 @@ const SUPABASE_SERVICE_KEY =
 
 const MISTRAL_CHAT_URL = 'https://api.mistral.ai/v1/chat/completions';
 // pixtral-12b-2409 a été retiré par Mistral le 2/12/2025 ; mistral-large-latest
-// gère à la fois la vision et la compréhension de documents (document_url).
-const VISION_MODEL = 'mistral-large-latest';
-const TEXT_MODEL = 'mistral-large-latest';
+// gère à la fois la vision et la compréhension de documents (document_url),
+// ce qui permet d'utiliser un seul modèle même quand image(s) et PDF sont mélangés.
+const MODEL = 'mistral-large-latest';
+const MAX_DOCUMENTS = 2;
 
 function json(payload: unknown, status = 200): Response {
   return new Response(JSON.stringify(payload), {
@@ -43,13 +44,20 @@ async function isSubscribed(token: string): Promise<boolean> {
   return p.includes('plus') || p === 'admin';
 }
 
-const ANALYSE_PROMPT = `Tu es un assistant de l'élu local français. Analyse ce document et réponds en JSON strict avec les champs suivants :
+function buildAnalysePrompt(documentCount: number): string {
+  const intro =
+    documentCount > 1
+      ? `Tu es un assistant de l'élu local français. Analyse ces ${documentCount} documents ensemble, comme un seul dossier cohérent (mets en évidence les liens, écarts ou contradictions entre eux si pertinent), et réponds en JSON strict avec les champs suivants :`
+      : `Tu es un assistant de l'élu local français. Analyse ce document et réponds en JSON strict avec les champs suivants :`;
+
+  return `${intro}
 - resume : résumé exécutif en 3 à 5 phrases, style direct
 - pointsAttention : tableau de 3 à 6 points d'attention ou risques identifiés (strings)
-- engagements : ce que ce document engage pour l'élu (1 à 3 phrases)
+- engagements : ce que ce${documentCount > 1 ? 's documents engagent' : ' document engage'} pour l'élu (1 à 3 phrases)
 - prochainEtape : la prochaine action concrète recommandée (1 phrase)
 
 Réponds UNIQUEMENT avec le JSON, sans balises markdown ni commentaires.`;
+}
 
 export const POST: APIRoute = async ({ request }) => {
   if (!MISTRAL_API_KEY) return json({ error: 'Configuration Mistral manquante.' }, 503);
@@ -60,64 +68,67 @@ export const POST: APIRoute = async ({ request }) => {
   const subscribed = await isSubscribed(token);
   if (!subscribed) return json({ error: 'Service réservé aux abonné·es MARYAN Plus.', paywallTriggered: true }, 403);
 
-  let body: { fileData?: string; mimeType?: string; docType?: string } | null = null;
+  let body: {
+    fileData?: string;
+    mimeType?: string;
+    docType?: string;
+    documents?: Array<{ fileData?: string; mimeType?: string }>;
+  } | null = null;
   try {
     body = await request.json();
   } catch {
     return json({ error: 'Format de requête invalide.' }, 400);
   }
 
-  const { fileData, mimeType, docType } = body || {};
-  if (!fileData || !mimeType) return json({ error: 'Données manquantes : fileData et mimeType requis.' }, 400);
+  // Compat : accepte soit { documents: [...] } (jusqu'à 2), soit l'ancien
+  // format à un seul fichier { fileData, mimeType }.
+  const rawDocuments = Array.isArray(body?.documents) && body.documents.length
+    ? body.documents
+    : body?.fileData && body?.mimeType
+      ? [{ fileData: body.fileData, mimeType: body.mimeType }]
+      : [];
 
-  const isImage = mimeType.startsWith('image/');
-  const isPdf = mimeType === 'application/pdf';
+  if (!rawDocuments.length) {
+    return json({ error: 'Données manquantes : au moins un document est requis.' }, 400);
+  }
+  if (rawDocuments.length > MAX_DOCUMENTS) {
+    return json({ error: `Vous pouvez joindre au maximum ${MAX_DOCUMENTS} documents.` }, 400);
+  }
 
-  if (!isImage && !isPdf) {
-    return json({ error: 'Format non supporté. Utilisez PDF, JPG ou PNG.' }, 400);
+  const documents: Array<{ fileData: string; mimeType: string }> = [];
+  for (const doc of rawDocuments) {
+    if (!doc?.fileData || !doc?.mimeType) {
+      return json({ error: 'Données manquantes : fileData et mimeType requis pour chaque document.' }, 400);
+    }
+    const isImage = doc.mimeType.startsWith('image/');
+    const isPdf = doc.mimeType === 'application/pdf';
+    if (!isImage && !isPdf) {
+      return json({ error: 'Format non supporté. Utilisez PDF, JPG ou PNG.' }, 400);
+    }
+    documents.push({ fileData: doc.fileData, mimeType: doc.mimeType });
   }
 
   try {
-    let messages: unknown[];
+    const documentBlocks = documents.map((doc) =>
+      doc.mimeType.startsWith('image/')
+        ? { type: 'image_url', image_url: `data:${doc.mimeType};base64,${doc.fileData}` }
+        : { type: 'document_url', document_url: `data:application/pdf;base64,${doc.fileData}` }
+    );
 
-    if (isImage) {
-      // Modèle vision pour images
-      messages = [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image_url',
-              image_url: `data:${mimeType};base64,${fileData}`
-            },
-            { type: 'text', text: ANALYSE_PROMPT }
-          ]
-        }
-      ];
-    } else {
-      // PDF — extraction texte via Mistral document
-      messages = [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'document_url',
-              document_url: `data:application/pdf;base64,${fileData}`
-            },
-            { type: 'text', text: ANALYSE_PROMPT }
-          ]
-        }
-      ];
-    }
+    const messages = [
+      {
+        role: 'user',
+        content: [...documentBlocks, { type: 'text', text: buildAnalysePrompt(documents.length) }]
+      }
+    ];
 
-    const model = isImage ? VISION_MODEL : TEXT_MODEL;
     const upstream = await fetch(MISTRAL_CHAT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${MISTRAL_API_KEY}`
       },
-      body: JSON.stringify({ model, messages, max_tokens: 1200, temperature: 0.2 })
+      body: JSON.stringify({ model: MODEL, messages, max_tokens: 1200, temperature: 0.2 })
     });
 
     if (!upstream.ok) {
